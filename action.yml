@@ -1,5 +1,5 @@
-name: GitHub Action for Easy Semantic Versioning with GitVersion
-description: Installs GitVersion and compute the version from git
+name: use-gitversion
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs GitVersion and compute the version from git
 author: GitTools
 branding:
   color: gray-dark
