@@ -1,0 +1,17 @@
+name: GitHub Action for Easy Semantic Versioning with GitVersion
+description: Installs GitVersion and compute the version from git
+author: GitTools
+branding:
+  color: gray-dark
+  icon: git-pull-request
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: node12
+  main: dist/index.js

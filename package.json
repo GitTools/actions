@@ -1,0 +1,24 @@
+{
+  "name": "use-gitversion",
+  "version": "1.0.0",
+  "description": "Github Action that installs and uses the GitVersion tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitTools/use-gitversion.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GitTools/use-gitversion/issues"
+  },
+  "homepage": "https://github.com/GitTools/use-gitversion#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.0",
+    "@actions/github": "^1.1.0"
+  }
+}
