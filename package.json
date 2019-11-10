@@ -1,24 +1,38 @@
 {
-  "name": "use-gitversion",
-  "version": "1.0.0",
-  "description": "Github Action that installs and uses the GitVersion tool",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GitTools/use-gitversion.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GitTools/use-gitversion/issues"
-  },
-  "homepage": "https://github.com/GitTools/use-gitversion#readme",
-  "dependencies": {
-    "@actions/core": "^1.2.0",
-    "@actions/github": "^1.1.0"
-  }
+    "name": "use-gitversion",
+    "version": "1.0.0",
+    "description": "Github Action that installs and uses the GitVersion tool",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GitTools/use-gitversion.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/GitTools/use-gitversion/issues"
+    },
+    "homepage": "https://github.com/GitTools/use-gitversion#readme",
+    "dependencies": {
+        "@actions/core": "^1.2.0",
+        "@actions/exec": "^1.0.1",
+        "@actions/github": "^1.1.0",
+        "@actions/io": "^1.0.1",
+        "@actions/tool-cache": "^1.1.2",
+        "semver": "^6.3.0",
+        "semver-compare": "^1.0.0",
+        "typed-rest-client": "1.5.0",
+        "uuid": "^3.3.3"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.7",
+        "@types/q": "1.5.2",
+        "@types/semver": "^6.2.0",
+        "@types/uuid": "^3.4.6",
+        "typescript": "^3.6.3"
+    }
 }
