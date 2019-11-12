@@ -14,4 +14,4 @@ outputs:
     description: 'The time we greeted you'
 runs:
   using: node12
-  main: src/github/dist/index.js
+  main: dist/index.js
