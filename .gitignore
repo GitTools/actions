@@ -1,3 +1,10 @@
-
 node_modules/
-/*.js
+*.js
+
+.taskkey
+
+dist/azure/task/
+!dist/azure/task/icon.png
+!dist/azure/task/task.json
+
+*.vsix

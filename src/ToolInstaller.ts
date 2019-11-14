@@ -1,8 +1,9 @@
-import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
+import * as path from 'path';
 
 import * as httpm from 'typed-rest-client/HttpClient';
+
 import { IProxy } from './Interfaces';
 
 export class ToolInstaller {

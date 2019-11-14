@@ -4,14 +4,18 @@
     "description": "Github Action that installs and uses the GitVersion tool",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build-github": "tsc -p src/github",
+        "build-azure": "tsc -p src/azure && tsc -p src/azure/tests",
+        "test-azure": "mocha src/azure/tests/test-suite.js",
+        "package-github": "ncc build src/github/GitVersion.js -o dist/github",
+        "package-azure": "ncc build src/github/GitVersion.js -o dist/azure/task && tfx extension create --root dist/azure --manifest-globs vss-extension.json --output-path dist/azure"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/GitTools/use-gitversion.git"
     },
     "keywords": [],
-    "author": "",
+    "author": "GitTools",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/GitTools/use-gitversion/issues"
@@ -20,19 +24,26 @@
     "dependencies": {
         "@actions/core": "^1.2.0",
         "@actions/exec": "^1.0.1",
-        "@actions/github": "^1.1.0",
         "@actions/io": "^1.0.1",
         "@actions/tool-cache": "^1.1.2",
+        "azure-pipelines-task-lib": "2.8.0",
+        "azure-pipelines-tool-lib": "0.12.0",
         "semver": "^6.3.0",
         "semver-compare": "^1.0.0",
         "typed-rest-client": "1.5.0",
         "uuid": "^3.3.3"
     },
     "devDependencies": {
+        "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.7",
         "@types/q": "1.5.2",
         "@types/semver": "^6.2.0",
         "@types/uuid": "^3.4.6",
-        "typescript": "^3.6.3"
+        "@zeit/ncc": "^0.20.5",
+        "copy-node-modules": "^1.1.1",
+        "mocha": "^6.2.1",
+        "mocha-xunit-reporter": "^1.1.0",
+        "tfx-cli": "0.6.3",
+        "typescript": "^3.7.2"
     }
 }

@@ -7,7 +7,7 @@
         "preserveConstEnums": true,
         "target": "es6",
         "sourceMap": false,
-        "inlineSourceMap": true,
-        "declaration": false
-    }
+        "inlineSourceMap": true
+    },
+    "exclude": ["tests"]
 }
