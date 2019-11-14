@@ -1,14 +1,23 @@
 import * as path from 'path';
 
 import * as tl from 'azure-pipelines-task-lib/task';
-import * as tr from 'azure-pipelines-task-lib/toolrunner';
 
 import { ToolInstaller } from '../ToolInstaller';
 import { Proxy as utils }  from './Proxy';
 
-export class GitVersionTask {
-    execOptions: tr.IExecOptions;
+function isValidInputFile(input: string, file: string) {
+    return tl.filePathSupplied(input) && fileExists(file);
+}
 
+function fileExists(file: string) {
+    return tl.exist(file) && tl.stats(file).isFile();
+}
+
+function directoryExists(file: string) {
+    return tl.exist(file) && tl.stats(file).isDirectory();
+}
+
+export class GitVersionTask {
     versionSpec: string;
     includePrerelease: boolean;
     targetPath: string;
@@ -38,17 +47,6 @@ export class GitVersionTask {
         this.additionalArguments        = tl.getInput('additionalArguments');
 
         this.sourcesDirectory           = tl.getVariable('Build.SourcesDirectory').replace(/\\/g, '/');
-
-        this.execOptions = {
-            cwd: undefined,
-            env: undefined,
-            silent: undefined,
-            failOnStdErr: undefined,
-            ignoreReturnCode: undefined,
-            errStream: undefined,
-            outStream: undefined,
-            windowsVerbatimArguments: undefined
-        };
     }
 
     public async execute() {
@@ -56,37 +54,15 @@ export class GitVersionTask {
             let toolPath = await this.installTool(this.versionSpec, this.includePrerelease);
 
             let workingDirectory = this.getWorkingDirectory(this.targetPath);
+            let args = this.getArguments(workingDirectory);
+            
             let exe = tl.tool('dotnet-gitversion');
-            exe.arg([
-                workingDirectory,
-                "/output",
-                "buildserver",
-                "/nofetch"]);
-
-            if (this.useConfigFile) {
-                if (tl.filePathSupplied('configFilePath') && tl.exist(this.configFilePath) && tl.stats(this.configFilePath).isFile()) {
-                    exe.arg(["/config", this.configFilePath]);
-                }
-                else {
-                    throw new Error('GitVersion configuration file not found at ' + this.configFilePath);
-                }
-            }
-
-            if (this.updateAssemblyInfo) {
-                exe.arg("/updateassemblyinfo");
-                if (tl.filePathSupplied('updateAssemblyInfoFilename') && tl.exist(this.updateAssemblyInfoFilename) && tl.stats(this.updateAssemblyInfoFilename).isFile()) {
-                    exe.arg(this.updateAssemblyInfoFilename);
-                }
-                else {
-                    throw new Error('AssemblyInfoFilename file not found at ' + this.updateAssemblyInfoFilename);
-                }
-            }
-
+            exe.arg(args);
             if (this.additionalArguments) {
                 exe.line(this.additionalArguments);
             }
 
-            const result = await exe.exec(this.execOptions);
+            const result = await exe.exec();
             if (result) {
                 tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution");
             } else {
@@ -99,20 +75,48 @@ export class GitVersionTask {
         }
     }
 
-    async installTool(version: string, includePrerelease: boolean): Promise<string> {
-        let installTool = tl.getVariable("INSTALL_TOOL");
+    private getArguments(workingDirectory: string) {
+        let args = [
+            workingDirectory,
+            "/output",
+            "buildserver",
+            "/nofetch"
+        ];
+
+        if (this.useConfigFile) {
+            if (isValidInputFile('configFilePath', this.configFilePath)) {
+                args.push("/config", this.configFilePath);
+            }
+            else {
+                throw new Error('GitVersion configuration file not found at ' + this.configFilePath);
+            }
+        }
+        if (this.updateAssemblyInfo) {
+            args.push("/updateassemblyinfo");
+            if (isValidInputFile('updateAssemblyInfoFilename', this.updateAssemblyInfoFilename)) {
+                args.push(this.updateAssemblyInfoFilename);
+            }
+            else {
+                throw new Error('AssemblyInfoFilename file not found at ' + this.updateAssemblyInfoFilename);
+            }
+        }
+        return args;
+    }
+
+    private async installTool(version: string, includePrerelease: boolean): Promise<string> {
+        let installTool = process.env["INSTALL_TOOL"];
         if (installTool === null || installTool === undefined || installTool.toUpperCase() == "TRUE") {
             return await new ToolInstaller(utils).downloadAndInstall("GitVersion.Tool", version, false, includePrerelease);
         }
     }
 
-    getWorkingDirectory(targetPath: string) {
+    private getWorkingDirectory(targetPath: string) {
         let workDir;
 
         if (!targetPath) {
             workDir = this.sourcesDirectory;
         } else {
-            if (tl.exist(targetPath) && tl.stats(targetPath).isDirectory()) {
+            if (directoryExists(targetPath)) {
                 workDir = path.join(this.sourcesDirectory, targetPath);
             }
             else {
