@@ -5,13 +5,75 @@ branding:
   color: gray-dark
   icon: git-pull-request
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  nofetch: # id of input
+    description: '"true" to use GitVersion /nofetch, any other value to enable fetch'
     required: true
-    default: 'World'
+    default: 'false'
+  nocache:
+    description: '"true" to use GitVersion /nocache, any other value to enable cache'
+    required: true
+    default: 'false'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  Major: # id of output
+    description: 'The Major value'
+  Minor:
+    description: 'The Minor value'
+  Patch:
+    description: 'The Patch value'
+  PreReleaseTag:
+    description: 'The PreReleaseTag value'
+  PreReleaseTagWithDash:
+    description: 'The PreReleaseTagWithDash value'
+  PreReleaseLabel:
+    description: 'The PreReleaseLabel value'
+  PreReleaseNumber:
+    description: 'The PreReleaseNumber value'
+  WeightedPreReleaseNumber:
+    description: 'The WeightedPreReleaseNumber value'
+  BuildMetaData:
+    description: 'The BuildMetaData value'
+  BuildMetaDataPadded:
+    description: 'The BuildMetaDataPadded value'
+  FullBuildMetaData:
+    description: 'The FullBuildMetaData value'
+  MajorMinorPatch:
+    description: 'The MajorMinorPatch value'
+  SemVer:
+    description: 'The SemVer value'
+  LegacySemVer:
+    description: 'The LegacySemVer value'
+  LegacySemVerPadded:
+    description: 'The LegacySemVerPadded value'
+  AssemblySemVer:
+    description: 'The AssemblySemVer value'
+  AssemblySemFileVer:
+    description: 'The AssemblySemFileVer value'
+  FullSemVer:
+    description: 'The FullSemVer value'
+  InformationalVersion:
+    description: 'The InformationalVersion value'
+  BranchName:
+    description: 'The BranchName value'
+  Sha:
+    description: 'The Sha value'
+  ShortSha:
+    description: 'The ShortSha value'
+  NuGetVersionV2:
+    description: 'The NuGetVersionV2 value'
+  NuGetVersion:
+    description: 'The NuGetVersion value'
+  NuGetPreReleaseTagV2:
+    description: 'The NuGetPreReleaseTagV2 value'
+  NuGetPreReleaseTag:
+    description: 'The NuGetPreReleaseTag value'
+  VersionSourceSha:
+    description: 'The VersionSourceSha value'
+  CommitsSinceVersionSource:
+    description: 'The CommitsSinceVersionSource value'
+  CommitsSinceVersionSourcePadded:
+    description: 'The CommitsSinceVersionSourcePadded value'
+  CommitDate:
+    description: 'The CommitDate value'
 runs:
   using: node12
   main: dist/github/index.js
