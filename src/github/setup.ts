@@ -12,8 +12,8 @@ export async function run() {
 
         buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
 
-        const versionSpec = this.buildAgent.getInput(SetupOptions.versionSpec);
-        const includePrerelease = this.buildAgent.getBooleanInput(SetupOptions.includePrerelease);
+        const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
+        const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
 
         await gitVersionTool.install(versionSpec, includePrerelease);
 

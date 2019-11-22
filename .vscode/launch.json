@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "tsc: build - src/azure/tsconfig.json",
             "name": "Run Azure Pipeline Task",
-            "program": "${workspaceFolder}/src/azure/main.ts",
+            "program": "${workspaceFolder}/src/azure/setup.ts",
             "outFiles": ["${workspaceFolder}/**/*.js"]
         },
         {
@@ -19,7 +19,7 @@
             "request": "launch",
             "preLaunchTask": "tsc: build - src/github/tsconfig.json",
             "name": "Run GitHub Actions",
-            "program": "${workspaceFolder}/src/github/main.ts",
+            "program": "${workspaceFolder}/src/github/setup.ts",
             "outFiles": ["${workspaceFolder}/**/*.js"]
         }
     ]

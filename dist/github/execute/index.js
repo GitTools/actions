@@ -1219,7 +1219,7 @@ module.exports = function nodeRNG() {
 
 var net = __webpack_require__(631);
 var tls = __webpack_require__(16);
-var http = __webpack_require__(876);
+var http = __webpack_require__(605);
 var https = __webpack_require__(211);
 var events = __webpack_require__(614);
 var assert = __webpack_require__(357);
@@ -1463,6 +1463,219 @@ if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
 }
 exports.debug = debug; // for test
 
+
+/***/ }),
+
+/***/ 185:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = __webpack_require__(747);
+const os = __webpack_require__(87);
+const path = __webpack_require__(622);
+const semver = __webpack_require__(280);
+const http = __webpack_require__(874);
+const inversify_1 = __webpack_require__(410);
+const types_1 = __webpack_require__(987);
+let DotnetTool = class DotnetTool {
+    constructor(buildAgent, versionManager) {
+        this.buildAgent = buildAgent;
+        this.versionManager = versionManager;
+        this.httpClient = new http.HttpClient("dotnet");
+    }
+    run(args) {
+        return this.buildAgent.exec("dotnet", args);
+    }
+    toolInstall(toolName, versionSpec, checkLatest, includePre) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("");
+            console.log("--------------------------");
+            console.log(`Installing ${toolName} version ` + versionSpec);
+            console.log("--------------------------");
+            if (this.versionManager.isExplicitVersion(versionSpec)) {
+                checkLatest = false; // check latest doesn't make sense when explicit version
+            }
+            let toolPath;
+            if (!checkLatest) {
+                //
+                // Let's try and resolve the version spec locally first
+                //
+                toolPath = this.buildAgent.find(toolName, versionSpec);
+            }
+            if (!toolPath) {
+                let version;
+                if (this.versionManager.isExplicitVersion(versionSpec)) {
+                    //
+                    // Explicit version was specified. No need to query for list of versions.
+                    //
+                    version = versionSpec;
+                }
+                else {
+                    //
+                    // Let's query and resolve the latest version for the versionSpec.
+                    // If the version is an explicit version (1.1.1 or v1.1.1) then no need to query.
+                    // If your tool doesn't offer a mechanism to query,
+                    // then it can only support exact version inputs.
+                    //
+                    version = yield this.queryLatestMatch(toolName, versionSpec, includePre);
+                    if (!version) {
+                        throw new Error(`Unable to find ${toolName} version '${versionSpec}'.`);
+                    }
+                    //
+                    // Check the cache for the resolved version.
+                    //
+                    toolPath = this.buildAgent.find(toolName, version);
+                }
+                if (!toolPath) {
+                    //
+                    // Download, extract, cache
+                    //
+                    toolPath = yield this.acquireTool(toolName, version);
+                }
+            }
+            //
+            // Prepend the tools path. This prepends the PATH for the current process and
+            // instructs the agent to prepend for each task that follows.
+            //
+            this.buildAgent.debug(`toolPath: ${toolPath}`);
+            if (os.platform() !== "win32") {
+                const dotnetRoot = path.dirname(fs.readlinkSync(yield this.buildAgent.which("dotnet")));
+                this.buildAgent.exportVariable("DOTNET_ROOT", dotnetRoot);
+            }
+            this.buildAgent.addPath(toolPath);
+            return toolPath;
+        });
+    }
+    queryLatestMatch(toolName, versionSpec, includePrerelease) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.buildAgent.debug(`querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
+            const downloadPath = `https://api-v2v3search-0.nuget.org/query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${includePrerelease ? "true" : "false"}&semVerLevel=2.0.0`;
+            const res = yield this.httpClient.get(downloadPath);
+            if (!res || res.message.statusCode !== 200) {
+                return null;
+            }
+            const body = yield res.readBody();
+            const data = JSON.parse(body).data;
+            const versions = data[0].versions.map((x) => x.version);
+            if (!versions || !versions.length) {
+                return null;
+            }
+            this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
+            return this.versionManager.evaluateVersions(versions, versionSpec);
+        });
+    }
+    acquireTool(toolName, version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tempDirectory = yield this.buildAgent.createTempDir();
+            let args = ["tool", "install", toolName, "--tool-path", tempDirectory];
+            if (version) {
+                version = this.versionManager.cleanVersion(version);
+                args = args.concat(["--version", version]);
+            }
+            const result = yield this.run(args);
+            const status = result.code === 0 ? "success" : "failure";
+            const message = result.code === 0 ? result.stdout : result.stderr;
+            this.buildAgent.debug(`tool install result: ${status} ${message}`);
+            if (result.code) {
+                throw new Error("Error installing tool");
+            }
+            return yield this.buildAgent.cacheDir(tempDirectory, toolName, version);
+        });
+    }
+};
+DotnetTool = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
+    __param(1, inversify_1.inject(types_1.TYPES.IVersionManager)),
+    __metadata("design:paramtypes", [Object, Object])
+], DotnetTool);
+exports.DotnetTool = DotnetTool;
+let GitVersionTool = class GitVersionTool {
+    constructor(dotnetTool) {
+        this.dotnetTool = dotnetTool;
+    }
+    install(versionSpec, includePrerelease) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const toolPath = yield this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
+        });
+    }
+    run(...params) {
+        return;
+    }
+};
+GitVersionTool = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IDotnetTool)),
+    __metadata("design:paramtypes", [Object])
+], GitVersionTool);
+exports.GitVersionTool = GitVersionTool;
+const cmp = __webpack_require__(523);
+let VersionManager = class VersionManager {
+    constructor(buildAgent) {
+        this.buildAgent = buildAgent;
+    }
+    isExplicitVersion(versionSpec) {
+        const c = semver.clean(versionSpec);
+        this.buildAgent.debug("isExplicit: " + c);
+        const valid = semver.valid(c) != null;
+        this.buildAgent.debug("explicit? " + valid);
+        return valid;
+    }
+    evaluateVersions(versions, versionSpec) {
+        let version;
+        this.buildAgent.debug("evaluating " + versions.length + " versions");
+        versions = versions.sort(cmp);
+        for (let i = versions.length - 1; i >= 0; i--) {
+            const potential = versions[i];
+            const satisfied = semver.satisfies(potential, versionSpec);
+            if (satisfied) {
+                version = potential;
+                break;
+            }
+        }
+        if (version) {
+            this.buildAgent.debug("matched: " + version);
+        }
+        else {
+            this.buildAgent.debug("match not found");
+        }
+        return version;
+    }
+    cleanVersion(version) {
+        this.buildAgent.debug("cleaning: " + version);
+        return semver.clean(version);
+    }
+};
+VersionManager = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
+    __metadata("design:paramtypes", [Object])
+], VersionManager);
+exports.VersionManager = VersionManager;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29tbW9uLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiY29tbW9uLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0EseUJBQXlCO0FBQ3pCLHlCQUF5QjtBQUN6Qiw2QkFBNkI7QUFDN0IsaUNBQWlDO0FBQ2pDLHFEQUFxRDtBQUVyRCx5Q0FBK0M7QUFHL0MsbUNBQWdDO0FBR2hDLElBQU0sVUFBVSxHQUFoQixNQUFNLFVBQVU7SUFNWixZQUMrQixVQUF1QixFQUNuQixjQUErQjtRQUU5RCxJQUFJLENBQUMsVUFBVSxHQUFHLFVBQVUsQ0FBQztRQUM3QixJQUFJLENBQUMsY0FBYyxHQUFHLGNBQWMsQ0FBQztRQUNyQyxJQUFJLENBQUMsVUFBVSxHQUFHLElBQUksSUFBSSxDQUFDLFVBQVUsQ0FBQyxRQUFRLENBQUMsQ0FBQztJQUNwRCxDQUFDO0lBRU0sR0FBRyxDQUFDLElBQWM7UUFDckIsT0FBTyxJQUFJLENBQUMsVUFBVSxDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDaEQsQ0FBQztJQUVZLFdBQVcsQ0FBQyxRQUFnQixFQUFFLFdBQW1CLEVBQUUsV0FBb0IsRUFBRSxVQUFtQjs7WUFFckcsT0FBTyxDQUFDLEdBQUcsQ0FBQyxFQUFFLENBQUMsQ0FBQztZQUNoQixPQUFPLENBQUMsR0FBRyxDQUFDLDRCQUE0QixDQUFDLENBQUM7WUFDMUMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxjQUFjLFFBQVEsV0FBVyxHQUFHLFdBQVcsQ0FBQyxDQUFDO1lBQzdELE9BQU8sQ0FBQyxHQUFHLENBQUMsNEJBQTRCLENBQUMsQ0FBQztZQUUxQyxJQUFJLElBQUksQ0FBQyxjQUFjLENBQUMsaUJBQWlCLENBQUMsV0FBVyxDQUFDLEVBQUU7Z0JBQ3BELFdBQVcsR0FBRyxLQUFLLENBQUMsQ0FBQyx3REFBd0Q7YUFDaEY7WUFFRCxJQUFJLFFBQWdCLENBQUM7WUFDckIsSUFBSSxDQUFDLFdB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
 
 /***/ }),
 
@@ -7102,215 +7315,9 @@ exports.targetName = targetName;
 /***/ }),
 
 /***/ 605:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
+/***/ (function(module) {
 
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __webpack_require__(747);
-const os = __webpack_require__(87);
-const path = __webpack_require__(622);
-const semver = __webpack_require__(280);
-const http = __webpack_require__(874);
-const inversify_1 = __webpack_require__(410);
-const types_1 = __webpack_require__(639);
-let DotnetTool = class DotnetTool {
-    constructor(buildAgent, versionManager) {
-        this.buildAgent = buildAgent;
-        this.versionManager = versionManager;
-        this.httpClient = new http.HttpClient("dotnet");
-    }
-    run(args) {
-        return this.buildAgent.exec("dotnet", args);
-    }
-    toolInstall(toolName, versionSpec, checkLatest, includePre) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log("");
-            console.log("--------------------------");
-            console.log(`Installing ${toolName} version ` + versionSpec);
-            console.log("--------------------------");
-            if (this.versionManager.isExplicitVersion(versionSpec)) {
-                checkLatest = false; // check latest doesn't make sense when explicit version
-            }
-            let toolPath;
-            if (!checkLatest) {
-                //
-                // Let's try and resolve the version spec locally first
-                //
-                toolPath = this.buildAgent.find(toolName, versionSpec);
-            }
-            if (!toolPath) {
-                let version;
-                if (this.versionManager.isExplicitVersion(versionSpec)) {
-                    //
-                    // Explicit version was specified. No need to query for list of versions.
-                    //
-                    version = versionSpec;
-                }
-                else {
-                    //
-                    // Let's query and resolve the latest version for the versionSpec.
-                    // If the version is an explicit version (1.1.1 or v1.1.1) then no need to query.
-                    // If your tool doesn't offer a mechanism to query,
-                    // then it can only support exact version inputs.
-                    //
-                    version = yield this.queryLatestMatch(toolName, versionSpec, includePre);
-                    if (!version) {
-                        throw new Error(`Unable to find ${toolName} version '${versionSpec}'.`);
-                    }
-                    //
-                    // Check the cache for the resolved version.
-                    //
-                    toolPath = this.buildAgent.find(toolName, version);
-                }
-                if (!toolPath) {
-                    //
-                    // Download, extract, cache
-                    //
-                    toolPath = yield this.acquireTool(toolName, version);
-                }
-            }
-            //
-            // Prepend the tools path. This prepends the PATH for the current process and
-            // instructs the agent to prepend for each task that follows.
-            //
-            this.buildAgent.debug(`toolPath: ${toolPath}`);
-            if (os.platform() !== "win32") {
-                const dotnetRoot = path.dirname(fs.readlinkSync(yield this.buildAgent.which("dotnet")));
-                this.buildAgent.exportVariable("DOTNET_ROOT", dotnetRoot);
-            }
-            this.buildAgent.addPath(toolPath);
-            return toolPath;
-        });
-    }
-    queryLatestMatch(toolName, versionSpec, includePrerelease) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.buildAgent.debug(`querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
-            const downloadPath = `https://api-v2v3search-0.nuget.org/query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${includePrerelease ? "true" : "false"}&semVerLevel=2.0.0`;
-            const res = yield this.httpClient.get(downloadPath);
-            if (!res || res.message.statusCode !== 200) {
-                return null;
-            }
-            const body = yield res.readBody();
-            const data = JSON.parse(body).data;
-            const versions = data[0].versions.map((x) => x.version);
-            if (!versions || !versions.length) {
-                return null;
-            }
-            this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
-            return this.versionManager.evaluateVersions(versions, versionSpec);
-        });
-    }
-    acquireTool(toolName, version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tempDirectory = yield this.buildAgent.createTempDir();
-            let args = ["tool", "install", toolName, "--tool-path", tempDirectory];
-            if (version) {
-                version = this.versionManager.cleanVersion(version);
-                args = args.concat(["--version", version]);
-            }
-            const result = yield this.run(args);
-            const status = result.code === 0 ? "success" : "failure";
-            const message = result.code === 0 ? result.stdout : result.stderr;
-            this.buildAgent.debug(`tool install result: ${status} ${message}`);
-            if (result.code) {
-                throw new Error("Error installing tool");
-            }
-            return yield this.buildAgent.cacheDir(tempDirectory, toolName, version);
-        });
-    }
-};
-DotnetTool = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
-    __param(1, inversify_1.inject(types_1.TYPES.IVersionManager)),
-    __metadata("design:paramtypes", [Object, Object])
-], DotnetTool);
-exports.DotnetTool = DotnetTool;
-let GitVersionTool = class GitVersionTool {
-    constructor(dotnetTool) {
-        this.dotnetTool = dotnetTool;
-    }
-    install(versionSpec, includePrerelease) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const toolPath = yield this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
-        });
-    }
-    run(...params) {
-        return;
-    }
-};
-GitVersionTool = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IDotnetTool)),
-    __metadata("design:paramtypes", [Object])
-], GitVersionTool);
-exports.GitVersionTool = GitVersionTool;
-const cmp = __webpack_require__(523);
-let VersionManager = class VersionManager {
-    constructor(buildAgent) {
-        this.buildAgent = buildAgent;
-    }
-    isExplicitVersion(versionSpec) {
-        const c = semver.clean(versionSpec);
-        this.buildAgent.debug("isExplicit: " + c);
-        const valid = semver.valid(c) != null;
-        this.buildAgent.debug("explicit? " + valid);
-        return valid;
-    }
-    evaluateVersions(versions, versionSpec) {
-        let version;
-        this.buildAgent.debug("evaluating " + versions.length + " versions");
-        versions = versions.sort(cmp);
-        for (let i = versions.length - 1; i >= 0; i--) {
-            const potential = versions[i];
-            const satisfied = semver.satisfies(potential, versionSpec);
-            if (satisfied) {
-                version = potential;
-                break;
-            }
-        }
-        if (version) {
-            this.buildAgent.debug("matched: " + version);
-        }
-        else {
-            this.buildAgent.debug("match not found");
-        }
-        return version;
-    }
-    cleanVersion(version) {
-        this.buildAgent.debug("cleaning: " + version);
-        return semver.clean(version);
-    }
-};
-VersionManager = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
-    __metadata("design:paramtypes", [Object])
-], VersionManager);
-exports.VersionManager = VersionManager;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvdXNlLWdpdHZlcnNpb24vc3JjL2NvbW1vbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUNBLHlCQUF5QjtBQUN6Qix5QkFBeUI7QUFDekIsNkJBQTZCO0FBQzdCLGlDQUFpQztBQUNqQyxxREFBcUQ7QUFFckQseUNBQStDO0FBRy9DLG1DQUFnQztBQUdoQyxJQUFNLFVBQVUsR0FBaEIsTUFBTSxVQUFVO0lBTVosWUFDK0IsVUFBdUIsRUFDbkIsY0FBK0I7UUFFOUQsSUFBSSxDQUFDLFVBQVUsR0FBRyxVQUFVLENBQUM7UUFDN0IsSUFBSSxDQUFDLGNBQWMsR0FBRyxjQUFjLENBQUM7UUFDckMsSUFBSSxDQUFDLFVBQVUsR0FBRyxJQUFJLElBQUksQ0FBQyxVQUFVLENBQUMsUUFBUSxDQUFDLENBQUM7SUFDcEQsQ0FBQztJQUVNLEdBQUcsQ0FBQyxJQUFjO1FBQ3JCLE9BQU8sSUFBSSxDQUFDLFVBQVUsQ0FBQyxJQUFJLENBQUMsUUFBUSxFQUFFLElBQUksQ0FBQyxDQUFDO0lBQ2hELENBQUM7SUFFWSxXQUFXLENBQUMsUUFBZ0IsRUFBRSxXQUFtQixFQUFFLFdBQW9CLEVBQUUsVUFBbUI7O1lBRXJHLE9BQU8sQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLENBQUM7WUFDaEIsT0FBTyxDQUFDLEdBQUcsQ0FBQyw0QkFBNEIsQ0FBQyxDQUFDO1lBQzFDLE9BQU8sQ0FBQyxHQUFHLENBQUMsY0FBYyxRQUFRLFdBQVcsR0FBRyxXQUFXLENBQUMsQ0FBQztZQUM3RCxPQUFPLENBQUMsR0FBRyxDQUFDLDRCQUE0QixDQUFDLENBQUM7WUFFMUMsSUFBSSxJQUFJLENBQUMsY0FBYyxDQUFDLGlCQUFpQixDQUFDLFdBQVcsQ0FBQyxFQUFFO2dCQUNwRCxXQUFXLEdBQUcsS0FBSyxDQUFDLENBQUMsd0RBQXdEO2FB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
+module.exports = require("http");
 
 /***/ }),
 
@@ -7371,28 +7378,6 @@ exports.inject = inject;
 /***/ (function(module) {
 
 module.exports = require("net");
-
-/***/ }),
-
-/***/ 639:
-/***/ (function(__unusedmodule, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const TYPES = {
-    IBuildAgent: Symbol.for("BuildAgent"),
-    IDotnetTool: Symbol.for("DotnetTool"),
-    IGitVersionTool: Symbol.for("GitVersionTool"),
-    IVersionManager: Symbol.for("VersionManager"),
-};
-exports.TYPES = TYPES;
-const SetupOptions = {
-    includePrerelease: "includePrerelease",
-    versionSpec: "versionSpec",
-};
-exports.SetupOptions = SetupOptions;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvdXNlLWdpdHZlcnNpb24vc3JjL3R5cGVzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsTUFBTSxLQUFLLEdBQUc7SUFDVixXQUFXLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxZQUFZLENBQUM7SUFDckMsV0FBVyxFQUFFLE1BQU0sQ0FBQyxHQUFHLENBQUMsWUFBWSxDQUFDO0lBQ3JDLGVBQWUsRUFBRSxNQUFNLENBQUMsR0FBRyxDQUFDLGdCQUFnQixDQUFDO0lBQzdDLGVBQWUsRUFBRSxNQUFNLENBQUMsR0FBRyxDQUFDLGdCQUFnQixDQUFDO0NBQ2hELENBQUM7QUFPcUIsc0JBQUs7QUFMNUIsTUFBTSxZQUFZLEdBQUc7SUFDakIsaUJBQWlCLEVBQUUsbUJBQW1CO0lBQ3RDLFdBQVcsRUFBRSxhQUFhO0NBQzdCLENBQUM7QUFFTyxvQ0FBWSJ9
 
 /***/ }),
 
@@ -7621,8 +7606,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(307);
-const types_1 = __webpack_require__(639);
-const ioc_1 = __webpack_require__(768);
+const types_1 = __webpack_require__(987);
+const ioc_1 = __webpack_require__(833);
 const gitVersionTool = ioc_1.ioc.get(types_1.TYPES.IGitVersionTool);
 const buildAgent = ioc_1.ioc.get(types_1.TYPES.IBuildAgent);
 function run() {
@@ -8220,26 +8205,6 @@ exports.BindingInWhenOnSyntax = BindingInWhenOnSyntax;
 
 /***/ }),
 
-/***/ 768:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const inversify_1 = __webpack_require__(410);
-const common_1 = __webpack_require__(605);
-const types_1 = __webpack_require__(639);
-const build_agent_1 = __webpack_require__(868);
-const ioc = new inversify_1.Container();
-exports.ioc = ioc;
-ioc.bind(types_1.TYPES.IVersionManager).to(common_1.VersionManager);
-ioc.bind(types_1.TYPES.IBuildAgent).to(build_agent_1.BuildAgent);
-ioc.bind(types_1.TYPES.IDotnetTool).to(common_1.DotnetTool);
-ioc.bind(types_1.TYPES.IGitVersionTool).to(common_1.GitVersionTool);
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW9jLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvdXNlLWdpdHZlcnNpb24vc3JjL2dpdGh1Yi9pb2MudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSx5Q0FBc0M7QUFFdEMsc0NBQXVFO0FBRXZFLG9DQUFpQztBQUNqQywrQ0FBMkM7QUFFM0MsTUFBTSxHQUFHLEdBQUcsSUFBSSxxQkFBUyxFQUFFLENBQUM7QUFPbkIsa0JBQUc7QUFMWixHQUFHLENBQUMsSUFBSSxDQUFrQixhQUFLLENBQUMsZUFBZSxDQUFDLENBQUMsRUFBRSxDQUFDLHVCQUFjLENBQUMsQ0FBQztBQUNwRSxHQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsd0JBQVUsQ0FBQyxDQUFDO0FBQ3hELEdBQUcsQ0FBQyxJQUFJLENBQWMsYUFBSyxDQUFDLFdBQVcsQ0FBQyxDQUFDLEVBQUUsQ0FBQyxtQkFBVSxDQUFDLENBQUM7QUFDeEQsR0FBRyxDQUFDLElBQUksQ0FBa0IsYUFBSyxDQUFDLGVBQWUsQ0FBQyxDQUFDLEVBQUUsQ0FBQyx1QkFBYyxDQUFDLENBQUMifQ==
-
-/***/ }),
-
 /***/ 773:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -8545,10 +8510,151 @@ module.exports = v4;
 
 /***/ }),
 
+/***/ 833:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const inversify_1 = __webpack_require__(410);
+const common_1 = __webpack_require__(185);
+const types_1 = __webpack_require__(987);
+const build_agent_1 = __webpack_require__(838);
+const ioc = new inversify_1.Container();
+exports.ioc = ioc;
+ioc.bind(types_1.TYPES.IVersionManager).to(common_1.VersionManager);
+ioc.bind(types_1.TYPES.IBuildAgent).to(build_agent_1.BuildAgent);
+ioc.bind(types_1.TYPES.IDotnetTool).to(common_1.DotnetTool);
+ioc.bind(types_1.TYPES.IGitVersionTool).to(common_1.GitVersionTool);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW9jLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiaW9jLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEseUNBQXNDO0FBRXRDLHNDQUF1RTtBQUV2RSxvQ0FBaUM7QUFDakMsK0NBQTJDO0FBRTNDLE1BQU0sR0FBRyxHQUFHLElBQUkscUJBQVMsRUFBRSxDQUFDO0FBT25CLGtCQUFHO0FBTFosR0FBRyxDQUFDLElBQUksQ0FBa0IsYUFBSyxDQUFDLGVBQWUsQ0FBQyxDQUFDLEVBQUUsQ0FBQyx1QkFBYyxDQUFDLENBQUM7QUFDcEUsR0FBRyxDQUFDLElBQUksQ0FBYyxhQUFLLENBQUMsV0FBVyxDQUFDLENBQUMsRUFBRSxDQUFDLHdCQUFVLENBQUMsQ0FBQztBQUN4RCxHQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsbUJBQVUsQ0FBQyxDQUFDO0FBQ3hELEdBQUcsQ0FBQyxJQUFJLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQyxFQUFFLENBQUMsdUJBQWMsQ0FBQyxDQUFDIn0=
+
+/***/ }),
+
 /***/ 835:
 /***/ (function(module) {
 
 module.exports = require("url");
+
+/***/ }),
+
+/***/ 838:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const path = __webpack_require__(622);
+const uuidV4 = __webpack_require__(826);
+const core = __webpack_require__(470);
+const exe = __webpack_require__(986);
+const io = __webpack_require__(1);
+const toolCache = __webpack_require__(533);
+const inversify_1 = __webpack_require__(410);
+let BuildAgent = class BuildAgent {
+    find(toolName, versionSpec, arch) {
+        return toolCache.find(toolName, versionSpec, arch);
+    }
+    cacheDir(sourceDir, tool, version, arch) {
+        return toolCache.cacheDir(sourceDir, tool, version, arch);
+    }
+    createTempDir() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const IS_WINDOWS = process.platform === "win32";
+            let tempDirectory = process.env.RUNNER_TEMP || "";
+            if (!tempDirectory) {
+                let baseLocation;
+                if (IS_WINDOWS) {
+                    // On Windows use the USERPROFILE env variable
+                    baseLocation = process.env.USERPROFILE || "C:\\";
+                }
+                else {
+                    if (process.platform === "darwin") {
+                        baseLocation = "/Users";
+                    }
+                    else {
+                        baseLocation = "/home";
+                    }
+                }
+                tempDirectory = path.join(baseLocation, "actions", "temp");
+            }
+            const dest = path.join(tempDirectory, uuidV4());
+            yield io.mkdirP(dest);
+            return dest;
+        });
+    }
+    debug(message) {
+        core.debug(message);
+    }
+    setFailed(message, done) {
+        core.setFailed(message);
+    }
+    setSucceeded(message, done) {
+        //
+    }
+    exportVariable(name, val) {
+        core.exportVariable(name, val);
+    }
+    getVariable(name) {
+        return process.env[name];
+    }
+    addPath(inputPath) {
+        core.addPath(inputPath);
+    }
+    which(tool, check) {
+        return io.which(tool, check);
+    }
+    exec(exec, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dotnetPath = yield io.which(exec, true);
+            let resultCode = 0;
+            let stdout = "";
+            let stderr = "";
+            resultCode = yield exe.exec(`"${dotnetPath}"`, args, {
+                listeners: {
+                    stderr: (data) => {
+                        stderr += data.toString();
+                    },
+                    stdout: (data) => {
+                        stdout += data.toString();
+                    },
+                },
+            });
+            return {
+                code: resultCode,
+                error: null,
+                stderr,
+                stdout,
+            };
+        });
+    }
+    getInput(input, required) {
+        return core.getInput(input, { required });
+    }
+    getBooleanInput(input, required) {
+        const inputValue = this.getInput(input, required);
+        return (inputValue || "false").toLowerCase() === "true";
+    }
+};
+BuildAgent = __decorate([
+    inversify_1.injectable()
+], BuildAgent);
+exports.BuildAgent = BuildAgent;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGQtYWdlbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJidWlsZC1hZ2VudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLDZCQUE2QjtBQUM3QixrQ0FBa0M7QUFFbEMsc0NBQXNDO0FBQ3RDLHFDQUFxQztBQUNyQyxrQ0FBa0M7QUFDbEMsaURBQWlEO0FBRWpELHlDQUF1QztBQUt2QyxJQUFNLFVBQVUsR0FBaEIsTUFBTSxVQUFVO0lBRUwsSUFBSSxDQUFDLFFBQWdCLEVBQUUsV0FBbUIsRUFBRSxJQUFhO1FBQzVELE9BQU8sU0FBUyxDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsV0FBVyxFQUFFLElBQUksQ0FBQyxDQUFDO0lBQ3ZELENBQUM7SUFFTSxRQUFRLENBQUMsU0FBaUIsRUFBRSxJQUFZLEVBQUUsT0FBZSxFQUFFLElBQWE7UUFDM0UsT0FBTyxTQUFTLENBQUMsUUFBUSxDQUFDLFNBQVMsRUFBRSxJQUFJLEVBQUUsT0FBTyxFQUFFLElBQUksQ0FBQyxDQUFDO0lBQzlELENBQUM7SUFFWSxhQUFhOztZQUN0QixNQUFNLFVBQVUsR0FBRyxPQUFPLENBQUMsUUFBUSxLQUFLLE9BQU8sQ0FBQztZQUVoRCxJQUFJLGFBQWEsR0FBVyxPQUFPLENBQUMsR0FBRyxDQUFDLFdBQVcsSUFBSSxFQUFFLENBQUM7WUFFMUQsSUFBSSxDQUFDLGFBQWEsRUFBRTtnQkFDaEIsSUFBSSxZQUFvQixDQUFDO2dCQUN6QixJQUFJLFVBQVUsRUFBRTtvQkFDWiw4Q0FBOEM7b0JBQzlDLFlBQVksR0FBRyxPQUFPLENBQUMsR0FBRyxDQUFDLFdBQVcsSUFBSSxNQUFNLENBQUM7aUJBQ3BEO3FCQUFNO29CQUNILElBQUksT0FBTyxDQUFDLFFBQVEsS0FBSyxRQUFRLEVBQUU7d0JBQy9CLFlBQVksR0FBRyxRQUFRLENBQUM7cUJBQzNCO3lCQUFNO3dCQUNILFlBQVksR0FBRyxPQUFPLENBQUM7cUJBQzFCO2lCQUNKO2dC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
 
 /***/ }),
 
@@ -8757,127 +8863,6 @@ exports.AsyncContainerModule = AsyncContainerModule;
 
 /***/ }),
 
-/***/ 868:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const path = __webpack_require__(622);
-const uuidV4 = __webpack_require__(826);
-const core = __webpack_require__(470);
-const exe = __webpack_require__(986);
-const io = __webpack_require__(1);
-const toolCache = __webpack_require__(533);
-const inversify_1 = __webpack_require__(410);
-let BuildAgent = class BuildAgent {
-    find(toolName, versionSpec, arch) {
-        return toolCache.find(toolName, versionSpec, arch);
-    }
-    cacheDir(sourceDir, tool, version, arch) {
-        return toolCache.cacheDir(sourceDir, tool, version, arch);
-    }
-    createTempDir() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const IS_WINDOWS = process.platform === "win32";
-            let tempDirectory = process.env.RUNNER_TEMP || "";
-            if (!tempDirectory) {
-                let baseLocation;
-                if (IS_WINDOWS) {
-                    // On Windows use the USERPROFILE env variable
-                    baseLocation = process.env.USERPROFILE || "C:\\";
-                }
-                else {
-                    if (process.platform === "darwin") {
-                        baseLocation = "/Users";
-                    }
-                    else {
-                        baseLocation = "/home";
-                    }
-                }
-                tempDirectory = path.join(baseLocation, "actions", "temp");
-            }
-            const dest = path.join(tempDirectory, uuidV4());
-            yield io.mkdirP(dest);
-            return dest;
-        });
-    }
-    debug(message) {
-        core.debug(message);
-    }
-    setFailed(message, done) {
-        core.setFailed(message);
-    }
-    setSucceeded(message, done) {
-        //
-    }
-    exportVariable(name, val) {
-        core.exportVariable(name, val);
-    }
-    getVariable(name) {
-        return process.env[name];
-    }
-    addPath(inputPath) {
-        core.addPath(inputPath);
-    }
-    which(tool, check) {
-        return io.which(tool, check);
-    }
-    exec(exec, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const dotnetPath = yield io.which(exec, true);
-            let resultCode = 0;
-            let stdout = "";
-            let stderr = "";
-            resultCode = yield exe.exec(`"${dotnetPath}"`, args, {
-                listeners: {
-                    stderr: (data) => {
-                        stderr += data.toString();
-                    },
-                    stdout: (data) => {
-                        stdout += data.toString();
-                    },
-                },
-            });
-            return {
-                code: resultCode,
-                error: null,
-                stderr,
-                stdout,
-            };
-        });
-    }
-    getInput(input, required) {
-        return core.getInput(input, { required });
-    }
-    getBooleanInput(input, required) {
-        const inputValue = this.getInput(input, required);
-        return (inputValue || "false").toLowerCase() === "true";
-    }
-};
-BuildAgent = __decorate([
-    inversify_1.injectable()
-], BuildAgent);
-exports.BuildAgent = BuildAgent;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGQtYWdlbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJmaWxlOi8vL0Q6L1Byb2plY3RzL09TUy9HaXRUb29scy91c2UtZ2l0dmVyc2lvbi9zcmMvZ2l0aHViL2J1aWxkLWFnZW50LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUEsNkJBQTZCO0FBQzdCLGtDQUFrQztBQUVsQyxzQ0FBc0M7QUFDdEMscUNBQXFDO0FBQ3JDLGtDQUFrQztBQUNsQyxpREFBaUQ7QUFFakQseUNBQXVDO0FBS3ZDLElBQU0sVUFBVSxHQUFoQixNQUFNLFVBQVU7SUFFTCxJQUFJLENBQUMsUUFBZ0IsRUFBRSxXQUFtQixFQUFFLElBQWE7UUFDNUQsT0FBTyxTQUFTLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRSxXQUFXLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDdkQsQ0FBQztJQUVNLFFBQVEsQ0FBQyxTQUFpQixFQUFFLElBQVksRUFBRSxPQUFlLEVBQUUsSUFBYTtRQUMzRSxPQUFPLFNBQVMsQ0FBQyxRQUFRLENBQUMsU0FBUyxFQUFFLElBQUksRUFBRSxPQUFPLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDOUQsQ0FBQztJQUVZLGFBQWE7O1lBQ3RCLE1BQU0sVUFBVSxHQUFHLE9BQU8sQ0FBQyxRQUFRLEtBQUssT0FBTyxDQUFDO1lBRWhELElBQUksYUFBYSxHQUFXLE9BQU8sQ0FBQyxHQUFHLENBQUMsV0FBVyxJQUFJLEVBQUUsQ0FBQztZQUUxRCxJQUFJLENBQUMsYUFBYSxFQUFFO2dCQUNoQixJQUFJLFlBQW9CLENBQUM7Z0JBQ3pCLElBQUksVUFBVSxFQUFFO29CQUNaLDhDQUE4QztvQkFDOUMsWUFBWSxHQUFHLE9BQU8sQ0FBQyxHQUFHLENBQUMsV0FBVyxJQUFJLE1BQU0sQ0FBQztpQkFDcEQ7cUJBQU07b0JBQ0gsSUFBSSxPQUFPLENBQUMsUUFBUSxLQUFLLFFBQVEsRUFBRTt3QkFDL0IsWUFBWSxHQUFHLFFBQVEs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
-
-/***/ }),
-
 /***/ 871:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -8918,7 +8903,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const url = __webpack_require__(835);
-const http = __webpack_require__(876);
+const http = __webpack_require__(605);
 const https = __webpack_require__(211);
 let fs;
 let tunnel;
@@ -9364,13 +9349,6 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 876:
-/***/ (function(module) {
-
-module.exports = require("http");
-
-/***/ }),
-
 /***/ 904:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -9769,6 +9747,28 @@ function exec(commandLine, args, options) {
 }
 exports.exec = exec;
 //# sourceMappingURL=exec.js.map
+
+/***/ }),
+
+/***/ 987:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const TYPES = {
+    IBuildAgent: Symbol.for("BuildAgent"),
+    IDotnetTool: Symbol.for("DotnetTool"),
+    IGitVersionTool: Symbol.for("GitVersionTool"),
+    IVersionManager: Symbol.for("VersionManager"),
+};
+exports.TYPES = TYPES;
+const SetupOptions = {
+    includePrerelease: "includePrerelease",
+    versionSpec: "versionSpec",
+};
+exports.SetupOptions = SetupOptions;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidHlwZXMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJ0eXBlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLE1BQU0sS0FBSyxHQUFHO0lBQ1YsV0FBVyxFQUFFLE1BQU0sQ0FBQyxHQUFHLENBQUMsWUFBWSxDQUFDO0lBQ3JDLFdBQVcsRUFBRSxNQUFNLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQztJQUNyQyxlQUFlLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxnQkFBZ0IsQ0FBQztJQUM3QyxlQUFlLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxnQkFBZ0IsQ0FBQztDQUNoRCxDQUFDO0FBT3FCLHNCQUFLO0FBTDVCLE1BQU0sWUFBWSxHQUFHO0lBQ2pCLGlCQUFpQixFQUFFLG1CQUFtQjtJQUN0QyxXQUFXLEVBQUUsYUFBYTtDQUM3QixDQUFDO0FBRU8sb0NBQVkifQ==
 
 /***/ })
 
