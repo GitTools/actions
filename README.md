@@ -2,7 +2,7 @@
 
 ![GitVersion](https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png "GitVersion")
 
-Github Action that installs and uses the GitVersion tool
+GitHub Action that installs and uses the GitVersion tool
 
 ## Usage
 
