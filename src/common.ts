@@ -158,7 +158,7 @@ class GitVersionTool implements IGitVersionTool {
     }
 
     public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
-        const toolPath = await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
+        await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
     }
 
     public run(options: IGitVersionOptions): Promise<IExecResult> {
@@ -188,7 +188,7 @@ class GitVersionTool implements IGitVersionTool {
         const args = [
             workDir,
             "/output",
-            "buildserver",
+            "json",
         ];
 
         const {

@@ -105,6 +105,10 @@ public Stats;
         return this.getVariable("GITHUB_WORKSPACE");
     }
 
+    public setOutput(name: string, value: string): void {
+        core.setOutput(name, value);
+    }
+
     public getInput(input: string, required?: boolean): string {
         return core.getInput(input,  { required } as core.InputOptions);
     }

@@ -11,9 +11,15 @@ export async function run() {
     try {
         const inputOptions: IGitVersionOptions = getGitVersionOptions();
 
-        await gitVersionTool.run(inputOptions);
+        const result = await gitVersionTool.run(inputOptions);
+        console.log(result.stdout);
 
-        buildAgent.setSucceeded("GitVersion installed successfully", true);
+        if (result.code === 0) {
+            buildAgent.setSucceeded("GitVersion executed successfully", true);
+        } else {
+            buildAgent.setFailed(result.error.message, true);
+        }
+
     } catch (error) {
         buildAgent.setFailed(error, true);
     }
