@@ -32,11 +32,20 @@ export class Argument {
 }
 export interface IGitVersionTool {
     install: (versionSpec: string, includePrerelease: boolean) => Promise<void>;
-    run: (...params: Argument[]) => Promise<IExecResult>;
+    run: (options: IGitVersionOptions) => Promise<IExecResult>;
 }
 export interface IExecResult {
     stdout: string;
     stderr: string;
     code: number;
     error: Error;
+}
+
+export interface IGitVersionOptions {
+    targetPath: string;
+    useConfigFile: boolean;
+    configFilePath: string;
+    updateAssemblyInfo: boolean;
+    updateAssemblyInfoFilename: string;
+    additionalArguments: string;
 }

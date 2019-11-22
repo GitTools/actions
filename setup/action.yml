@@ -6,7 +6,7 @@ branding:
   icon: git-pull-request
 inputs:
   versionSpec:
-    description: Required version in the form of 5.x or exact version like 5.0.0'
+    description: Required version in the form of 5.x or exact version like 5.0.0
     required: true
     default: ''
   includePrerelease:

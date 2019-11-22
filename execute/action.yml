@@ -1,0 +1,34 @@
+name: execute
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Execute GitVersion to obtain version information
+author: GitTools
+branding:
+  color: gray-dark
+  icon: git-pull-request
+inputs:
+  targetPath:
+    description: Optionally supply the path to the working directory
+    required: false
+    default: ''
+  useConfigFile:
+    description: Whether to use a custom configuration file
+    required: false
+    default: 'false'
+  configFilePath:
+    description: Optional path to config file (defaults to GitVersion.yml)
+    required: false
+    default: ''
+  updateAssemblyInfo:
+    description: Whether to update versions in the AssemblyInfo files
+    required: false
+    default: 'false'
+  updateAssemblyInfoFilename:
+    description: Update versions in specified file
+    required: false
+    default: ''
+  updateAssemblyInfoFilename:
+    description: Additional arguments to send to GitVersion
+    required: false
+    default: ''
+runs:
+  using: node12
+  main: ../dist/github/execute/index.js

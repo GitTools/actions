@@ -7,7 +7,7 @@ import * as http from "typed-rest-client/HttpClient";
 
 import { inject, injectable } from "inversify";
 
-import { Argument, IBuildAgent, IDotnetTool, IExecResult, IGitVersionTool, IVersionManager } from "./interfaces";
+import { Argument, IBuildAgent, IDotnetTool, IExecResult, IGitVersionOptions, IGitVersionTool, IVersionManager } from "./interfaces";
 import { TYPES } from "./types";
 
 @injectable()
@@ -157,7 +157,8 @@ class GitVersionTool implements IGitVersionTool {
         const toolPath = await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
     }
 
-    public run(...params: Argument[]): Promise<IExecResult> {
+    public run(options: IGitVersionOptions): Promise<IExecResult> {
+        console.log(options);
         return;
     }
 }

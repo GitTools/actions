@@ -10,4 +10,16 @@ const SetupOptions = {
     versionSpec: "versionSpec",
 };
 
-export { SetupOptions, TYPES };
+const RunOptions = {
+    targetPath: "targetPath",
+
+    useConfigFile: "useConfigFile",
+    configFilePath: "configFilePath",
+
+    updateAssemblyInfo: "configFilePath",
+    updateAssemblyInfoFilename: "configFilePath",
+
+    additionalArguments: "additionalArguments",
+};
+
+export { SetupOptions, RunOptions, TYPES };
