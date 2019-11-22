@@ -29,6 +29,13 @@ inputs:
     description: Additional arguments to send to GitVersion
     required: false
     default: ''
+outputs:
+  fullSemVer:
+    description: 'The FullSemVer value'
+  majorMinorPatch:
+    description: 'The MajorMinorPatch value'
+  shortSha:
+    description: 'The ShortSha value'
 runs:
   using: node12
   main: ../dist/github/execute/index.js

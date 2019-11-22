@@ -25,7 +25,7 @@ export async function run(buildAgent: IBuildAgent, gitVersionTool: IGitVersionTo
         const result = await gitVersionTool.run(inputOptions);
 
         const gitversion = JSON.parse(result.stdout) as IGitVersion;
-        console.log(gitversion.FullSemVer);
+        writeGitVersionToAgent(buildAgent, gitversion);
 
         if (result.code === 0) {
             buildAgent.setSucceeded("GitVersion executed successfully", true);
@@ -38,7 +38,7 @@ export async function run(buildAgent: IBuildAgent, gitVersionTool: IGitVersionTo
     }
 }
 
-function getGitVersionOptions(buildAgent: IBuildAgent ): IGitVersionOptions {
+function getGitVersionOptions(buildAgent: IBuildAgent): IGitVersionOptions {
 
     const targetPath = buildAgent.getInput(RunOptions.targetPath);
 
@@ -61,4 +61,10 @@ function getGitVersionOptions(buildAgent: IBuildAgent ): IGitVersionOptions {
         additionalArguments,
         srcDir,
     };
+}
+
+function writeGitVersionToAgent(buildAgent: IBuildAgent, gitversion: IGitVersion): void {
+    buildAgent.setOutput("fullSemVer", gitversion.FullSemVer);
+    buildAgent.setOutput("majorMinorPatch", gitversion.MajorMinorPatch);
+    buildAgent.setOutput("shortSha", gitversion.ShortSha);
 }
