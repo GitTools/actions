@@ -13,6 +13,7 @@ export async function run() {
         const version = "5.1.2";
         const includePrerelease = false;
 
+        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
         await gitVersionTool.install(version, includePrerelease);
 
         buildAgent.setSucceeded("GitVersion executed successfully", true);
