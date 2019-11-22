@@ -1,0 +1,18 @@
+name: setup
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs the specific version of GitVersion.Tool
+author: GitTools
+branding:
+  color: gray-dark
+  icon: git-pull-request
+inputs:
+  versionSpec:
+    description: Required version in the form of 5.x or exact version like 5.0.0
+    required: true
+    default: ''
+  includePrerelease:
+    description: Include pre-release versions when matching a version 
+    required: false
+    default: false
+runs:
+  using: node12
+  main: dist/github/setup/index.js
