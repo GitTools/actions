@@ -1,7 +1,7 @@
 {
-    "id": "dd065e3b-6aef-46af-845c-520195836b35",
-    "name": "UseGitVersion",
-    "friendlyName": "GitVersion Task$titleSuffix$",
+    "id": "1fd80e12-d27d-49d5-a887-be96689d3b57",
+    "name": "ExecuteGitVersion",
+    "friendlyName": "Excute GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitVersion Contributors",
     "helpMarkDown": "See the [documentation](http://gitversion.readthedocs.org/en/latest/) for help",
@@ -13,8 +13,8 @@
         "Patch": "2"
     },
     "minimumAgentVersion": "2.115.0",
-    "groups": [
-        {
+    "instanceNameFormat": "ExecuteGitVersion",
+    "groups": [{
             "name": "gitversionDetails",
             "displayName": "GitVersion details",
             "isExpanded": true
@@ -25,25 +25,7 @@
             "isExpanded": false
         }
     ],
-    "instanceNameFormat": "GitVersion",
-    "inputs": [
-        {
-            "name": "versionSpec",
-            "type": "string",
-            "label": "The version spec",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Required version in the form of 5.x or exact version like 5.0.0"
-        },
-        {
-            "name": "includePrerelease",
-            "type": "boolean",
-            "label": "Include pre-release versions",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Include pre-release versions when matching a version"
-        },
-        {
+    "inputs": [{
             "name": "targetPath",
             "type": "string",
             "label": "Working directory path",
@@ -96,9 +78,10 @@
             "groupName": "additional"
         }
     ],
+
     "execution": {
         "Node": {
-            "target": "GitVersion.js",
+            "target": "index.js",
             "argumentFormat": "",
             "workingDirectory": "."
         }

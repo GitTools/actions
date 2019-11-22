@@ -1,23 +1,23 @@
 {
     "manifestVersion": 1,
-    "id": "usegitversion$idSuffix$",
-    "name": "UseGitVersion$titleSuffix$",
+    "id": "usegitversion-test",
+    "name": "UseGitVersion",
     "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
-    "version": "$version$",
     "description": "Build task for easy semantic versioning for projects using Git.",
     "targets": [{
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [
-        { "path": "GitVersionTask" }
+        { "path": "execute" },
+        { "path": "setup" }
     ],
     "categories": [
         "Azure Pipelines"
     ],
     "galleryFlags": [
-        "$visibility$"
+        "Public"
     ],
     "icons": {
         "default": "images/extension-icon.png"
@@ -59,13 +59,22 @@
         }
     },
     "contributions": [{
-        "id": "gitversion-task",
+        "id": "setup-gitversion-task",
         "type": "ms.vss-distributed-task.task",
         "targets": [
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "GitVersionTask"
+            "name": "setup"
+        }
+    }, {
+        "id": "execute-gitversion-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "execute"
         }
     }]
 }
