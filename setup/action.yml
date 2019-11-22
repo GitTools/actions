@@ -1,4 +1,4 @@
-name: use-gitversion
+name: setup
 description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs GitVersion and compute the version from git
 author: GitTools
 branding:
@@ -14,4 +14,4 @@ outputs:
     description: 'The time we greeted you'
 runs:
   using: node12
-  main: dist/github/setup/index.js
+  main: ../dist/github/setup/index.js

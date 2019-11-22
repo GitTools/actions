@@ -8,4 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: use-gitversion
-      uses: ./
+      uses: ./setup
