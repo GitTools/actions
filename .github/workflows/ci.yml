@@ -22,4 +22,4 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: ./execute
     - run: |
-        echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"

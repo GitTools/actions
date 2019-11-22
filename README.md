@@ -39,5 +39,5 @@ Basic:
       id: gitversion # step id used as reference for output values
       uses: gittools/use-gitversion/execute@v0.2
     - run: |
-        echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
 ```
