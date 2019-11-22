@@ -34,7 +34,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(832);
+/******/ 		return __webpack_require__(676);
 /******/ 	};
 /******/
 /******/ 	// run startup
@@ -7600,6 +7600,46 @@ function isUnixExecutable(stats) {
 
 /***/ }),
 
+/***/ 676:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(307);
+const types_1 = __webpack_require__(639);
+const ioc_1 = __webpack_require__(768);
+const gitVersionTool = ioc_1.ioc.get(types_1.TYPES.IGitVersionTool);
+const buildAgent = ioc_1.ioc.get(types_1.TYPES.IBuildAgent);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const version = "5.1.2";
+            const includePrerelease = false;
+            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+            yield gitVersionTool.install(version, includePrerelease);
+            buildAgent.setSucceeded("GitVersion installed successfully", true);
+        }
+        catch (error) {
+            buildAgent.setFailed(error.message, true);
+        }
+    });
+}
+exports.run = run;
+run();
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXhlY3V0ZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImZpbGU6Ly8vRDovUHJvamVjdHMvT1NTL0dpdFRvb2xzL3VzZS1naXR2ZXJzaW9uL3NyYy9naXRodWIvZXhlY3V0ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7OztBQUFBLDRCQUEwQjtBQUcxQixvQ0FBaUM7QUFDakMsK0JBQTRCO0FBRTVCLE1BQU0sY0FBYyxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUN2RSxNQUFNLFVBQVUsR0FBRyxTQUFHLENBQUMsR0FBRyxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztBQUUzRCxTQUFzQixHQUFHOztRQUNyQixJQUFJO1lBRUEsTUFBTSxPQUFPLEdBQUcsT0FBTyxDQUFDO1lBQ3hCLE1BQU0saUJBQWlCLEdBQUcsS0FBSyxDQUFDO1lBRWhDLFVBQVUsQ0FBQyxjQUFjLENBQUMsNkJBQTZCLEVBQUUsR0FBRyxDQUFDLENBQUM7WUFDOUQsTUFBTSxjQUFjLENBQUMsT0FBTyxDQUFDLE9BQU8sRUFBRSxpQkFBaUIsQ0FBQyxDQUFDO1lBRXpELFVBQVUsQ0FBQyxZQUFZLENBQUMsbUNBQW1DLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDdEU7UUFBQyxPQUFPLEtBQUssRUFBRTtZQUNaLFVBQVUsQ0FBQyxTQUFTLENBQUMsS0FBSyxDQUFDLE9BQU8sRUFBRSxJQUFJLENBQUMsQ0FBQztTQUM3QztJQUNMLENBQUM7Q0FBQTtBQWJELGtCQWFDO0FBRUQsR0FBRyxFQUFFLENBQUMifQ==
+
+/***/ }),
+
 /***/ 695:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -8497,46 +8537,6 @@ function v4(options, buf, offset) {
 
 module.exports = v4;
 
-
-/***/ }),
-
-/***/ 832:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(307);
-const types_1 = __webpack_require__(639);
-const ioc_1 = __webpack_require__(768);
-const gitVersionTool = ioc_1.ioc.get(types_1.TYPES.IGitVersionTool);
-const buildAgent = ioc_1.ioc.get(types_1.TYPES.IBuildAgent);
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const version = "5.1.2";
-            const includePrerelease = false;
-            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-            yield gitVersionTool.install(version, includePrerelease);
-            buildAgent.setSucceeded("GitVersion installed successfully", true);
-        }
-        catch (error) {
-            buildAgent.setFailed(error.message, true);
-        }
-    });
-}
-exports.run = run;
-run();
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2V0dXAuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJmaWxlOi8vL0Q6L1Byb2plY3RzL09TUy9HaXRUb29scy91c2UtZ2l0dmVyc2lvbi9zcmMvZ2l0aHViL3NldHVwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7O0FBQUEsNEJBQTBCO0FBRzFCLG9DQUFpQztBQUNqQywrQkFBNEI7QUFFNUIsTUFBTSxjQUFjLEdBQUcsU0FBRyxDQUFDLEdBQUcsQ0FBa0IsYUFBSyxDQUFDLGVBQWUsQ0FBQyxDQUFDO0FBQ3ZFLE1BQU0sVUFBVSxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWMsYUFBSyxDQUFDLFdBQVcsQ0FBQyxDQUFDO0FBRTNELFNBQXNCLEdBQUc7O1FBQ3JCLElBQUk7WUFFQSxNQUFNLE9BQU8sR0FBRyxPQUFPLENBQUM7WUFDeEIsTUFBTSxpQkFBaUIsR0FBRyxLQUFLLENBQUM7WUFFaEMsVUFBVSxDQUFDLGNBQWMsQ0FBQyw2QkFBNkIsRUFBRSxHQUFHLENBQUMsQ0FBQztZQUM5RCxNQUFNLGNBQWMsQ0FBQyxPQUFPLENBQUMsT0FBTyxFQUFFLGlCQUFpQixDQUFDLENBQUM7WUFFekQsVUFBVSxDQUFDLFlBQVksQ0FBQyxtQ0FBbUMsRUFBRSxJQUFJLENBQUMsQ0FBQztTQUN0RTtRQUFDLE9BQU8sS0FBSyxFQUFFO1lBQ1osVUFBVSxDQUFDLFNBQVMsQ0FBQyxLQUFLLENBQUMsT0FBTyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQzdDO0lBQ0wsQ0FBQztDQUFBO0FBYkQsa0JBYUM7QUFFRCxHQUFHLEVBQUUsQ0FBQyJ9
 
 /***/ }),
 

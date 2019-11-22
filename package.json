@@ -8,7 +8,8 @@
     },
     "main": "main.js",
     "scripts": {
-        "package-github": "ncc build src/github/main.ts -o dist/github/setup"
+        "package-github-setup": "ncc build src/github/setup.ts -o dist/github/setup",
+        "package-github-execute": "ncc build src/github/execute.ts -o dist/github/execute"
     },
     "author": "GitTools",
     "contributors": [

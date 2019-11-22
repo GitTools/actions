@@ -16,7 +16,7 @@ export async function run() {
         buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
         await gitVersionTool.install(version, includePrerelease);
 
-        buildAgent.setSucceeded("GitVersion executed successfully", true);
+        buildAgent.setSucceeded("GitVersion installed successfully", true);
     } catch (error) {
         buildAgent.setFailed(error.message, true);
     }
