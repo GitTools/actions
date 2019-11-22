@@ -1196,6 +1196,79 @@ module.exports = require("child_process");
 
 /***/ }),
 
+/***/ 131:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const types_1 = __webpack_require__(639);
+function setup(buildAgent, gitVersionTool) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+            const versionSpec = buildAgent.getInput(types_1.SetupOptions.versionSpec);
+            const includePrerelease = buildAgent.getBooleanInput(types_1.SetupOptions.includePrerelease);
+            yield gitVersionTool.install(versionSpec, includePrerelease);
+            buildAgent.setSucceeded("GitVersion installed successfully", true);
+        }
+        catch (error) {
+            buildAgent.setFailed(error.message, true);
+        }
+    });
+}
+exports.setup = setup;
+function run(buildAgent, gitVersionTool) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const inputOptions = getGitVersionOptions(buildAgent);
+            const result = yield gitVersionTool.run(inputOptions);
+            const gitversion = JSON.parse(result.stdout);
+            console.log(gitversion.FullSemVer);
+            if (result.code === 0) {
+                buildAgent.setSucceeded("GitVersion executed successfully", true);
+            }
+            else {
+                buildAgent.setFailed(result.error.message, true);
+            }
+        }
+        catch (error) {
+            buildAgent.setFailed(error, true);
+        }
+    });
+}
+exports.run = run;
+function getGitVersionOptions(buildAgent) {
+    const targetPath = buildAgent.getInput(types_1.RunOptions.targetPath);
+    const useConfigFile = buildAgent.getBooleanInput(types_1.RunOptions.useConfigFile);
+    const configFilePath = buildAgent.getInput(types_1.RunOptions.configFilePath);
+    const updateAssemblyInfo = buildAgent.getBooleanInput(types_1.RunOptions.updateAssemblyInfo);
+    const updateAssemblyInfoFilename = buildAgent.getInput(types_1.RunOptions.updateAssemblyInfoFilename);
+    const additionalArguments = buildAgent.getInput(types_1.RunOptions.additionalArguments);
+    const srcDir = buildAgent.getSourceDir().replace(/\\/g, "/");
+    return {
+        targetPath,
+        useConfigFile,
+        configFilePath,
+        updateAssemblyInfo,
+        updateAssemblyInfoFilename,
+        additionalArguments,
+        srcDir,
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvdXNlLWdpdHZlcnNpb24vc3JjL21haW4udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7QUFFQSxtQ0FBbUQ7QUFFbkQsU0FBc0IsS0FBSyxDQUFDLFVBQXVCLEVBQUUsY0FBK0I7O1FBQ2hGLElBQUk7WUFFQSxVQUFVLENBQUMsY0FBYyxDQUFDLDZCQUE2QixFQUFFLEdBQUcsQ0FBQyxDQUFDO1lBRTlELE1BQU0sV0FBVyxHQUFHLFVBQVUsQ0FBQyxRQUFRLENBQUMsb0JBQVksQ0FBQyxXQUFXLENBQUMsQ0FBQztZQUNsRSxNQUFNLGlCQUFpQixHQUFHLFVBQVUsQ0FBQyxlQUFlLENBQUMsb0JBQVksQ0FBQyxpQkFBaUIsQ0FBQyxDQUFDO1lBRXJGLE1BQU0sY0FBYyxDQUFDLE9BQU8sQ0FBQyxXQUFXLEVBQUUsaUJBQWlCLENBQUMsQ0FBQztZQUU3RCxVQUFVLENBQUMsWUFBWSxDQUFDLG1DQUFtQyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3RFO1FBQUMsT0FBTyxLQUFLLEVBQUU7WUFDWixVQUFVLENBQUMsU0FBUyxDQUFDLEtBQUssQ0FBQyxPQUFPLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDN0M7SUFDTCxDQUFDO0NBQUE7QUFkRCxzQkFjQztBQUVELFNBQXNCLEdBQUcsQ0FBQyxVQUF1QixFQUFFLGNBQStCOztRQUM5RSxJQUFJO1lBQ0EsTUFBTSxZQUFZLEdBQXVCLG9CQUFvQixDQUFDLFVBQVUsQ0FBQyxDQUFDO1lBRTFFLE1BQU0sTUFBTSxHQUFHLE1BQU0sY0FBYyxDQUFDLEdBQUcsQ0FBQyxZQUFZLENBQUMsQ0FBQztZQUV0RCxNQUFNLFVBQVUsR0FBRyxJQUFJLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQWdCLENBQUM7WUFDNUQsT0FBTyxDQUFDLEdBQUcsQ0FBQyxVQUFVLENBQUMsVUFBVSxDQUFDLENBQUM7WUFFbkMsSUFBSSxNQUFNLENBQUMsSUFBSSxLQUFLLENBQUMsRUFBRTtnQkFDbkIsVUFBVSxDQUFDLFlBQVksQ0FBQyxrQ0FBa0MsRUFBRSxJQUFJLENBQUMsQ0FBQzthQUNyRTtpQkFBTTtnQkFDSCxVQUFVLENBQUMsU0FBUyxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsT0FBTyxFQUFFLElBQUksQ0FBQyxDQUFDO2FBQ3BEO1NBRUo7UUFBQyxPQUFPLEtBQUssRUFBRTtZQUNaLFVBQVUsQ0FBQyxTQUFTLENBQUMsS0FBSyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3JDO0lBQ0wsQ0FBQztDQUFBO0FBbEJELGtCQWtCQztBQUVELFNBQVMsb0JBQW9CLENBQUMsVUFBdUI7SUFFakQsTUFBTSxVQUFVLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxrQkFBVSxDQUFDLFVBQVUsQ0FBQyxDQUFDO0lBRTlELE1BQU0sYUFBYSxHQUFHLFVBQVUsQ0FBQyxlQUFlLENBQUMsa0JBQVUsQ0FBQyxhQUFhLENBQUMsQ0FBQztJQUMzRSxNQUFNLGNBQWMsR0FBRyxVQUFVLENBQUMsUUFBUSxDQUFDLGtCQUFVLENBQUMsY0FBYyxDQUFDLENBQUM7SUFFdEUsTUFBTSxrQkFBa0IsR0FBRyxVQUFVLENBQUMsZUFBZSxDQUFDLGtCQUFVLENBQUMsa0JBQWtCLENBQUMsQ0FBQztJQUNyRixNQUFNLDBCQUEwQixHQUFHLFVBQVUsQ0FBQyxRQUFRLENBQUMsa0JBQVUsQ0FBQywwQkFBMEIsQ0FBQyxDQUFDO0lBRTlGLE1BQU0sbUJBQW1CLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxrQkFBVSxDQUFDLG1CQUFtQixDQUFDLENBQUM7SUFFaEYsTUFBTSxNQUFNLEdBQUcsVUFBVSxDQUFDLFlBQVksRUFBRSxDQUFDLE9BQU8sQ0FBQyxLQUFLLEVBQUUsR0FBRyxDQUFDLENBQUM7SUFFN0QsT0FBTztRQUNILFVBQVU7UUFDVixhQUFhO1FBQ2IsY0FBYztRQUNkLGtCQUFrQjtRQUNsQiwwQkFBMEI7UUFDMUIsbUJBQW1CO1FBQ25CLE1BQU07S0FDVCxDQUFDO0FBQ04sQ0FBQyJ9
+
+/***/ }),
+
 /***/ 139:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -8566,38 +8639,15 @@ module.exports = v4;
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(307);
+const main_1 = __webpack_require__(131);
 const types_1 = __webpack_require__(639);
 const ioc_1 = __webpack_require__(768);
 const gitVersionTool = ioc_1.ioc.get(types_1.TYPES.IGitVersionTool);
 const buildAgent = ioc_1.ioc.get(types_1.TYPES.IBuildAgent);
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-            const versionSpec = buildAgent.getInput(types_1.SetupOptions.versionSpec);
-            const includePrerelease = buildAgent.getBooleanInput(types_1.SetupOptions.includePrerelease);
-            yield gitVersionTool.install(versionSpec, includePrerelease);
-            buildAgent.setSucceeded("GitVersion installed successfully", true);
-        }
-        catch (error) {
-            buildAgent.setFailed(error.message, true);
-        }
-    });
-}
-exports.run = run;
-run();
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2V0dXAuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJmaWxlOi8vL0Q6L1Byb2plY3RzL09TUy9HaXRUb29scy91c2UtZ2l0dmVyc2lvbi9zcmMvZ2l0aHViL3NldHVwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7O0FBQUEsNEJBQTBCO0FBRzFCLG9DQUErQztBQUMvQywrQkFBNEI7QUFFNUIsTUFBTSxjQUFjLEdBQUcsU0FBRyxDQUFDLEdBQUcsQ0FBa0IsYUFBSyxDQUFDLGVBQWUsQ0FBQyxDQUFDO0FBQ3ZFLE1BQU0sVUFBVSxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWMsYUFBSyxDQUFDLFdBQVcsQ0FBQyxDQUFDO0FBRTNELFNBQXNCLEdBQUc7O1FBQ3JCLElBQUk7WUFFQSxVQUFVLENBQUMsY0FBYyxDQUFDLDZCQUE2QixFQUFFLEdBQUcsQ0FBQyxDQUFDO1lBRTlELE1BQU0sV0FBVyxHQUFHLFVBQVUsQ0FBQyxRQUFRLENBQUMsb0JBQVksQ0FBQyxXQUFXLENBQUMsQ0FBQztZQUNsRSxNQUFNLGlCQUFpQixHQUFHLFVBQVUsQ0FBQyxlQUFlLENBQUMsb0JBQVksQ0FBQyxpQkFBaUIsQ0FBQyxDQUFDO1lBRXJGLE1BQU0sY0FBYyxDQUFDLE9BQU8sQ0FBQyxXQUFXLEVBQUUsaUJBQWlCLENBQUMsQ0FBQztZQUU3RCxVQUFVLENBQUMsWUFBWSxDQUFDLG1DQUFtQyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3RFO1FBQUMsT0FBTyxLQUFLLEVBQUU7WUFDWixVQUFVLENBQUMsU0FBUyxDQUFDLEtBQUssQ0FBQyxPQUFPLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDN0M7SUFDTCxDQUFDO0NBQUE7QUFkRCxrQkFjQztBQUVELEdBQUcsRUFBRSxDQUFDIn0=
+main_1.setup(buildAgent, gitVersionTool);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2V0dXAuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJmaWxlOi8vL0Q6L1Byb2plY3RzL09TUy9HaXRUb29scy91c2UtZ2l0dmVyc2lvbi9zcmMvZ2l0aHViL3NldHVwLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsNEJBQTBCO0FBRzFCLGtDQUFnQztBQUNoQyxvQ0FBaUM7QUFDakMsK0JBQTRCO0FBRTVCLE1BQU0sY0FBYyxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUN2RSxNQUFNLFVBQVUsR0FBRyxTQUFHLENBQUMsR0FBRyxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztBQUUzRCxZQUFLLENBQUMsVUFBVSxFQUFFLGNBQWMsQ0FBQyxDQUFDIn0=
 
 /***/ }),
 

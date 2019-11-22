@@ -7,7 +7,7 @@ import * as http from "typed-rest-client/HttpClient";
 
 import { inject, injectable } from "inversify";
 
-import { Argument, IBuildAgent, IDotnetTool, IExecResult, IGitVersionOptions, IGitVersionTool, IVersionManager } from "./interfaces";
+import { IBuildAgent, IDotnetTool, IExecResult, IGitVersionOptions, IGitVersionTool, IVersionManager } from "./interfaces";
 import { TYPES } from "./types";
 
 @injectable()
