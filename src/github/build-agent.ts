@@ -13,7 +13,6 @@ import { IBuildAgent, IExecResult } from "../interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-public Stats;
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch);
