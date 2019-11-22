@@ -10,12 +10,16 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
+    - name: Fetch tags and master for GitVersion
+      run: |
+        git fetch --tags
+        git branch --create-reflog master origin/master
     - name: Install GitVersion
       uses: ./setup
       with:
         versionSpec: '5.1.x'
     - name: Use GitVersion
-      id: gitversion
+      id: gitversion # step id used as reference for output values
       uses: ./execute
     - run: |
         echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
