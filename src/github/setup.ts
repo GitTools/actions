@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { IBuildAgent, IGitVersionTool } from "../interface";
+import { IBuildAgent, IGitVersionTool } from "../interfaces";
 import { SetupOptions, TYPES } from "../types";
 import { ioc } from "./ioc";
 

@@ -8,7 +8,7 @@ import * as toolCache from "@actions/tool-cache";
 
 import { injectable } from "inversify";
 
-import { IBuildAgent, IExecResult } from "../interface";
+import { IBuildAgent, IExecResult } from "../interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
