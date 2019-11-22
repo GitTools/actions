@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
-import { IBuildAgent, IGitVersionTool } from "../interfaces";
-import { TYPES } from "../types";
+import { IBuildAgent, IGitVersionTool } from "../interface";
+import { SetupOptions, TYPES } from "../types";
 import { ioc } from "./ioc";
 
 const gitVersionTool = ioc.get<IGitVersionTool>(TYPES.IGitVersionTool);
@@ -10,11 +10,12 @@ const buildAgent = ioc.get<IBuildAgent>(TYPES.IBuildAgent);
 export async function run() {
     try {
 
-        const version = "5.1.2";
-        const includePrerelease = false;
-
         buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-        await gitVersionTool.install(version, includePrerelease);
+
+        const versionSpec = this.buildAgent.getInput(SetupOptions.versionSpec);
+        const includePrerelease = this.buildAgent.getBooleanInput(SetupOptions.includePrerelease);
+
+        await gitVersionTool.install(versionSpec, includePrerelease);
 
         buildAgent.setSucceeded("GitVersion installed successfully", true);
     } catch (error) {

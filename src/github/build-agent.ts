@@ -8,7 +8,7 @@ import * as toolCache from "@actions/tool-cache";
 
 import { injectable } from "inversify";
 
-import { IBuildAgent, IExecResult } from "../interfaces";
+import { IBuildAgent, IExecResult } from "../interface";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -61,6 +61,10 @@ class BuildAgent implements IBuildAgent {
         core.exportVariable(name, val);
     }
 
+    public getVariable(name: string): string {
+        return process.env[name];
+    }
+
     public addPath(inputPath: string): void {
         core.addPath(inputPath);
     }
@@ -93,6 +97,15 @@ class BuildAgent implements IBuildAgent {
             stderr,
             stdout,
         };
+    }
+
+    public getInput(input: string, required?: boolean): string {
+        return core.getInput(input,  { required } as core.InputOptions);
+    }
+
+    public getBooleanInput(input: string, required?: boolean): boolean {
+        const inputValue = this.getInput(input, required);
+        return (inputValue || "false").toLowerCase() === "true";
     }
 }
 

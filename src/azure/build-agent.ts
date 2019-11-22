@@ -3,10 +3,11 @@ import { injectable } from "inversify";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib/tool";
 
-import { IBuildAgent, IExecResult } from "../interfaces";
+import { IBuildAgent, IExecResult } from "../interface";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolLib.findLocalTool(toolName, versionSpec, arch);
     }
@@ -35,6 +36,10 @@ class BuildAgent implements IBuildAgent {
         taskLib.setVariable(name, val);
     }
 
+    public getVariable(name: string): string {
+        return taskLib.getVariable(name);
+    }
+
     public addPath(inputPath: string): void {
         toolLib.prependPath(inputPath);
     }
@@ -54,6 +59,14 @@ class BuildAgent implements IBuildAgent {
             stderr: result.stderr,
             stdout: result.stdout,
         });
+    }
+
+    public getInput(input: string, required?: boolean): string {
+        return taskLib.getInput(input, required);
+    }
+
+    public getBooleanInput(input: string, required?: boolean): boolean {
+        return taskLib.getBoolInput(input, required);
     }
 }
 

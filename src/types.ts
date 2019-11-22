@@ -5,4 +5,9 @@ const TYPES = {
     IVersionManager: Symbol.for("VersionManager"),
 };
 
-export { TYPES };
+const SetupOptions = {
+    includePrerelease: "includePrerelease",
+    versionSpec: "versionSpec",
+};
+
+export { SetupOptions, TYPES };

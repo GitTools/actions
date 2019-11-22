@@ -12,9 +12,13 @@ export interface IBuildAgent {
     setFailed: (message: string, done?: boolean) => void;
     setSucceeded: (message: string, done?: boolean) => void;
     exportVariable: (name: string, val: string) => void;
+    getVariable: (name: string) => string;
     addPath: (inputPath: string) => void;
     which: (tool: string, check?: boolean) => Promise<string>;
     exec: (exec: string, args: string[]) => Promise<IExecResult>;
+
+    getInput(input: string, required?: boolean): string;
+    getBooleanInput(input: string, required?: boolean): boolean;
 }
 
 export interface IDotnetTool {

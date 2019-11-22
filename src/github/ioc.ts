@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 
 import { DotnetTool, GitVersionTool, VersionManager } from "../common";
-import { IBuildAgent, IDotnetTool, IGitVersionTool, IVersionManager } from "../interfaces";
+import { IBuildAgent, IDotnetTool, IGitVersionTool, IVersionManager } from "../interface";
 import { TYPES } from "../types";
 import { BuildAgent } from "./build-agent";
 
