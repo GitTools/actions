@@ -188,7 +188,7 @@ class GitVersionTool implements IGitVersionTool {
         const args = [
             workDir,
             "/output",
-            "json",
+            "json", // need to use buildserver later
         ];
 
         const {

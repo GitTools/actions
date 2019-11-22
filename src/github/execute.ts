@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import { IBuildAgent, IGitVersionOptions, IGitVersionTool } from "../interfaces";
+import { IBuildAgent, IGitVersion, IGitVersionOptions, IGitVersionTool } from "../interfaces";
 import { RunOptions, TYPES } from "../types";
 import { ioc } from "./ioc";
 
@@ -12,7 +12,9 @@ export async function run() {
         const inputOptions: IGitVersionOptions = getGitVersionOptions();
 
         const result = await gitVersionTool.run(inputOptions);
-        console.log(result.stdout);
+
+        const gitversion = JSON.parse(result.stdout) as IGitVersion;
+        console.log(gitversion.FullSemVer);
 
         if (result.code === 0) {
             buildAgent.setSucceeded("GitVersion executed successfully", true);
