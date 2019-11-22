@@ -32,12 +32,12 @@ steps:
     git fetch --tags
     git branch --create-reflog master origin/master
 - name: Install GitVersion
-    uses: gittools/use-gitversion/setup@v0.1
+    uses: gittools/use-gitversion/setup@v0.2
     with:
     versionSpec: '5.1.x'
 - name: Use GitVersion
     id: gitversion # step id used as reference for output values
-    uses: gittools/use-gitversion/execute@v0.1
+    uses: gittools/use-gitversion/execute@v0.2
 - run: |
     echo "FullSemVer: ${{ steps.gitversion.outputs.FullSemVer }}"
 ```
