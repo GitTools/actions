@@ -146,10 +146,13 @@ class DotnetTool implements IDotnetTool {
 @injectable()
 class GitVersionTool implements IGitVersionTool {
 
+    private buildAgent: IBuildAgent;
     private dotnetTool: IDotnetTool;
     constructor(
+        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
         @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
     ) {
+        this.buildAgent = buildAgent;
         this.dotnetTool = dotnetTool;
     }
 
@@ -158,6 +161,8 @@ class GitVersionTool implements IGitVersionTool {
     }
 
     public run(options: IGitVersionOptions): Promise<IExecResult> {
+        console.log("Workspace: " + this.buildAgent.getSourceDir());
+
         console.log(options);
         return;
     }

@@ -99,6 +99,10 @@ class BuildAgent implements IBuildAgent {
         };
     }
 
+    public getSourceDir(): string {
+        return this.getVariable("GITHUB_WORKSPACE");
+    }
+
     public getInput(input: string, required?: boolean): string {
         return core.getInput(input,  { required } as core.InputOptions);
     }

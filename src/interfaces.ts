@@ -16,6 +16,7 @@ export interface IBuildAgent {
     addPath: (inputPath: string) => void;
     which: (tool: string, check?: boolean) => Promise<string>;
     exec: (exec: string, args: string[]) => Promise<IExecResult>;
+    getSourceDir: () => string;
 
     getInput(input: string, required?: boolean): string;
     getBooleanInput(input: string, required?: boolean): boolean;

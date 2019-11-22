@@ -61,6 +61,10 @@ class BuildAgent implements IBuildAgent {
         });
     }
 
+    public getSourceDir(): string {
+        return this.getVariable("Build.SourcesDirectory");
+    }
+
     public getInput(input: string, required?: boolean): string {
         return taskLib.getInput(input, required);
     }
