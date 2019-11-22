@@ -1,4 +1,4 @@
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -7,5 +7,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: use-gitversion
+    - name: Install GitVersion
       uses: ./setup
+      with:
+        versionSpec: '5.1.x'
