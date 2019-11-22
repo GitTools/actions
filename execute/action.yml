@@ -25,7 +25,7 @@ inputs:
     description: Update versions in specified file
     required: false
     default: ''
-  updateAssemblyInfoFilename:
+  additionalArguments:
     description: Additional arguments to send to GitVersion
     required: false
     default: ''

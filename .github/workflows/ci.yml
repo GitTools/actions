@@ -14,3 +14,8 @@ jobs:
       uses: ./setup
       with:
         versionSpec: '5.1.x'
+    - name: Use GitVersion
+      uses: ./execute
+      with:
+        targetPath: '.'
+        useConfigFile: 'true'
