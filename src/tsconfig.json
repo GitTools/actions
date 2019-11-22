@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2015",
+        "sourceMap": false,
+        "lib": ["es2015", "dom"],
+        "types": ["reflect-metadata"],
+        "inlineSourceMap": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    }
+  }

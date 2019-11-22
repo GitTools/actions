@@ -1,13 +1,3 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "target": "es6",
-        "sourceMap": false,
-        "inlineSourceMap": true
-    },
-    "exclude": ["tests"]
+    "extends": "../tsconfig.json"
 }

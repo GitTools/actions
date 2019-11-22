@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "tsc: build - src/azure/tsconfig.json",
+            "name": "Run Azure Pipeline Task",
+            "program": "${workspaceFolder}/src/azure/main.ts",
+            "outFiles": ["${workspaceFolder}/**/*.js"]
+        },
+        {
+
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "tsc: build - src/github/tsconfig.json",
+            "name": "Run GitHub Actions",
+            "program": "${workspaceFolder}/src/github/main.ts",
+            "outFiles": ["${workspaceFolder}/**/*.js"]
+        }
+    ]
+}
