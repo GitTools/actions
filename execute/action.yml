@@ -1,4 +1,4 @@
-name: execute
+name: gitversion-execute
 description: GitHub Action for Easy Semantic Versioning with GitVersion. Execute GitVersion to obtain version information
 author: GitTools
 branding:
