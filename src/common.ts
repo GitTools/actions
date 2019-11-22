@@ -148,6 +148,7 @@ class GitVersionTool implements IGitVersionTool {
 
     private buildAgent: IBuildAgent;
     private dotnetTool: IDotnetTool;
+
     constructor(
         @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
         @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
@@ -161,10 +162,61 @@ class GitVersionTool implements IGitVersionTool {
     }
 
     public run(options: IGitVersionOptions): Promise<IExecResult> {
-        console.log("Workspace: " + this.buildAgent.getSourceDir());
+        const workDir = this.getRepoDir(options.targetPath);
 
-        console.log(options);
-        return;
+        const args = this.getArguments(workDir, options);
+
+        return this.buildAgent.exec("dotnet-gitversion", args);
+    }
+
+    private getRepoDir(targetPath: string): string {
+        let workDir: string;
+        const srcDir = this.buildAgent.getSourceDir();
+        if (!targetPath) {
+            workDir = srcDir;
+        } else {
+            if (this.buildAgent.directoryExists(targetPath)) {
+                workDir = path.join(srcDir, targetPath);
+            } else {
+                throw new Error("Directory not found at " + targetPath);
+            }
+        }
+        return workDir.replace(/\\/g, "/");
+    }
+
+    private getArguments(workDir: string, options: IGitVersionOptions) {
+        const args = [
+            workDir,
+            "/output",
+            "buildserver",
+        ];
+
+        const {
+            useConfigFile,
+            configFilePath,
+            updateAssemblyInfo,
+            updateAssemblyInfoFilename,
+            additionalArguments,
+         } = options;
+
+        if (useConfigFile) {
+            if (this.buildAgent.isValidInputFile("configFilePath", configFilePath)) {
+                args.push("/config", configFilePath);
+            } else {
+                throw new Error("GitVersion configuration file not found at " + configFilePath);
+            }
+        }
+        if (updateAssemblyInfo) {
+            args.push("/updateassemblyinfo");
+            if (this.buildAgent.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
+                args.push(updateAssemblyInfoFilename);
+            } else {
+                throw new Error("AssemblyInfoFilename file not found at " + updateAssemblyInfoFilename);
+            }
+        }
+
+        args.push(additionalArguments);
+        return args;
     }
 }
 

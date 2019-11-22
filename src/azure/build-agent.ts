@@ -72,6 +72,18 @@ class BuildAgent implements IBuildAgent {
     public getBooleanInput(input: string, required?: boolean): boolean {
         return taskLib.getBoolInput(input, required);
     }
+
+    public isValidInputFile(input: string, file: string) {
+        return taskLib.filePathSupplied(input) && this.fileExists(file);
+    }
+
+    public fileExists(file: string) {
+        return taskLib.exist(file) && taskLib.stats(file).isFile();
+    }
+
+    public directoryExists(file: string) {
+        return taskLib.exist(file) && taskLib.stats(file).isDirectory();
+    }
 }
 
 export {

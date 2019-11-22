@@ -17,6 +17,9 @@ export interface IBuildAgent {
     which: (tool: string, check?: boolean) => Promise<string>;
     exec: (exec: string, args: string[]) => Promise<IExecResult>;
     getSourceDir: () => string;
+    isValidInputFile(input: string, file: string): boolean;
+    fileExists(file: string): boolean;
+    directoryExists(file: string): boolean;
 
     getInput(input: string, required?: boolean): string;
     getBooleanInput(input: string, required?: boolean): boolean;
@@ -49,4 +52,5 @@ export interface IGitVersionOptions {
     updateAssemblyInfo: boolean;
     updateAssemblyInfoFilename: string;
     additionalArguments: string;
+    srcDir: string;
 }

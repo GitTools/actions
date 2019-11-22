@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as path from "path";
 import * as uuidV4 from "uuid/v4";
 
@@ -12,6 +13,7 @@ import { IBuildAgent, IExecResult } from "../interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+public Stats;
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch);
@@ -111,7 +113,39 @@ class BuildAgent implements IBuildAgent {
         const inputValue = this.getInput(input, required);
         return (inputValue || "false").toLowerCase() === "true";
     }
-}
+
+    public isValidInputFile(input: string, file: string) {
+        const pathValue = path.resolve(this.getInput(input) || "");
+        const repoRoot = this.getSourceDir();
+        return pathValue !== repoRoot;
+    }
+
+    public fileExists(file: string) {
+        return this._exist(file) && this._stats(file).isFile();
+    }
+
+    public directoryExists(file: string) {
+        return this._exist(file) && this._stats(file).isDirectory();
+    }
+
+    private _exist(file: string): boolean {
+        let exist = false;
+        try {
+            exist = !!(file && fs.statSync(file) != null);
+        } catch (err) {
+            if (err && err.code === "ENOENT") {
+                exist = false;
+            } else {
+                throw err;
+            }
+        }
+        return exist;
+    }
+
+    private _stats(file: string): fs.Stats {
+        return fs.statSync(file);
+    }
+ }
 
 export {
     BuildAgent,

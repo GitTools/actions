@@ -9,16 +9,13 @@ const buildAgent = ioc.get<IBuildAgent>(TYPES.IBuildAgent);
 
 export async function run() {
     try {
-
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-
         const inputOptions: IGitVersionOptions = getGitVersionOptions();
 
         await gitVersionTool.run(inputOptions);
 
         buildAgent.setSucceeded("GitVersion installed successfully", true);
     } catch (error) {
-        buildAgent.setFailed(error.message, true);
+        buildAgent.setFailed(error, true);
     }
 }
 
@@ -34,6 +31,8 @@ function getGitVersionOptions(): IGitVersionOptions {
 
     const additionalArguments = buildAgent.getInput(RunOptions.additionalArguments);
 
+    const srcDir = buildAgent.getSourceDir().replace(/\\/g, "/");
+
     return {
         targetPath,
         useConfigFile,
@@ -41,6 +40,7 @@ function getGitVersionOptions(): IGitVersionOptions {
         updateAssemblyInfo,
         updateAssemblyInfoFilename,
         additionalArguments,
+        srcDir,
     };
 }
 
