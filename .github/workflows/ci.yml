@@ -23,3 +23,6 @@ jobs:
       uses: ./execute-gitversion
     - run: |
         echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+        npm install
+        npm run tfx-azure-pack -- --override '{\"version\": \"2.2.3\"}'
+      shell: pwsh

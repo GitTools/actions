@@ -14,7 +14,8 @@
         "package-azure-setup": "ncc build src/azure/setup.ts -o dist/azure/setup",
         "package-azure-execute": "ncc build src/azure/execute.ts -o dist/azure/execute",
         "package-github-setup": "ncc build src/github/setup.ts -o dist/github/setup",
-        "package-github-execute": "ncc build src/github/execute.ts -o dist/github/execute"
+        "package-github-execute": "ncc build src/github/execute.ts -o dist/github/execute",
+        "tfx-azure-pack": "tfx extension create --root ./dist/azure --output-path ./dist/azure --manifest-globs vss-extension.json"
     },
     "author": "GitTools",
     "contributors": [
@@ -36,7 +37,7 @@
         "@types/node": "12.12.11",
         "@types/q": "1.5.2",
         "reflect-metadata": "^0.1.13",
-        "tfx-cli": "0.6.3",
+        "tfx-cli": "0.7.11",
         "tslint": "^5.20.1",
         "typescript": "^3.7.2",
         "@zeit/ncc": "^0.20.5"
