@@ -3,7 +3,7 @@
 ![GitVersion](https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png "GitVersion")
 
 GitHub Action that installs and uses the GitVersion tool
-
+[![Build Status](https://github.com/GitTools/use-gitversion/workflows/CI/badge.svg)](https://github.com/GitTools/use-gitversion/actions)
 ## Usage
 
 See [setup](setup/action.yml) and [usage](execute/action.yml)
