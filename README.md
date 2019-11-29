@@ -1,13 +1,14 @@
-# use-gitversion
+# GitTools actions
 
-![GitVersion](https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png "GitVersion")
+![GitTools](docs/icon.png "GitTools")
 
-GitHub Action that installs and uses the GitVersion tool
+GitHub Actions that allow to install and use the GitVersion and GitReleaseManager tools
 
-[![Build Status](https://github.com/GitTools/use-gitversion/workflows/CI/badge.svg)](https://github.com/GitTools/use-gitversion/actions)
+[![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
+
 ## Usage
 
-See [setup](setup/action.yml) and [usage](execute/action.yml)
+See [setup](setup-gitversion/action.yml) and [usage](execute-gitversion/action.yml)
 
 ## Dependency
 
@@ -33,12 +34,12 @@ Basic:
           git fetch --tags
           git branch --create-reflog master origin/master
     - name: Install GitVersion
-      uses: gittools/use-gitversion/setup@v0.2
+      uses: gittools/actions/setup-gitversion@v0.3
       with:
           versionSpec: '5.1.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/use-gitversion/execute@v0.2
+      uses: gittools/actions/execute-gitversion@v0.3
     - run: |
         echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
 ```
