@@ -1,17 +1,18 @@
 {
     "manifestVersion": 1,
-    "id": "usegitversion-test",
-    "name": "UseGitVersion",
+    "id": "gittools-test",
+    "name": "GitTools",
+    "version": "0.0.1",
     "publisher": "gittools",
     "public": true,
-    "author": "GitVersion Contributors",
-    "description": "Build task for easy semantic versioning for projects using Git.",
+    "author": "GitTools Contributors",
+    "description": "Build tasks for easy semantic versioning for projects using Git and release management.",
     "targets": [{
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [
-        { "path": "execute" },
-        { "path": "setup" }
+        { "path": "execute-gitversion" },
+        { "path": "setup-gitversion" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -20,7 +21,7 @@
         "Public"
     ],
     "icons": {
-        "default": "images/extension-icon.png"
+        "default": "images/icon.png"
     },
     "tags": [
         "semver",
@@ -37,13 +38,13 @@
             "uri": "http://gitversion.readthedocs.org/en/stable/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
         },
         "license": {
-            "uri": "https://github.com/GitTools/GitVersion/blob/master/LICENSE"
+            "uri": "https://github.com/GitTools/actions/blob/master/LICENSE"
         },
         "repository": {
-            "uri": "https://github.com/GitTools/GitVersion"
+            "uri": "https://github.com/GitTools/actions.git"
         },
         "support": {
-            "uri": "https://github.com/GitTools/GitVersion/issues"
+            "uri": "https://github.com/GitTools/actions/issues"
         }
     },
     "screenshots": [{
@@ -65,7 +66,7 @@
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "setup"
+            "name": "setup-gitversion"
         }
     }, {
         "id": "execute-gitversion-task",
@@ -74,7 +75,7 @@
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "execute"
+            "name": "execute-gitversion"
         }
     }]
 }

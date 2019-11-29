@@ -1,6 +1,6 @@
 {
-    "id": "cf6686dd-1807-4367-af65-669346359afd",
-    "name": "SetupGitVersion",
+    "id": "67561427-431b-4ab7-97bb-aa71c8deb5d0",
+    "name": "gitversion-setup",
     "friendlyName": "Setup GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitVersion Contributors",
@@ -30,7 +30,7 @@
             "helpMarkDown": "Include pre-release versions when matching a version"
         }
     ],
-    "instanceNameFormat": "SetupGitVersion",
+    "instanceNameFormat": "gitversion-setup",
 
     "execution": {
         "Node": {
