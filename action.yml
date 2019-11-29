@@ -1,4 +1,4 @@
-name: use-gitversion
+name: actions
 description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs the specific version of GitVersion.Tool
 author: GitTools
 branding:
