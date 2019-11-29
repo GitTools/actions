@@ -8,6 +8,7 @@
     },
     "main": "main.js",
     "scripts": {
+        "package": "npm run package-github && npm run package-azure",
         "package-azure": "npm run package-azure-setup && npm run package-azure-execute",
         "package-github": "npm run package-github-setup && npm run package-github-execute",
         "package-azure-setup": "ncc build src/azure/setup.ts -o dist/azure/setup",

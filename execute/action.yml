@@ -30,12 +30,66 @@ inputs:
     required: false
     default: ''
 outputs:
-  fullSemVer:
-    description: 'The FullSemVer value'
+  major: # id of output
+    description: 'The Major value'
+  minor:
+    description: 'The Minor value'
+  patch:
+    description: 'The Patch value'
+  preReleaseTag:
+    description: 'The PreReleaseTag value'
+  preReleaseTagWithDash:
+    description: 'The PreReleaseTagWithDash value'
+  preReleaseLabel:
+    description: 'The PreReleaseLabel value'
+  preReleaseNumber:
+    description: 'The PreReleaseNumber value'
+  weightedPreReleaseNumber:
+    description: 'The WeightedPreReleaseNumber value'
+  buildMetaData:
+    description: 'The BuildMetaData value'
+  buildMetaDataPadded:
+    description: 'The BuildMetaDataPadded value'
+  fullBuildMetaData:
+    description: 'The FullBuildMetaData value'
   majorMinorPatch:
     description: 'The MajorMinorPatch value'
+  semVer:
+    description: 'The SemVer value'
+  legacySemVer:
+    description: 'The LegacySemVer value'
+  legacySemVerPadded:
+    description: 'The LegacySemVerPadded value'
+  assemblySemVer:
+    description: 'The AssemblySemVer value'
+  assemblySemFileVer:
+    description: 'The AssemblySemFileVer value'
+  fullSemVer:
+    description: 'The FullSemVer value'
+  informationalVersion:
+    description: 'The InformationalVersion value'
+  branchName:
+    description: 'The BranchName value'
+  sha:
+    description: 'The Sha value'
   shortSha:
     description: 'The ShortSha value'
+  nuGetVersionV2:
+    description: 'The NuGetVersionV2 value'
+  nuGetVersion:
+    description: 'The NuGetVersion value'
+  nuGetPreReleaseTagV2:
+    description: 'The NuGetPreReleaseTagV2 value'
+  nuGetPreReleaseTag:
+    description: 'The NuGetPreReleaseTag value'
+  versionSourceSha:
+    description: 'The VersionSourceSha value'
+  commitsSinceVersionSource:
+    description: 'The CommitsSinceVersionSource value'
+  commitsSinceVersionSourcePadded:
+    description: 'The CommitsSinceVersionSourcePadded value'
+  commitDate:
+    description: 'The CommitDate value'
 runs:
   using: node12
   main: ../dist/github/execute/index.js
