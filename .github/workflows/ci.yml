@@ -15,11 +15,11 @@ jobs:
         git fetch --tags
         git branch --create-reflog master origin/master
     - name: Install GitVersion
-      uses: ./setup
+      uses: ./setup-gitversion
       with:
         versionSpec: '5.1.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: ./execute
+      uses: ./execute-gitversion
     - run: |
         echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
