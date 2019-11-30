@@ -1,5 +1,5 @@
 {
-    "name": "use-gitversion",
+    "name": "gittools-actions",
     "version": "1.0.0",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "repository": {
