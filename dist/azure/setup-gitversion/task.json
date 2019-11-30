@@ -1,5 +1,5 @@
 {
-    "id": "67561427-431b-4ab7-97bb-aa71c8deb5d0",
+    "id": "a06c02ae-7b9a-4082-90dc-fe27b500e54f",
     "name": "gitversion-setup",
     "friendlyName": "Setup GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",

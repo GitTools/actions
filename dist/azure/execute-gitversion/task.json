@@ -1,5 +1,5 @@
 {
-    "id": "9b58ed30-0deb-4083-b007-5f6ce7787544",
+    "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
     "name": "gitversion-execute",
     "friendlyName": "Execute GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",

@@ -1,6 +1,6 @@
 {
     "manifestVersion": 1,
-    "id": "gittools-test",
+    "id": "gittools",
     "name": "GitTools",
     "version": "0.0.1",
     "publisher": "gittools",

@@ -15,7 +15,7 @@
         "package-azure-execute": "ncc build src/azure/execute.ts -o dist/azure/execute",
         "package-github-setup": "ncc build src/github/setup.ts -o dist/github/setup",
         "package-github-execute": "ncc build src/github/execute.ts -o dist/github/execute",
-        "pack-azure": "tfx extension create --root ./dist/azure --output-path ./dist/azure"
+        "publish-azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
     },
     "author": "GitTools",
     "contributors": [
