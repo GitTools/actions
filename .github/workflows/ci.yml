@@ -7,7 +7,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        #os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Fetch tags and master for GitVersion
@@ -22,7 +23,10 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: ./execute-gitversion
     - run: |
-        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
         npm install
-        npm run tfx-azure-pack -- --override '{\"version\": \"2.2.3\"}'
+        $date = Get-Date -format "yyyyMMddHHmm"
+        $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
+        $override = '{\"version\": \"' + $version + '\"}'
+        npm run pack-azure -- --override $override
       shell: pwsh
+      name: Pack Azure extension
