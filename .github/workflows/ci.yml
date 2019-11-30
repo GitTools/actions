@@ -22,12 +22,4 @@ jobs:
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: ./execute-gitversion
-    - run: |
-        npm install
-        $date = Get-Date -format "yyMMddHHmm"
-        $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
-        $override = '{\"version\": \"' + $version + '\"}'
-        npm run publish-azure -- --token ${{ secrets.TFX_TOKEN }} --override $override
-        # npm run pack-azure -- --override $override
-      shell: pwsh
-      name: Publish Azure extension
+    - run: echo ${{ github.repository }} - ${{ github.repository }}
