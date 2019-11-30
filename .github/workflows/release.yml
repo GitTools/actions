@@ -1,0 +1,33 @@
+name: release
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Fetch tags and master for GitVersion
+      run: |
+        git fetch --tags
+        git branch --create-reflog master origin/master
+    - name: Install GitVersion
+      uses: ./setup-gitversion
+      with:
+        versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: ./execute-gitversion
+    - run: |
+        npm install
+        $date = Get-Date -format "yyMMddHHmm"
+        $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
+        $override = '{\"version\": \"' + $version + '\"}'
+        npm run publish-azure -- --token ${{ secrets.TFX_TOKEN }} --override $override
+      shell: pwsh
+      name: Publish Azure extension
