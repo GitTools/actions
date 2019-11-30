@@ -7,8 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [windows-latest, ubuntu-latest, macos-latest]
-        os: [ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v1
     - name: Fetch tags and master for GitVersion
@@ -22,4 +21,5 @@ jobs:
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: ./execute-gitversion
-    - run: echo ${{ github.repository }} - ${{ github.repository }}
+    - run: |
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
