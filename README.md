@@ -20,7 +20,6 @@ There are two step dependencies that are required in your workflow before runnin
     uses: actions/checkout@v1
     - name: Fetch tags and master for GitVersion
     run: |
-        git config remote.origin.url https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} # creds needed for private repos
         git fetch --tags
         git branch --create-reflog master origin/master
 ```
@@ -73,4 +72,18 @@ Basic:
         echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
         echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+```
+### Private Repositories
+
+Private repos require credentials before you can fetch the master branch and tags.  
+
+```yaml
+    steps:
+    - name: Checkout
+    uses: actions/checkout@v1
+    - name: Fetch tags and master for GitVersion
+    run: |
+        git config remote.origin.url https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git fetch --tags
+        git branch --create-reflog master origin/master
 ```
