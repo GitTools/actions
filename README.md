@@ -20,6 +20,7 @@ There are two step dependencies that are required in your workflow before runnin
     uses: actions/checkout@v1
     - name: Fetch tags and master for GitVersion
     run: |
+        git config remote.origin.url https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} # creds needed for private repos
         git fetch --tags
         git branch --create-reflog master origin/master
 ```
@@ -31,6 +32,7 @@ Basic:
     - uses: actions/checkout@v1
     - name: Fetch tags and master for GitVersion
       run: |
+          git config remote.origin.url https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} # creds needed for private repos
           git fetch --tags
           git branch --create-reflog master origin/master
     - name: Install GitVersion
