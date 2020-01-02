@@ -17,11 +17,12 @@ There are two step dependencies that are required in your workflow before runnin
 ```yaml
     steps:
     - name: Checkout
-    uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
-    run: |
-        git fetch --tags
-        git branch --create-reflog master origin/master
+      uses: actions/checkout@v1
+    - name: Fetch tags for GitVersion
+      run: git fetch --tags
+    - name: Fetch master for GitVersion
+      if: github.ref != 'refs/heads/master'
+      run: git branch --create-reflog master origin/master
 ```
 
 Basic:
@@ -29,10 +30,11 @@ Basic:
 ```yaml
     steps:
     - uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
-      run: |
-          git fetch --tags
-          git branch --create-reflog master origin/master
+    - name: Fetch tags for GitVersion
+      run: git fetch --tags
+    - name: Fetch master for GitVersion
+      if: github.ref != 'refs/heads/master'
+      run: git branch --create-reflog master origin/master
     - name: Install GitVersion
       uses: gittools/actions/setup-gitversion@v0.3
       with:
