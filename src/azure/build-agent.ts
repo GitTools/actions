@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib/tool";
 
-import { IBuildAgent, IExecResult } from "../interfaces";
+import { IBuildAgent, IExecResult } from "../core/interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {

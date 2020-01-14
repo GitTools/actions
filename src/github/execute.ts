@@ -1,9 +1,9 @@
 import "reflect-metadata";
 
-import { IBuildAgent, IGitVersionTool } from "../interfaces";
-import { ioc } from "../ioc";
-import { run } from "../main";
-import { TYPES } from "../types";
+import { IBuildAgent, IGitVersionTool } from "../core/interfaces";
+import { ioc } from "../core/ioc";
+import { run } from "../core/main";
+import { TYPES } from "../core/types";
 import { BuildAgent } from "./build-agent";
 
 ioc.bind<IBuildAgent>(TYPES.IBuildAgent).to(BuildAgent);

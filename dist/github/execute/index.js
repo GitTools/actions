@@ -1062,6 +1062,37 @@ exports.multiBindToService = function (container) {
 
 /***/ }),
 
+/***/ 98:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const TYPES = {
+    IBuildAgent: Symbol.for("BuildAgent"),
+    IDotnetTool: Symbol.for("DotnetTool"),
+    IGitVersionTool: Symbol.for("GitVersionTool"),
+    IVersionManager: Symbol.for("VersionManager"),
+};
+exports.TYPES = TYPES;
+const SetupOptions = {
+    includePrerelease: "includePrerelease",
+    versionSpec: "versionSpec",
+};
+exports.SetupOptions = SetupOptions;
+const RunOptions = {
+    targetPath: "targetPath",
+    useConfigFile: "useConfigFile",
+    configFilePath: "configFilePath",
+    updateAssemblyInfo: "configFilePath",
+    updateAssemblyInfoFilename: "configFilePath",
+    additionalArguments: "additionalArguments",
+};
+exports.RunOptions = RunOptions;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidHlwZXMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJ0eXBlcy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBLE1BQU0sS0FBSyxHQUFHO0lBQ1YsV0FBVyxFQUFFLE1BQU0sQ0FBQyxHQUFHLENBQUMsWUFBWSxDQUFDO0lBQ3JDLFdBQVcsRUFBRSxNQUFNLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQztJQUNyQyxlQUFlLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxnQkFBZ0IsQ0FBQztJQUM3QyxlQUFlLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxnQkFBZ0IsQ0FBQztDQUNoRCxDQUFDO0FBbUJpQyxzQkFBSztBQWpCeEMsTUFBTSxZQUFZLEdBQUc7SUFDakIsaUJBQWlCLEVBQUUsbUJBQW1CO0lBQ3RDLFdBQVcsRUFBRSxhQUFhO0NBQzdCLENBQUM7QUFjTyxvQ0FBWTtBQVpyQixNQUFNLFVBQVUsR0FBRztJQUNmLFVBQVUsRUFBRSxZQUFZO0lBRXhCLGFBQWEsRUFBRSxlQUFlO0lBQzlCLGNBQWMsRUFBRSxnQkFBZ0I7SUFFaEMsa0JBQWtCLEVBQUUsZ0JBQWdCO0lBQ3BDLDBCQUEwQixFQUFFLGdCQUFnQjtJQUU1QyxtQkFBbUIsRUFBRSxxQkFBcUI7Q0FDN0MsQ0FBQztBQUVxQixnQ0FBVSJ9
+
+/***/ }),
+
 /***/ 107:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -1196,111 +1227,6 @@ module.exports = require("child_process");
 
 /***/ }),
 
-/***/ 131:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = __webpack_require__(639);
-function setup(buildAgent, gitVersionTool) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-            const versionSpec = buildAgent.getInput(types_1.SetupOptions.versionSpec);
-            const includePrerelease = buildAgent.getBooleanInput(types_1.SetupOptions.includePrerelease);
-            yield gitVersionTool.install(versionSpec, includePrerelease);
-            buildAgent.setSucceeded("GitVersion installed successfully", true);
-        }
-        catch (error) {
-            buildAgent.setFailed(error.message, true);
-        }
-    });
-}
-exports.setup = setup;
-function run(buildAgent, gitVersionTool) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const inputOptions = getGitVersionOptions(buildAgent);
-            const result = yield gitVersionTool.run(inputOptions);
-            const gitversion = JSON.parse(result.stdout);
-            writeGitVersionToAgent(buildAgent, gitversion);
-            if (result.code === 0) {
-                buildAgent.setSucceeded("GitVersion executed successfully", true);
-            }
-            else {
-                buildAgent.setFailed(result.error.message, true);
-            }
-        }
-        catch (error) {
-            buildAgent.setFailed(error, true);
-        }
-    });
-}
-exports.run = run;
-function getGitVersionOptions(buildAgent) {
-    const targetPath = buildAgent.getInput(types_1.RunOptions.targetPath);
-    const useConfigFile = buildAgent.getBooleanInput(types_1.RunOptions.useConfigFile);
-    const configFilePath = buildAgent.getInput(types_1.RunOptions.configFilePath);
-    const updateAssemblyInfo = buildAgent.getBooleanInput(types_1.RunOptions.updateAssemblyInfo);
-    const updateAssemblyInfoFilename = buildAgent.getInput(types_1.RunOptions.updateAssemblyInfoFilename);
-    const additionalArguments = buildAgent.getInput(types_1.RunOptions.additionalArguments);
-    const srcDir = buildAgent.getSourceDir().replace(/\\/g, "/");
-    return {
-        targetPath,
-        useConfigFile,
-        configFilePath,
-        updateAssemblyInfo,
-        updateAssemblyInfoFilename,
-        additionalArguments,
-        srcDir,
-    };
-}
-function writeGitVersionToAgent(buildAgent, gitversion) {
-    buildAgent.setOutput("major", gitversion.Major.toString());
-    buildAgent.setOutput("minor", gitversion.Minor.toString());
-    buildAgent.setOutput("patch", gitversion.Patch.toString());
-    buildAgent.setOutput("preReleaseTag", gitversion.PreReleaseTag);
-    buildAgent.setOutput("preReleaseTagWithDash", gitversion.PreReleaseTagWithDash);
-    buildAgent.setOutput("preReleaseLabel", gitversion.PreReleaseLabel);
-    buildAgent.setOutput("preReleaseNumber", gitversion.PreReleaseNumber.toString());
-    buildAgent.setOutput("weightedPreReleaseNumber", gitversion.WeightedPreReleaseNumber.toString());
-    buildAgent.setOutput("buildMetaData", gitversion.BuildMetaData.toString());
-    buildAgent.setOutput("buildMetaDataPadded", gitversion.BuildMetaDataPadded);
-    buildAgent.setOutput("fullBuildMetaData", gitversion.FullBuildMetaData);
-    buildAgent.setOutput("majorMinorPatch", gitversion.MajorMinorPatch);
-    buildAgent.setOutput("semVer", gitversion.SemVer);
-    buildAgent.setOutput("legacySemVer", gitversion.LegacySemVer);
-    buildAgent.setOutput("legacySemVerPadded", gitversion.LegacySemVerPadded);
-    buildAgent.setOutput("assemblySemVer", gitversion.AssemblySemVer);
-    buildAgent.setOutput("assemblySemFileVer", gitversion.AssemblySemFileVer);
-    buildAgent.setOutput("fullSemVer", gitversion.FullSemVer);
-    buildAgent.setOutput("informationalVersion", gitversion.InformationalVersion);
-    buildAgent.setOutput("branchName", gitversion.BranchName);
-    buildAgent.setOutput("sha", gitversion.Sha);
-    buildAgent.setOutput("shortSha", gitversion.ShortSha);
-    buildAgent.setOutput("nuGetVersionV2", gitversion.NuGetVersionV2);
-    buildAgent.setOutput("nuGetVersion", gitversion.NuGetVersion);
-    buildAgent.setOutput("nuGetPreReleaseTagV2", gitversion.NuGetPreReleaseTagV2);
-    buildAgent.setOutput("nuGetPreReleaseTag", gitversion.NuGetPreReleaseTag);
-    buildAgent.setOutput("versionSourceSha", gitversion.VersionSourceSha);
-    buildAgent.setOutput("commitsSinceVersionSource", gitversion.CommitsSinceVersionSource.toString());
-    buildAgent.setOutput("commitsSinceVersionSourcePadded", gitversion.CommitsSinceVersionSourcePadded);
-    buildAgent.setOutput("commitDate", gitversion.CommitDate);
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvYWN0aW9ucy9zcmMvbWFpbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7OztBQUVBLG1DQUFtRDtBQUVuRCxTQUFzQixLQUFLLENBQUMsVUFBdUIsRUFBRSxjQUErQjs7UUFDaEYsSUFBSTtZQUVBLFVBQVUsQ0FBQyxjQUFjLENBQUMsNkJBQTZCLEVBQUUsR0FBRyxDQUFDLENBQUM7WUFFOUQsTUFBTSxXQUFXLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxvQkFBWSxDQUFDLFdBQVcsQ0FBQyxDQUFDO1lBQ2xFLE1BQU0saUJBQWlCLEdBQUcsVUFBVSxDQUFDLGVBQWUsQ0FBQyxvQkFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7WUFFckYsTUFBTSxjQUFjLENBQUMsT0FBTyxDQUFDLFdBQVcsRUFBRSxpQkFBaUIsQ0FBQyxDQUFDO1lBRTdELFVBQVUsQ0FBQyxZQUFZLENBQUMsbUNBQW1DLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDdEU7UUFBQyxPQUFPLEtBQUssRUFBRTtZQUNaLFVBQVUsQ0FBQyxTQUFTLENBQUMsS0FBSyxDQUFDLE9BQU8sRUFBRSxJQUFJLENBQUMsQ0FBQztTQUM3QztJQUNMLENBQUM7Q0FBQTtBQWRELHNCQWNDO0FBRUQsU0FBc0IsR0FBRyxDQUFDLFVBQXVCLEVBQUUsY0FBK0I7O1FBQzlFLElBQUk7WUFDQSxNQUFNLFlBQVksR0FBdUIsb0JBQW9CLENBQUMsVUFBVSxDQUFDLENBQUM7WUFFMUUsTUFBTSxNQUFNLEdBQUcsTUFBTSxjQUFjLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQyxDQUFDO1lBRXRELE1BQU0sVUFBVSxHQUFHLElBQUksQ0FBQyxLQUFLLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBZ0IsQ0FBQztZQUM1RCxzQkFBc0IsQ0FBQyxVQUFVLEVBQUUsVUFBVSxDQUFDLENBQUM7WUFFL0MsSUFBSSxNQUFNLENBQUMsSUFBSSxLQUFLLENBQUMsRUFBRTtnQkFDbkIsVUFBVSxDQUFDLFlBQVksQ0FBQyxrQ0FBa0MsRUFBRSxJQUFJLENBQUMsQ0FBQzthQUNyRTtpQkFBTTtnQkFDSCxVQUFVLENBQUMsU0FBUyxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsT0FBTyxFQUFFLElBQUksQ0FBQyxDQUFDO2FBQ3BEO1NBRUo7UUFBQyxPQUFPLEtBQUssRUFBRTtZQUNaLFVBQVUsQ0FBQyxTQUFTLENBQUMsS0FBSyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3JDO0lBQ0wsQ0FBQztDQUFBO0FBbEJELGtCQWtCQztBQUVELFNBQVMsb0JBQW9CLENBQUMsVUFBdUI7SUFFakQsTUFBTSxVQUFVLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxrQkFBVSxDQUFDLFVBQVUsQ0FBQyxDQUFDO0lBRTlELE1BQU0sYUFBYSxHQUFHLFVBQVUsQ0FBQyxlQUFlLENBQUMsa0JBQVUsQ0FBQyxhQUFhLENBQUMsQ0FBQztJQUMzRSxNQUFNLGNBQWMsR0FBRyxVQUFVLENBQUMsUUFBUSxDQUFDLGtCQUFVLENBQUMsY0FBYyxDQUFDLENBQUM7SUFFdEUsTUFBTSxrQkFBa0IsR0FBRyxVQUFVLENBQUMsZUFBZSxDQUFDLGtCQUFVLENBQUMsa0JBQWtCLENBQUMsQ0FBQztJQUNyRixNQUFNLDBCQUEwQixHQUFHLFVBQVUsQ0FBQyxRQUFRLENBQUMsa0JBQVUsQ0FBQywwQkFBMEIsQ0FBQyxDQUFDO0lBRTlGLE1BQU0sbUJBQW1CLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxrQkFBVSxDQUFDLG1CQUFtQixDQUFDLENBQUM7SUFFaEYsTUFBTSxNQUFNLEdBQUcsVUFBVSxDQUFDLFlBQVksRUFBRSxDQUFDLE9BQU8sQ0FBQyxLQUFLLEVBQUUsR0FBRyxDQUFDLENBQUM7SUFFN0QsT0FBTztRQUNILFVBQVU7UUFDVixhQUFhO1FBQ2IsY0FBYztRQUNkLGtCQUFrQjtRQUNsQiwwQkFBMEI7UUFDMUIsbUJBQW1CO1FBQ25CLE1BQU07S0FDVCxDQUFDO0FBQ04sQ0FBQztBQUVELFNBQVMsc0JBQXNCLENBQUMsVUFBdUIsRUFBRSxVQUF1QjtJQUU1RSxVQUFVLENBQUMsU0FBUyxDQUFDLE9BQU8sRUFBNEIsVUFBVSxDQUFDLEtBQUssQ0FBQyxRQUFRLEVBQUUsQ0FBQyxDQUFDO0lBQ3JGLFVBQVUsQ0FBQyxTQUFTLENBQUMsT0FBTyxFQUE0QixVQUFVLENBQUMsS0FBSyxDQUFDLFFBQVEsRUFBRSxDQUFDLENBQUM7SUFDckYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxPQUFPLEVBQTRCLFVBQVUsQ0FBQyxLQUFLLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQztJQUNyRixVQUFVLENBQUMsU0FBUyxDQUFDLGVBQWUsRUFBb0IsVUFBVSxDQUFDLGFBQWEsQ0FBQyxDQUFDO0lBQ2xGLFVBQVUsQ0FBQyxTQUFTLENBQUMsdUJBQXVCLEVBQVksVUFBVSxDQUFDLHFCQUFxQixDQUFDLENBQUM7SUFDMUYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxpQkFBaUIsRUFBa0IsVUFBVSxDQUFDLGVBQWUsQ0FBQyxDQUFDO0lBQ3BGLFVBQVUsQ0FBQyxTQUFTLENBQUMsa0JBQWtCLEVBQWlCLFVBQVUsQ0FBQyxnQkFBZ0IsQ0FBQyxRQUFRLEVBQUUsQ0FBQyxDQUFDO0lBQ2hHLFVBQVUsQ0FBQyxTQUFTLENBQUMsMEJBQTBCLEVBQVMsVUFBVSxDQUFDLHdCQUF3QixDQUFDLFFBQVEsRUFBRSxDQUFDLENBQUM7SUFDeEcsVUFBVSxDQUFDLFNBQVMsQ0FBQyxlQUFlLEVBQW9CLFVBQVUsQ0FBQyxhQUFhLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQztJQUM3RixVQUFVLENBQUMsU0FBUyxDQUFDLHFCQUFxQixFQUFjLFVBQVUsQ0FBQyxtQkFBbUIsQ0FBQyxDQUFDO0lBQ3hGLFVBQVUsQ0FBQyxTQUFTLENBQUMsbUJBQW1CLEVBQWdCLFVBQVUsQ0FBQyxpQkFBaUIsQ0FBQyxDQUFDO0lBQ3RGLFVBQVUsQ0FBQyxTQUFTLENBQUMsaUJBQWlCLEVBQWtCLFVBQVUsQ0FBQyxlQUFlLENBQUMsQ0FBQztJQUNwRixVQUFVLENBQUMsU0FBUyxDQUFDLFFBQVEsRUFBMkIsVUFBVSxDQUFDLE1BQU0sQ0FBQyxDQUFDO0lBQzNFLFVBQVUsQ0FBQyxTQUFTLENBQUMsY0FBYyxFQUFxQixVQUFVLENBQUMsWUFBWSxDQUFDLENBQUM7SUFDakYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxvQkFBb0IsRUFBZSxVQUFVLENBQUMsa0JBQWtCLENBQUMsQ0FBQztJQUN2RixVQUFVLENBQUMsU0FBUyxDQUFDLGdCQUFnQixFQUFtQixVQUFVLENBQUMsY0FBYyxDQUFDLENBQUM7SUFDbkYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxvQkFBb0IsRUFBZSxVQUFVLENBQUMsa0JBQWtCLENBQUMsQ0FBQztJQUN2RixVQUFVLENBQUMsU0FBUyxDQUFDLFlBQVksRUFBdUIsVUFBVSxDQUFDLFVBQVUsQ0FBQyxDQUFDO0lBQy9FLFVBQVUsQ0FBQyxTQUFTLENBQUMsc0JBQXNCLEVBQWEsVUFBVSxDQUFDLG9CQUFvQixDQUFDLENBQUM7SUFDekYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxZQUFZLEVBQXVCLFVBQVUsQ0FBQyxVQUFVLENBQUMsQ0FBQztJQUMvRSxVQUFVLENBQUMsU0FBUyxDQUFDLEtBQUssRUFBOEIsVUFBVSxDQUFDLEdBQUcsQ0FBQyxDQUFDO0lBQ3hFLFVBQVUsQ0FBQyxTQUFTLENBQUMsVUFBVSxFQUF5QixVQUFVLENBQUMsUUFBUSxDQUFDLENBQUM7SUFDN0UsVUFBVSxDQUFDLFNBQVMsQ0FBQyxnQkFBZ0IsRUFBbUIsVUFBVSxDQUFDLGNBQWMsQ0FBQyxDQUFDO0lBQ25GLFVBQVUsQ0FBQyxTQUFTLENBQUMsY0FBYyxFQUFxQixVQUFVLENBQUMsWUFBWSxDQUFDLENBQUM7SUFDakYsVUFBVSxDQUFDLFNBQVMsQ0FBQyxzQkFBc0IsRUFBYSxVQUFVLENBQUMsb0JBQW9CLENBQUMsQ0FBQztJQUN6RixVQUFVLENBQUMsU0FBUyxDQUFDLG9CQUFvQixFQUFlLFVBQVUsQ0FBQyxrQkFBa0IsQ0FBQyxDQUFDO0lBQ3ZGLFVBQVUsQ0FBQyxTQUFTLENBQUMsa0JBQWtCLEVBQWlCLFVBQVUsQ0FBQyxnQkFBZ0IsQ0FBQyxDQUFDO0lBQ3JGLFVBQVUsQ0FBQyxTQUFTLENBQUMsMkJBQTJCLEVBQVEsVUFBVSxDQUFDLHlCQUF5QixDQUFDLFFBQVEsRUFBRSxDQUFDLENBQUM7SUFDekcsVUFBVSxDQUFDLFNBQVMsQ0FBQyxpQ0FBaUMsRUFBRSxVQUFVLENBQUMsK0JBQStCLENBQUMsQ0FBQztJQUNwRyxVQUFVLENBQUMsU0FBUyxDQUFDLFlBQVksRUFBdUIsVUFBVSxDQUFDLFVBQVUsQ0FBQyxDQUFDO0FBRW5GLENBQUMifQ==
-
-/***/ }),
-
 /***/ 139:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -1324,7 +1250,7 @@ module.exports = function nodeRNG() {
 
 var net = __webpack_require__(631);
 var tls = __webpack_require__(16);
-var http = __webpack_require__(876);
+var http = __webpack_require__(605);
 var https = __webpack_require__(211);
 var events = __webpack_require__(614);
 var assert = __webpack_require__(357);
@@ -1568,451 +1494,6 @@ if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
 }
 exports.debug = debug; // for test
 
-
-/***/ }),
-
-/***/ 186:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const core = __webpack_require__(470);
-const io = __webpack_require__(1);
-const fs = __webpack_require__(747);
-const os = __webpack_require__(87);
-const path = __webpack_require__(622);
-const httpm = __webpack_require__(874);
-const semver = __webpack_require__(550);
-const uuidV4 = __webpack_require__(826);
-const exec_1 = __webpack_require__(986);
-const assert_1 = __webpack_require__(357);
-class HTTPError extends Error {
-    constructor(httpStatusCode) {
-        super(`Unexpected HTTP response: ${httpStatusCode}`);
-        this.httpStatusCode = httpStatusCode;
-        Object.setPrototypeOf(this, new.target.prototype);
-    }
-}
-exports.HTTPError = HTTPError;
-const IS_WINDOWS = process.platform === 'win32';
-const userAgent = 'actions/tool-cache';
-// On load grab temp directory and cache directory and remove them from env (currently don't want to expose this)
-let tempDirectory = process.env['RUNNER_TEMP'] || '';
-let cacheRoot = process.env['RUNNER_TOOL_CACHE'] || '';
-// If directories not found, place them in common temp locations
-if (!tempDirectory || !cacheRoot) {
-    let baseLocation;
-    if (IS_WINDOWS) {
-        // On windows use the USERPROFILE env variable
-        baseLocation = process.env['USERPROFILE'] || 'C:\\';
-    }
-    else {
-        if (process.platform === 'darwin') {
-            baseLocation = '/Users';
-        }
-        else {
-            baseLocation = '/home';
-        }
-    }
-    if (!tempDirectory) {
-        tempDirectory = path.join(baseLocation, 'actions', 'temp');
-    }
-    if (!cacheRoot) {
-        cacheRoot = path.join(baseLocation, 'actions', 'cache');
-    }
-}
-/**
- * Download a tool from an url and stream it into a file
- *
- * @param url       url of tool to download
- * @returns         path to downloaded tool
- */
-function downloadTool(url) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // Wrap in a promise so that we can resolve from within stream callbacks
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const http = new httpm.HttpClient(userAgent, [], {
-                    allowRetries: true,
-                    maxRetries: 3
-                });
-                const destPath = path.join(tempDirectory, uuidV4());
-                yield io.mkdirP(tempDirectory);
-                core.debug(`Downloading ${url}`);
-                core.debug(`Downloading ${destPath}`);
-                if (fs.existsSync(destPath)) {
-                    throw new Error(`Destination file path ${destPath} already exists`);
-                }
-                const response = yield http.get(url);
-                if (response.message.statusCode !== 200) {
-                    const err = new HTTPError(response.message.statusCode);
-                    core.debug(`Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
-                    throw err;
-                }
-                const file = fs.createWriteStream(destPath);
-                file.on('open', () => __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        const stream = response.message.pipe(file);
-                        stream.on('close', () => {
-                            core.debug('download complete');
-                            resolve(destPath);
-                        });
-                    }
-                    catch (err) {
-                        core.debug(`Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
-                        reject(err);
-                    }
-                }));
-                file.on('error', err => {
-                    file.end();
-                    reject(err);
-                });
-            }
-            catch (err) {
-                reject(err);
-            }
-        }));
-    });
-}
-exports.downloadTool = downloadTool;
-/**
- * Extract a .7z file
- *
- * @param file     path to the .7z file
- * @param dest     destination directory. Optional.
- * @param _7zPath  path to 7zr.exe. Optional, for long path support. Most .7z archives do not have this
- * problem. If your .7z archive contains very long paths, you can pass the path to 7zr.exe which will
- * gracefully handle long paths. By default 7zdec.exe is used because it is a very small program and is
- * bundled with the tool lib. However it does not support long paths. 7zr.exe is the reduced command line
- * interface, it is smaller than the full command line interface, and it does support long paths. At the
- * time of this writing, it is freely available from the LZMA SDK that is available on the 7zip website.
- * Be sure to check the current license agreement. If 7zr.exe is bundled with your action, then the path
- * to 7zr.exe can be pass to this function.
- * @returns        path to the destination directory
- */
-function extract7z(file, dest, _7zPath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        assert_1.ok(IS_WINDOWS, 'extract7z() not supported on current OS');
-        assert_1.ok(file, 'parameter "file" is required');
-        dest = dest || (yield _createExtractFolder(dest));
-        const originalCwd = process.cwd();
-        process.chdir(dest);
-        if (_7zPath) {
-            try {
-                const args = [
-                    'x',
-                    '-bb1',
-                    '-bd',
-                    '-sccUTF-8',
-                    file
-                ];
-                const options = {
-                    silent: true
-                };
-                yield exec_1.exec(`"${_7zPath}"`, args, options);
-            }
-            finally {
-                process.chdir(originalCwd);
-            }
-        }
-        else {
-            const escapedScript = path
-                .join(__dirname, '..', 'scripts', 'Invoke-7zdec.ps1')
-                .replace(/'/g, "''")
-                .replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
-            const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-            const escapedTarget = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-            const command = `& '${escapedScript}' -Source '${escapedFile}' -Target '${escapedTarget}'`;
-            const args = [
-                '-NoLogo',
-                '-Sta',
-                '-NoProfile',
-                '-NonInteractive',
-                '-ExecutionPolicy',
-                'Unrestricted',
-                '-Command',
-                command
-            ];
-            const options = {
-                silent: true
-            };
-            try {
-                const powershellPath = yield io.which('powershell', true);
-                yield exec_1.exec(`"${powershellPath}"`, args, options);
-            }
-            finally {
-                process.chdir(originalCwd);
-            }
-        }
-        return dest;
-    });
-}
-exports.extract7z = extract7z;
-/**
- * Extract a tar
- *
- * @param file     path to the tar
- * @param dest     destination directory. Optional.
- * @param flags    flags for the tar. Optional.
- * @returns        path to the destination directory
- */
-function extractTar(file, dest, flags = 'xz') {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!file) {
-            throw new Error("parameter 'file' is required");
-        }
-        dest = dest || (yield _createExtractFolder(dest));
-        const tarPath = yield io.which('tar', true);
-        yield exec_1.exec(`"${tarPath}"`, [flags, '-C', dest, '-f', file]);
-        return dest;
-    });
-}
-exports.extractTar = extractTar;
-/**
- * Extract a zip
- *
- * @param file     path to the zip
- * @param dest     destination directory. Optional.
- * @returns        path to the destination directory
- */
-function extractZip(file, dest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!file) {
-            throw new Error("parameter 'file' is required");
-        }
-        dest = dest || (yield _createExtractFolder(dest));
-        if (IS_WINDOWS) {
-            yield extractZipWin(file, dest);
-        }
-        else {
-            yield extractZipNix(file, dest);
-        }
-        return dest;
-    });
-}
-exports.extractZip = extractZip;
-function extractZipWin(file, dest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // build the powershell command
-        const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
-        const escapedDest = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
-        const command = `$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.FileSystem } catch { } ; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedFile}', '${escapedDest}')`;
-        // run powershell
-        const powershellPath = yield io.which('powershell');
-        const args = [
-            '-NoLogo',
-            '-Sta',
-            '-NoProfile',
-            '-NonInteractive',
-            '-ExecutionPolicy',
-            'Unrestricted',
-            '-Command',
-            command
-        ];
-        yield exec_1.exec(`"${powershellPath}"`, args);
-    });
-}
-function extractZipNix(file, dest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const unzipPath = yield io.which('unzip');
-        yield exec_1.exec(`"${unzipPath}"`, [file], { cwd: dest });
-    });
-}
-/**
- * Caches a directory and installs it into the tool cacheDir
- *
- * @param sourceDir    the directory to cache into tools
- * @param tool          tool name
- * @param version       version of the tool.  semver format
- * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
- */
-function cacheDir(sourceDir, tool, version, arch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        version = semver.clean(version) || version;
-        arch = arch || os.arch();
-        core.debug(`Caching tool ${tool} ${version} ${arch}`);
-        core.debug(`source dir: ${sourceDir}`);
-        if (!fs.statSync(sourceDir).isDirectory()) {
-            throw new Error('sourceDir is not a directory');
-        }
-        // Create the tool dir
-        const destPath = yield _createToolPath(tool, version, arch);
-        // copy each child item. do not move. move can fail on Windows
-        // due to anti-virus software having an open handle on a file.
-        for (const itemName of fs.readdirSync(sourceDir)) {
-            const s = path.join(sourceDir, itemName);
-            yield io.cp(s, destPath, { recursive: true });
-        }
-        // write .complete
-        _completeToolPath(tool, version, arch);
-        return destPath;
-    });
-}
-exports.cacheDir = cacheDir;
-/**
- * Caches a downloaded file (GUID) and installs it
- * into the tool cache with a given targetName
- *
- * @param sourceFile    the file to cache into tools.  Typically a result of downloadTool which is a guid.
- * @param targetFile    the name of the file name in the tools directory
- * @param tool          tool name
- * @param version       version of the tool.  semver format
- * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
- */
-function cacheFile(sourceFile, targetFile, tool, version, arch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        version = semver.clean(version) || version;
-        arch = arch || os.arch();
-        core.debug(`Caching tool ${tool} ${version} ${arch}`);
-        core.debug(`source file: ${sourceFile}`);
-        if (!fs.statSync(sourceFile).isFile()) {
-            throw new Error('sourceFile is not a file');
-        }
-        // create the tool dir
-        const destFolder = yield _createToolPath(tool, version, arch);
-        // copy instead of move. move can fail on Windows due to
-        // anti-virus software having an open handle on a file.
-        const destPath = path.join(destFolder, targetFile);
-        core.debug(`destination file ${destPath}`);
-        yield io.cp(sourceFile, destPath);
-        // write .complete
-        _completeToolPath(tool, version, arch);
-        return destFolder;
-    });
-}
-exports.cacheFile = cacheFile;
-/**
- * Finds the path to a tool version in the local installed tool cache
- *
- * @param toolName      name of the tool
- * @param versionSpec   version of the tool
- * @param arch          optional arch.  defaults to arch of computer
- */
-function find(toolName, versionSpec, arch) {
-    if (!toolName) {
-        throw new Error('toolName parameter is required');
-    }
-    if (!versionSpec) {
-        throw new Error('versionSpec parameter is required');
-    }
-    arch = arch || os.arch();
-    // attempt to resolve an explicit version
-    if (!_isExplicitVersion(versionSpec)) {
-        const localVersions = findAllVersions(toolName, arch);
-        const match = _evaluateVersions(localVersions, versionSpec);
-        versionSpec = match;
-    }
-    // check for the explicit version in the cache
-    let toolPath = '';
-    if (versionSpec) {
-        versionSpec = semver.clean(versionSpec) || '';
-        const cachePath = path.join(cacheRoot, toolName, versionSpec, arch);
-        core.debug(`checking cache: ${cachePath}`);
-        if (fs.existsSync(cachePath) && fs.existsSync(`${cachePath}.complete`)) {
-            core.debug(`Found tool in cache ${toolName} ${versionSpec} ${arch}`);
-            toolPath = cachePath;
-        }
-        else {
-            core.debug('not found');
-        }
-    }
-    return toolPath;
-}
-exports.find = find;
-/**
- * Finds the paths to all versions of a tool that are installed in the local tool cache
- *
- * @param toolName  name of the tool
- * @param arch      optional arch.  defaults to arch of computer
- */
-function findAllVersions(toolName, arch) {
-    const versions = [];
-    arch = arch || os.arch();
-    const toolPath = path.join(cacheRoot, toolName);
-    if (fs.existsSync(toolPath)) {
-        const children = fs.readdirSync(toolPath);
-        for (const child of children) {
-            if (_isExplicitVersion(child)) {
-                const fullPath = path.join(toolPath, child, arch || '');
-                if (fs.existsSync(fullPath) && fs.existsSync(`${fullPath}.complete`)) {
-                    versions.push(child);
-                }
-            }
-        }
-    }
-    return versions;
-}
-exports.findAllVersions = findAllVersions;
-function _createExtractFolder(dest) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!dest) {
-            // create a temp dir
-            dest = path.join(tempDirectory, uuidV4());
-        }
-        yield io.mkdirP(dest);
-        return dest;
-    });
-}
-function _createToolPath(tool, version, arch) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const folderPath = path.join(cacheRoot, tool, semver.clean(version) || version, arch || '');
-        core.debug(`destination ${folderPath}`);
-        const markerPath = `${folderPath}.complete`;
-        yield io.rmRF(folderPath);
-        yield io.rmRF(markerPath);
-        yield io.mkdirP(folderPath);
-        return folderPath;
-    });
-}
-function _completeToolPath(tool, version, arch) {
-    const folderPath = path.join(cacheRoot, tool, semver.clean(version) || version, arch || '');
-    const markerPath = `${folderPath}.complete`;
-    fs.writeFileSync(markerPath, '');
-    core.debug('finished caching tool');
-}
-function _isExplicitVersion(versionSpec) {
-    const c = semver.clean(versionSpec) || '';
-    core.debug(`isExplicit: ${c}`);
-    const valid = semver.valid(c) != null;
-    core.debug(`explicit? ${valid}`);
-    return valid;
-}
-function _evaluateVersions(versions, versionSpec) {
-    let version = '';
-    core.debug(`evaluating ${versions.length} versions`);
-    versions = versions.sort((a, b) => {
-        if (semver.gt(a, b)) {
-            return 1;
-        }
-        return -1;
-    });
-    for (let i = versions.length - 1; i >= 0; i--) {
-        const potential = versions[i];
-        const satisfied = semver.satisfies(potential, versionSpec);
-        if (satisfied) {
-            version = potential;
-            break;
-        }
-    }
-    if (version) {
-        core.debug(`matched: ${version}`);
-    }
-    else {
-        core.debug('match not found');
-    }
-    return version;
-}
-//# sourceMappingURL=tool-cache.js.map
 
 /***/ }),
 
@@ -3578,6 +3059,265 @@ function coerce (version) {
 
 /***/ }),
 
+/***/ 294:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = __webpack_require__(747);
+const os = __webpack_require__(87);
+const path = __webpack_require__(622);
+const semver = __webpack_require__(280);
+const http = __webpack_require__(874);
+const inversify_1 = __webpack_require__(410);
+const types_1 = __webpack_require__(98);
+let DotnetTool = class DotnetTool {
+    constructor(buildAgent, versionManager) {
+        this.buildAgent = buildAgent;
+        this.versionManager = versionManager;
+        this.httpClient = new http.HttpClient("dotnet");
+    }
+    run(args) {
+        return this.buildAgent.exec("dotnet", args);
+    }
+    toolInstall(toolName, versionSpec, checkLatest, includePre) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("");
+            console.log("--------------------------");
+            console.log(`Installing ${toolName} version ` + versionSpec);
+            console.log("--------------------------");
+            if (this.versionManager.isExplicitVersion(versionSpec)) {
+                checkLatest = false; // check latest doesn't make sense when explicit version
+            }
+            let toolPath;
+            if (!checkLatest) {
+                //
+                // Let's try and resolve the version spec locally first
+                //
+                toolPath = this.buildAgent.find(toolName, versionSpec);
+            }
+            if (!toolPath) {
+                let version;
+                if (this.versionManager.isExplicitVersion(versionSpec)) {
+                    //
+                    // Explicit version was specified. No need to query for list of versions.
+                    //
+                    version = versionSpec;
+                }
+                else {
+                    //
+                    // Let's query and resolve the latest version for the versionSpec.
+                    // If the version is an explicit version (1.1.1 or v1.1.1) then no need to query.
+                    // If your tool doesn't offer a mechanism to query,
+                    // then it can only support exact version inputs.
+                    //
+                    version = yield this.queryLatestMatch(toolName, versionSpec, includePre);
+                    if (!version) {
+                        throw new Error(`Unable to find ${toolName} version '${versionSpec}'.`);
+                    }
+                    //
+                    // Check the cache for the resolved version.
+                    //
+                    toolPath = this.buildAgent.find(toolName, version);
+                }
+                if (!toolPath) {
+                    //
+                    // Download, extract, cache
+                    //
+                    toolPath = yield this.acquireTool(toolName, version);
+                }
+            }
+            //
+            // Prepend the tools path. This prepends the PATH for the current process and
+            // instructs the agent to prepend for each task that follows.
+            //
+            this.buildAgent.debug(`toolPath: ${toolPath}`);
+            if (os.platform() !== "win32") {
+                const dotnetRoot = path.dirname(fs.readlinkSync(yield this.buildAgent.which("dotnet")));
+                this.buildAgent.exportVariable("DOTNET_ROOT", dotnetRoot);
+            }
+            this.buildAgent.addPath(toolPath);
+            return toolPath;
+        });
+    }
+    queryLatestMatch(toolName, versionSpec, includePrerelease) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.buildAgent.debug(`querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
+            const downloadPath = `https://api-v2v3search-0.nuget.org/query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${includePrerelease ? "true" : "false"}&semVerLevel=2.0.0`;
+            const res = yield this.httpClient.get(downloadPath);
+            if (!res || res.message.statusCode !== 200) {
+                return null;
+            }
+            const body = yield res.readBody();
+            const data = JSON.parse(body).data;
+            const versions = data[0].versions.map((x) => x.version);
+            if (!versions || !versions.length) {
+                return null;
+            }
+            this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
+            return this.versionManager.evaluateVersions(versions, versionSpec);
+        });
+    }
+    acquireTool(toolName, version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tempDirectory = yield this.buildAgent.createTempDir();
+            let args = ["tool", "install", toolName, "--tool-path", tempDirectory];
+            if (version) {
+                version = this.versionManager.cleanVersion(version);
+                args = args.concat(["--version", version]);
+            }
+            const result = yield this.run(args);
+            const status = result.code === 0 ? "success" : "failure";
+            const message = result.code === 0 ? result.stdout : result.stderr;
+            this.buildAgent.debug(`tool install result: ${status} ${message}`);
+            if (result.code) {
+                throw new Error("Error installing tool");
+            }
+            return yield this.buildAgent.cacheDir(tempDirectory, toolName, version);
+        });
+    }
+};
+DotnetTool = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
+    __param(1, inversify_1.inject(types_1.TYPES.IVersionManager)),
+    __metadata("design:paramtypes", [Object, Object])
+], DotnetTool);
+exports.DotnetTool = DotnetTool;
+let GitVersionTool = class GitVersionTool {
+    constructor(buildAgent, dotnetTool) {
+        this.buildAgent = buildAgent;
+        this.dotnetTool = dotnetTool;
+    }
+    install(versionSpec, includePrerelease) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
+        });
+    }
+    run(options) {
+        const workDir = this.getRepoDir(options.targetPath);
+        const args = this.getArguments(workDir, options);
+        return this.buildAgent.exec("dotnet-gitversion", args);
+    }
+    getRepoDir(targetPath) {
+        let workDir;
+        const srcDir = this.buildAgent.getSourceDir();
+        if (!targetPath) {
+            workDir = srcDir;
+        }
+        else {
+            if (this.buildAgent.directoryExists(targetPath)) {
+                workDir = path.join(srcDir, targetPath);
+            }
+            else {
+                throw new Error("Directory not found at " + targetPath);
+            }
+        }
+        return workDir.replace(/\\/g, "/");
+    }
+    getArguments(workDir, options) {
+        const args = [
+            workDir,
+            "/output",
+            "json",
+        ];
+        const { useConfigFile, configFilePath, updateAssemblyInfo, updateAssemblyInfoFilename, additionalArguments, } = options;
+        if (useConfigFile) {
+            if (this.buildAgent.isValidInputFile("configFilePath", configFilePath)) {
+                args.push("/config", configFilePath);
+            }
+            else {
+                throw new Error("GitVersion configuration file not found at " + configFilePath);
+            }
+        }
+        if (updateAssemblyInfo) {
+            args.push("/updateassemblyinfo");
+            if (this.buildAgent.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
+                args.push(updateAssemblyInfoFilename);
+            }
+            else {
+                throw new Error("AssemblyInfoFilename file not found at " + updateAssemblyInfoFilename);
+            }
+        }
+        args.push(additionalArguments);
+        return args;
+    }
+};
+GitVersionTool = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
+    __param(1, inversify_1.inject(types_1.TYPES.IDotnetTool)),
+    __metadata("design:paramtypes", [Object, Object])
+], GitVersionTool);
+exports.GitVersionTool = GitVersionTool;
+const cmp = __webpack_require__(312);
+let VersionManager = class VersionManager {
+    constructor(buildAgent) {
+        this.buildAgent = buildAgent;
+    }
+    isExplicitVersion(versionSpec) {
+        const c = semver.clean(versionSpec);
+        this.buildAgent.debug("isExplicit: " + c);
+        const valid = semver.valid(c) != null;
+        this.buildAgent.debug("explicit? " + valid);
+        return valid;
+    }
+    evaluateVersions(versions, versionSpec) {
+        let version;
+        this.buildAgent.debug("evaluating " + versions.length + " versions");
+        versions = versions.sort(cmp);
+        for (let i = versions.length - 1; i >= 0; i--) {
+            const potential = versions[i];
+            const satisfied = semver.satisfies(potential, versionSpec);
+            if (satisfied) {
+                version = potential;
+                break;
+            }
+        }
+        if (version) {
+            this.buildAgent.debug("matched: " + version);
+        }
+        else {
+            this.buildAgent.debug("match not found");
+        }
+        return version;
+    }
+    cleanVersion(version) {
+        this.buildAgent.debug("cleaning: " + version);
+        return semver.clean(version);
+    }
+};
+VersionManager = __decorate([
+    inversify_1.injectable(),
+    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
+    __metadata("design:paramtypes", [Object])
+], VersionManager);
+exports.VersionManager = VersionManager;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29tbW9uLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiY29tbW9uLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFDQSx5QkFBeUI7QUFDekIseUJBQXlCO0FBQ3pCLDZCQUE2QjtBQUM3QixpQ0FBaUM7QUFDakMscURBQXFEO0FBRXJELHlDQUErQztBQUcvQyxtQ0FBZ0M7QUFHaEMsSUFBTSxVQUFVLEdBQWhCLE1BQU0sVUFBVTtJQU1aLFlBQytCLFVBQXVCLEVBQ25CLGNBQStCO1FBRTlELElBQUksQ0FBQyxVQUFVLEdBQUcsVUFBVSxDQUFDO1FBQzdCLElBQUksQ0FBQyxjQUFjLEdBQUcsY0FBYyxDQUFDO1FBQ3JDLElBQUksQ0FBQyxVQUFVLEdBQUcsSUFBSSxJQUFJLENBQUMsVUFBVSxDQUFDLFFBQVEsQ0FBQyxDQUFDO0lBQ3BELENBQUM7SUFFTSxHQUFHLENBQUMsSUFBYztRQUNyQixPQUFPLElBQUksQ0FBQyxVQUFVLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRSxJQUFJLENBQUMsQ0FBQztJQUNoRCxDQUFDO0lBRVksV0FBVyxDQUFDLFFBQWdCLEVBQUUsV0FBbUIsRUFBRSxXQUFvQixFQUFFLFVBQW1COztZQUVyRyxPQUFPLENBQUMsR0FBRyxDQUFDLEVBQUUsQ0FBQyxDQUFDO1lBQ2hCLE9BQU8sQ0FBQyxHQUFHLENBQUMsNEJBQTRCLENBQUMsQ0FBQztZQUMxQyxPQUFPLENBQUMsR0FBRyxDQUFDLGNBQWMsUUFBUSxXQUFXLEdBQUcsV0FBVyxDQUFDLENBQUM7WUFDN0QsT0FBTyxDQUFDLEdBQUcsQ0FBQyw0QkFBNEIsQ0FBQyxDQUFDO1lBRTFDLElBQUksSUFBSSxDQUFDLGNBQWMsQ0FBQyxpQkFBaUIsQ0FBQyxXQUFXLENBQUMsRUFBRTtnQkFDcEQsV0FBVyxHQUFHLEtBQUssQ0FBQyxDQUFDLHdEQUF3RDthQUNoRjtZQUVELElBQUksUUFBZ0IsQ0FBQztZQUNyQixJQUFJLENBQUMsV0FB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
+
+/***/ }),
+
 /***/ 307:
 /***/ (function() {
 
@@ -4782,6 +4522,26 @@ exports.decorate = decorate;
 
 /***/ }),
 
+/***/ 312:
+/***/ (function(module) {
+
+module.exports = function cmp (a, b) {
+    var pa = a.split('.');
+    var pb = b.split('.');
+    for (var i = 0; i < 3; i++) {
+        var na = Number(pa[i]);
+        var nb = Number(pb[i]);
+        if (na > nb) return 1;
+        if (nb > na) return -1;
+        if (!isNaN(na) && isNaN(nb)) return 1;
+        if (isNaN(na) && !isNaN(nb)) return -1;
+    }
+    return 0;
+};
+
+
+/***/ }),
+
 /***/ 319:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -5345,6 +5105,110 @@ function escape(s) {
 
 /***/ }),
 
+/***/ 438:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const types_1 = __webpack_require__(98);
+function setup(buildAgent, gitVersionTool) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+            const versionSpec = buildAgent.getInput(types_1.SetupOptions.versionSpec);
+            const includePrerelease = buildAgent.getBooleanInput(types_1.SetupOptions.includePrerelease);
+            yield gitVersionTool.install(versionSpec, includePrerelease);
+            buildAgent.setSucceeded("GitVersion installed successfully", true);
+        }
+        catch (error) {
+            buildAgent.setFailed(error.message, true);
+        }
+    });
+}
+exports.setup = setup;
+function run(buildAgent, gitVersionTool) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const inputOptions = getGitVersionOptions(buildAgent);
+            const result = yield gitVersionTool.run(inputOptions);
+            const gitversion = JSON.parse(result.stdout);
+            writeGitVersionToAgent(buildAgent, gitversion);
+            if (result.code === 0) {
+                buildAgent.setSucceeded("GitVersion executed successfully", true);
+            }
+            else {
+                buildAgent.setFailed(result.error.message, true);
+            }
+        }
+        catch (error) {
+            buildAgent.setFailed(error, true);
+        }
+    });
+}
+exports.run = run;
+function getGitVersionOptions(buildAgent) {
+    const targetPath = buildAgent.getInput(types_1.RunOptions.targetPath);
+    const useConfigFile = buildAgent.getBooleanInput(types_1.RunOptions.useConfigFile);
+    const configFilePath = buildAgent.getInput(types_1.RunOptions.configFilePath);
+    const updateAssemblyInfo = buildAgent.getBooleanInput(types_1.RunOptions.updateAssemblyInfo);
+    const updateAssemblyInfoFilename = buildAgent.getInput(types_1.RunOptions.updateAssemblyInfoFilename);
+    const additionalArguments = buildAgent.getInput(types_1.RunOptions.additionalArguments);
+    const srcDir = buildAgent.getSourceDir().replace(/\\/g, "/");
+    return {
+        targetPath,
+        useConfigFile,
+        configFilePath,
+        updateAssemblyInfo,
+        updateAssemblyInfoFilename,
+        additionalArguments,
+        srcDir,
+    };
+}
+function writeGitVersionToAgent(buildAgent, gitversion) {
+    buildAgent.setOutput("major", gitversion.Major.toString());
+    buildAgent.setOutput("minor", gitversion.Minor.toString());
+    buildAgent.setOutput("patch", gitversion.Patch.toString());
+    buildAgent.setOutput("preReleaseTag", gitversion.PreReleaseTag);
+    buildAgent.setOutput("preReleaseTagWithDash", gitversion.PreReleaseTagWithDash);
+    buildAgent.setOutput("preReleaseLabel", gitversion.PreReleaseLabel);
+    buildAgent.setOutput("preReleaseNumber", gitversion.PreReleaseNumber.toString());
+    buildAgent.setOutput("weightedPreReleaseNumber", gitversion.WeightedPreReleaseNumber.toString());
+    buildAgent.setOutput("buildMetaData", gitversion.BuildMetaData.toString());
+    buildAgent.setOutput("buildMetaDataPadded", gitversion.BuildMetaDataPadded);
+    buildAgent.setOutput("fullBuildMetaData", gitversion.FullBuildMetaData);
+    buildAgent.setOutput("majorMinorPatch", gitversion.MajorMinorPatch);
+    buildAgent.setOutput("semVer", gitversion.SemVer);
+    buildAgent.setOutput("legacySemVer", gitversion.LegacySemVer);
+    buildAgent.setOutput("legacySemVerPadded", gitversion.LegacySemVerPadded);
+    buildAgent.setOutput("assemblySemVer", gitversion.AssemblySemVer);
+    buildAgent.setOutput("assemblySemFileVer", gitversion.AssemblySemFileVer);
+    buildAgent.setOutput("fullSemVer", gitversion.FullSemVer);
+    buildAgent.setOutput("informationalVersion", gitversion.InformationalVersion);
+    buildAgent.setOutput("branchName", gitversion.BranchName);
+    buildAgent.setOutput("sha", gitversion.Sha);
+    buildAgent.setOutput("shortSha", gitversion.ShortSha);
+    buildAgent.setOutput("nuGetVersionV2", gitversion.NuGetVersionV2);
+    buildAgent.setOutput("nuGetVersion", gitversion.NuGetVersion);
+    buildAgent.setOutput("nuGetPreReleaseTagV2", gitversion.NuGetPreReleaseTagV2);
+    buildAgent.setOutput("nuGetPreReleaseTag", gitversion.NuGetPreReleaseTag);
+    buildAgent.setOutput("versionSourceSha", gitversion.VersionSourceSha);
+    buildAgent.setOutput("commitsSinceVersionSource", gitversion.CommitsSinceVersionSource.toString());
+    buildAgent.setOutput("commitsSinceVersionSourcePadded", gitversion.CommitsSinceVersionSourcePadded);
+    buildAgent.setOutput("commitDate", gitversion.CommitDate);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWFpbi5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIm1haW4udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7OztBQUVBLG1DQUFtRDtBQUVuRCxTQUFzQixLQUFLLENBQUMsVUFBdUIsRUFBRSxjQUErQjs7UUFDaEYsSUFBSTtZQUVBLFVBQVUsQ0FBQyxjQUFjLENBQUMsNkJBQTZCLEVBQUUsR0FBRyxDQUFDLENBQUM7WUFFOUQsTUFBTSxXQUFXLEdBQUcsVUFBVSxDQUFDLFFBQVEsQ0FBQyxvQkFBWSxDQUFDLFdBQVcsQ0FBQyxDQUFDO1lBQ2xFLE1BQU0saUJBQWlCLEdBQUcsVUFBVSxDQUFDLGVBQWUsQ0FBQyxvQkFBWSxDQUFDLGlCQUFpQixDQUFDLENBQUM7WUFFckYsTUFBTSxjQUFjLENBQUMsT0FBTyxDQUFDLFdBQVcsRUFBRSxpQkFBaUIsQ0FBQyxDQUFDO1lBRTdELFVBQVUsQ0FBQyxZQUFZLENBQUMsbUNBQW1DLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDdEU7UUFBQyxPQUFPLEtBQUssRUFBRTtZQUNaLFVBQVUsQ0FBQyxTQUFTLENBQUMsS0FBSyxDQUFDLE9BQU8sRUFBRSxJQUFJLENBQUMsQ0FBQztTQUM3QztJQUNMLENBQUM7Q0FBQTtBQWRELHNCQWNDO0FBRUQsU0FBc0IsR0FBRyxDQUFDLFVBQXVCLEVBQUUsY0FBK0I7O1FBQzlFLElBQUk7WUFDQSxNQUFNLFlBQVksR0FBdUIsb0JBQW9CLENBQUMsVUFBVSxDQUFDLENBQUM7WUFFMUUsTUFBTSxNQUFNLEdBQUcsTUFBTSxjQUFjLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQyxDQUFDO1lBRXRELE1BQU0sVUFBVSxHQUFHLElBQUksQ0FBQyxLQUFLLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBZ0IsQ0FBQztZQUM1RCxzQkFBc0IsQ0FBQyxVQUFVLEVBQUUsVUFBVSxDQUFDLENBQUM7WUFFL0MsSUFBSSxNQUFNLENBQUMsSUFBSSxLQUFLLENBQUMsRUFBRTtnQkFDbkIs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
+
+/***/ }),
+
 /***/ 470:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -5564,22 +5428,20 @@ exports.isStackOverflowExeption = isStackOverflowExeption;
 /***/ }),
 
 /***/ 523:
-/***/ (function(module) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
-module.exports = function cmp (a, b) {
-    var pa = a.split('.');
-    var pb = b.split('.');
-    for (var i = 0; i < 3; i++) {
-        var na = Number(pa[i]);
-        var nb = Number(pb[i]);
-        if (na > nb) return 1;
-        if (nb > na) return -1;
-        if (!isNaN(na) && isNaN(nb)) return 1;
-        if (isNaN(na) && !isNaN(nb)) return -1;
-    }
-    return 0;
-};
+"use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const inversify_1 = __webpack_require__(410);
+const common_1 = __webpack_require__(294);
+const types_1 = __webpack_require__(98);
+const ioc = new inversify_1.Container();
+exports.ioc = ioc;
+ioc.bind(types_1.TYPES.IVersionManager).to(common_1.VersionManager);
+ioc.bind(types_1.TYPES.IDotnetTool).to(common_1.DotnetTool);
+ioc.bind(types_1.TYPES.IGitVersionTool).to(common_1.GitVersionTool);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW9jLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiaW9jLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEseUNBQXNDO0FBRXRDLHFDQUFzRTtBQUV0RSxtQ0FBZ0M7QUFFaEMsTUFBTSxHQUFHLEdBQUcsSUFBSSxxQkFBUyxFQUFFLENBQUM7QUFNbkIsa0JBQUc7QUFKWixHQUFHLENBQUMsSUFBSSxDQUFrQixhQUFLLENBQUMsZUFBZSxDQUFDLENBQUMsRUFBRSxDQUFDLHVCQUFjLENBQUMsQ0FBQztBQUNwRSxHQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsbUJBQVUsQ0FBQyxDQUFDO0FBQ3hELEdBQUcsQ0FBQyxJQUFJLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQyxFQUFFLENBQUMsdUJBQWMsQ0FBQyxDQUFDIn0=
 
 /***/ }),
 
@@ -5588,16 +5450,443 @@ module.exports = function cmp (a, b) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const inversify_1 = __webpack_require__(410);
-const common_1 = __webpack_require__(605);
-const types_1 = __webpack_require__(639);
-const ioc = new inversify_1.Container();
-exports.ioc = ioc;
-ioc.bind(types_1.TYPES.IVersionManager).to(common_1.VersionManager);
-ioc.bind(types_1.TYPES.IDotnetTool).to(common_1.DotnetTool);
-ioc.bind(types_1.TYPES.IGitVersionTool).to(common_1.GitVersionTool);
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvYWN0aW9ucy9zcmMvaW9jLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEseUNBQXNDO0FBRXRDLHFDQUFzRTtBQUV0RSxtQ0FBZ0M7QUFFaEMsTUFBTSxHQUFHLEdBQUcsSUFBSSxxQkFBUyxFQUFFLENBQUM7QUFNbkIsa0JBQUc7QUFKWixHQUFHLENBQUMsSUFBSSxDQUFrQixhQUFLLENBQUMsZUFBZSxDQUFDLENBQUMsRUFBRSxDQUFDLHVCQUFjLENBQUMsQ0FBQztBQUNwRSxHQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsbUJBQVUsQ0FBQyxDQUFDO0FBQ3hELEdBQUcsQ0FBQyxJQUFJLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQyxFQUFFLENBQUMsdUJBQWMsQ0FBQyxDQUFDIn0=
+const core = __webpack_require__(470);
+const io = __webpack_require__(1);
+const fs = __webpack_require__(747);
+const os = __webpack_require__(87);
+const path = __webpack_require__(622);
+const httpm = __webpack_require__(874);
+const semver = __webpack_require__(550);
+const uuidV4 = __webpack_require__(826);
+const exec_1 = __webpack_require__(986);
+const assert_1 = __webpack_require__(357);
+class HTTPError extends Error {
+    constructor(httpStatusCode) {
+        super(`Unexpected HTTP response: ${httpStatusCode}`);
+        this.httpStatusCode = httpStatusCode;
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+exports.HTTPError = HTTPError;
+const IS_WINDOWS = process.platform === 'win32';
+const userAgent = 'actions/tool-cache';
+// On load grab temp directory and cache directory and remove them from env (currently don't want to expose this)
+let tempDirectory = process.env['RUNNER_TEMP'] || '';
+let cacheRoot = process.env['RUNNER_TOOL_CACHE'] || '';
+// If directories not found, place them in common temp locations
+if (!tempDirectory || !cacheRoot) {
+    let baseLocation;
+    if (IS_WINDOWS) {
+        // On windows use the USERPROFILE env variable
+        baseLocation = process.env['USERPROFILE'] || 'C:\\';
+    }
+    else {
+        if (process.platform === 'darwin') {
+            baseLocation = '/Users';
+        }
+        else {
+            baseLocation = '/home';
+        }
+    }
+    if (!tempDirectory) {
+        tempDirectory = path.join(baseLocation, 'actions', 'temp');
+    }
+    if (!cacheRoot) {
+        cacheRoot = path.join(baseLocation, 'actions', 'cache');
+    }
+}
+/**
+ * Download a tool from an url and stream it into a file
+ *
+ * @param url       url of tool to download
+ * @returns         path to downloaded tool
+ */
+function downloadTool(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Wrap in a promise so that we can resolve from within stream callbacks
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const http = new httpm.HttpClient(userAgent, [], {
+                    allowRetries: true,
+                    maxRetries: 3
+                });
+                const destPath = path.join(tempDirectory, uuidV4());
+                yield io.mkdirP(tempDirectory);
+                core.debug(`Downloading ${url}`);
+                core.debug(`Downloading ${destPath}`);
+                if (fs.existsSync(destPath)) {
+                    throw new Error(`Destination file path ${destPath} already exists`);
+                }
+                const response = yield http.get(url);
+                if (response.message.statusCode !== 200) {
+                    const err = new HTTPError(response.message.statusCode);
+                    core.debug(`Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
+                    throw err;
+                }
+                const file = fs.createWriteStream(destPath);
+                file.on('open', () => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        const stream = response.message.pipe(file);
+                        stream.on('close', () => {
+                            core.debug('download complete');
+                            resolve(destPath);
+                        });
+                    }
+                    catch (err) {
+                        core.debug(`Failed to download from "${url}". Code(${response.message.statusCode}) Message(${response.message.statusMessage})`);
+                        reject(err);
+                    }
+                }));
+                file.on('error', err => {
+                    file.end();
+                    reject(err);
+                });
+            }
+            catch (err) {
+                reject(err);
+            }
+        }));
+    });
+}
+exports.downloadTool = downloadTool;
+/**
+ * Extract a .7z file
+ *
+ * @param file     path to the .7z file
+ * @param dest     destination directory. Optional.
+ * @param _7zPath  path to 7zr.exe. Optional, for long path support. Most .7z archives do not have this
+ * problem. If your .7z archive contains very long paths, you can pass the path to 7zr.exe which will
+ * gracefully handle long paths. By default 7zdec.exe is used because it is a very small program and is
+ * bundled with the tool lib. However it does not support long paths. 7zr.exe is the reduced command line
+ * interface, it is smaller than the full command line interface, and it does support long paths. At the
+ * time of this writing, it is freely available from the LZMA SDK that is available on the 7zip website.
+ * Be sure to check the current license agreement. If 7zr.exe is bundled with your action, then the path
+ * to 7zr.exe can be pass to this function.
+ * @returns        path to the destination directory
+ */
+function extract7z(file, dest, _7zPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        assert_1.ok(IS_WINDOWS, 'extract7z() not supported on current OS');
+        assert_1.ok(file, 'parameter "file" is required');
+        dest = dest || (yield _createExtractFolder(dest));
+        const originalCwd = process.cwd();
+        process.chdir(dest);
+        if (_7zPath) {
+            try {
+                const args = [
+                    'x',
+                    '-bb1',
+                    '-bd',
+                    '-sccUTF-8',
+                    file
+                ];
+                const options = {
+                    silent: true
+                };
+                yield exec_1.exec(`"${_7zPath}"`, args, options);
+            }
+            finally {
+                process.chdir(originalCwd);
+            }
+        }
+        else {
+            const escapedScript = path
+                .join(__dirname, '..', 'scripts', 'Invoke-7zdec.ps1')
+                .replace(/'/g, "''")
+                .replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
+            const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, '');
+            const escapedTarget = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
+            const command = `& '${escapedScript}' -Source '${escapedFile}' -Target '${escapedTarget}'`;
+            const args = [
+                '-NoLogo',
+                '-Sta',
+                '-NoProfile',
+                '-NonInteractive',
+                '-ExecutionPolicy',
+                'Unrestricted',
+                '-Command',
+                command
+            ];
+            const options = {
+                silent: true
+            };
+            try {
+                const powershellPath = yield io.which('powershell', true);
+                yield exec_1.exec(`"${powershellPath}"`, args, options);
+            }
+            finally {
+                process.chdir(originalCwd);
+            }
+        }
+        return dest;
+    });
+}
+exports.extract7z = extract7z;
+/**
+ * Extract a tar
+ *
+ * @param file     path to the tar
+ * @param dest     destination directory. Optional.
+ * @param flags    flags for the tar. Optional.
+ * @returns        path to the destination directory
+ */
+function extractTar(file, dest, flags = 'xz') {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!file) {
+            throw new Error("parameter 'file' is required");
+        }
+        dest = dest || (yield _createExtractFolder(dest));
+        const tarPath = yield io.which('tar', true);
+        yield exec_1.exec(`"${tarPath}"`, [flags, '-C', dest, '-f', file]);
+        return dest;
+    });
+}
+exports.extractTar = extractTar;
+/**
+ * Extract a zip
+ *
+ * @param file     path to the zip
+ * @param dest     destination directory. Optional.
+ * @returns        path to the destination directory
+ */
+function extractZip(file, dest) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!file) {
+            throw new Error("parameter 'file' is required");
+        }
+        dest = dest || (yield _createExtractFolder(dest));
+        if (IS_WINDOWS) {
+            yield extractZipWin(file, dest);
+        }
+        else {
+            yield extractZipNix(file, dest);
+        }
+        return dest;
+    });
+}
+exports.extractZip = extractZip;
+function extractZipWin(file, dest) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // build the powershell command
+        const escapedFile = file.replace(/'/g, "''").replace(/"|\n|\r/g, ''); // double-up single quotes, remove double quotes and newlines
+        const escapedDest = dest.replace(/'/g, "''").replace(/"|\n|\r/g, '');
+        const command = `$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.FileSystem } catch { } ; [System.IO.Compression.ZipFile]::ExtractToDirectory('${escapedFile}', '${escapedDest}')`;
+        // run powershell
+        const powershellPath = yield io.which('powershell');
+        const args = [
+            '-NoLogo',
+            '-Sta',
+            '-NoProfile',
+            '-NonInteractive',
+            '-ExecutionPolicy',
+            'Unrestricted',
+            '-Command',
+            command
+        ];
+        yield exec_1.exec(`"${powershellPath}"`, args);
+    });
+}
+function extractZipNix(file, dest) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const unzipPath = yield io.which('unzip');
+        yield exec_1.exec(`"${unzipPath}"`, [file], { cwd: dest });
+    });
+}
+/**
+ * Caches a directory and installs it into the tool cacheDir
+ *
+ * @param sourceDir    the directory to cache into tools
+ * @param tool          tool name
+ * @param version       version of the tool.  semver format
+ * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
+ */
+function cacheDir(sourceDir, tool, version, arch) {
+    return __awaiter(this, void 0, void 0, function* () {
+        version = semver.clean(version) || version;
+        arch = arch || os.arch();
+        core.debug(`Caching tool ${tool} ${version} ${arch}`);
+        core.debug(`source dir: ${sourceDir}`);
+        if (!fs.statSync(sourceDir).isDirectory()) {
+            throw new Error('sourceDir is not a directory');
+        }
+        // Create the tool dir
+        const destPath = yield _createToolPath(tool, version, arch);
+        // copy each child item. do not move. move can fail on Windows
+        // due to anti-virus software having an open handle on a file.
+        for (const itemName of fs.readdirSync(sourceDir)) {
+            const s = path.join(sourceDir, itemName);
+            yield io.cp(s, destPath, { recursive: true });
+        }
+        // write .complete
+        _completeToolPath(tool, version, arch);
+        return destPath;
+    });
+}
+exports.cacheDir = cacheDir;
+/**
+ * Caches a downloaded file (GUID) and installs it
+ * into the tool cache with a given targetName
+ *
+ * @param sourceFile    the file to cache into tools.  Typically a result of downloadTool which is a guid.
+ * @param targetFile    the name of the file name in the tools directory
+ * @param tool          tool name
+ * @param version       version of the tool.  semver format
+ * @param arch          architecture of the tool.  Optional.  Defaults to machine architecture
+ */
+function cacheFile(sourceFile, targetFile, tool, version, arch) {
+    return __awaiter(this, void 0, void 0, function* () {
+        version = semver.clean(version) || version;
+        arch = arch || os.arch();
+        core.debug(`Caching tool ${tool} ${version} ${arch}`);
+        core.debug(`source file: ${sourceFile}`);
+        if (!fs.statSync(sourceFile).isFile()) {
+            throw new Error('sourceFile is not a file');
+        }
+        // create the tool dir
+        const destFolder = yield _createToolPath(tool, version, arch);
+        // copy instead of move. move can fail on Windows due to
+        // anti-virus software having an open handle on a file.
+        const destPath = path.join(destFolder, targetFile);
+        core.debug(`destination file ${destPath}`);
+        yield io.cp(sourceFile, destPath);
+        // write .complete
+        _completeToolPath(tool, version, arch);
+        return destFolder;
+    });
+}
+exports.cacheFile = cacheFile;
+/**
+ * Finds the path to a tool version in the local installed tool cache
+ *
+ * @param toolName      name of the tool
+ * @param versionSpec   version of the tool
+ * @param arch          optional arch.  defaults to arch of computer
+ */
+function find(toolName, versionSpec, arch) {
+    if (!toolName) {
+        throw new Error('toolName parameter is required');
+    }
+    if (!versionSpec) {
+        throw new Error('versionSpec parameter is required');
+    }
+    arch = arch || os.arch();
+    // attempt to resolve an explicit version
+    if (!_isExplicitVersion(versionSpec)) {
+        const localVersions = findAllVersions(toolName, arch);
+        const match = _evaluateVersions(localVersions, versionSpec);
+        versionSpec = match;
+    }
+    // check for the explicit version in the cache
+    let toolPath = '';
+    if (versionSpec) {
+        versionSpec = semver.clean(versionSpec) || '';
+        const cachePath = path.join(cacheRoot, toolName, versionSpec, arch);
+        core.debug(`checking cache: ${cachePath}`);
+        if (fs.existsSync(cachePath) && fs.existsSync(`${cachePath}.complete`)) {
+            core.debug(`Found tool in cache ${toolName} ${versionSpec} ${arch}`);
+            toolPath = cachePath;
+        }
+        else {
+            core.debug('not found');
+        }
+    }
+    return toolPath;
+}
+exports.find = find;
+/**
+ * Finds the paths to all versions of a tool that are installed in the local tool cache
+ *
+ * @param toolName  name of the tool
+ * @param arch      optional arch.  defaults to arch of computer
+ */
+function findAllVersions(toolName, arch) {
+    const versions = [];
+    arch = arch || os.arch();
+    const toolPath = path.join(cacheRoot, toolName);
+    if (fs.existsSync(toolPath)) {
+        const children = fs.readdirSync(toolPath);
+        for (const child of children) {
+            if (_isExplicitVersion(child)) {
+                const fullPath = path.join(toolPath, child, arch || '');
+                if (fs.existsSync(fullPath) && fs.existsSync(`${fullPath}.complete`)) {
+                    versions.push(child);
+                }
+            }
+        }
+    }
+    return versions;
+}
+exports.findAllVersions = findAllVersions;
+function _createExtractFolder(dest) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!dest) {
+            // create a temp dir
+            dest = path.join(tempDirectory, uuidV4());
+        }
+        yield io.mkdirP(dest);
+        return dest;
+    });
+}
+function _createToolPath(tool, version, arch) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const folderPath = path.join(cacheRoot, tool, semver.clean(version) || version, arch || '');
+        core.debug(`destination ${folderPath}`);
+        const markerPath = `${folderPath}.complete`;
+        yield io.rmRF(folderPath);
+        yield io.rmRF(markerPath);
+        yield io.mkdirP(folderPath);
+        return folderPath;
+    });
+}
+function _completeToolPath(tool, version, arch) {
+    const folderPath = path.join(cacheRoot, tool, semver.clean(version) || version, arch || '');
+    const markerPath = `${folderPath}.complete`;
+    fs.writeFileSync(markerPath, '');
+    core.debug('finished caching tool');
+}
+function _isExplicitVersion(versionSpec) {
+    const c = semver.clean(versionSpec) || '';
+    core.debug(`isExplicit: ${c}`);
+    const valid = semver.valid(c) != null;
+    core.debug(`explicit? ${valid}`);
+    return valid;
+}
+function _evaluateVersions(versions, versionSpec) {
+    let version = '';
+    core.debug(`evaluating ${versions.length} versions`);
+    versions = versions.sort((a, b) => {
+        if (semver.gt(a, b)) {
+            return 1;
+        }
+        return -1;
+    });
+    for (let i = versions.length - 1; i >= 0; i--) {
+        const potential = versions[i];
+        const satisfied = semver.satisfies(potential, versionSpec);
+        if (satisfied) {
+            version = potential;
+            break;
+        }
+    }
+    if (version) {
+        core.debug(`matched: ${version}`);
+    }
+    else {
+        core.debug('match not found');
+    }
+    return version;
+}
+//# sourceMappingURL=tool-cache.js.map
 
 /***/ }),
 
@@ -7225,262 +7514,9 @@ exports.targetName = targetName;
 /***/ }),
 
 /***/ 605:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
+/***/ (function(module) {
 
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __webpack_require__(747);
-const os = __webpack_require__(87);
-const path = __webpack_require__(622);
-const semver = __webpack_require__(280);
-const http = __webpack_require__(874);
-const inversify_1 = __webpack_require__(410);
-const types_1 = __webpack_require__(639);
-let DotnetTool = class DotnetTool {
-    constructor(buildAgent, versionManager) {
-        this.buildAgent = buildAgent;
-        this.versionManager = versionManager;
-        this.httpClient = new http.HttpClient("dotnet");
-    }
-    run(args) {
-        return this.buildAgent.exec("dotnet", args);
-    }
-    toolInstall(toolName, versionSpec, checkLatest, includePre) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log("");
-            console.log("--------------------------");
-            console.log(`Installing ${toolName} version ` + versionSpec);
-            console.log("--------------------------");
-            if (this.versionManager.isExplicitVersion(versionSpec)) {
-                checkLatest = false; // check latest doesn't make sense when explicit version
-            }
-            let toolPath;
-            if (!checkLatest) {
-                //
-                // Let's try and resolve the version spec locally first
-                //
-                toolPath = this.buildAgent.find(toolName, versionSpec);
-            }
-            if (!toolPath) {
-                let version;
-                if (this.versionManager.isExplicitVersion(versionSpec)) {
-                    //
-                    // Explicit version was specified. No need to query for list of versions.
-                    //
-                    version = versionSpec;
-                }
-                else {
-                    //
-                    // Let's query and resolve the latest version for the versionSpec.
-                    // If the version is an explicit version (1.1.1 or v1.1.1) then no need to query.
-                    // If your tool doesn't offer a mechanism to query,
-                    // then it can only support exact version inputs.
-                    //
-                    version = yield this.queryLatestMatch(toolName, versionSpec, includePre);
-                    if (!version) {
-                        throw new Error(`Unable to find ${toolName} version '${versionSpec}'.`);
-                    }
-                    //
-                    // Check the cache for the resolved version.
-                    //
-                    toolPath = this.buildAgent.find(toolName, version);
-                }
-                if (!toolPath) {
-                    //
-                    // Download, extract, cache
-                    //
-                    toolPath = yield this.acquireTool(toolName, version);
-                }
-            }
-            //
-            // Prepend the tools path. This prepends the PATH for the current process and
-            // instructs the agent to prepend for each task that follows.
-            //
-            this.buildAgent.debug(`toolPath: ${toolPath}`);
-            if (os.platform() !== "win32") {
-                const dotnetRoot = path.dirname(fs.readlinkSync(yield this.buildAgent.which("dotnet")));
-                this.buildAgent.exportVariable("DOTNET_ROOT", dotnetRoot);
-            }
-            this.buildAgent.addPath(toolPath);
-            return toolPath;
-        });
-    }
-    queryLatestMatch(toolName, versionSpec, includePrerelease) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.buildAgent.debug(`querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
-            const downloadPath = `https://api-v2v3search-0.nuget.org/query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${includePrerelease ? "true" : "false"}&semVerLevel=2.0.0`;
-            const res = yield this.httpClient.get(downloadPath);
-            if (!res || res.message.statusCode !== 200) {
-                return null;
-            }
-            const body = yield res.readBody();
-            const data = JSON.parse(body).data;
-            const versions = data[0].versions.map((x) => x.version);
-            if (!versions || !versions.length) {
-                return null;
-            }
-            this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
-            return this.versionManager.evaluateVersions(versions, versionSpec);
-        });
-    }
-    acquireTool(toolName, version) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tempDirectory = yield this.buildAgent.createTempDir();
-            let args = ["tool", "install", toolName, "--tool-path", tempDirectory];
-            if (version) {
-                version = this.versionManager.cleanVersion(version);
-                args = args.concat(["--version", version]);
-            }
-            const result = yield this.run(args);
-            const status = result.code === 0 ? "success" : "failure";
-            const message = result.code === 0 ? result.stdout : result.stderr;
-            this.buildAgent.debug(`tool install result: ${status} ${message}`);
-            if (result.code) {
-                throw new Error("Error installing tool");
-            }
-            return yield this.buildAgent.cacheDir(tempDirectory, toolName, version);
-        });
-    }
-};
-DotnetTool = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
-    __param(1, inversify_1.inject(types_1.TYPES.IVersionManager)),
-    __metadata("design:paramtypes", [Object, Object])
-], DotnetTool);
-exports.DotnetTool = DotnetTool;
-let GitVersionTool = class GitVersionTool {
-    constructor(buildAgent, dotnetTool) {
-        this.buildAgent = buildAgent;
-        this.dotnetTool = dotnetTool;
-    }
-    install(versionSpec, includePrerelease) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
-        });
-    }
-    run(options) {
-        const workDir = this.getRepoDir(options.targetPath);
-        const args = this.getArguments(workDir, options);
-        return this.buildAgent.exec("dotnet-gitversion", args);
-    }
-    getRepoDir(targetPath) {
-        let workDir;
-        const srcDir = this.buildAgent.getSourceDir();
-        if (!targetPath) {
-            workDir = srcDir;
-        }
-        else {
-            if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = path.join(srcDir, targetPath);
-            }
-            else {
-                throw new Error("Directory not found at " + targetPath);
-            }
-        }
-        return workDir.replace(/\\/g, "/");
-    }
-    getArguments(workDir, options) {
-        const args = [
-            workDir,
-            "/output",
-            "json",
-        ];
-        const { useConfigFile, configFilePath, updateAssemblyInfo, updateAssemblyInfoFilename, additionalArguments, } = options;
-        if (useConfigFile) {
-            if (this.buildAgent.isValidInputFile("configFilePath", configFilePath)) {
-                args.push("/config", configFilePath);
-            }
-            else {
-                throw new Error("GitVersion configuration file not found at " + configFilePath);
-            }
-        }
-        if (updateAssemblyInfo) {
-            args.push("/updateassemblyinfo");
-            if (this.buildAgent.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
-                args.push(updateAssemblyInfoFilename);
-            }
-            else {
-                throw new Error("AssemblyInfoFilename file not found at " + updateAssemblyInfoFilename);
-            }
-        }
-        args.push(additionalArguments);
-        return args;
-    }
-};
-GitVersionTool = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
-    __param(1, inversify_1.inject(types_1.TYPES.IDotnetTool)),
-    __metadata("design:paramtypes", [Object, Object])
-], GitVersionTool);
-exports.GitVersionTool = GitVersionTool;
-const cmp = __webpack_require__(523);
-let VersionManager = class VersionManager {
-    constructor(buildAgent) {
-        this.buildAgent = buildAgent;
-    }
-    isExplicitVersion(versionSpec) {
-        const c = semver.clean(versionSpec);
-        this.buildAgent.debug("isExplicit: " + c);
-        const valid = semver.valid(c) != null;
-        this.buildAgent.debug("explicit? " + valid);
-        return valid;
-    }
-    evaluateVersions(versions, versionSpec) {
-        let version;
-        this.buildAgent.debug("evaluating " + versions.length + " versions");
-        versions = versions.sort(cmp);
-        for (let i = versions.length - 1; i >= 0; i--) {
-            const potential = versions[i];
-            const satisfied = semver.satisfies(potential, versionSpec);
-            if (satisfied) {
-                version = potential;
-                break;
-            }
-        }
-        if (version) {
-            this.buildAgent.debug("matched: " + version);
-        }
-        else {
-            this.buildAgent.debug("match not found");
-        }
-        return version;
-    }
-    cleanVersion(version) {
-        this.buildAgent.debug("cleaning: " + version);
-        return semver.clean(version);
-    }
-};
-VersionManager = __decorate([
-    inversify_1.injectable(),
-    __param(0, inversify_1.inject(types_1.TYPES.IBuildAgent)),
-    __metadata("design:paramtypes", [Object])
-], VersionManager);
-exports.VersionManager = VersionManager;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvYWN0aW9ucy9zcmMvY29tbW9uLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0EseUJBQXlCO0FBQ3pCLHlCQUF5QjtBQUN6Qiw2QkFBNkI7QUFDN0IsaUNBQWlDO0FBQ2pDLHFEQUFxRDtBQUVyRCx5Q0FBK0M7QUFHL0MsbUNBQWdDO0FBR2hDLElBQU0sVUFBVSxHQUFoQixNQUFNLFVBQVU7SUFNWixZQUMrQixVQUF1QixFQUNuQixjQUErQjtRQUU5RCxJQUFJLENBQUMsVUFBVSxHQUFHLFVBQVUsQ0FBQztRQUM3QixJQUFJLENBQUMsY0FBYyxHQUFHLGNBQWMsQ0FBQztRQUNyQyxJQUFJLENBQUMsVUFBVSxHQUFHLElBQUksSUFBSSxDQUFDLFVBQVUsQ0FBQyxRQUFRLENBQUMsQ0FBQztJQUNwRCxDQUFDO0lBRU0sR0FBRyxDQUFDLElBQWM7UUFDckIsT0FBTyxJQUFJLENBQUMsVUFBVSxDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDaEQsQ0FBQztJQUVZLFdBQVcsQ0FBQyxRQUFnQixFQUFFLFdBQW1CLEVBQUUsV0FBb0IsRUFBRSxVQUFtQjs7WUFFckcsT0FBTyxDQUFDLEdBQUcsQ0FBQyxFQUFFLENBQUMsQ0FBQztZQUNoQixPQUFPLENBQUMsR0FBRyxDQUFDLDRCQUE0QixDQUFDLENBQUM7WUFDMUMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxjQUFjLFFBQVEsV0FBVyxHQUFHLFdBQVcsQ0FBQyxDQUFDO1lBQzdELE9BQU8sQ0FBQyxHQUFHLENBQUMsNEJBQTRCLENBQUMsQ0FBQztZQUUxQyxJQUFJLElBQUksQ0FBQyxjQUFjLENBQUMsaUJBQWlCLENBQUMsV0FBVyxDQUFDLEVBQUU7Z0JBQ3BELFdBQVcsR0FBRyxLQUFLLENBQUMsQ0FBQyx3REFBd0Q7YUFDaEY7WUFF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
+module.exports = require("http");
 
 /***/ }),
 
@@ -7541,37 +7577,6 @@ exports.inject = inject;
 /***/ (function(module) {
 
 module.exports = require("net");
-
-/***/ }),
-
-/***/ 639:
-/***/ (function(__unusedmodule, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const TYPES = {
-    IBuildAgent: Symbol.for("BuildAgent"),
-    IDotnetTool: Symbol.for("DotnetTool"),
-    IGitVersionTool: Symbol.for("GitVersionTool"),
-    IVersionManager: Symbol.for("VersionManager"),
-};
-exports.TYPES = TYPES;
-const SetupOptions = {
-    includePrerelease: "includePrerelease",
-    versionSpec: "versionSpec",
-};
-exports.SetupOptions = SetupOptions;
-const RunOptions = {
-    targetPath: "targetPath",
-    useConfigFile: "useConfigFile",
-    configFilePath: "configFilePath",
-    updateAssemblyInfo: "configFilePath",
-    updateAssemblyInfoFilename: "configFilePath",
-    additionalArguments: "additionalArguments",
-};
-exports.RunOptions = RunOptions;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiZmlsZTovLy9EOi9Qcm9qZWN0cy9PU1MvR2l0VG9vbHMvYWN0aW9ucy9zcmMvdHlwZXMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSxNQUFNLEtBQUssR0FBRztJQUNWLFdBQVcsRUFBRSxNQUFNLENBQUMsR0FBRyxDQUFDLFlBQVksQ0FBQztJQUNyQyxXQUFXLEVBQUUsTUFBTSxDQUFDLEdBQUcsQ0FBQyxZQUFZLENBQUM7SUFDckMsZUFBZSxFQUFFLE1BQU0sQ0FBQyxHQUFHLENBQUMsZ0JBQWdCLENBQUM7SUFDN0MsZUFBZSxFQUFFLE1BQU0sQ0FBQyxHQUFHLENBQUMsZ0JBQWdCLENBQUM7Q0FDaEQsQ0FBQztBQW1CaUMsc0JBQUs7QUFqQnhDLE1BQU0sWUFBWSxHQUFHO0lBQ2pCLGlCQUFpQixFQUFFLG1CQUFtQjtJQUN0QyxXQUFXLEVBQUUsYUFBYTtDQUM3QixDQUFDO0FBY08sb0NBQVk7QUFackIsTUFBTSxVQUFVLEdBQUc7SUFDZixVQUFVLEVBQUUsWUFBWTtJQUV4QixhQUFhLEVBQUUsZUFBZTtJQUM5QixjQUFjLEVBQUUsZ0JBQWdCO0lBRWhDLGtCQUFrQixFQUFFLGdCQUFnQjtJQUNwQywwQkFBMEIsRUFBRSxnQkFBZ0I7SUFFNUMsbUJBQW1CLEVBQUUscUJBQXFCO0NBQzdDLENBQUM7QUFFcUIsZ0NBQVUifQ==
 
 /***/ }),
 
@@ -7791,15 +7796,15 @@ function isUnixExecutable(stats) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(307);
-const ioc_1 = __webpack_require__(533);
-const main_1 = __webpack_require__(131);
-const types_1 = __webpack_require__(639);
-const build_agent_1 = __webpack_require__(868);
+const ioc_1 = __webpack_require__(523);
+const main_1 = __webpack_require__(438);
+const types_1 = __webpack_require__(98);
+const build_agent_1 = __webpack_require__(838);
 ioc_1.ioc.bind(types_1.TYPES.IBuildAgent).to(build_agent_1.BuildAgent);
 const gitVersionTool = ioc_1.ioc.get(types_1.TYPES.IGitVersionTool);
 const buildAgent = ioc_1.ioc.get(types_1.TYPES.IBuildAgent);
 main_1.run(buildAgent, gitVersionTool);
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXhlY3V0ZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImZpbGU6Ly8vRDovUHJvamVjdHMvT1NTL0dpdFRvb2xzL2FjdGlvbnMvc3JjL2dpdGh1Yi9leGVjdXRlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsNEJBQTBCO0FBRzFCLGdDQUE2QjtBQUM3QixrQ0FBOEI7QUFDOUIsb0NBQWlDO0FBQ2pDLCtDQUEyQztBQUUzQyxTQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsd0JBQVUsQ0FBQyxDQUFDO0FBRXhELE1BQU0sY0FBYyxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUN2RSxNQUFNLFVBQVUsR0FBRyxTQUFHLENBQUMsR0FBRyxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztBQUUzRCxVQUFHLENBQUMsVUFBVSxFQUFFLGNBQWMsQ0FBQyxDQUFDIn0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXhlY3V0ZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImZpbGU6Ly8vRDovUHJvamVjdHMvT1NTL0dpdFRvb2xzL2FjdGlvbnMvc3JjL2dpdGh1Yi9leGVjdXRlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsNEJBQTBCO0FBRzFCLHFDQUFrQztBQUNsQyx1Q0FBbUM7QUFDbkMseUNBQXNDO0FBQ3RDLCtDQUEyQztBQUUzQyxTQUFHLENBQUMsSUFBSSxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxFQUFFLENBQUMsd0JBQVUsQ0FBQyxDQUFDO0FBRXhELE1BQU0sY0FBYyxHQUFHLFNBQUcsQ0FBQyxHQUFHLENBQWtCLGFBQUssQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUN2RSxNQUFNLFVBQVUsR0FBRyxTQUFHLENBQUMsR0FBRyxDQUFjLGFBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQztBQUUzRCxVQUFHLENBQUMsVUFBVSxFQUFFLGNBQWMsQ0FBQyxDQUFDIn0=
 
 /***/ }),
 
@@ -8690,6 +8695,162 @@ module.exports = require("url");
 
 /***/ }),
 
+/***/ 838:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = __webpack_require__(747);
+const path = __webpack_require__(622);
+const uuidV4 = __webpack_require__(826);
+const core = __webpack_require__(470);
+const exe = __webpack_require__(986);
+const io = __webpack_require__(1);
+const toolCache = __webpack_require__(533);
+const inversify_1 = __webpack_require__(410);
+let BuildAgent = class BuildAgent {
+    find(toolName, versionSpec, arch) {
+        return toolCache.find(toolName, versionSpec, arch);
+    }
+    cacheDir(sourceDir, tool, version, arch) {
+        return toolCache.cacheDir(sourceDir, tool, version, arch);
+    }
+    createTempDir() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const IS_WINDOWS = process.platform === "win32";
+            let tempDirectory = process.env.RUNNER_TEMP || "";
+            if (!tempDirectory) {
+                let baseLocation;
+                if (IS_WINDOWS) {
+                    // On Windows use the USERPROFILE env variable
+                    baseLocation = process.env.USERPROFILE || "C:\\";
+                }
+                else {
+                    if (process.platform === "darwin") {
+                        baseLocation = "/Users";
+                    }
+                    else {
+                        baseLocation = "/home";
+                    }
+                }
+                tempDirectory = path.join(baseLocation, "actions", "temp");
+            }
+            const dest = path.join(tempDirectory, uuidV4());
+            yield io.mkdirP(dest);
+            return dest;
+        });
+    }
+    debug(message) {
+        core.debug(message);
+    }
+    setFailed(message, done) {
+        core.setFailed(message);
+    }
+    setSucceeded(message, done) {
+        //
+    }
+    exportVariable(name, val) {
+        core.exportVariable(name, val);
+    }
+    getVariable(name) {
+        return process.env[name];
+    }
+    addPath(inputPath) {
+        core.addPath(inputPath);
+    }
+    which(tool, check) {
+        return io.which(tool, check);
+    }
+    exec(exec, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dotnetPath = yield io.which(exec, true);
+            let resultCode = 0;
+            let stdout = "";
+            let stderr = "";
+            resultCode = yield exe.exec(`"${dotnetPath}"`, args, {
+                listeners: {
+                    stderr: (data) => {
+                        stderr += data.toString();
+                    },
+                    stdout: (data) => {
+                        stdout += data.toString();
+                    },
+                },
+            });
+            return {
+                code: resultCode,
+                error: null,
+                stderr,
+                stdout,
+            };
+        });
+    }
+    getSourceDir() {
+        return this.getVariable("GITHUB_WORKSPACE");
+    }
+    setOutput(name, value) {
+        core.setOutput(name, value);
+    }
+    getInput(input, required) {
+        return core.getInput(input, { required });
+    }
+    getBooleanInput(input, required) {
+        const inputValue = this.getInput(input, required);
+        return (inputValue || "false").toLowerCase() === "true";
+    }
+    isValidInputFile(input, file) {
+        const pathValue = path.resolve(this.getInput(input) || "");
+        const repoRoot = this.getSourceDir();
+        return pathValue !== repoRoot;
+    }
+    fileExists(file) {
+        return this._exist(file) && this._stats(file).isFile();
+    }
+    directoryExists(file) {
+        return this._exist(file) && this._stats(file).isDirectory();
+    }
+    _exist(file) {
+        let exist = false;
+        try {
+            exist = !!(file && fs.statSync(file) != null);
+        }
+        catch (err) {
+            if (err && err.code === "ENOENT") {
+                exist = false;
+            }
+            else {
+                throw err;
+            }
+        }
+        return exist;
+    }
+    _stats(file) {
+        return fs.statSync(file);
+    }
+};
+BuildAgent = __decorate([
+    inversify_1.injectable()
+], BuildAgent);
+exports.BuildAgent = BuildAgent;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGQtYWdlbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJidWlsZC1hZ2VudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7O0FBQUEseUJBQXlCO0FBQ3pCLDZCQUE2QjtBQUM3QixrQ0FBa0M7QUFFbEMsc0NBQXNDO0FBQ3RDLHFDQUFxQztBQUNyQyxrQ0FBa0M7QUFDbEMsaURBQWlEO0FBRWpELHlDQUF1QztBQUt2QyxJQUFNLFVBQVUsR0FBaEIsTUFBTSxVQUFVO0lBRUwsSUFBSSxDQUFDLFFBQWdCLEVBQUUsV0FBbUIsRUFBRSxJQUFhO1FBQzVELE9BQU8sU0FBUyxDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsV0FBVyxFQUFFLElBQUksQ0FBQyxDQUFDO0lBQ3ZELENBQUM7SUFFTSxRQUFRLENBQUMsU0FBaUIsRUFBRSxJQUFZLEVBQUUsT0FBZSxFQUFFLElBQWE7UUFDM0UsT0FBTyxTQUFTLENBQUMsUUFBUSxDQUFDLFNBQVMsRUFBRSxJQUFJLEVBQUUsT0FBTyxFQUFFLElBQUksQ0FBQyxDQUFDO0lBQzlELENBQUM7SUFFWSxhQUFhOztZQUN0QixNQUFNLFVBQVUsR0FBRyxPQUFPLENBQUMsUUFBUSxLQUFLLE9BQU8sQ0FBQztZQUVoRCxJQUFJLGFBQWEsR0FBVyxPQUFPLENBQUMsR0FBRyxDQUFDLFdBQVcsSUFBSSxFQUFFLENBQUM7WUFFMUQsSUFBSSxDQUFDLGFBQWEsRUFBRTtnQkFDaEIsSUFBSSxZQUFvQixDQUFDO2dCQUN6QixJQUFJLFVBQVUsRUFBRTtvQkFDWiw4Q0FBOEM7b0JBQzlDLFlBQVksR0FBRyxPQUFPLENBQUMsR0FBRyxDQUFDLFdBQVcsSUFBSSxNQUFNLENBQUM7aUJBQ3BEO3FCQUFNO29CQUNILElBQUksT0FBTyxDQUFDLFFBQVEsS0FBSyxRQUFRLEVBQUU7d0JBQy9CLFlBQVksR0FBRyxRQUFRLENBQUM7cUJBQzNCO3lCQUFNO3dCQUNILFlBQVksR0FBRyxPQUFPLENBQUM7cUJB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
+
+/***/ }),
+
 /***/ 845:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -8895,163 +9056,6 @@ exports.AsyncContainerModule = AsyncContainerModule;
 
 /***/ }),
 
-/***/ 868:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const fs = __webpack_require__(747);
-const path = __webpack_require__(622);
-const uuidV4 = __webpack_require__(826);
-const core = __webpack_require__(470);
-const exe = __webpack_require__(986);
-const io = __webpack_require__(1);
-const toolCache = __webpack_require__(186);
-const inversify_1 = __webpack_require__(410);
-let BuildAgent = class BuildAgent {
-    find(toolName, versionSpec, arch) {
-        return toolCache.find(toolName, versionSpec, arch);
-    }
-    cacheDir(sourceDir, tool, version, arch) {
-        return toolCache.cacheDir(sourceDir, tool, version, arch);
-    }
-    createTempDir() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const IS_WINDOWS = process.platform === "win32";
-            let tempDirectory = process.env.RUNNER_TEMP || "";
-            if (!tempDirectory) {
-                let baseLocation;
-                if (IS_WINDOWS) {
-                    // On Windows use the USERPROFILE env variable
-                    baseLocation = process.env.USERPROFILE || "C:\\";
-                }
-                else {
-                    if (process.platform === "darwin") {
-                        baseLocation = "/Users";
-                    }
-                    else {
-                        baseLocation = "/home";
-                    }
-                }
-                tempDirectory = path.join(baseLocation, "actions", "temp");
-            }
-            const dest = path.join(tempDirectory, uuidV4());
-            yield io.mkdirP(dest);
-            return dest;
-        });
-    }
-    debug(message) {
-        core.debug(message);
-    }
-    setFailed(message, done) {
-        core.setFailed(message);
-    }
-    setSucceeded(message, done) {
-        //
-    }
-    exportVariable(name, val) {
-        core.exportVariable(name, val);
-    }
-    getVariable(name) {
-        return process.env[name];
-    }
-    addPath(inputPath) {
-        core.addPath(inputPath);
-    }
-    which(tool, check) {
-        return io.which(tool, check);
-    }
-    exec(exec, args) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const dotnetPath = yield io.which(exec, true);
-            let resultCode = 0;
-            let stdout = "";
-            let stderr = "";
-            resultCode = yield exe.exec(`"${dotnetPath}"`, args, {
-                listeners: {
-                    stderr: (data) => {
-                        stderr += data.toString();
-                    },
-                    stdout: (data) => {
-                        stdout += data.toString();
-                    },
-                },
-            });
-            return {
-                code: resultCode,
-                error: null,
-                stderr,
-                stdout,
-            };
-        });
-    }
-    getSourceDir() {
-        return this.getVariable("GITHUB_WORKSPACE");
-    }
-    setOutput(name, value) {
-        core.setOutput(name, value);
-    }
-    getInput(input, required) {
-        return core.getInput(input, { required });
-    }
-    getBooleanInput(input, required) {
-        const inputValue = this.getInput(input, required);
-        return (inputValue || "false").toLowerCase() === "true";
-    }
-    isValidInputFile(input, file) {
-        const pathValue = path.resolve(this.getInput(input) || "");
-        const repoRoot = this.getSourceDir();
-        return pathValue !== repoRoot;
-    }
-    fileExists(file) {
-        return this._exist(file) && this._stats(file).isFile();
-    }
-    directoryExists(file) {
-        return this._exist(file) && this._stats(file).isDirectory();
-    }
-    _exist(file) {
-        let exist = false;
-        try {
-            exist = !!(file && fs.statSync(file) != null);
-        }
-        catch (err) {
-            if (err && err.code === "ENOENT") {
-                exist = false;
-            }
-            else {
-                throw err;
-            }
-        }
-        return exist;
-    }
-    _stats(file) {
-        return fs.statSync(file);
-    }
-};
-BuildAgent = __decorate([
-    inversify_1.injectable()
-], BuildAgent);
-exports.BuildAgent = BuildAgent;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGQtYWdlbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJmaWxlOi8vL0Q6L1Byb2plY3RzL09TUy9HaXRUb29scy9hY3Rpb25zL3NyYy9naXRodWIvYnVpbGQtYWdlbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBQSx5QkFBeUI7QUFDekIsNkJBQTZCO0FBQzdCLGtDQUFrQztBQUVsQyxzQ0FBc0M7QUFDdEMscUNBQXFDO0FBQ3JDLGtDQUFrQztBQUNsQyxpREFBaUQ7QUFFakQseUNBQXVDO0FBS3ZDLElBQU0sVUFBVSxHQUFoQixNQUFNLFVBQVU7SUFFTCxJQUFJLENBQUMsUUFBZ0IsRUFBRSxXQUFtQixFQUFFLElBQWE7UUFDNUQsT0FBTyxTQUFTLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRSxXQUFXLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDdkQsQ0FBQztJQUVNLFFBQVEsQ0FBQyxTQUFpQixFQUFFLElBQVksRUFBRSxPQUFlLEVBQUUsSUFBYTtRQUMzRSxPQUFPLFNBQVMsQ0FBQyxRQUFRLENBQUMsU0FBUyxFQUFFLElBQUksRUFBRSxPQUFPLEVBQUUsSUFBSSxDQUFDLENBQUM7SUFDOUQsQ0FBQztJQUVZLGFBQWE7O1lBQ3RCLE1BQU0sVUFBVSxHQUFHLE9BQU8sQ0FBQyxRQUFRLEtBQUssT0FBTyxDQUFDO1lBRWhELElBQUksYUFBYSxHQUFXLE9BQU8sQ0FBQyxHQUFHLENBQUMsV0FBVyxJQUFJLEVBQUUsQ0FBQztZQUUxRCxJQUFJLENBQUMsYUFBYSxFQUFFO2dCQUNoQixJQUFJLFlBQW9CLENBQUM7Z0JBQ3pCLElBQUksVUFBVSxFQUFFO29CQUNaLDhDQUE4QztvQkFDOUMsWUFBWSxHQUFHLE9BQU8sQ0FBQyxHQUFHLENBQUMsV0FBVyxJQUFJLE1BQU0sQ0FBQztpQkFDcEQ7cUJBQU07b0JBQ0gsSUFBSSxPQUFPLENBQUMsUUFBUSxLQUFLLFFBQVEsRUFBRTt3QkFDL0IsWUFBWSxHQUFH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
-
-/***/ }),
-
 /***/ 871:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -9092,7 +9096,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const url = __webpack_require__(835);
-const http = __webpack_require__(876);
+const http = __webpack_require__(605);
 const https = __webpack_require__(211);
 let fs;
 let tunnel;
@@ -9535,13 +9539,6 @@ class HttpClient {
 }
 exports.HttpClient = HttpClient;
 
-
-/***/ }),
-
-/***/ 876:
-/***/ (function(module) {
-
-module.exports = require("http");
 
 /***/ }),
 
