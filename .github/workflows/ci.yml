@@ -9,11 +9,10 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
       run: |
-        git fetch --tags
-        git branch --create-reflog master origin/master
+        git fetch --prune --unshallow
     - name: Install GitVersion
       uses: ./setup-gitversion
       with:
