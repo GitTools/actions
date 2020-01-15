@@ -5,40 +5,52 @@
     "version": "0.2.0",
     "configurations": [
         {
-
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "tsc: build - src/azure/tsconfig.json",
-            "name": "Run Azure Pipeline (setup) Task",
-            "program": "${workspaceFolder}/src/azure/setup.ts",
-            "outFiles": ["${workspaceFolder}/**/*.js"]
+            "preLaunchTask": "Build-Mock",
+            "name": "Debug Mock Setup GitVersion",
+            "program": "${workspaceFolder}/dist/mock/setup-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
-
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "tsc: build - src/github/tsconfig.json",
-            "name": "Run GitHub Actions (setup)",
-            "program": "${workspaceFolder}/src/github/setup.ts",
-            "outFiles": ["${workspaceFolder}/**/*.js"]
+            "preLaunchTask": "Build-Azure",
+            "name": "Debug Azure Setup GitVersion",
+            "program": "${workspaceFolder}/dist/azure/setup-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
-
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "tsc: build - src/azure/tsconfig.json",
-            "name": "Run Azure Pipeline (execute) Task",
-            "program": "${workspaceFolder}/src/azure/execute.ts",
-            "outFiles": ["${workspaceFolder}/**/*.js"]
+            "preLaunchTask": "Build-GitHub",
+            "name": "Debug GitHub Setup GitVersion",
+            "program": "${workspaceFolder}/dist/github/setup-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
-
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "tsc: build - src/github/tsconfig.json",
-            "name": "Run GitHub Actions (execute)",
-            "program": "${workspaceFolder}/src/github/execute.ts",
-            "outFiles": ["${workspaceFolder}/**/*.js"]
-        }
+            "preLaunchTask": "Build-Mock",
+            "name": "Debug Mock Execute GitVersion",
+            "program": "${workspaceFolder}/dist/mock/execute-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "Build-Azure",
+            "name": "Debug Azure Execute GitVersion",
+            "program": "${workspaceFolder}/dist/azure/execute-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "Build-GitHub",
+            "name": "Debug GitHub Execute GitVersion",
+            "program": "${workspaceFolder}/dist/github/execute-gitversion/bundle.js",
+            "outFiles": [ "${workspaceFolder}/**/*.js" ]
+        },
     ]
 }

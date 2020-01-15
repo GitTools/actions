@@ -1,8 +1,11 @@
 import { IBuildAgent, IGitVersion, IGitVersionOptions, IGitVersionTool } from "./interfaces";
+import { ioc } from "./ioc";
+import { RunOptions, SetupOptions, TYPES } from "./types";
 
-import { RunOptions, SetupOptions } from "./types";
+const gitVersionTool = ioc.get<IGitVersionTool>(TYPES.IGitVersionTool);
+const buildAgent = ioc.get<IBuildAgent>(TYPES.IBuildAgent);
 
-export async function setup(buildAgent: IBuildAgent, gitVersionTool: IGitVersionTool) {
+export async function setup() {
     try {
 
         buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
@@ -18,14 +21,14 @@ export async function setup(buildAgent: IBuildAgent, gitVersionTool: IGitVersion
     }
 }
 
-export async function run(buildAgent: IBuildAgent, gitVersionTool: IGitVersionTool) {
+export async function run() {
     try {
-        const inputOptions: IGitVersionOptions = getGitVersionOptions(buildAgent);
+        const inputOptions: IGitVersionOptions = getGitVersionOptions();
 
         const result = await gitVersionTool.run(inputOptions);
 
         const gitversion = JSON.parse(result.stdout) as IGitVersion;
-        writeGitVersionToAgent(buildAgent, gitversion);
+        writeGitVersionToAgent(gitversion);
 
         if (result.code === 0) {
             buildAgent.setSucceeded("GitVersion executed successfully", true);
@@ -38,7 +41,7 @@ export async function run(buildAgent: IBuildAgent, gitVersionTool: IGitVersionTo
     }
 }
 
-function getGitVersionOptions(buildAgent: IBuildAgent): IGitVersionOptions {
+function getGitVersionOptions(): IGitVersionOptions {
 
     const targetPath = buildAgent.getInput(RunOptions.targetPath);
 
@@ -63,7 +66,7 @@ function getGitVersionOptions(buildAgent: IBuildAgent): IGitVersionOptions {
     };
 }
 
-function writeGitVersionToAgent(buildAgent: IBuildAgent, gitversion: IGitVersion): void {
+function writeGitVersionToAgent(gitversion: IGitVersion): void {
 
     buildAgent.setOutput("major",                           gitversion.Major.toString());
     buildAgent.setOutput("minor",                           gitversion.Minor.toString());

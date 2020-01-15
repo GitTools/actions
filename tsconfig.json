@@ -3,10 +3,11 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "target": "es2015",
-        "sourceMap": false,
-        "lib": ["es2015", "dom"],
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "lib": ["es2015"],
         "types": ["reflect-metadata"],
-        "inlineSourceMap": true,
+        "esModuleInterop":true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     }

@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as uuidV4 from "uuid/v4";
+
+import uuidv4 from "uuid";
 
 import * as core from "@actions/core";
 import * as exe from "@actions/exec";
@@ -9,10 +10,14 @@ import * as toolCache from "@actions/tool-cache";
 
 import { injectable } from "inversify";
 
-import { IBuildAgent, IExecResult } from "../core/interfaces";
+import { IBuildAgent, IExecResult } from "../../core/interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+
+    public get agentName(): string {
+        return "GitHub Actions";
+    }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch);
@@ -41,7 +46,7 @@ class BuildAgent implements IBuildAgent {
             }
             tempDirectory = path.join(baseLocation, "actions", "temp");
         }
-        const dest = path.join(tempDirectory, uuidV4());
+        const dest = path.join(tempDirectory, uuidv4());
         await io.mkdirP(dest);
         return dest;
     }
@@ -117,17 +122,17 @@ class BuildAgent implements IBuildAgent {
         return (inputValue || "false").toLowerCase() === "true";
     }
 
-    public isValidInputFile(input: string, file: string) {
+    public isValidInputFile(input: string, file: string): boolean {
         const pathValue = path.resolve(this.getInput(input) || "");
         const repoRoot = this.getSourceDir();
         return pathValue !== repoRoot;
     }
 
-    public fileExists(file: string) {
+    public fileExists(file: string): boolean {
         return this._exist(file) && this._stats(file).isFile();
     }
 
-    public directoryExists(file: string) {
+    public directoryExists(file: string): boolean {
         return this._exist(file) && this._stats(file).isDirectory();
     }
 

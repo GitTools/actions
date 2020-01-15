@@ -1,0 +1,22 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build-Mock",
+            "type": "npm",
+            "script": "build:mock"
+        },
+        {
+            "label": "Build-Azure",
+            "type": "npm",
+            "script": "build:azure"
+        },
+        {
+            "label": "Build-GitHub",
+            "type": "npm",
+            "script": "build:github"
+        },
+    ]
+}

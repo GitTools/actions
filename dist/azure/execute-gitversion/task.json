@@ -13,6 +13,13 @@
         "Patch": "2"
     },
     "minimumAgentVersion": "2.115.0",
+    "execution": {
+        "Node": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        }
+    },
     "instanceNameFormat": "gitversion-execute",
     "groups": [{
             "name": "gitversionDetails",
@@ -78,12 +85,4 @@
             "groupName": "additional"
         }
     ],
-
-    "execution": {
-        "Node": {
-            "target": "index.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        }
-    }
 }

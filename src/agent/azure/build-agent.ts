@@ -3,10 +3,14 @@ import { injectable } from "inversify";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as toolLib from "azure-pipelines-tool-lib/tool";
 
-import { IBuildAgent, IExecResult } from "../core/interfaces";
+import { IBuildAgent, IExecResult } from "../../core/interfaces";
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+
+    public get agentName(): string {
+        return "Azure Pipelines";
+    }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolLib.findLocalTool(toolName, versionSpec, arch);
@@ -77,15 +81,15 @@ class BuildAgent implements IBuildAgent {
         return taskLib.getBoolInput(input, required);
     }
 
-    public isValidInputFile(input: string, file: string) {
+    public isValidInputFile(input: string, file: string): boolean {
         return taskLib.filePathSupplied(input) && this.fileExists(file);
     }
 
-    public fileExists(file: string) {
+    public fileExists(file: string): boolean {
         return taskLib.exist(file) && taskLib.stats(file).isFile();
     }
 
-    public directoryExists(file: string) {
+    public directoryExists(file: string): boolean {
         return taskLib.exist(file) && taskLib.stats(file).isDirectory();
     }
 }

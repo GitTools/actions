@@ -5,6 +5,7 @@ export interface IVersionManager {
 }
 
 export interface IBuildAgent {
+    agentName: string;
     find(toolName: string, versionSpec: string, arch?: string): string;
     cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>;
     createTempDir(): Promise<string>;

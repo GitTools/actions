@@ -13,6 +13,14 @@
         "Patch": "2"
     },
     "minimumAgentVersion": "2.115.0",
+    "execution": {
+        "Node": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        }
+    },
+    "instanceNameFormat": "gitversion-setup",
     "inputs": [{
             "name": "versionSpec",
             "type": "string",
@@ -30,13 +38,4 @@
             "helpMarkDown": "Include pre-release versions when matching a version"
         }
     ],
-    "instanceNameFormat": "gitversion-setup",
-
-    "execution": {
-        "Node": {
-            "target": "index.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        }
-    }
 }
