@@ -36,7 +36,7 @@
         "@types/node": "^13.1.7",
         "@types/q": "^1.5.2",
         "@types/uuid": "^3.4.6",
-        "@zeit/ncc": "^0.20.5",
+        "@zeit/ncc": "^0.21.0",
         "reflect-metadata": "^0.1.13",
         "tfx-cli": "^0.7.11",
         "ts-loader": "^6.2.1",
