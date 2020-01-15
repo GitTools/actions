@@ -25,7 +25,7 @@
     "dependencies": {
         "@actions/core": "^1.2.0",
         "@actions/exec": "^1.0.1",
-        "@actions/io": "^1.0.1",
+        "@actions/io": "^1.0.2",
         "@actions/tool-cache": "^1.1.2",
         "azure-pipelines-task-lib": "2.9.3",
         "azure-pipelines-tool-lib": "0.12.0",
