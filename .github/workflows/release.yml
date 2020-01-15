@@ -26,7 +26,14 @@ jobs:
         npm install
         $date = Get-Date -format "yyMMddHHmm"
         $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
-        $override = '{\"version\": \"' + $version + '\"}'
-        npm run publish-azure -- --token ${{ secrets.TFX_TOKEN }} --override $override
+        $major = "${{steps.gitversion.outputs.major}}"
+        $minor = "${{steps.gitversion.outputs.minor}}"
+
+        . .\dist\azure\update-version.ps1
+        update-manifest .\dist\azure\vss-extension.json -Version $version
+        update-task .\dist\azure\setup-gitversion\task.json -Major $major -Minor $minor
+        update-task .\dist\azure\execute-gitversion\task.json -Major $major -Minor $minor
+
+        npm run publish-azure -- --token ${{ secrets.TFX_TOKEN }}
       shell: pwsh
       name: Publish Azure extension
