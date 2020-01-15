@@ -17,11 +17,10 @@ There are two step dependencies that are required in your workflow before runnin
 ```yaml
     steps:
     - name: Checkout
-    uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
-    run: |
-        git fetch --tags
-        git branch --create-reflog master origin/master
+      uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
 ```
 
 Basic:
@@ -71,7 +70,9 @@ Basic:
         echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
         echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+
 ```
+
 ### Private Repositories
 
 Private repos require credentials before you can fetch the master branch and tags.  
@@ -79,10 +80,10 @@ Private repos require credentials before you can fetch the master branch and tag
 ```yaml
     steps:
     - name: Checkout
-    uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
-    run: |
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
         git config remote.origin.url https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git fetch --tags
-        git branch --create-reflog master origin/master
+        git fetch --prune --unshallow
 ```
