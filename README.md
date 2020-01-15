@@ -5,6 +5,7 @@
 GitHub Actions that allow to install and use the GitVersion and GitReleaseManager tools
 
 [![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
+[![Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
 
 ## Usage
 

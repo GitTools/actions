@@ -8,9 +8,9 @@
     "category": "Build",
     "demands": [],
     "version": {
-        "Major": "5",
+        "Major": "1",
         "Minor": "0",
-        "Patch": "2"
+        "Patch": "0"
     },
     "minimumAgentVersion": "2.115.0",
     "execution": {
