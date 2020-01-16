@@ -278,7 +278,9 @@ function _loc(key) {
     }
     if (!_libResourceFileLoaded) {
         // merge loc strings from azure-pipelines-task-lib.
-        var libResourceFile = path.join(__dirname, 'lib.json');
+		var libResourceFile = path.join(__dirname, 'lib.json');
+		_warning("LIB.JSON " + libResourceFile);
+		_warning("LIB.JSON " + __dirname);
         var libLocStrs = _loadLocStrings(libResourceFile, _resourceCulture);
         for (var libKey in libLocStrs) {
             //cache azure-pipelines-task-lib loc string
