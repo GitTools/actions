@@ -14,6 +14,8 @@
         "build:mock:prod": "npm run build:mock -- --env.mode=production",
         "build:azure:prod": "npm run build:azure -- --env.mode=production",
         "build:github:prod": "npm run build:github -- --env.mode=production",
+        "build": "npm run build:mock && npm run build:azure && npm run build:github",
+        "build:prod": "npm run build:mock:prod && npm run build:azure:prod && npm run build:github:prod",
         "publish-azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
     },
     "author": "GitTools",
@@ -38,6 +40,7 @@
         "@types/uuid": "^3.4.6",
         "json-update": "^5.3.0",
         "reflect-metadata": "^0.1.13",
+        "replace-in-file-webpack-plugin": "^1.0.6",
         "tfx-cli": "^0.7.11",
         "ts-loader": "^6.2.1",
         "tslint": "^5.20.1",

@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
         "moduleResolution": "node",
-        "target": "es2015",
+        "target": "ES2016",
         "noImplicitAny": true,
         "sourceMap": true,
-        "lib": ["es2015"],
+        "lib": ["ES2016"],
         "types": ["reflect-metadata"],
         "esModuleInterop":true,
         "experimentalDecorators": true,
