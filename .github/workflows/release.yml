@@ -15,6 +15,11 @@ jobs:
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
+    - run: |
+        npm install
+        npm run build:github:prod 
+        npm run build:azure:prod
+      name: Build code
     - name: Install GitVersion
       uses: ./setup-gitversion
       with:
@@ -23,7 +28,6 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: ./execute-gitversion
     - run: |
-        npm install
         $date = Get-Date -format "yyMMddHHmm"
         $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
         $major = "${{steps.gitversion.outputs.major}}"
@@ -34,6 +38,6 @@ jobs:
         update-task .\dist\azure\setup-gitversion\task.json -Major $major -Minor $minor
         update-task .\dist\azure\execute-gitversion\task.json -Major $major -Minor $minor
 
-        npm run publish-azure -- --token ${{ secrets.TFX_TOKEN }}
+        npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
       shell: pwsh
       name: Publish Azure extension

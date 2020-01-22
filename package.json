@@ -16,7 +16,7 @@
         "build:github:prod": "npm run build:github -- --env.mode=production",
         "build": "npm run build:mock && npm run build:azure && npm run build:github",
         "build:prod": "npm run build:mock:prod && npm run build:azure:prod && npm run build:github:prod",
-        "publish-azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
+        "publish:azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
     },
     "author": "GitTools",
     "contributors": [

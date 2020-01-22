@@ -13,6 +13,11 @@ jobs:
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
+    - run: |
+        npm install
+        npm run build:github 
+        npm run build:azure
+      name: Build code
     - name: Install GitVersion
       uses: ./setup-gitversion
       with:
