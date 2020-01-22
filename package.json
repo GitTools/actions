@@ -37,6 +37,7 @@
     "devDependencies": {
         "@types/node": "^13.1.8",
         "@types/q": "^1.5.2",
+        "@types/semver-compare": "^1.0.1",
         "@types/uuid": "^3.4.6",
         "json-update": "^5.3.0",
         "reflect-metadata": "^0.1.13",

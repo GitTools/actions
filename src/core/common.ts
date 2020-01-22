@@ -4,6 +4,7 @@ import * as os from "os";
 import * as path from "path";
 import * as semver from "semver";
 import * as http from "typed-rest-client/HttpClient";
+import cmp from "semver-compare";
 
 import { inject, injectable } from "inversify";
 
@@ -184,7 +185,7 @@ class GitVersionTool implements IGitVersionTool {
         return workDir.replace(/\\/g, "/");
     }
 
-    private getArguments(workDir: string, options: IGitVersionOptions) {
+    private getArguments(workDir: string, options: IGitVersionOptions): string[] {
         const args = [
             workDir,
             "/output",
@@ -219,8 +220,6 @@ class GitVersionTool implements IGitVersionTool {
         return args;
     }
 }
-
-const cmp = require("semver-compare");
 
 @injectable()
 class VersionManager implements IVersionManager {

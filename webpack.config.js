@@ -41,17 +41,14 @@ module.exports = (env) => {
                     search: /__webpack_require__\(.*\)\(resourceFile\)/,
                     replace: 'require(resourceFile)'
                 }, {
-                    search: /path.join\(__dirname, 'lib.json'\)/,
-                    replace: "path.resolve('lib.json')"
+                    search: /call\(this, \"\/\"\)\)/gi,
+                    replace: "call(this, __dirname))"
                 }, {
                     search: /let pkg.*'package.json'\)\);/,
                     replace: ''
                 }, {
                     search: /let userAgent = 'vsts-task-installer\/' \+ pkg.version;/,
                     replace: "let userAgent = 'vsts-task-installer'"
-                }, {
-                    search: /tl.setResourcePath\(path.join\(__dirname, 'lib.json'\)\)/,
-                    replace: "tl.setResourcePath(path.resolve('lib.json'))"
                 }]
             }])
         ]
