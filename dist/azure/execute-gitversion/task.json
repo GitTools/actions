@@ -3,8 +3,8 @@
     "name": "gitversion-execute",
     "friendlyName": "Execute GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
-    "author": "GitVersion Contributors",
-    "helpMarkDown": "See the [documentation](http://gitversion.readthedocs.org/en/latest/) for help",
+    "author": "GitTools Contributors",
+    "helpMarkDown": "See the [documentation](https://gitversion.net/docs/) for help",
     "category": "Build",
     "demands": [],
     "version": {
