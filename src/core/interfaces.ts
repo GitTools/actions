@@ -41,6 +41,10 @@ export interface IGitVersionTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
     run(options: IGitVersionOptions): Promise<IExecResult>;
 }
+
+export interface IGitReleaseManagerTool {
+    install(versionSpec: string, includePrerelease: boolean): Promise<void>;
+}
 export interface IExecResult {
     stdout: string;
     stderr: string;

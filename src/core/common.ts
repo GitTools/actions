@@ -4,11 +4,20 @@ import * as os from "os";
 import * as path from "path";
 import * as semver from "semver";
 import * as http from "typed-rest-client/HttpClient";
+
 import cmp from "semver-compare";
 
 import { inject, injectable } from "inversify";
 
-import { IBuildAgent, IDotnetTool, IExecResult, IGitVersionOptions, IGitVersionTool, IVersionManager } from "./interfaces";
+import { IBuildAgent,
+    IDotnetTool,
+    IExecResult,
+    IGitReleaseManagerTool,
+    IGitVersionOptions,
+    IGitVersionTool,
+    IVersionManager,
+} from "./interfaces";
+
 import { TYPES } from "./types";
 
 @injectable()
@@ -222,6 +231,25 @@ class GitVersionTool implements IGitVersionTool {
 }
 
 @injectable()
+class GitReleaseManagerTool implements IGitReleaseManagerTool {
+
+    private buildAgent: IBuildAgent;
+    private dotnetTool: IDotnetTool;
+
+    constructor(
+        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
+        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
+    ) {
+        this.buildAgent = buildAgent;
+        this.dotnetTool = dotnetTool;
+    }
+
+    public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
+        await this.dotnetTool.toolInstall("GitReleaseManager.Tool", versionSpec, false, includePrerelease);
+    }
+}
+
+@injectable()
 class VersionManager implements IVersionManager {
 
     private buildAgent: IBuildAgent;
@@ -271,6 +299,7 @@ class VersionManager implements IVersionManager {
 
 export {
     DotnetTool,
+    GitReleaseManagerTool,
     GitVersionTool,
     VersionManager,
 };

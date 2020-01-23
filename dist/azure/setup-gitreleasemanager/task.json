@@ -1,0 +1,41 @@
+{
+    "id": "e3022448-b00d-4b57-b504-606a0bcf8279",
+    "name": "gitreleasemanager-setup",
+    "friendlyName": "Setup GitReleaseManager Task",
+    "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
+    "author": "GitTools Contributors",
+    "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
+    "category": "Build",
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "2.115.0",
+    "execution": {
+        "Node": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        }
+    },
+    "instanceNameFormat": "gitreleasemanager-setup",
+    "inputs": [{
+            "name": "versionSpec",
+            "type": "string",
+            "label": "The version spec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Required version in the form of 0.10.x or exact version like 0.10.2"
+        },
+        {
+            "name": "includePrerelease",
+            "type": "boolean",
+            "label": "Include pre-release versions",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Include pre-release versions when matching a version"
+        }
+    ]
+}

@@ -11,8 +11,9 @@
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [
+        { "path": "setup-gitversion" },
         { "path": "execute-gitversion" },
-        { "path": "setup-gitversion" }
+        { "path": "setup-gitreleasemanager" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -32,10 +33,10 @@
     ],
     "links": {
         "learn": {
-            "uri": "http://gitversion.readthedocs.org/en/stable"
+            "uri": "https://github.com/GitTools/actions"
         },
         "getstarted": {
-            "uri": "http://gitversion.readthedocs.org/en/stable/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
+            "uri": "https://github.com/GitTools/actions"
         },
         "license": {
             "uri": "https://github.com/GitTools/actions/blob/master/LICENSE"
@@ -76,6 +77,15 @@
         ],
         "properties": {
             "name": "execute-gitversion"
+        }
+    }, {
+        "id": "setup-gitreleasemanager-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "setup-gitreleasemanager"
         }
     }]
 }

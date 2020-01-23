@@ -9,6 +9,7 @@ module.exports = (env) => {
     return {
         entry: {
             'setup-gitversion': path.resolve(__dirname, 'src/setup-gitversion.ts'),
+            'setup-gitreleasemanager': path.resolve(__dirname, 'src/setup-gitreleasemanager.ts'),
             'execute-gitversion': path.resolve(__dirname, 'src/execute-gitversion.ts'),
         },
         target: 'node',

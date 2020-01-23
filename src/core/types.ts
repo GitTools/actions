@@ -2,6 +2,7 @@ const TYPES = {
     IBuildAgent: Symbol.for("BuildAgent"),
     IDotnetTool: Symbol.for("DotnetTool"),
     IGitVersionTool: Symbol.for("GitVersionTool"),
+    IGitReleaseManagerTool: Symbol.for("GitReleaseManagerTool"),
     IVersionManager: Symbol.for("VersionManager"),
 };
 
