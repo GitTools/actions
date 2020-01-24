@@ -9,7 +9,7 @@ GitHub Actions that allow to install and use the GitVersion and GitReleaseManage
 
 ## Usage
 
-See [setup](setup-gitversion/action.yml) and [usage](execute-gitversion/action.yml)
+See [setup](gitversion/setup) and [usage](gitversion/execute/action.yml)
 
 ## Dependency
 
@@ -32,12 +32,12 @@ Basic:
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
     - name: Install GitVersion
-      uses: gittools/actions/setup-gitversion@v0.3
+      uses: gittools/actions/gitversion/setup@v0.6
       with:
           versionSpec: '5.1.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/execute-gitversion@v0.3
+      uses: gittools/actions/gitversion/execute@v0.6
     - run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
