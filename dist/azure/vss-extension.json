@@ -11,9 +11,9 @@
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [
-        { "path": "setup-gitversion" },
-        { "path": "execute-gitversion" },
-        { "path": "setup-gitreleasemanager" }
+        { "path": "gitversion/setup" },
+        { "path": "gitversion/execute" },
+        { "path": "gitreleasemanager/setup" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -67,7 +67,7 @@
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "setup-gitversion"
+            "name": "gitversion/setup"
         }
     }, {
         "id": "execute-gitversion-task",
@@ -76,7 +76,7 @@
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "execute-gitversion"
+            "name": "gitversion/execute"
         }
     }, {
         "id": "setup-gitreleasemanager-task",
@@ -85,7 +85,7 @@
             "ms.vss-distributed-task.tasks"
         ],
         "properties": {
-            "name": "setup-gitreleasemanager"
+            "name": "gitreleasemanager/setup"
         }
     }]
 }

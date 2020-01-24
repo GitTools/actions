@@ -6,7 +6,7 @@ branding:
   icon: git-pull-request
 runs:
   using: node12
-  main: ../../dist/github/execute-gitversion/bundle.js
+  main: ../../dist/github/gitversion/execute/bundle.js
 inputs:
   targetPath:
     description: Optionally supply the path to the working directory

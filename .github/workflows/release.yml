@@ -35,7 +35,7 @@ jobs:
 
         . .\dist\azure\update-version.ps1
         update-manifest .\dist\azure\vss-extension.json -Version $version
-        dir .\dist\azure\**\task.json | % { update-task $_ -Major $major -Minor $minor }
+        dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor }
 
         npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
       shell: pwsh

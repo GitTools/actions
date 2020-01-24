@@ -9,7 +9,7 @@
             "request": "launch",
             "preLaunchTask": "Build-Mock",
             "name": "Debug Mock Setup GitVersion",
-            "program": "${workspaceFolder}/dist/mock/setup-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/mock/gitversion/setup/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -17,7 +17,7 @@
             "request": "launch",
             "preLaunchTask": "Build-Azure",
             "name": "Debug Azure Setup GitVersion",
-            "program": "${workspaceFolder}/dist/azure/setup-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/azure/gitversion/setup/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -25,7 +25,7 @@
             "request": "launch",
             "preLaunchTask": "Build-GitHub",
             "name": "Debug GitHub Setup GitVersion",
-            "program": "${workspaceFolder}/dist/github/setup-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/github/gitversion/setup/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -33,7 +33,7 @@
             "request": "launch",
             "preLaunchTask": "Build-Mock",
             "name": "Debug Mock Execute GitVersion",
-            "program": "${workspaceFolder}/dist/mock/execute-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/mock/gitversion/execute/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -41,7 +41,7 @@
             "request": "launch",
             "preLaunchTask": "Build-Azure",
             "name": "Debug Azure Execute GitVersion",
-            "program": "${workspaceFolder}/dist/azure/execute-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/azure/gitversion/execute/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -49,7 +49,7 @@
             "request": "launch",
             "preLaunchTask": "Build-GitHub",
             "name": "Debug GitHub Execute GitVersion",
-            "program": "${workspaceFolder}/dist/github/execute-gitversion/bundle.js",
+            "program": "${workspaceFolder}/dist/github/gitversion/execute/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
     ]

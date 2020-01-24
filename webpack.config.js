@@ -8,9 +8,9 @@ module.exports = (env) => {
 
     return {
         entry: {
-            'setup-gitversion': path.resolve(__dirname, 'src/setup-gitversion.ts'),
-            'setup-gitreleasemanager': path.resolve(__dirname, 'src/setup-gitreleasemanager.ts'),
-            'execute-gitversion': path.resolve(__dirname, 'src/execute-gitversion.ts'),
+            'gitversion/setup': path.resolve(__dirname, 'src/tasks/gitversion/setup.ts'),
+            'gitversion/execute': path.resolve(__dirname, 'src/tasks/gitversion/execute.ts'),
+            'gitreleasemanager/setup': path.resolve(__dirname, 'src/tasks/gitreleasemanager/setup.ts'),
         },
         target: 'node',
         mode: mode,
