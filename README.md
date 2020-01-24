@@ -20,19 +20,17 @@ There are two step dependencies that are required in your workflow before runnin
     - name: Checkout
       uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
-      run: |
-        git fetch --prune --unshallow
+      run: git fetch --prune --unshallow
 ```
 
 Basic:
 
 ```yaml
     steps:
-    - uses: actions/checkout@v1
-    - name: Fetch tags and master for GitVersion
-      run: |
-          git fetch --tags
-          git branch --create-reflog master origin/master
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
     - name: Install GitVersion
       uses: gittools/actions/setup-gitversion@v0.3
       with:
