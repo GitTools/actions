@@ -6,7 +6,7 @@ branding:
   icon: git-pull-request
 runs:
   using: node12
-  main: ../dist/github/setup-gitreleasemanager/bundle.js
+  main: ../../dist/github/setup-gitreleasemanager/bundle.js
 inputs:
   versionSpec:
     description: Required version in the form of 0.10.x or exact version like 0.10.2

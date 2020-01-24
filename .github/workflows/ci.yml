@@ -19,11 +19,11 @@ jobs:
         npm run build:azure
       name: Build code
     - name: Install GitVersion
-      uses: ./setup-gitversion
+      uses: ./gitversion/setup
       with:
         versionSpec: '5.1.2'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: ./execute-gitversion
+      uses: ./gitversion/execute
     - run: |
         echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
