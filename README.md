@@ -9,7 +9,9 @@ GitHub Actions that allow to install and use the GitVersion and GitReleaseManage
 
 ## Usage
 
-See [setup](gitversion/setup) and [usage](gitversion/execute/action.yml)
+See [setup](gitversion/setup/action.yml) and [usage](gitversion/execute/action.yml) for GitVersion
+
+and [setup](gitreleasemanager/setup/action.yml) for GitReleaseManager
 
 ## Dependency
 
@@ -32,12 +34,12 @@ Basic:
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.6
+      uses: gittools/actions/gitversion/setup@v0.6.1
       with:
           versionSpec: '5.1.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/gitversion/execute@v0.6
+      uses: gittools/actions/gitversion/execute@v0.6.1
     - run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
@@ -78,7 +80,6 @@ Private repos require credentials before you can fetch the master branch and tag
 
 ```yaml
     steps:
-    - name: Checkout
     - name: Checkout
       uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
