@@ -1,6 +1,6 @@
 {
     "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
-    "name": "gitversion-execute",
+    "name": "gitversion/execute",
     "friendlyName": "Execute GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitTools Contributors",
@@ -20,7 +20,7 @@
             "workingDirectory": "."
         }
     },
-    "instanceNameFormat": "gitversion-execute",
+    "instanceNameFormat": "gitversion/execute",
     "groups": [{
             "name": "gitversionDetails",
             "displayName": "GitVersion details",

@@ -1,6 +1,6 @@
 {
     "id": "a06c02ae-7b9a-4082-90dc-fe27b500e54f",
-    "name": "gitversion-setup",
+    "name": "gitversion/setup",
     "friendlyName": "Setup GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitTools Contributors",
@@ -20,7 +20,7 @@
             "workingDirectory": "."
         }
     },
-    "instanceNameFormat": "gitversion-setup",
+    "instanceNameFormat": "gitversion/setup",
     "inputs": [{
             "name": "versionSpec",
             "type": "string",
