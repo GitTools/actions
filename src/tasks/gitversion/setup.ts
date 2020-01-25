@@ -1,4 +1,4 @@
 import "reflect-metadata";
-import { setup } from "../../core/gitversion";
+import { setup } from "./main";
 
 setup();

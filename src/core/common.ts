@@ -9,16 +9,65 @@ import cmp from "semver-compare";
 
 import { inject, injectable } from "inversify";
 
-import { IBuildAgent,
-    IDotnetTool,
-    IExecResult,
-    IGitReleaseManagerTool,
-    IGitVersionOptions,
-    IGitVersionTool,
-    IVersionManager,
-} from "./interfaces";
+import { BuildAgent } from "../agent/mock/build-agent";
+import { Container } from "inversify";
 
-import { TYPES } from "./types";
+const container = new Container();
+
+export interface IVersionManager {
+    isExplicitVersion(versionSpec: string): boolean;
+    evaluateVersions(versions: string[], versionSpec: string): string;
+    cleanVersion(version: string): string;
+}
+
+export interface IBuildAgent {
+    agentName: string;
+    find(toolName: string, versionSpec: string, arch?: string): string;
+    cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>;
+    createTempDir(): Promise<string>;
+    debug(message: string): void;
+    setFailed(message: string, done?: boolean): void;
+    setSucceeded(message: string, done?: boolean): void;
+    exportVariable(name: string, val: string): void;
+    getVariable(name: string): string;
+    addPath(inputPath: string): void;
+    which(tool: string, check?: boolean): Promise<string>;
+    exec(exec: string, args: string[]): Promise<IExecResult>;
+
+    getSourceDir(): string;
+    isValidInputFile(input: string, file: string): boolean;
+    fileExists(file: string): boolean;
+    directoryExists(file: string): boolean;
+
+    setOutput(name: string, value: string): void;
+    getInput(input: string, required?: boolean): string;
+    getBooleanInput(input: string, required?: boolean): boolean;
+}
+
+export interface IDotnetTool {
+    run(args: string[]): Promise<IExecResult>;
+    toolInstall(toolName: string, versionSpec: string, checkLatest: boolean, includePre: boolean): Promise<string>;
+}
+
+export interface IExecResult {
+    stdout: string;
+    stderr: string;
+    code: number;
+    error: Error;
+}
+
+export const TYPES = {
+    IBuildAgent: Symbol.for("BuildAgent"),
+    IDotnetTool: Symbol.for("DotnetTool"),
+    IGitVersionTool: Symbol.for("GitVersionTool"),
+    IGitReleaseManagerTool: Symbol.for("GitReleaseManagerTool"),
+    IVersionManager: Symbol.for("VersionManager"),
+};
+
+export const SetupOptions = {
+    includePrerelease: "includePrerelease",
+    versionSpec: "versionSpec",
+};
 
 @injectable()
 class DotnetTool implements IDotnetTool {
@@ -119,7 +168,7 @@ class DotnetTool implements IDotnetTool {
         const body: string = await res.readBody();
         const data = JSON.parse(body).data;
 
-        const versions = (data[0].versions as Array<{ version: string }>).map((x) => x.version);
+        const versions = (data[0].versions as { version: string }[]).map((x) => x.version);
         if (!versions || !versions.length) {
             return null;
         }
@@ -150,102 +199,6 @@ class DotnetTool implements IDotnetTool {
         }
 
         return await this.buildAgent.cacheDir(tempDirectory, toolName, version);
-    }
-}
-
-@injectable()
-class GitVersionTool implements IGitVersionTool {
-
-    private buildAgent: IBuildAgent;
-    private dotnetTool: IDotnetTool;
-
-    constructor(
-        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
-        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
-    ) {
-        this.buildAgent = buildAgent;
-        this.dotnetTool = dotnetTool;
-    }
-
-    public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
-        await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
-    }
-
-    public run(options: IGitVersionOptions): Promise<IExecResult> {
-        const workDir = this.getRepoDir(options.targetPath);
-
-        const args = this.getArguments(workDir, options);
-
-        return this.buildAgent.exec("dotnet-gitversion", args);
-    }
-
-    private getRepoDir(targetPath: string): string {
-        let workDir: string;
-        const srcDir = this.buildAgent.getSourceDir();
-        if (!targetPath) {
-            workDir = srcDir;
-        } else {
-            if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = path.join(srcDir, targetPath);
-            } else {
-                throw new Error("Directory not found at " + targetPath);
-            }
-        }
-        return workDir.replace(/\\/g, "/");
-    }
-
-    private getArguments(workDir: string, options: IGitVersionOptions): string[] {
-        const args = [
-            workDir,
-            "/output",
-            "json", // need to use buildserver later
-        ];
-
-        const {
-            useConfigFile,
-            configFilePath,
-            updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments,
-         } = options;
-
-        if (useConfigFile) {
-            if (this.buildAgent.isValidInputFile("configFilePath", configFilePath)) {
-                args.push("/config", configFilePath);
-            } else {
-                throw new Error("GitVersion configuration file not found at " + configFilePath);
-            }
-        }
-        if (updateAssemblyInfo) {
-            args.push("/updateassemblyinfo");
-            if (this.buildAgent.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
-                args.push(updateAssemblyInfoFilename);
-            } else {
-                throw new Error("AssemblyInfoFilename file not found at " + updateAssemblyInfoFilename);
-            }
-        }
-
-        args.push(additionalArguments);
-        return args;
-    }
-}
-
-@injectable()
-class GitReleaseManagerTool implements IGitReleaseManagerTool {
-
-    private buildAgent: IBuildAgent;
-    private dotnetTool: IDotnetTool;
-
-    constructor(
-        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
-        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
-    ) {
-        this.buildAgent = buildAgent;
-        this.dotnetTool = dotnetTool;
-    }
-
-    public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
-        await this.dotnetTool.toolInstall("GitReleaseManager.Tool", versionSpec, false, includePrerelease);
     }
 }
 
@@ -297,9 +250,8 @@ class VersionManager implements IVersionManager {
     }
 }
 
-export {
-    DotnetTool,
-    GitReleaseManagerTool,
-    GitVersionTool,
-    VersionManager,
-};
+container.bind<IVersionManager>(TYPES.IVersionManager).to(VersionManager);
+container.bind<IBuildAgent>(TYPES.IBuildAgent).to(BuildAgent);
+container.bind<IDotnetTool>(TYPES.IDotnetTool).to(DotnetTool);
+
+export { container };

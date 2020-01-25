@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { IBuildAgent, IExecResult } from "../../core/interfaces";
+import { IBuildAgent, IExecResult } from "../../core/common";
 
 @injectable()
 class BuildAgent implements IBuildAgent {

@@ -1,22 +1,23 @@
-import { IBuildAgent, IGitReleaseManagerTool } from "./interfaces";
-import { ioc } from "./ioc";
-import { SetupOptions, TYPES } from "./types";
+import { IDotnetTool, IBuildAgent, TYPES } from "./common";
+import { injectable, inject } from "inversify";
 
-const gitReleaseManagerTool = ioc.get<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool);
-const buildAgent = ioc.get<IBuildAgent>(TYPES.IBuildAgent);
+export interface IGitReleaseManagerTool {
+    install(versionSpec: string, includePrerelease: boolean): Promise<void>;
+}
 
-export async function setup() {
-    try {
+@injectable()
+export class GitReleaseManagerTool implements IGitReleaseManagerTool {
 
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+    private dotnetTool: IDotnetTool;
 
-        const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
-        const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
+    constructor(
+        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
+        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
+    ) {
+        this.dotnetTool = dotnetTool;
+    }
 
-        await gitReleaseManagerTool.install(versionSpec, includePrerelease);
-
-        buildAgent.setSucceeded("GitVersionManager installed successfully", true);
-    } catch (error) {
-        buildAgent.setFailed(error.message, true);
+    public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
+        await this.dotnetTool.toolInstall("GitReleaseManager.Tool", versionSpec, false, includePrerelease);
     }
 }

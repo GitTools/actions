@@ -1,4 +1,4 @@
 import "reflect-metadata";
-import { run } from "../../core/gitversion";
+import { run } from "./main";
 
 run();

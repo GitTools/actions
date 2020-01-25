@@ -1,102 +1,201 @@
-import { IBuildAgent, IGitVersion, IGitVersionOptions, IGitVersionTool } from "./interfaces";
-import { ioc } from "./ioc";
-import { RunOptions, SetupOptions, TYPES } from "./types";
+import { IBuildAgent, IDotnetTool, IExecResult, TYPES } from "./common";
+import { injectable, inject } from "inversify";
+import path = require("path");
 
-const gitVersionTool = ioc.get<IGitVersionTool>(TYPES.IGitVersionTool);
-const buildAgent = ioc.get<IBuildAgent>(TYPES.IBuildAgent);
-
-export async function setup() {
-    try {
-
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
-
-        const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
-        const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
-
-        await gitVersionTool.install(versionSpec, includePrerelease);
-
-        buildAgent.setSucceeded("GitVersion installed successfully", true);
-    } catch (error) {
-        buildAgent.setFailed(error.message, true);
-    }
+export interface IGitVersionOptions {
+    targetPath: string;
+    useConfigFile: boolean;
+    configFilePath: string;
+    updateAssemblyInfo: boolean;
+    updateAssemblyInfoFilename: string;
+    additionalArguments: string;
+    srcDir: string;
 }
 
-export async function run() {
-    try {
-        const inputOptions: IGitVersionOptions = getGitVersionOptions();
+export const RunOptions = {
+    targetPath: "targetPath",
 
-        const result = await gitVersionTool.run(inputOptions);
+    useConfigFile: "useConfigFile",
+    configFilePath: "configFilePath",
 
-        const gitversion = JSON.parse(result.stdout) as IGitVersion;
-        writeGitVersionToAgent(gitversion);
+    updateAssemblyInfo: "configFilePath",
+    updateAssemblyInfoFilename: "configFilePath",
 
-        if (result.code === 0) {
-            buildAgent.setSucceeded("GitVersion executed successfully", true);
+    additionalArguments: "additionalArguments",
+};
+
+export interface IGitVersion {
+    Major: number;
+    Minor: number;
+    Patch: number;
+    PreReleaseTag: string;
+    PreReleaseTagWithDash: string;
+    PreReleaseLabel: string;
+    PreReleaseNumber: number;
+    WeightedPreReleaseNumber: number;
+    BuildMetaData: number;
+    BuildMetaDataPadded: string;
+    FullBuildMetaData: string;
+    MajorMinorPatch: string;
+    SemVer: string;
+    LegacySemVer: string;
+    LegacySemVerPadded: string;
+    AssemblySemVer: string;
+    AssemblySemFileVer: string;
+    FullSemVer: string;
+    InformationalVersion: string;
+    BranchName: string;
+    Sha: string;
+    ShortSha: string;
+    NuGetVersionV2: string;
+    NuGetVersion: string;
+    NuGetPreReleaseTagV2: string;
+    NuGetPreReleaseTag: string;
+    VersionSourceSha: string;
+    CommitsSinceVersionSource: number;
+    CommitsSinceVersionSourcePadded: string;
+    CommitDate: string;
+}
+
+export interface IGitVersionTool {
+    install(versionSpec: string, includePrerelease: boolean): Promise<void>;
+    run(options: IGitVersionOptions): Promise<IExecResult>;
+    writeGitVersionToAgent(gitversion: IGitVersion): void;
+    getGitVersionOptions(): IGitVersionOptions;
+}
+
+@injectable()
+export class GitVersionTool implements IGitVersionTool {
+
+    private buildAgent: IBuildAgent;
+    private dotnetTool: IDotnetTool;
+
+    constructor(
+        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
+        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
+    ) {
+        this.buildAgent = buildAgent;
+        this.dotnetTool = dotnetTool;
+    }
+
+    public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
+        await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
+    }
+
+    public run(options: IGitVersionOptions): Promise<IExecResult> {
+        const workDir = this.getRepoDir(options.targetPath);
+
+        const args = this.getArguments(workDir, options);
+
+        return this.buildAgent.exec("dotnet-gitversion", args);
+    }
+
+    private getRepoDir(targetPath: string): string {
+        let workDir: string;
+        const srcDir = this.buildAgent.getSourceDir();
+        if (!targetPath) {
+            workDir = srcDir;
         } else {
-            buildAgent.setFailed(result.error.message, true);
+            if (this.buildAgent.directoryExists(targetPath)) {
+                workDir = path.join(srcDir, targetPath);
+            } else {
+                throw new Error("Directory not found at " + targetPath);
+            }
+        }
+        return workDir.replace(/\\/g, "/");
+    }
+
+    private getArguments(workDir: string, options: IGitVersionOptions): string[] {
+        const args = [
+            workDir,
+            "/output",
+            "json", // need to use buildserver later
+        ];
+
+        const {
+            useConfigFile,
+            configFilePath,
+            updateAssemblyInfo,
+            updateAssemblyInfoFilename,
+            additionalArguments,
+         } = options;
+
+        if (useConfigFile) {
+            if (this.buildAgent.isValidInputFile("configFilePath", configFilePath)) {
+                args.push("/config", configFilePath);
+            } else {
+                throw new Error("GitVersion configuration file not found at " + configFilePath);
+            }
+        }
+        if (updateAssemblyInfo) {
+            args.push("/updateassemblyinfo");
+            if (this.buildAgent.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
+                args.push(updateAssemblyInfoFilename);
+            } else {
+                throw new Error("AssemblyInfoFilename file not found at " + updateAssemblyInfoFilename);
+            }
         }
 
-    } catch (error) {
-        buildAgent.setFailed(error, true);
+        args.push(additionalArguments);
+        return args;
     }
-}
 
-function getGitVersionOptions(): IGitVersionOptions {
+    public getGitVersionOptions(): IGitVersionOptions {
 
-    const targetPath = buildAgent.getInput(RunOptions.targetPath);
+        const targetPath = this.buildAgent.getInput(RunOptions.targetPath);
 
-    const useConfigFile = buildAgent.getBooleanInput(RunOptions.useConfigFile);
-    const configFilePath = buildAgent.getInput(RunOptions.configFilePath);
+        const useConfigFile = this.buildAgent.getBooleanInput(RunOptions.useConfigFile);
+        const configFilePath = this.buildAgent.getInput(RunOptions.configFilePath);
 
-    const updateAssemblyInfo = buildAgent.getBooleanInput(RunOptions.updateAssemblyInfo);
-    const updateAssemblyInfoFilename = buildAgent.getInput(RunOptions.updateAssemblyInfoFilename);
+        const updateAssemblyInfo = this.buildAgent.getBooleanInput(RunOptions.updateAssemblyInfo);
+        const updateAssemblyInfoFilename = this.buildAgent.getInput(RunOptions.updateAssemblyInfoFilename);
 
-    const additionalArguments = buildAgent.getInput(RunOptions.additionalArguments);
+        const additionalArguments = this.buildAgent.getInput(RunOptions.additionalArguments);
 
-    const srcDir = buildAgent.getSourceDir().replace(/\\/g, "/");
+        const srcDir = this.buildAgent.getSourceDir().replace(/\\/g, "/");
 
-    return {
-        targetPath,
-        useConfigFile,
-        configFilePath,
-        updateAssemblyInfo,
-        updateAssemblyInfoFilename,
-        additionalArguments,
-        srcDir,
-    };
-}
+        return {
+            targetPath,
+            useConfigFile,
+            configFilePath,
+            updateAssemblyInfo,
+            updateAssemblyInfoFilename,
+            additionalArguments,
+            srcDir,
+        };
+    }
 
-function writeGitVersionToAgent(gitversion: IGitVersion): void {
+    public writeGitVersionToAgent(gitversion: IGitVersion): void {
 
-    buildAgent.setOutput("major",                           gitversion.Major.toString());
-    buildAgent.setOutput("minor",                           gitversion.Minor.toString());
-    buildAgent.setOutput("patch",                           gitversion.Patch.toString());
-    buildAgent.setOutput("preReleaseTag",                   gitversion.PreReleaseTag);
-    buildAgent.setOutput("preReleaseTagWithDash",           gitversion.PreReleaseTagWithDash);
-    buildAgent.setOutput("preReleaseLabel",                 gitversion.PreReleaseLabel);
-    buildAgent.setOutput("preReleaseNumber",                gitversion.PreReleaseNumber.toString());
-    buildAgent.setOutput("weightedPreReleaseNumber",        gitversion.WeightedPreReleaseNumber.toString());
-    buildAgent.setOutput("buildMetaData",                   gitversion.BuildMetaData.toString());
-    buildAgent.setOutput("buildMetaDataPadded",             gitversion.BuildMetaDataPadded);
-    buildAgent.setOutput("fullBuildMetaData",               gitversion.FullBuildMetaData);
-    buildAgent.setOutput("majorMinorPatch",                 gitversion.MajorMinorPatch);
-    buildAgent.setOutput("semVer",                          gitversion.SemVer);
-    buildAgent.setOutput("legacySemVer",                    gitversion.LegacySemVer);
-    buildAgent.setOutput("legacySemVerPadded",              gitversion.LegacySemVerPadded);
-    buildAgent.setOutput("assemblySemVer",                  gitversion.AssemblySemVer);
-    buildAgent.setOutput("assemblySemFileVer",              gitversion.AssemblySemFileVer);
-    buildAgent.setOutput("fullSemVer",                      gitversion.FullSemVer);
-    buildAgent.setOutput("informationalVersion",            gitversion.InformationalVersion);
-    buildAgent.setOutput("branchName",                      gitversion.BranchName);
-    buildAgent.setOutput("sha",                             gitversion.Sha);
-    buildAgent.setOutput("shortSha",                        gitversion.ShortSha);
-    buildAgent.setOutput("nuGetVersionV2",                  gitversion.NuGetVersionV2);
-    buildAgent.setOutput("nuGetVersion",                    gitversion.NuGetVersion);
-    buildAgent.setOutput("nuGetPreReleaseTagV2",            gitversion.NuGetPreReleaseTagV2);
-    buildAgent.setOutput("nuGetPreReleaseTag",              gitversion.NuGetPreReleaseTag);
-    buildAgent.setOutput("versionSourceSha",                gitversion.VersionSourceSha);
-    buildAgent.setOutput("commitsSinceVersionSource",       gitversion.CommitsSinceVersionSource.toString());
-    buildAgent.setOutput("commitsSinceVersionSourcePadded", gitversion.CommitsSinceVersionSourcePadded);
-    buildAgent.setOutput("commitDate",                      gitversion.CommitDate);
-
+        this.buildAgent.setOutput("major",                           gitversion.Major.toString());
+        this.buildAgent.setOutput("minor",                           gitversion.Minor.toString());
+        this.buildAgent.setOutput("patch",                           gitversion.Patch.toString());
+        this.buildAgent.setOutput("preReleaseTag",                   gitversion.PreReleaseTag);
+        this.buildAgent.setOutput("preReleaseTagWithDash",           gitversion.PreReleaseTagWithDash);
+        this.buildAgent.setOutput("preReleaseLabel",                 gitversion.PreReleaseLabel);
+        this.buildAgent.setOutput("preReleaseNumber",                gitversion.PreReleaseNumber.toString());
+        this.buildAgent.setOutput("weightedPreReleaseNumber",        gitversion.WeightedPreReleaseNumber.toString());
+        this.buildAgent.setOutput("buildMetaData",                   gitversion.BuildMetaData.toString());
+        this.buildAgent.setOutput("buildMetaDataPadded",             gitversion.BuildMetaDataPadded);
+        this.buildAgent.setOutput("fullBuildMetaData",               gitversion.FullBuildMetaData);
+        this.buildAgent.setOutput("majorMinorPatch",                 gitversion.MajorMinorPatch);
+        this.buildAgent.setOutput("semVer",                          gitversion.SemVer);
+        this.buildAgent.setOutput("legacySemVer",                    gitversion.LegacySemVer);
+        this.buildAgent.setOutput("legacySemVerPadded",              gitversion.LegacySemVerPadded);
+        this.buildAgent.setOutput("assemblySemVer",                  gitversion.AssemblySemVer);
+        this.buildAgent.setOutput("assemblySemFileVer",              gitversion.AssemblySemFileVer);
+        this.buildAgent.setOutput("fullSemVer",                      gitversion.FullSemVer);
+        this.buildAgent.setOutput("informationalVersion",            gitversion.InformationalVersion);
+        this.buildAgent.setOutput("branchName",                      gitversion.BranchName);
+        this.buildAgent.setOutput("sha",                             gitversion.Sha);
+        this.buildAgent.setOutput("shortSha",                        gitversion.ShortSha);
+        this.buildAgent.setOutput("nuGetVersionV2",                  gitversion.NuGetVersionV2);
+        this.buildAgent.setOutput("nuGetVersion",                    gitversion.NuGetVersion);
+        this.buildAgent.setOutput("nuGetPreReleaseTagV2",            gitversion.NuGetPreReleaseTagV2);
+        this.buildAgent.setOutput("nuGetPreReleaseTag",              gitversion.NuGetPreReleaseTag);
+        this.buildAgent.setOutput("versionSourceSha",                gitversion.VersionSourceSha);
+        this.buildAgent.setOutput("commitsSinceVersionSource",       gitversion.CommitsSinceVersionSource.toString());
+        this.buildAgent.setOutput("commitsSinceVersionSourcePadded", gitversion.CommitsSinceVersionSourcePadded);
+        this.buildAgent.setOutput("commitDate",                      gitversion.CommitDate);
+    }
 }
