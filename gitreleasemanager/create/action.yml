@@ -1,0 +1,9 @@
+name: gitreleasemanager-create
+description: GitHub Action for creating and exporting releases for software applications hosted on GitHub. Creates the release
+author: GitTools
+branding:
+  color: gray-dark
+  icon: git-pull-request
+runs:
+  using: node12
+  main: ../../dist/github/gitreleasemanager/create/bundle.js

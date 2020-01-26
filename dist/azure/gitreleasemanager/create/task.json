@@ -1,0 +1,24 @@
+{
+    "id": "c77d38be-46a9-4ef1-a181-2d6050ed23d2",
+    "name": "gitreleasemanager/create",
+    "friendlyName": "Create GitReleaseManager Task",
+    "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
+    "author": "GitTools Contributors",
+    "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
+    "category": "Build",
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "2.115.0",
+    "execution": {
+        "Node": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        }
+    },
+    "instanceNameFormat": "gitreleasemanager/create"
+}

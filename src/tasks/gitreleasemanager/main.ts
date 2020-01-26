@@ -21,3 +21,14 @@ export async function setup() {
         buildAgent.setFailed(error.message, true);
     }
 }
+
+export async function create() {
+    try {
+
+        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+
+        buildAgent.setSucceeded("GitVersionManager created release successfully", true);
+    } catch (error) {
+        buildAgent.setFailed(error.message, true);
+    }
+}
