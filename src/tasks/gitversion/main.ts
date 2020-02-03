@@ -1,5 +1,5 @@
 import { container, IBuildAgent, TYPES, SetupOptions } from "../../core/common";
-import { IGitVersionTool, IGitVersionOptions, IGitVersion, GitVersionTool } from "../../core/gitversion";
+import { IGitVersionTool, IGitVersionArguments, IGitVersion, GitVersionTool } from "../../core/gitversion";
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool);
 
@@ -24,7 +24,7 @@ export async function setup() {
 
 export async function run() {
     try {
-        const inputOptions: IGitVersionOptions = gitVersionTool.getGitVersionOptions();
+        const inputOptions: IGitVersionArguments = gitVersionTool.getGitVersionOptions();
 
         const result = await gitVersionTool.run(inputOptions);
 
