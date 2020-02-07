@@ -1,5 +1,6 @@
-import { IDotnetTool, IBuildAgent, TYPES } from "./common";
+import { TYPES, IBuildAgent } from "../core/common";
 import { injectable, inject } from "inversify";
+import { IDotnetTool } from "../core/dotnet-tool";
 
 export interface IGitReleaseManagerTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;

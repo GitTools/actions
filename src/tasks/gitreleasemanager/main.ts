@@ -1,5 +1,7 @@
-import { container, IBuildAgent, TYPES, SetupOptions } from "../../core/common";
-import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../core/gitreleasemanager";
+import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
+import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager";
+
+import container from "../../core/ioc";
 
 container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool);
 

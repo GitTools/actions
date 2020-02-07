@@ -1,5 +1,7 @@
-import { container, IBuildAgent, TYPES, SetupOptions } from "../../core/common";
-import { IGitVersionTool, IGitVersionArguments, IGitVersion, GitVersionTool } from "../../core/gitversion";
+import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
+import { IGitVersionTool, IGitVersionArguments, IGitVersion, GitVersionTool } from "../../tools/gitversion";
+
+import container from "../../core/ioc";
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool);
 

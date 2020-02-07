@@ -1,6 +1,7 @@
-import { IBuildAgent, IDotnetTool, IExecResult, TYPES } from "./common";
-import { injectable, inject } from "inversify";
 import path = require("path");
+import { injectable, inject } from "inversify";
+import { IExecResult, IBuildAgent, TYPES } from "../core/common";
+import { IDotnetTool } from "../core/dotnet-tool";
 
 export interface IGitVersionArguments {
     targetPath: string;
