@@ -7,7 +7,7 @@ export const GitVersionRunOptions = {
     additionalArguments: "additionalArguments",
 };
 
-export interface IGitVersionInput {
+export interface GitVersionInput {
     targetPath: string;
     useConfigFile: boolean;
     configFilePath: string;
@@ -17,7 +17,7 @@ export interface IGitVersionInput {
     srcDir: string;
 }
 
-export interface IGitVersionOutput {
+export interface GitVersionOutput {
     Major: number;
     Minor: number;
     Patch: number;

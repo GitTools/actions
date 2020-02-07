@@ -2,13 +2,13 @@ import path = require("path");
 import { injectable, inject } from "inversify";
 import { IExecResult, IBuildAgent, TYPES } from "../../core/common";
 import { IDotnetTool } from "../../core/dotnet-tool";
-import { IGitVersionInput, IGitVersionOutput, GitVersionRunOptions } from "./models";
+import { GitVersionInput, GitVersionOutput, GitVersionRunOptions } from "./models";
 
 export interface IGitVersionTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
-    run(options: IGitVersionInput): Promise<IExecResult>;
-    writeGitVersionToAgent(gitversion: IGitVersionOutput): void;
-    getGitVersionOptions(): IGitVersionInput;
+    run(options: GitVersionInput): Promise<IExecResult>;
+    writeGitVersionToAgent(gitversion: GitVersionOutput): void;
+    getGitVersionInput(): GitVersionInput;
 }
 
 @injectable()
@@ -29,7 +29,7 @@ export class GitVersionTool implements IGitVersionTool {
         await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
     }
 
-    public run(options: IGitVersionInput): Promise<IExecResult> {
+    public run(options: GitVersionInput): Promise<IExecResult> {
         const workDir = this.getRepoDir(options.targetPath);
 
         const args = this.getArguments(workDir, options);
@@ -52,7 +52,7 @@ export class GitVersionTool implements IGitVersionTool {
         return workDir.replace(/\\/g, "/");
     }
 
-    private getArguments(workDir: string, options: IGitVersionInput): string[] {
+    private getArguments(workDir: string, options: GitVersionInput): string[] {
         const args = [
             workDir,
             "/output",
@@ -87,7 +87,7 @@ export class GitVersionTool implements IGitVersionTool {
         return args;
     }
 
-    public getGitVersionOptions(): IGitVersionInput {
+    public getGitVersionInput(): GitVersionInput {
 
         const targetPath = this.buildAgent.getInput(GitVersionRunOptions.targetPath);
 
@@ -112,7 +112,7 @@ export class GitVersionTool implements IGitVersionTool {
         };
     }
 
-    public writeGitVersionToAgent(gitversion: IGitVersionOutput): void {
+    public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
 
         this.buildAgent.setOutput("major",                           gitversion.Major.toString());
         this.buildAgent.setOutput("minor",                           gitversion.Minor.toString());
