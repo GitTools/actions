@@ -1,5 +1,5 @@
 import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
-import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager";
+import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager/gitreleasemanager-tool";
 
 import container from "../../core/ioc";
 

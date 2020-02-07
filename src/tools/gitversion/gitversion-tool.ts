@@ -1,68 +1,14 @@
 import path = require("path");
 import { injectable, inject } from "inversify";
-import { IExecResult, IBuildAgent, TYPES } from "../core/common";
-import { IDotnetTool } from "../core/dotnet-tool";
-
-export interface IGitVersionArguments {
-    targetPath: string;
-    useConfigFile: boolean;
-    configFilePath: string;
-    updateAssemblyInfo: boolean;
-    updateAssemblyInfoFilename: string;
-    additionalArguments: string;
-    srcDir: string;
-}
-
-export const GitVersionRunOptions = {
-    targetPath: "targetPath",
-
-    useConfigFile: "useConfigFile",
-    configFilePath: "configFilePath",
-
-    updateAssemblyInfo: "configFilePath",
-    updateAssemblyInfoFilename: "configFilePath",
-
-    additionalArguments: "additionalArguments",
-};
-
-export interface IGitVersion {
-    Major: number;
-    Minor: number;
-    Patch: number;
-    PreReleaseTag: string;
-    PreReleaseTagWithDash: string;
-    PreReleaseLabel: string;
-    PreReleaseNumber: number;
-    WeightedPreReleaseNumber: number;
-    BuildMetaData: number;
-    BuildMetaDataPadded: string;
-    FullBuildMetaData: string;
-    MajorMinorPatch: string;
-    SemVer: string;
-    LegacySemVer: string;
-    LegacySemVerPadded: string;
-    AssemblySemVer: string;
-    AssemblySemFileVer: string;
-    FullSemVer: string;
-    InformationalVersion: string;
-    BranchName: string;
-    Sha: string;
-    ShortSha: string;
-    NuGetVersionV2: string;
-    NuGetVersion: string;
-    NuGetPreReleaseTagV2: string;
-    NuGetPreReleaseTag: string;
-    VersionSourceSha: string;
-    CommitsSinceVersionSource: number;
-    CommitsSinceVersionSourcePadded: string;
-    CommitDate: string;
-}
+import { IExecResult, IBuildAgent, TYPES } from "../../core/common";
+import { IDotnetTool } from "../../core/dotnet-tool";
+import { IGitVersionInput, IGitVersionOutput, GitVersionRunOptions } from "./models";
 
 export interface IGitVersionTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
-    run(options: IGitVersionArguments): Promise<IExecResult>;
-    writeGitVersionToAgent(gitversion: IGitVersion): void;
-    getGitVersionOptions(): IGitVersionArguments;
+    run(options: IGitVersionInput): Promise<IExecResult>;
+    writeGitVersionToAgent(gitversion: IGitVersionOutput): void;
+    getGitVersionOptions(): IGitVersionInput;
 }
 
 @injectable()
@@ -83,7 +29,7 @@ export class GitVersionTool implements IGitVersionTool {
         await this.dotnetTool.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
     }
 
-    public run(options: IGitVersionArguments): Promise<IExecResult> {
+    public run(options: IGitVersionInput): Promise<IExecResult> {
         const workDir = this.getRepoDir(options.targetPath);
 
         const args = this.getArguments(workDir, options);
@@ -106,7 +52,7 @@ export class GitVersionTool implements IGitVersionTool {
         return workDir.replace(/\\/g, "/");
     }
 
-    private getArguments(workDir: string, options: IGitVersionArguments): string[] {
+    private getArguments(workDir: string, options: IGitVersionInput): string[] {
         const args = [
             workDir,
             "/output",
@@ -141,7 +87,7 @@ export class GitVersionTool implements IGitVersionTool {
         return args;
     }
 
-    public getGitVersionOptions(): IGitVersionArguments {
+    public getGitVersionOptions(): IGitVersionInput {
 
         const targetPath = this.buildAgent.getInput(GitVersionRunOptions.targetPath);
 
@@ -166,7 +112,7 @@ export class GitVersionTool implements IGitVersionTool {
         };
     }
 
-    public writeGitVersionToAgent(gitversion: IGitVersion): void {
+    public writeGitVersionToAgent(gitversion: IGitVersionOutput): void {
 
         this.buildAgent.setOutput("major",                           gitversion.Major.toString());
         this.buildAgent.setOutput("minor",                           gitversion.Minor.toString());

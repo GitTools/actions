@@ -1,5 +1,6 @@
 import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
-import { IGitVersionTool, IGitVersionArguments, IGitVersion, GitVersionTool } from "../../tools/gitversion";
+import { IGitVersionTool, GitVersionTool } from "../../tools/gitversion/gitversion-tool";
+import { IGitVersionInput, IGitVersionOutput } from "../../tools/gitversion/models";
 
 import container from "../../core/ioc";
 
@@ -26,11 +27,11 @@ export async function setup() {
 
 export async function run() {
     try {
-        const inputOptions: IGitVersionArguments = gitVersionTool.getGitVersionOptions();
+        const inputOptions: IGitVersionInput = gitVersionTool.getGitVersionOptions();
 
         const result = await gitVersionTool.run(inputOptions);
 
-        const gitversion = JSON.parse(result.stdout) as IGitVersion;
+        const gitversion = JSON.parse(result.stdout) as IGitVersionOutput;
         gitVersionTool.writeGitVersionToAgent(gitversion);
 
         if (result.code === 0) {
