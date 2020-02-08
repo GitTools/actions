@@ -1,4 +1,4 @@
-import { IBuildAgent } from "../../core/common";
+import { IBuildAgent } from "../../core/models";
 
 import { GitVersionSettings, ExecuteFields } from "./models";
 

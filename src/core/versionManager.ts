@@ -2,7 +2,7 @@ import cmp from "semver-compare";
 import * as semver from "semver";
 import { injectable, inject } from "inversify";
 
-import { IBuildAgent, TYPES } from "./common";
+import { IBuildAgent, TYPES } from "./models";
 
 export interface IVersionManager {
     isExplicitVersion(versionSpec: string): boolean;

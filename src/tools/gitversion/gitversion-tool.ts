@@ -1,6 +1,6 @@
 import path = require("path");
 import { injectable, inject } from "inversify";
-import { IExecResult, IBuildAgent, TYPES } from "../../core/common";
+import { IExecResult, IBuildAgent, TYPES } from "../../core/models";
 import { DotnetTool, IDotnetTool } from "../../core/dotnet-tool";
 import { GitVersionSettings, GitVersionOutput, ExecuteFields } from "./models";
 import { IVersionManager } from "../../core/versionManager";

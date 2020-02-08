@@ -1,8 +1,9 @@
-import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
+import { IBuildAgent, TYPES, SetupFields } from "../../core/models";
 import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager/gitreleasemanager-tool";
+import { Settings as CommonSettings } from "../../core/settings";
+import { Settings } from "../../tools/gitreleasemanager/settings";
 
 import container from "../../core/ioc";
-import { Settings } from "../../tools/gitreleasemanager/settings";
 
 container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool);
 
@@ -14,10 +15,9 @@ export async function setup() {
 
         gitReleaseManagerTool.disableTelemetry();
 
-        const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
-        const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
+        const settings = CommonSettings.getSetupSettings(buildAgent);
 
-        await gitReleaseManagerTool.install(versionSpec, includePrerelease);
+        await gitReleaseManagerTool.install(settings.versionSpec, settings.includePrerelease);
 
         buildAgent.setSucceeded("GitVersionManager installed successfully", true);
     } catch (error) {

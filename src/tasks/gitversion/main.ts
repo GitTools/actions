@@ -1,9 +1,10 @@
-import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
+import { IBuildAgent, TYPES, SetupFields } from "../../core/models";
+import { Settings as CommonSettings } from "../../core/settings";
+import { Settings } from "../../tools/gitversion/settings";
 import { IGitVersionTool, GitVersionTool } from "../../tools/gitversion/gitversion-tool";
 import { GitVersionSettings, GitVersionOutput } from "../../tools/gitversion/models";
 
 import container from "../../core/ioc";
-import { Settings } from "../../tools/gitversion/settings";
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool);
 
@@ -15,10 +16,9 @@ export async function setup() {
 
         gitVersionTool.disableTelemetry();
 
-        const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
-        const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
+        const settings = CommonSettings.getSetupSettings(buildAgent);
 
-        await gitVersionTool.install(versionSpec, includePrerelease);
+        await gitVersionTool.install(settings.versionSpec, settings.includePrerelease);
 
         buildAgent.setSucceeded("GitVersion installed successfully", true);
     } catch (error) {

@@ -4,7 +4,7 @@ import * as path from "path";
 import * as http from "typed-rest-client/HttpClient";
 
 import { inject, injectable } from "inversify";
-import { TYPES, IExecResult, IBuildAgent } from "./common";
+import { TYPES, IExecResult, IBuildAgent } from "./models";
 import { IVersionManager } from "./versionManager";
 
 export interface IDotnetTool {

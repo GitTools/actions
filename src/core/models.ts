@@ -6,10 +6,15 @@ export const TYPES = {
     IVersionManager: Symbol.for("VersionManager"),
 };
 
-export const SetupOptions = {
-    includePrerelease: "includePrerelease",
-    versionSpec: "versionSpec",
+export enum SetupFields {
+    includePrerelease = "includePrerelease",
+    versionSpec = "versionSpec",
 };
+
+export interface ISetupSettings {
+    [SetupFields.versionSpec]: string;
+    [SetupFields.includePrerelease]: boolean;
+}
 
 export interface IExecResult {
     stdout: string;
