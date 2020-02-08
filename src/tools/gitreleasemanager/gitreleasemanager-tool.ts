@@ -2,11 +2,11 @@ import path = require("path");
 
 import { TYPES, IBuildAgent, IExecResult } from "../../core/common";
 import { injectable, inject } from "inversify";
-import { DotnetTool } from "../../core/dotnet-tool";
+import { DotnetTool, IDotnetTool } from "../../core/dotnet-tool";
 import { GitReleaseManagerCreateSettings, GitReleaseManagerSettings, CreateFields, CommonFields } from "./models";
 import { IVersionManager } from "../../core/versionManager";
 
-export interface IGitReleaseManagerTool {
+export interface IGitReleaseManagerTool extends IDotnetTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
     create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult>;
 }

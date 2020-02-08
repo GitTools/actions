@@ -2,6 +2,7 @@ import { IBuildAgent } from "../../core/common";
 import { GitReleaseManagerSettings, CommonFields, CreateFields } from "./models";
 
 export class Settings {
+
     public static getCreateSettings(buildAgent: IBuildAgent) {
         const milestone = buildAgent.getInput(CreateFields.milestone);
         const releaseName = buildAgent.getInput(CreateFields.releaseName);

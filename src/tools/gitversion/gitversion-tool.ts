@@ -1,15 +1,14 @@
 import path = require("path");
 import { injectable, inject } from "inversify";
 import { IExecResult, IBuildAgent, TYPES } from "../../core/common";
-import { DotnetTool } from "../../core/dotnet-tool";
-import { GitVersionInput, GitVersionOutput, GitVersionRunOptions } from "./models";
+import { DotnetTool, IDotnetTool } from "../../core/dotnet-tool";
+import { GitVersionSettings, GitVersionOutput, ExecuteFields } from "./models";
 import { IVersionManager } from "../../core/versionManager";
 
-export interface IGitVersionTool {
+export interface IGitVersionTool extends IDotnetTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
-    run(options: GitVersionInput): Promise<IExecResult>;
+    run(options: GitVersionSettings): Promise<IExecResult>;
     writeGitVersionToAgent(gitversion: GitVersionOutput): void;
-    getGitVersionInput(): GitVersionInput;
 }
 
 @injectable()
@@ -26,7 +25,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         await this.toolInstall("GitVersion.Tool", versionSpec, false, includePrerelease);
     }
 
-    public run(options: GitVersionInput): Promise<IExecResult> {
+    public run(options: GitVersionSettings): Promise<IExecResult> {
         const workDir = this.getRepoDir(options.targetPath);
 
         const args = this.getArguments(workDir, options);
@@ -49,7 +48,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return workDir.replace(/\\/g, "/");
     }
 
-    private getArguments(workDir: string, options: GitVersionInput): string[] {
+    private getArguments(workDir: string, options: GitVersionSettings): string[] {
         const args = [
             workDir,
             "/output",
@@ -82,31 +81,6 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
 
         args.push(additionalArguments);
         return args;
-    }
-
-    public getGitVersionInput(): GitVersionInput {
-
-        const targetPath = this.buildAgent.getInput(GitVersionRunOptions.targetPath);
-
-        const useConfigFile = this.buildAgent.getBooleanInput(GitVersionRunOptions.useConfigFile);
-        const configFilePath = this.buildAgent.getInput(GitVersionRunOptions.configFilePath);
-
-        const updateAssemblyInfo = this.buildAgent.getBooleanInput(GitVersionRunOptions.updateAssemblyInfo);
-        const updateAssemblyInfoFilename = this.buildAgent.getInput(GitVersionRunOptions.updateAssemblyInfoFilename);
-
-        const additionalArguments = this.buildAgent.getInput(GitVersionRunOptions.additionalArguments);
-
-        const srcDir = this.buildAgent.getSourceDir().replace(/\\/g, "/");
-
-        return {
-            targetPath,
-            useConfigFile,
-            configFilePath,
-            updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments,
-            srcDir,
-        };
     }
 
     public writeGitVersionToAgent(gitversion: GitVersionOutput): void {

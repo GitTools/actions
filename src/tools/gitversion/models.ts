@@ -1,20 +1,21 @@
-export const GitVersionRunOptions = {
-    targetPath: "targetPath",
-    useConfigFile: "useConfigFile",
-    configFilePath: "configFilePath",
-    updateAssemblyInfo: "configFilePath",
-    updateAssemblyInfoFilename: "configFilePath",
-    additionalArguments: "additionalArguments",
+export enum ExecuteFields {
+    targetPath = "targetPath",
+    useConfigFile = "useConfigFile",
+    configFilePath = "configFilePath",
+    updateAssemblyInfo = "updateAssemblyInfo",
+    updateAssemblyInfoFilename = "updateAssemblyInfoFilename",
+    additionalArguments = "additionalArguments",
+    srcDir = "srcDir",
 };
 
-export interface GitVersionInput {
-    targetPath: string;
-    useConfigFile: boolean;
-    configFilePath: string;
-    updateAssemblyInfo: boolean;
-    updateAssemblyInfoFilename: string;
-    additionalArguments: string;
-    srcDir: string;
+export interface GitVersionSettings {
+    [ExecuteFields.targetPath]: string;
+    [ExecuteFields.useConfigFile]: boolean;
+    [ExecuteFields.configFilePath]: string;
+    [ExecuteFields.updateAssemblyInfo]: boolean;
+    [ExecuteFields.updateAssemblyInfoFilename]: string;
+    [ExecuteFields.additionalArguments]: string;
+    [ExecuteFields.srcDir]: string;
 }
 
 export interface GitVersionOutput {

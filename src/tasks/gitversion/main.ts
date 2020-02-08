@@ -1,8 +1,9 @@
 import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
 import { IGitVersionTool, GitVersionTool } from "../../tools/gitversion/gitversion-tool";
-import { GitVersionInput, GitVersionOutput } from "../../tools/gitversion/models";
+import { GitVersionSettings, GitVersionOutput } from "../../tools/gitversion/models";
 
 import container from "../../core/ioc";
+import { Settings } from "../../tools/gitversion/settings";
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool);
 
@@ -12,7 +13,7 @@ const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent);
 export async function setup() {
     try {
 
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+        gitVersionTool.disableTelemetry();
 
         const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
         const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
@@ -27,9 +28,12 @@ export async function setup() {
 
 export async function run() {
     try {
-        const inputOptions: GitVersionInput = gitVersionTool.getGitVersionInput();
 
-        const result = await gitVersionTool.run(inputOptions);
+        gitVersionTool.disableTelemetry();
+
+        const settings: GitVersionSettings = Settings.getGitVersionSettings(buildAgent);
+
+        const result = await gitVersionTool.run(settings);
 
         const gitversion = JSON.parse(result.stdout) as GitVersionOutput;
         gitVersionTool.writeGitVersionToAgent(gitversion);

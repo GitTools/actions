@@ -12,7 +12,7 @@ const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent);
 export async function setup() {
     try {
 
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+        gitReleaseManagerTool.disableTelemetry();
 
         const versionSpec = buildAgent.getInput(SetupOptions.versionSpec);
         const includePrerelease = buildAgent.getBooleanInput(SetupOptions.includePrerelease);
@@ -28,7 +28,7 @@ export async function setup() {
 export async function create() {
     try {
 
-        buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+        gitReleaseManagerTool.disableTelemetry();
 
         const settings = Settings.getCreateSettings(buildAgent);
 

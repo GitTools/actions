@@ -8,6 +8,7 @@ import { TYPES, IExecResult, IBuildAgent } from "./common";
 import { IVersionManager } from "./versionManager";
 
 export interface IDotnetTool {
+    disableTelemetry(): void;
     toolInstall(toolName: string, versionSpec: string, checkLatest: boolean, includePre: boolean): Promise<string>;
 }
 
@@ -25,6 +26,10 @@ export class DotnetTool implements IDotnetTool {
         this.buildAgent = buildAgent;
         this.versionManager = versionManager;
         this.httpClient = new http.HttpClient("dotnet");
+    }
+
+    public disableTelemetry(): void {
+        this.buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
     }
 
     public execute(cmd: string, args: string[]): Promise<IExecResult> {
