@@ -8,15 +8,14 @@ import { TYPES, IExecResult, IBuildAgent } from "./common";
 import { IVersionManager } from "./versionManager";
 
 export interface IDotnetTool {
-    run(args: string[]): Promise<IExecResult>;
     toolInstall(toolName: string, versionSpec: string, checkLatest: boolean, includePre: boolean): Promise<string>;
 }
 
 @injectable()
 export class DotnetTool implements IDotnetTool {
 
-    private buildAgent: IBuildAgent;
-    private versionManager: IVersionManager;
+    protected buildAgent: IBuildAgent;
+    protected versionManager: IVersionManager;
     private httpClient: http.HttpClient;
 
     constructor(
@@ -28,8 +27,9 @@ export class DotnetTool implements IDotnetTool {
         this.httpClient = new http.HttpClient("dotnet");
     }
 
-    public run(args: string[]): Promise<IExecResult> {
-        return this.buildAgent.exec("dotnet", args);
+    public execute(cmd: string, args: string[]): Promise<IExecResult> {
+        console.log(`Command: ${cmd} ${args.join(' ')}`);
+        return this.buildAgent.exec(cmd, args);
     }
 
     public async toolInstall(toolName: string, versionSpec: string, checkLatest: boolean, includePre: boolean)
@@ -131,7 +131,7 @@ export class DotnetTool implements IDotnetTool {
             args = args.concat(["--version", version]);
         }
 
-        const result = await this.run(args);
+        const result = await this.execute("dotnet", args);
         const status = result.code === 0 ? "success" : "failure";
         const message = result.code === 0 ? result.stdout : result.stderr;
 

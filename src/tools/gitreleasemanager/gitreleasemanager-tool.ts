@@ -2,8 +2,9 @@ import path = require("path");
 
 import { TYPES, IBuildAgent, IExecResult } from "../../core/common";
 import { injectable, inject } from "inversify";
-import { IDotnetTool } from "../../core/dotnet-tool";
+import { DotnetTool } from "../../core/dotnet-tool";
 import { GitReleaseManagerCreateSettings, GitReleaseManagerSettings, CreateFields, CommonFields } from "./models";
+import { IVersionManager } from "../../core/versionManager";
 
 export interface IGitReleaseManagerTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
@@ -11,30 +12,23 @@ export interface IGitReleaseManagerTool {
 }
 
 @injectable()
-export class GitReleaseManagerTool implements IGitReleaseManagerTool {
-
-    private buildAgent: IBuildAgent;
-    private dotnetTool: IDotnetTool;
+export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseManagerTool {
 
     constructor(
         @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
-        @inject(TYPES.IDotnetTool) dotnetTool: IDotnetTool,
+        @inject(TYPES.IVersionManager) versionManager: IVersionManager
     ) {
-        this.dotnetTool = dotnetTool;
+        super(buildAgent, versionManager);
     }
 
     public async install(versionSpec: string, includePrerelease: boolean): Promise<void> {
-        await this.dotnetTool.toolInstall("GitReleaseManager.Tool", versionSpec, false, includePrerelease);
+        await this.toolInstall("GitReleaseManager.Tool", versionSpec, false, includePrerelease);
     }
 
     public create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult> {
         const args = this.getCreateArguments(settings);
 
-        console.log(args);
-
-        return Promise.resolve(null);
-
-        // return this.buildAgent.exec("dotnet-gitreleasemanager", args);
+        return this.execute("dotnet-gitreleasemanager", args);
     }
 
     getCommonArguments(settings: GitReleaseManagerSettings): string[] {
@@ -48,7 +42,7 @@ export class GitReleaseManagerTool implements IGitReleaseManagerTool {
     }
 
     getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
-        const args: string[] = [...this.getCommonArguments(settings)];
+        const args: string[] = ['create', ...this.getCommonArguments(settings)];
 
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
