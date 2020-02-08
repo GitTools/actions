@@ -35,7 +35,7 @@ inputs:
   pre:
     description: Creates the release as a pre-release
     required: false
-    default: ''
+    default: 'false'
   targetcommitish:
     description: The commit to tag. Can be a branch or SHA. Defaults to repository's default branch
     required: false
