@@ -1,5 +1,5 @@
 import { IBuildAgent, TYPES, SetupFields } from "../../core/models";
-import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager/gitreleasemanager-tool";
+import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager/tool";
 import { Settings as CommonSettings } from "../../core/settings";
 import { Settings } from "../../tools/gitreleasemanager/settings";
 

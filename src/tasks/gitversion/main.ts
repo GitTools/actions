@@ -1,7 +1,7 @@
 import { IBuildAgent, TYPES, SetupFields } from "../../core/models";
 import { Settings as CommonSettings } from "../../core/settings";
 import { Settings } from "../../tools/gitversion/settings";
-import { IGitVersionTool, GitVersionTool } from "../../tools/gitversion/gitversion-tool";
+import { IGitVersionTool, GitVersionTool } from "../../tools/gitversion/tool";
 import { GitVersionSettings, GitVersionOutput } from "../../tools/gitversion/models";
 
 import container from "../../core/ioc";
