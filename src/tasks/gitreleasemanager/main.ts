@@ -2,6 +2,7 @@ import { IBuildAgent, TYPES, SetupOptions } from "../../core/common";
 import { IGitReleaseManagerTool, GitReleaseManagerTool } from "../../tools/gitreleasemanager/gitreleasemanager-tool";
 
 import container from "../../core/ioc";
+import { Settings } from "../../tools/gitreleasemanager/settings";
 
 container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool);
 
@@ -28,6 +29,10 @@ export async function create() {
     try {
 
         buildAgent.exportVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+
+        const settings = Settings.getCreateSettings(buildAgent);
+
+        await gitReleaseManagerTool.create(settings);
 
         buildAgent.setSucceeded("GitVersionManager created release successfully", true);
     } catch (error) {

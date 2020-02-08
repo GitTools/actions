@@ -7,3 +7,40 @@ branding:
 runs:
   using: node12
   main: ../../dist/github/gitreleasemanager/create/bundle.js
+inputs:
+  owner:
+    description: The owner of the repository
+    required: true
+    default: ''
+  repository:
+    description: The name of the repository
+    required: true
+    default: ''
+  token:
+    description: The access token to access GitHub with
+    required: true
+    default: ''
+  milestone:
+    description: The milestone to use
+    required: false
+    default: ''  
+  name:
+    description: The name of the release
+    required: false
+    default: ''
+  inputFilePath:
+    description: The path to the file to be used as the content of the release notes
+    required: false
+    default: ''
+  pre:
+    description: Creates the release as a pre-release
+    required: false
+    default: ''
+  targetcommitish:
+    description: The commit to tag. Can be a branch or SHA. Defaults to repository's default branch
+    required: false
+    default: ''
+  targetDirectory:
+    description: The directory on which GitReleaseManager should be executed. Defaults to current directory
+    required: false
+    default: ''
