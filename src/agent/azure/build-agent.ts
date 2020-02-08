@@ -77,6 +77,13 @@ class BuildAgent implements IBuildAgent {
         return taskLib.getInput(input, required);
     }
 
+    public getListInput(input: string, required?: boolean): string[] {
+        return taskLib
+            .getInput(input, required)
+            .split("\n")
+            .filter(x => x !== "");
+    }
+
     public getBooleanInput(input: string, required?: boolean): boolean {
         return taskLib.getBoolInput(input, required);
     }

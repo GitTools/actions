@@ -84,5 +84,12 @@
         "defaultValue": "",
         "required": false,
         "helpMarkDown": "The directory on which GitReleaseManager should be executed. Defaults to current directory"
+    }, {
+        "name": "assets",
+        "type": "multiLine",
+        "label": "Path(s) to the file(s) to include in the release",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Path(s) to the file(s) to include in the release. Separated by newline"
     }]
 }

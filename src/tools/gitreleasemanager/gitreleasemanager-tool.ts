@@ -66,6 +66,9 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.isPreRelease) {
             args.push("--pre");
         }
+        if (settings.assets && settings.assets.length > 0) {
+            args.push("--assets", settings.assets.join(","));
+        }
 
         return args;
     }

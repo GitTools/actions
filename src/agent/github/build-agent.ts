@@ -117,6 +117,13 @@ class BuildAgent implements IBuildAgent {
         return core.getInput(input,  { required } as core.InputOptions);
     }
 
+    public getListInput(input: string, required?: boolean): string[] {
+        return core
+            .getInput(input, { required } as core.InputOptions)
+            .split("\n")
+            .filter(x => x !== "");
+    }
+
     public getBooleanInput(input: string, required?: boolean): boolean {
         const inputValue = this.getInput(input, required);
         return (inputValue || "false").toLowerCase() === "true";

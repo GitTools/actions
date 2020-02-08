@@ -1,15 +1,16 @@
 import { IBuildAgent } from "../../core/models";
-import { GitReleaseManagerSettings, CommonFields, CreateFields } from "./models";
+import { GitReleaseManagerSettings, CommonFields, CreateFields, GitReleaseManagerCreateSettings } from "./models";
 
 export class Settings {
 
-    public static getCreateSettings(buildAgent: IBuildAgent) {
+    public static getCreateSettings(buildAgent: IBuildAgent) : GitReleaseManagerCreateSettings {
         const milestone = buildAgent.getInput(CreateFields.milestone);
         const releaseName = buildAgent.getInput(CreateFields.releaseName);
         const inputFileName = buildAgent.getInput(CreateFields.inputFileName);
         const isPreRelease = buildAgent.getBooleanInput(CreateFields.isPreRelease);
         const commit = buildAgent.getInput(CreateFields.commit);
         const targetDirectory = buildAgent.getInput(CreateFields.targetDirectory);
+        const assets = buildAgent.getListInput(CreateFields.assets);
 
         const commonSettings = Settings.getCommonSettings(buildAgent);
         return {
@@ -19,7 +20,8 @@ export class Settings {
             inputFileName,
             isPreRelease,
             commit,
-            targetDirectory
+            targetDirectory,
+            assets
         }
     }
 

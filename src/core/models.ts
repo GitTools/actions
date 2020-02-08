@@ -44,5 +44,6 @@ export interface IBuildAgent {
 
     setOutput(name: string, value: string): void;
     getInput(input: string, required?: boolean): string;
+    getListInput(input: string, required?: boolean): string[];
     getBooleanInput(input: string, required?: boolean): boolean;
 }

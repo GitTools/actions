@@ -78,6 +78,11 @@ class BuildAgent implements IBuildAgent {
         return "getInput";
     }
 
+    public getListInput(input: string, required?: boolean): string[] {
+        console.log("getListInput");
+        return ["getInput"];
+    }
+
     public getBooleanInput(input: string, required?: boolean): boolean {
         console.log("getBooleanInput");
         return false;
