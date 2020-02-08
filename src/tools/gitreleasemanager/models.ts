@@ -14,6 +14,11 @@ export enum CreateFields {
     assets = "assets",
 }
 
+export enum DiscardFields {
+    milestone = "milestone",
+    targetDirectory = "targetDirectory",
+}
+
 export interface GitReleaseManagerSettings {
     [CommonFields.repository]: string;
     [CommonFields.owner]: string;
@@ -28,4 +33,9 @@ export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettin
     [CreateFields.commit]: string;
     [CreateFields.targetDirectory]: string;
     [CreateFields.assets]?: string[];
+}
+
+export interface GitReleaseManagerDiscardSettings extends GitReleaseManagerSettings {
+    [DiscardFields.milestone]: string;
+    [DiscardFields.targetDirectory]: string;
 }

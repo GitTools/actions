@@ -3,12 +3,18 @@ import path = require("path");
 import { TYPES, IBuildAgent, IExecResult } from "../../core/models";
 import { injectable, inject } from "inversify";
 import { DotnetTool, IDotnetTool } from "../../core/dotnet-tool";
-import { GitReleaseManagerCreateSettings, GitReleaseManagerSettings, CreateFields, CommonFields } from "./models";
 import { IVersionManager } from "../../core/versionManager";
+
+import {
+    GitReleaseManagerSettings,
+    GitReleaseManagerCreateSettings,
+    GitReleaseManagerDiscardSettings
+} from "./models";
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
     create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult>;
+    discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult>;
 }
 
 @injectable()
@@ -31,12 +37,31 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return this.execute("dotnet-gitreleasemanager", args);
     }
 
+    public discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult> {
+        const args = this.getDiscardArguments(settings);
+
+        return this.execute("dotnet-gitreleasemanager", args);
+    }
+
     getCommonArguments(settings: GitReleaseManagerSettings): string[] {
         const args: string[] = [];
 
         args.push("--owner", settings.owner);
         args.push("--repository", settings.repository);
         args.push("--token", settings.token);
+
+        return args;
+    }
+
+    getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
+        const args: string[] = ['discard', ...this.getCommonArguments(settings)];
+
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+        if (settings.targetDirectory) {
+            args.push("--targetDirectory", settings.targetDirectory);
+        }
 
         return args;
     }

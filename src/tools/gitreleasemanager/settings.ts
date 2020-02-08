@@ -1,5 +1,5 @@
 import { IBuildAgent } from "../../core/models";
-import { GitReleaseManagerSettings, CommonFields, CreateFields, GitReleaseManagerCreateSettings } from "./models";
+import { GitReleaseManagerSettings, CommonFields, CreateFields, GitReleaseManagerCreateSettings, DiscardFields, GitReleaseManagerDiscardSettings } from "./models";
 
 export class Settings {
 
@@ -22,6 +22,18 @@ export class Settings {
             commit,
             targetDirectory,
             assets
+        }
+    }
+
+    public static getDiscardSettings(buildAgent: IBuildAgent) : GitReleaseManagerDiscardSettings {
+        const milestone = buildAgent.getInput(DiscardFields.milestone);
+        const targetDirectory = buildAgent.getInput(CreateFields.targetDirectory);
+
+        const commonSettings = Settings.getCommonSettings(buildAgent);
+        return {
+            ...commonSettings,
+            milestone,
+            targetDirectory,
         }
     }
 

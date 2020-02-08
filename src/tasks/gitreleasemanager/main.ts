@@ -39,3 +39,18 @@ export async function create() {
         buildAgent.setFailed(error.message, true);
     }
 }
+
+export async function discard() {
+    try {
+
+        gitReleaseManagerTool.disableTelemetry();
+
+        const settings = Settings.getDiscardSettings(buildAgent);
+
+        await gitReleaseManagerTool.discard(settings);
+
+        buildAgent.setSucceeded("GitVersionManager discarded release successfully", true);
+    } catch (error) {
+        buildAgent.setFailed(error.message, true);
+    }
+}
