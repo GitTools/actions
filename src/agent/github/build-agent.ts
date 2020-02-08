@@ -123,7 +123,11 @@ class BuildAgent implements IBuildAgent {
     }
 
     public isValidInputFile(input: string, file: string): boolean {
-        const pathValue = path.resolve(this.getInput(input) || "");
+        return this.filePathSupplied(input) && this.fileExists(file);
+    }
+
+    public filePathSupplied(file: string): boolean {
+        const pathValue = path.resolve(this.getInput(file) || "");
         const repoRoot = this.getSourceDir();
         return pathValue !== repoRoot;
     }
