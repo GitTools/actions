@@ -50,15 +50,24 @@ export class GitReleaseManagerTool implements IGitReleaseManagerTool {
     getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
         const args: string[] = [...this.getCommonArguments(settings)];
 
-        args.push("--milestone", settings.milestone);
-        args.push("--name", settings.releaseName);
-        args.push("--targetcommitish", settings.commit);
-        args.push("--targetDirectory", settings.targetDirectory);
-
-        if (this.buildAgent.fileExists(settings.inputFileName)) {
-            args.push("--inputFilePath", settings.inputFileName);
-        } else {
-            throw new Error("GitReleaseManager inputFilePath not found at " + settings.inputFileName);
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+        if (settings.releaseName) {
+            args.push("--name", settings.releaseName);
+        }
+        if (settings.commit) {
+            args.push("--targetcommitish", settings.commit);
+        }
+        if (settings.targetDirectory) {
+            args.push("--targetDirectory", settings.targetDirectory);
+        }
+        if (settings.inputFileName) {
+            if (this.buildAgent.fileExists(settings.inputFileName)) {
+                args.push("--inputFilePath", settings.inputFileName);
+            } else {
+                throw new Error("GitReleaseManager inputFilePath not found at " + settings.inputFileName);
+            }
         }
         if (settings.isPreRelease) {
             args.push("--pre");
