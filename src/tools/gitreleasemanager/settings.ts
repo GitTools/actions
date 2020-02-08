@@ -9,7 +9,6 @@ export class Settings {
         const inputFileName = buildAgent.getInput(CreateFields.inputFileName);
         const isPreRelease = buildAgent.getBooleanInput(CreateFields.isPreRelease);
         const commit = buildAgent.getInput(CreateFields.commit);
-        const targetDirectory = buildAgent.getInput(CreateFields.targetDirectory);
         const assets = buildAgent.getListInput(CreateFields.assets);
 
         const commonSettings = Settings.getCommonSettings(buildAgent);
@@ -20,20 +19,17 @@ export class Settings {
             inputFileName,
             isPreRelease,
             commit,
-            targetDirectory,
             assets
         }
     }
 
     public static getDiscardSettings(buildAgent: IBuildAgent) : GitReleaseManagerDiscardSettings {
         const milestone = buildAgent.getInput(DiscardFields.milestone);
-        const targetDirectory = buildAgent.getInput(CreateFields.targetDirectory);
 
         const commonSettings = Settings.getCommonSettings(buildAgent);
         return {
             ...commonSettings,
             milestone,
-            targetDirectory,
         }
     }
 
@@ -41,11 +37,13 @@ export class Settings {
         const owner = buildAgent.getInput(CommonFields.owner, true);
         const repository = buildAgent.getInput(CommonFields.repository, true);
         const token = buildAgent.getInput(CommonFields.token, true);
+        const targetDirectory = buildAgent.getInput(CommonFields.targetDirectory);
 
         return {
             owner,
             repository,
-            token
+            token,
+            targetDirectory,
         };
     }
 }
