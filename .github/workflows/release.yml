@@ -32,10 +32,11 @@ jobs:
         $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
         $major = "${{steps.gitversion.outputs.major}}"
         $minor = "${{steps.gitversion.outputs.minor}}"
+        $patch = "${{steps.gitversion.outputs.patch}}"
 
         . .\dist\azure\update-version.ps1
         update-manifest .\dist\azure\vss-extension.json -Version $version
-        dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor }
+        dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor -Patch $patch }
 
         npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
       shell: pwsh

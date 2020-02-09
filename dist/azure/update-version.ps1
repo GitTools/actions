@@ -10,14 +10,19 @@ function update-task() {
 
     [Parameter(Mandatory=$True, Position=2, ValueFromPipeline=$false)]
     [System.String]
-    $minor
+    $minor,
+
+    [Parameter(Mandatory=$True, Position=3, ValueFromPipeline=$false)]
+    [System.String]
+    $patch
 )
     $file = Resolve-Path $file
     $jqMajor = '.version.Major=\"' + $major +'\"';
     $jqMinor = '.version.Minor=\"' + $minor +'\"';
-    Write-Host "Update task from $file to version $major.$minor"
+    $jqPatch = '.version.Patch=\"' + $patch +'\"';
+    Write-Host "Update task from $file to version $major.$minor.$patch"
 
-    Get-Content $file | jq $jqMajor | jq $jqMinor | Set-Content $file
+    Get-Content $file | jq $jqMajor | jq $jqMinor| jq $jqPatch | Set-Content $file
 }
 
 function update-manifest() {
