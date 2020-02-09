@@ -66,6 +66,10 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         args.push("--repository", settings.repository);
         args.push("--token", settings.token);
 
+        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
+
+        args.push("--targetDirectory", settings.targetDirectory);
+
         return args;
     }
 
@@ -75,9 +79,6 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
         }
-        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
-
-        args.push("--targetDirectory", settings.targetDirectory);
 
         return args;
     }
@@ -88,9 +89,6 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
         }
-        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
-
-        args.push("--targetDirectory", settings.targetDirectory);
 
         return args;
     }
@@ -101,9 +99,6 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
         }
-        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
-
-        args.push("--targetDirectory", settings.targetDirectory);
 
         return args;
     }
@@ -120,10 +115,6 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.commit) {
             args.push("--targetcommitish", settings.commit);
         }
-
-        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
-
-        args.push("--targetDirectory", settings.targetDirectory);
 
         if (settings.inputFileName) {
             if (this.buildAgent.fileExists(settings.inputFileName)) {
