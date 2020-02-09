@@ -69,3 +69,18 @@ export async function close() {
         buildAgent.setFailed(error.message, true);
     }
 }
+
+export async function open() {
+    try {
+
+        gitReleaseManagerTool.disableTelemetry();
+
+        const settings = Settings.getOpenSettings(buildAgent);
+
+        await gitReleaseManagerTool.close(settings);
+
+        buildAgent.setSucceeded("GitVersionManager opened release successfully", true);
+    } catch (error) {
+        buildAgent.setFailed(error.message, true);
+    }
+}
