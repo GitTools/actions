@@ -34,6 +34,10 @@ module.exports = (env) => {
             filename: '[name]/bundle.js',
             path: path.resolve(__dirname, `dist/${agent}`),
         },
+        node: {
+            __dirname: false,
+            __filename: false
+        },
         plugins: [
             new webpack.NormalModuleReplacementPlugin(
                 /agent\/mock\/build-agent/,
@@ -45,9 +49,6 @@ module.exports = (env) => {
                 rules: [{
                     search: /__webpack_require__\(.*\)\(resourceFile\)/,
                     replace: 'require(resourceFile)'
-                }, {
-                    search: /call\(this, \"\/\"\)\)/gi,
-                    replace: "call(this, __dirname))"
                 }, {
                     search: /let pkg.*'package.json'\)\);/,
                     replace: ''
