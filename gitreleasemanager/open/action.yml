@@ -1,0 +1,30 @@
+name: gitreleasemanager-open
+description: GitHub Action for creating and exporting releases for software applications hosted on GitHub. Opens a release
+author: GitTools
+branding:
+  color: gray-dark
+  icon: git-pull-request
+runs:
+  using: node12
+  main: ../../dist/github/gitreleasemanager/open/bundle.js
+inputs:
+  owner:
+    description: The owner of the repository
+    required: true
+    default: ''
+  repository:
+    description: The name of the repository
+    required: true
+    default: ''
+  token:
+    description: The access token to access GitHub with
+    required: true
+    default: ''
+  milestone:
+    description: The milestone to use
+    required: true
+    default: ''  
+  targetDirectory:
+    description: The directory on which GitReleaseManager should be executed. Defaults to current directory
+    required: false
+    default: ''

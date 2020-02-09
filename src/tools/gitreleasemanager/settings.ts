@@ -2,11 +2,12 @@ import { IBuildAgent } from "../../core/models";
 import {
     GitReleaseManagerSettings,
     CommonFields, CreateFields, DiscardFields,
-    CloseFields,
+    CloseFields, OpenFields,
 
     GitReleaseManagerCreateSettings,
     GitReleaseManagerDiscardSettings,
     GitReleaseManagerCloseSettings,
+    GitReleaseManagerOpenSettings,
 } from "./models";
 
 export class Settings {
@@ -43,6 +44,16 @@ export class Settings {
 
     public static getCloseSettings(buildAgent: IBuildAgent): GitReleaseManagerCloseSettings {
         const milestone = buildAgent.getInput(CloseFields.milestone);
+
+        const commonSettings = Settings.getCommonSettings(buildAgent);
+        return {
+            ...commonSettings,
+            milestone,
+        }
+    }
+
+    public static getOpenSettings(buildAgent: IBuildAgent): GitReleaseManagerOpenSettings {
+        const milestone = buildAgent.getInput(OpenFields.milestone);
 
         const commonSettings = Settings.getCommonSettings(buildAgent);
         return {
