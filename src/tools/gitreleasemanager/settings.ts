@@ -1,9 +1,17 @@
 import { IBuildAgent } from "../../core/models";
-import { GitReleaseManagerSettings, CommonFields, CreateFields, GitReleaseManagerCreateSettings, DiscardFields, GitReleaseManagerDiscardSettings } from "./models";
+import {
+    GitReleaseManagerSettings,
+    CommonFields, CreateFields, DiscardFields,
+    CloseFields,
+
+    GitReleaseManagerCreateSettings,
+    GitReleaseManagerDiscardSettings,
+    GitReleaseManagerCloseSettings,
+} from "./models";
 
 export class Settings {
 
-    public static getCreateSettings(buildAgent: IBuildAgent) : GitReleaseManagerCreateSettings {
+    public static getCreateSettings(buildAgent: IBuildAgent): GitReleaseManagerCreateSettings {
         const milestone = buildAgent.getInput(CreateFields.milestone);
         const releaseName = buildAgent.getInput(CreateFields.releaseName);
         const inputFileName = buildAgent.getInput(CreateFields.inputFileName);
@@ -23,8 +31,18 @@ export class Settings {
         }
     }
 
-    public static getDiscardSettings(buildAgent: IBuildAgent) : GitReleaseManagerDiscardSettings {
+    public static getDiscardSettings(buildAgent: IBuildAgent): GitReleaseManagerDiscardSettings {
         const milestone = buildAgent.getInput(DiscardFields.milestone);
+
+        const commonSettings = Settings.getCommonSettings(buildAgent);
+        return {
+            ...commonSettings,
+            milestone,
+        }
+    }
+
+    public static getCloseSettings(buildAgent: IBuildAgent): GitReleaseManagerCloseSettings {
+        const milestone = buildAgent.getInput(CloseFields.milestone);
 
         const commonSettings = Settings.getCommonSettings(buildAgent);
         return {

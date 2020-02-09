@@ -13,6 +13,7 @@ module.exports = (env) => {
             'gitreleasemanager/setup': path.resolve(__dirname, 'src/tasks/gitreleasemanager/setup.ts'),
             'gitreleasemanager/create': path.resolve(__dirname, 'src/tasks/gitreleasemanager/create.ts'),
             'gitreleasemanager/discard': path.resolve(__dirname, 'src/tasks/gitreleasemanager/discard.ts'),
+            'gitreleasemanager/close': path.resolve(__dirname, 'src/tasks/gitreleasemanager/close.ts'),
         },
         target: 'node',
         mode: mode,

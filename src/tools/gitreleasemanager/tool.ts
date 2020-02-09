@@ -8,13 +8,15 @@ import { IVersionManager } from "../../core/versionManager";
 import {
     GitReleaseManagerSettings,
     GitReleaseManagerCreateSettings,
-    GitReleaseManagerDiscardSettings
+    GitReleaseManagerDiscardSettings,
+    GitReleaseManagerCloseSettings
 } from "./models";
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>;
     create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult>;
     discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult>;
+    close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult>;
 }
 
 @injectable()
@@ -43,6 +45,12 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return this.execute("dotnet-gitreleasemanager", args);
     }
 
+    public close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult> {
+        const args = this.getCloseArguments(settings);
+
+        return this.execute("dotnet-gitreleasemanager", args);
+    }
+
     getCommonArguments(settings: GitReleaseManagerSettings): string[] {
         const args: string[] = [];
 
@@ -55,6 +63,19 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
 
     getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
         const args: string[] = ['discard', ...this.getCommonArguments(settings)];
+
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+        settings.targetDirectory = this.getRepoDir(settings.targetDirectory);
+
+        args.push("--targetDirectory", settings.targetDirectory);
+
+        return args;
+    }
+
+    getCloseArguments(settings: GitReleaseManagerCloseSettings): string[] {
+        const args: string[] = ['close', ...this.getCommonArguments(settings)];
 
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);

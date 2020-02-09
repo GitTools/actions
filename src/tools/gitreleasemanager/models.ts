@@ -18,6 +18,10 @@ export enum DiscardFields {
     milestone = "milestone",
 }
 
+export enum CloseFields {
+    milestone = "milestone",
+}
+
 export interface GitReleaseManagerSettings {
     [CommonFields.repository]: string;
     [CommonFields.owner]: string;
@@ -36,4 +40,8 @@ export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettin
 
 export interface GitReleaseManagerDiscardSettings extends GitReleaseManagerSettings {
     [DiscardFields.milestone]: string;
+}
+
+export interface GitReleaseManagerCloseSettings extends GitReleaseManagerSettings {
+    [CloseFields.milestone]: string;
 }

@@ -15,7 +15,8 @@
         { "path": "gitversion/execute" },
         { "path": "gitreleasemanager/setup" },
         { "path": "gitreleasemanager/create" },
-        { "path": "gitreleasemanager/discard" }
+        { "path": "gitreleasemanager/discard" },
+        { "path": "gitreleasemanager/close" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -106,6 +107,15 @@
         ],
         "properties": {
             "name": "gitreleasemanager/discard"
+        }
+    }, {
+        "id": "close-gitreleasemanager-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "gitreleasemanager/close"
         }
     }]
 }

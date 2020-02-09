@@ -54,3 +54,18 @@ export async function discard() {
         buildAgent.setFailed(error.message, true);
     }
 }
+
+export async function close() {
+    try {
+
+        gitReleaseManagerTool.disableTelemetry();
+
+        const settings = Settings.getCloseSettings(buildAgent);
+
+        await gitReleaseManagerTool.close(settings);
+
+        buildAgent.setSucceeded("GitVersionManager closed release successfully", true);
+    } catch (error) {
+        buildAgent.setFailed(error.message, true);
+    }
+}
