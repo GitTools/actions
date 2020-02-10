@@ -1,7 +1,7 @@
 {
     "id": "5d437bf5-f193-4449-b531-c4c69eebaa48",
     "name": "gitreleasemanager/open",
-    "friendlyName": "Discard GitReleaseManager Task",
+    "friendlyName": "Open GitReleaseManager Task",
     "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
     "author": "GitTools Contributors",
     "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",

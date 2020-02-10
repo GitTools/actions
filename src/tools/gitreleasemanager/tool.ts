@@ -54,7 +54,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
     }
 
     public open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult> {
-        const args = this.getCloseArguments(settings);
+        const args = this.getOpenArguments(settings);
 
         return this.execute("dotnet-gitreleasemanager", args);
     }

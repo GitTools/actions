@@ -77,7 +77,7 @@ export async function open() {
 
         const settings = Settings.getOpenSettings(buildAgent);
 
-        await gitReleaseManagerTool.close(settings);
+        await gitReleaseManagerTool.open(settings);
 
         buildAgent.setSucceeded("GitVersionManager opened release successfully", true);
     } catch (error) {
