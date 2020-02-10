@@ -59,8 +59,8 @@ const entryPoints = [
 
 module.exports = (env) => {
     const task = env.task || 'compile';
-    const mode = task == 'compile' ? 'development' : 'production';
     const agent = env.agent || 'mock';
+    const mode = task == 'compile' ? 'development' : 'production';
     const entry = {};
     entryPoints.forEach(key => {
         const resource = task == 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`;
