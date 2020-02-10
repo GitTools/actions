@@ -11,6 +11,7 @@ import {
     GitReleaseManagerDiscardSettings,
     GitReleaseManagerCloseSettings,
     GitReleaseManagerOpenSettings,
+    GitReleaseManagerPublishSettings,
 } from "./models";
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
@@ -19,6 +20,7 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
     discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult>;
     close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult>;
     open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult>;
+    publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult>;
 }
 
 @injectable()
@@ -55,6 +57,12 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
 
     public open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult> {
         const args = this.getOpenArguments(settings);
+
+        return this.execute("dotnet-gitreleasemanager", args);
+    }
+
+    public publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult> {
+        const args = this.getPublishArguments(settings);
 
         return this.execute("dotnet-gitreleasemanager", args);
     }
@@ -98,6 +106,16 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
 
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
+        }
+
+        return args;
+    }
+
+    getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
+        const args: string[] = ['publish', ...this.getCommonArguments(settings)];
+
+        if (settings.tagName) {
+            args.push("--tagName", settings.tagName);
         }
 
         return args;

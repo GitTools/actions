@@ -17,7 +17,8 @@
         { "path": "gitreleasemanager/create" },
         { "path": "gitreleasemanager/discard" },
         { "path": "gitreleasemanager/close" },
-        { "path": "gitreleasemanager/open" }
+        { "path": "gitreleasemanager/open" },
+        { "path": "gitreleasemanager/publish" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -33,7 +34,8 @@
         "git",
         "versioning",
         "gitflow",
-        "githubflow"
+        "githubflow",
+        "release"
     ],
     "links": {
         "learn": {
@@ -126,6 +128,15 @@
         ],
         "properties": {
             "name": "gitreleasemanager/open"
+        }
+    }, {
+        "id": "publish-gitreleasemanager-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "gitreleasemanager/publish"
         }
     }]
 }

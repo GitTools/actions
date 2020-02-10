@@ -26,6 +26,10 @@ export enum OpenFields {
     milestone = "milestone",
 }
 
+export enum PublishFields {
+    tagName = "tagName",
+}
+
 export interface GitReleaseManagerSettings {
     [CommonFields.repository]: string;
     [CommonFields.owner]: string;
@@ -52,4 +56,8 @@ export interface GitReleaseManagerCloseSettings extends GitReleaseManagerSetting
 
 export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings {
     [OpenFields.milestone]: string;
+}
+
+export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
+    [PublishFields.tagName]: string;
 }
