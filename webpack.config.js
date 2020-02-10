@@ -48,13 +48,10 @@ module.exports = (env) => {
                 test: /bundle.js/,
                 rules: [{
                     search: /__webpack_require__\(.*\)\(resourceFile\)/,
-                    replace: 'require(resourceFile)'
+                    replace: '_loadResJson(resourceFile)'
                 }, {
                     search: /let pkg.*'package.json'\)\);/,
-                    replace: ''
-                }, {
-                    search: /let userAgent = 'vsts-task-installer\/' \+ pkg.version;/,
-                    replace: "let userAgent = 'vsts-task-installer'"
+                    replace: 'let pkg = { version: "1.2.3" };'
                 }]
             }])
         ]
