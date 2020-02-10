@@ -13,6 +13,6 @@ inputs:
     required: true
     default: ''
   includePrerelease:
-    description: Include pre-release versions when matching a version 
+    description: Include pre-release versions when matching a version
     required: false
-    default: false
+    default: 'false'

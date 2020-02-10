@@ -23,7 +23,7 @@ inputs:
   milestone:
     description: The milestone to use
     required: true
-    default: ''  
+    default: ''
   targetDirectory:
     description: The directory on which GitReleaseManager should be executed. Defaults to current directory
     required: false

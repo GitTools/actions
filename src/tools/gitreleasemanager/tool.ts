@@ -67,7 +67,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return this.execute("dotnet-gitreleasemanager", args);
     }
 
-    getCommonArguments(settings: GitReleaseManagerSettings): string[] {
+    private getCommonArguments(settings: GitReleaseManagerSettings): string[] {
         const args: string[] = [];
 
         args.push("--owner", settings.owner);
@@ -81,47 +81,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args;
     }
 
-    getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
-        const args: string[] = ['discard', ...this.getCommonArguments(settings)];
-
-        if (settings.milestone) {
-            args.push("--milestone", settings.milestone);
-        }
-
-        return args;
-    }
-
-    getCloseArguments(settings: GitReleaseManagerCloseSettings): string[] {
-        const args: string[] = ['close', ...this.getCommonArguments(settings)];
-
-        if (settings.milestone) {
-            args.push("--milestone", settings.milestone);
-        }
-
-        return args;
-    }
-
-    getOpenArguments(settings: GitReleaseManagerOpenSettings): string[] {
-        const args: string[] = ['open', ...this.getCommonArguments(settings)];
-
-        if (settings.milestone) {
-            args.push("--milestone", settings.milestone);
-        }
-
-        return args;
-    }
-
-    getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
-        const args: string[] = ['publish', ...this.getCommonArguments(settings)];
-
-        if (settings.tagName) {
-            args.push("--tagName", settings.tagName);
-        }
-
-        return args;
-    }
-
-    getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
+    private getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
         const args: string[] = ['create', ...this.getCommonArguments(settings)];
 
         if (settings.milestone) {
@@ -150,6 +110,46 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
             })
 
             args.push("--assets", settings.assets.join(","));
+        }
+
+        return args;
+    }
+
+    private getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
+        const args: string[] = ['discard', ...this.getCommonArguments(settings)];
+
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+
+        return args;
+    }
+
+    private getCloseArguments(settings: GitReleaseManagerCloseSettings): string[] {
+        const args: string[] = ['close', ...this.getCommonArguments(settings)];
+
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+
+        return args;
+    }
+
+    private getOpenArguments(settings: GitReleaseManagerOpenSettings): string[] {
+        const args: string[] = ['open', ...this.getCommonArguments(settings)];
+
+        if (settings.milestone) {
+            args.push("--milestone", settings.milestone);
+        }
+
+        return args;
+    }
+
+    private getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
+        const args: string[] = ['publish', ...this.getCommonArguments(settings)];
+
+        if (settings.tagName) {
+            args.push("--tagName", settings.tagName);
         }
 
         return args;

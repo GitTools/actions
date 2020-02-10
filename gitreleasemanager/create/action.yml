@@ -23,7 +23,7 @@ inputs:
   milestone:
     description: The milestone to use
     required: false
-    default: ''  
+    default: ''
   name:
     description: The name of the release
     required: false
@@ -38,6 +38,10 @@ inputs:
     default: 'false'
   targetcommitish:
     description: The commit to tag. Can be a branch or SHA. Defaults to repository's default branch
+    required: false
+    default: ''
+  assets:
+    description: Path(s) to the file(s) to include in the release
     required: false
     default: ''
   targetDirectory:
