@@ -19,6 +19,9 @@ jobs:
         npm install
         npm run build:github 
         npm run build:azure
+
+        npm run compress:github 
+        npm run compress:azure
       name: Build code
     - name: Install GitVersion
       uses: ./gitversion/setup
@@ -39,5 +42,6 @@ jobs:
         dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor -Patch $patch }
 
         npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
+
       shell: pwsh
       name: Publish Azure extension

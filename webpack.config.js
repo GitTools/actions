@@ -2,20 +2,9 @@ const path = require('path');
 const webpack = require('webpack');
 const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
 
-module.exports = (env) => {
-    const mode = env.mode || 'development';
-    const agent = env.agent || 'mock';
-
+function getConfig(mode, agent, entry) {
     return {
-        entry: {
-            'gitversion/setup': path.resolve(__dirname, 'src/tasks/gitversion/setup.ts'),
-            'gitversion/execute': path.resolve(__dirname, 'src/tasks/gitversion/execute.ts'),
-            'gitreleasemanager/setup': path.resolve(__dirname, 'src/tasks/gitreleasemanager/setup.ts'),
-            'gitreleasemanager/create': path.resolve(__dirname, 'src/tasks/gitreleasemanager/create.ts'),
-            'gitreleasemanager/discard': path.resolve(__dirname, 'src/tasks/gitreleasemanager/discard.ts'),
-            'gitreleasemanager/close': path.resolve(__dirname, 'src/tasks/gitreleasemanager/close.ts'),
-            'gitreleasemanager/open': path.resolve(__dirname, 'src/tasks/gitreleasemanager/open.ts'),
-        },
+        entry: entry,
         target: 'node',
         mode: mode,
         devtool: mode == 'development' ? 'inline-source-map' : false,
@@ -56,4 +45,27 @@ module.exports = (env) => {
             }])
         ]
     }
+}
+
+const entryPoints = [
+    'gitversion/setup',
+    'gitversion/execute',
+    'gitreleasemanager/setup',
+    'gitreleasemanager/create',
+    'gitreleasemanager/discard',
+    'gitreleasemanager/close',
+    'gitreleasemanager/open',
+];
+
+module.exports = (env) => {
+    const task = env.task || 'compile';
+    const mode = task == 'compile' ? 'development' : 'production';
+    const agent = env.agent || 'mock';
+    const entry = {};
+    entryPoints.forEach(key => {
+        const resource = task == 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`;
+        entry[key] = path.resolve(__dirname, resource);
+    });
+
+    return getConfig(mode, agent, entry);
 };
