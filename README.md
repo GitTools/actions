@@ -7,11 +7,20 @@ GitHub Actions that allow to install and use the GitVersion and GitReleaseManage
 [![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
 [![Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
 
+[![Azure Pipeline Task](https://img.shields.io/badge/marketplace-gittools.gittools-blue?logo=visual-studio)](https://marketplace.visualstudio.com/items?itemName=gittools.gittools)
+[![Github Action](https://img.shields.io/badge/marketplace-use--actions-blue?logo=github)](https://github.com/marketplace/actions/use-actions)
+
 ## Usage
 
-See [setup](gitversion/setup/action.yml) and [usage](gitversion/execute/action.yml) for GitVersion
+see examples of usages for **GitVersion**:
 
-and [setup](gitreleasemanager/setup/action.yml) for GitReleaseManager
+- [GitHub Actions](docs/github/gitversion)
+- [Azure Pipeline tasks](docs/azure/gitversion)
+
+and for **GitReleaseManager**:
+
+- [GitHub Actions](docs/github/gitreleasemanager)
+- [Azure Pipeline tasks](docs/azure/gitreleasemanager)
 
 ## Dependency
 
@@ -34,12 +43,12 @@ Basic:
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.6.1
+      uses: gittools/actions/gitversion/setup@v0.9
       with:
           versionSpec: '5.1.x'
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
-      uses: gittools/actions/gitversion/execute@v0.6.1
+      uses: gittools/actions/gitversion/execute@v0.9
     - run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
@@ -76,7 +85,7 @@ Basic:
 
 ### Private Repositories
 
-Private repos require credentials before you can fetch the master branch and tags.  
+Private repos require credentials before you can fetch the master branch and tags.
 
 ```yaml
     steps:
