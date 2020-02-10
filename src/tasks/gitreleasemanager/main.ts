@@ -99,3 +99,18 @@ export async function publish() {
         buildAgent.setFailed(error.message, true);
     }
 }
+
+export async function addAsset() {
+    try {
+
+        gitReleaseManagerTool.disableTelemetry();
+
+        const settings = Settings.getAddAssetSettings(buildAgent);
+
+        await gitReleaseManagerTool.addAsset(settings);
+
+        buildAgent.setSucceeded("GitVersionManager added assets to release successfully", true);
+    } catch (error) {
+        buildAgent.setFailed(error.message, true);
+    }
+}

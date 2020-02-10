@@ -56,6 +56,7 @@ const entryPoints = [
     'gitreleasemanager/close',
     'gitreleasemanager/open',
     'gitreleasemanager/publish',
+    'gitreleasemanager/addasset',
 ];
 
 module.exports = (env) => {

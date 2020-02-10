@@ -12,6 +12,7 @@ import {
     GitReleaseManagerCloseSettings,
     GitReleaseManagerOpenSettings,
     GitReleaseManagerPublishSettings,
+    GitReleaseManagerAddAssetSettings,
 } from "./models";
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
@@ -21,6 +22,7 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
     close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult>;
     open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult>;
     publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult>;
+    addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<IExecResult>;
 }
 
 @injectable()
@@ -63,6 +65,12 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
 
     public publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult> {
         const args = this.getPublishArguments(settings);
+
+        return this.execute("dotnet-gitreleasemanager", args);
+    }
+
+    public addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<IExecResult> {
+        const args = this.getAddAssetArguments(settings);
 
         return this.execute("dotnet-gitreleasemanager", args);
     }
@@ -150,6 +158,23 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
 
         if (settings.tagName) {
             args.push("--tagName", settings.tagName);
+        }
+
+        return args;
+    }
+
+    private getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): string[] {
+        const args: string[] = ['addasset', ...this.getCommonArguments(settings)];
+
+        if (settings.tagName) {
+            args.push("--tagName", settings.tagName);
+        }
+        if (settings.assets && settings.assets.length > 0) {
+            settings.assets = settings.assets.map(asset => {
+                return path.join(settings.targetDirectory, asset)
+            })
+
+            args.push("--assets", settings.assets.join(","));
         }
 
         return args;

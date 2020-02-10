@@ -3,12 +3,14 @@ import {
     GitReleaseManagerSettings,
     CommonFields, CreateFields, DiscardFields,
     CloseFields, OpenFields, PublishFields,
+    AddAssetFields,
 
     GitReleaseManagerCreateSettings,
     GitReleaseManagerDiscardSettings,
     GitReleaseManagerCloseSettings,
     GitReleaseManagerOpenSettings,
     GitReleaseManagerPublishSettings,
+    GitReleaseManagerAddAssetSettings,
 } from "./models";
 
 export class Settings {
@@ -70,6 +72,18 @@ export class Settings {
         return {
             ...commonSettings,
             tagName,
+        }
+    }
+
+    public static getAddAssetSettings(buildAgent: IBuildAgent): GitReleaseManagerAddAssetSettings {
+        const tagName = buildAgent.getInput(AddAssetFields.tagName);
+        const assets = buildAgent.getListInput(AddAssetFields.assets);
+
+        const commonSettings = Settings.getCommonSettings(buildAgent);
+        return {
+            ...commonSettings,
+            tagName,
+            assets
         }
     }
 

@@ -18,7 +18,8 @@
         { "path": "gitreleasemanager/discard" },
         { "path": "gitreleasemanager/close" },
         { "path": "gitreleasemanager/open" },
-        { "path": "gitreleasemanager/publish" }
+        { "path": "gitreleasemanager/publish" },
+        { "path": "gitreleasemanager/addasset" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -137,6 +138,15 @@
         ],
         "properties": {
             "name": "gitreleasemanager/publish"
+        }
+    }, {
+        "id": "addasset-gitreleasemanager-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "gitreleasemanager/addasset"
         }
     }]
 }

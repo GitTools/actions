@@ -30,6 +30,11 @@ export enum PublishFields {
     tagName = "tagName",
 }
 
+export enum AddAssetFields {
+    tagName = "tagName",
+    assets = "assets",
+}
+
 export interface GitReleaseManagerSettings {
     [CommonFields.repository]: string;
     [CommonFields.owner]: string;
@@ -60,4 +65,9 @@ export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings
 
 export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
     [PublishFields.tagName]: string;
+}
+
+export interface GitReleaseManagerAddAssetSettings extends GitReleaseManagerSettings {
+    [AddAssetFields.tagName]: string;
+    [AddAssetFields.assets]: string[];
 }
