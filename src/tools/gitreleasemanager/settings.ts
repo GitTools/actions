@@ -17,7 +17,7 @@ export class Settings {
 
     public static getCreateSettings(buildAgent: IBuildAgent): GitReleaseManagerCreateSettings {
         const milestone = buildAgent.getInput(CreateFields.milestone);
-        const releaseName = buildAgent.getInput(CreateFields.releaseName);
+        const name = buildAgent.getInput(CreateFields.name);
         const inputFileName = buildAgent.getInput(CreateFields.inputFileName);
         const isPreRelease = buildAgent.getBooleanInput(CreateFields.isPreRelease);
         const commit = buildAgent.getInput(CreateFields.commit);
@@ -27,7 +27,7 @@ export class Settings {
         return {
             ...commonSettings,
             milestone,
-            releaseName,
+            name,
             inputFileName,
             isPreRelease,
             commit,

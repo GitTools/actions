@@ -95,8 +95,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         if (settings.milestone) {
             args.push("--milestone", settings.milestone);
         }
-        if (settings.releaseName) {
-            args.push("--name", settings.releaseName);
+        if (settings.name) {
+            args.push("--name", settings.name);
         }
         if (settings.commit) {
             args.push("--targetcommitish", settings.commit);

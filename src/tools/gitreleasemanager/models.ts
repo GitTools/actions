@@ -7,7 +7,7 @@ export enum CommonFields {
 
 export enum CreateFields {
     milestone = "milestone",
-    releaseName = "releaseName",
+    name = "name",
     inputFileName = "inputFileName",
     isPreRelease = "isPreRelease",
     commit = "commit",
@@ -44,7 +44,7 @@ export interface GitReleaseManagerSettings {
 
 export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettings {
     [CreateFields.milestone]: string;
-    [CreateFields.releaseName]: string;
+    [CreateFields.name]: string;
     [CreateFields.inputFileName]: string;
     [CreateFields.isPreRelease]: boolean;
     [CreateFields.commit]: string;

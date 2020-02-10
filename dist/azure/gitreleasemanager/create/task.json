@@ -64,7 +64,7 @@
         "required": false,
         "helpMarkDown": "The path to the file to be used as the content of the release notes"
     }, {
-        "name": "pre",
+        "name": "isPreRelease",
         "type": "boolean",
         "label": "Creates the release as a pre-release",
         "defaultValue": "false",

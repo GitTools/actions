@@ -32,7 +32,7 @@ inputs:
     description: The path to the file to be used as the content of the release notes
     required: false
     default: ''
-  pre:
+  isPreRelease:
     description: Creates the release as a pre-release
     required: false
     default: 'false'
