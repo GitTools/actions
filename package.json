@@ -42,7 +42,7 @@
         "json-update": "^5.3.0",
         "reflect-metadata": "^0.1.13",
         "replace-in-file-webpack-plugin": "^1.0.6",
-        "terser-webpack-plugin": "^2.3.4",
+        "terser-webpack-plugin": "^2.3.5",
         "tfx-cli": "^0.7.11",
         "ts-loader": "^6.2.1",
         "tslint": "^6.0.0",
