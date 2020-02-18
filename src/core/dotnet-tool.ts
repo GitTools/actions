@@ -94,8 +94,10 @@ export class DotnetTool implements IDotnetTool {
         //
         this.buildAgent.debug(`toolPath: ${toolPath}`);
 
-        if (os.platform() !== "win32") {
-            const dotnetRoot = path.dirname(fs.readlinkSync(await this.buildAgent.which("dotnet")));
+        if (os.platform() !== "win32" && !this.buildAgent.getVariable("DOTNET_ROOT")) {
+            let dotnetPath = await this.buildAgent.which("dotnet");
+            dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath;
+            const dotnetRoot = path.dirname(dotnetPath);
             this.buildAgent.exportVariable("DOTNET_ROOT", dotnetRoot);
         }
         this.buildAgent.addPath(toolPath);
