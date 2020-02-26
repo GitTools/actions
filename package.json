@@ -35,7 +35,7 @@
         "uuid": "^3.4.0"
     },
     "devDependencies": {
-        "@types/node": "^13.7.4",
+        "@types/node": "^13.7.6",
         "@types/q": "^1.5.2",
         "@types/semver-compare": "^1.0.1",
         "@types/uuid": "^3.4.7",
