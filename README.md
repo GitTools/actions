@@ -14,13 +14,13 @@ GitHub Actions that allow to install and use the GitVersion and GitReleaseManage
 
 see examples of usages for **GitVersion**:
 
-- [GitHub Actions](docs/github/gitversion)
-- [Azure Pipeline tasks](docs/azure/gitversion)
+- [GitHub Actions](docs/examples/github/gitversion)
+- [Azure Pipeline tasks](docs/examples/azure/gitversion)
 
 and for **GitReleaseManager**:
 
-- [GitHub Actions](docs/github/gitreleasemanager)
-- [Azure Pipeline tasks](docs/azure/gitreleasemanager)
+- [GitHub Actions](docs/examples/github/gitreleasemanager)
+- [Azure Pipeline tasks](docs/examples/azure/gitreleasemanager)
 
 ## Dependency
 
