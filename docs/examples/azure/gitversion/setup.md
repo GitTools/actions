@@ -5,5 +5,5 @@
   - task: gitversion/setup@0
     displayName: Install GitVersion
     inputs:
-    versionSpec: '5.1.2'
+    versionSpec: '5.1.3'
 ```
