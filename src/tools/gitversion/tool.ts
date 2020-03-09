@@ -52,8 +52,8 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     private getArguments(workDir: string, options: GitVersionSettings): string[] {
         const args = [
             workDir,
-            "/output",
-            "json", // need to use buildserver later
+            "/output", "json",
+            "/output", "buildserver",
         ];
 
         const {
