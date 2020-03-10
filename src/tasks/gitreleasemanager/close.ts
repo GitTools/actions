@@ -1,4 +1,4 @@
-import "reflect-metadata";
-import { close } from "./main";
+import 'reflect-metadata'
+import {close} from './main'
 
-close();
+close()

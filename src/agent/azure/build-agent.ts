@@ -1,106 +1,108 @@
-import { injectable } from "inversify";
+import {injectable} from 'inversify'
 
-import * as taskLib from "azure-pipelines-task-lib/task";
-import * as toolLib from "azure-pipelines-tool-lib/tool";
+import * as taskLib from 'azure-pipelines-task-lib/task'
+import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
-import { IBuildAgent, IExecResult } from "../../core/models";
+import {IBuildAgent, IExecResult} from '../../core/models'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-
     public get agentName(): string {
-        return "Azure Pipelines";
+        return 'Azure Pipelines'
     }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
-        return toolLib.findLocalTool(toolName, versionSpec, arch);
+        return toolLib.findLocalTool(toolName, versionSpec, arch)
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
-        return toolLib.cacheDir(sourceDir, tool, version, arch);
+    public cacheDir(
+        sourceDir: string,
+        tool: string,
+        version: string,
+        arch?: string
+    ): Promise<string> {
+        return toolLib.cacheDir(sourceDir, tool, version, arch)
     }
 
     public createTempDir(): Promise<string> {
-        return Promise.resolve(taskLib.getVariable("Agent.TempDirectory"));
+        return Promise.resolve(taskLib.getVariable('Agent.TempDirectory'))
     }
 
     public debug(message: string): void {
-        taskLib.debug(message);
+        taskLib.debug(message)
     }
 
     public setFailed(message: string, done?: boolean): void {
-        taskLib.setResult(taskLib.TaskResult.Failed, message, done);
+        taskLib.setResult(taskLib.TaskResult.Failed, message, done)
     }
 
     public setSucceeded(message: string, done?: boolean): void {
-        taskLib.setResult(taskLib.TaskResult.Succeeded, message, done);
+        taskLib.setResult(taskLib.TaskResult.Succeeded, message, done)
     }
 
     public exportVariable(name: string, val: string): void {
-        taskLib.setVariable(name, val);
+        taskLib.setVariable(name, val)
     }
 
     public getVariable(name: string): string {
-        return taskLib.getVariable(name);
+        return taskLib.getVariable(name)
     }
 
     public addPath(inputPath: string): void {
-        toolLib.prependPath(inputPath);
+        toolLib.prependPath(inputPath)
     }
 
     public which(tool: string, check?: boolean): Promise<string> {
-        return Promise.resolve(taskLib.which(tool, check));
+        return Promise.resolve(taskLib.which(tool, check))
     }
 
     public exec(exec: string, args: string[]): Promise<IExecResult> {
-        const tr = taskLib.tool(exec);
-        tr.arg(args);
+        const tr = taskLib.tool(exec)
+        tr.arg(args)
 
-        const result = tr.execSync();
+        const result = tr.execSync()
         return Promise.resolve({
             code: result.code,
             error: result.error,
             stderr: result.stderr,
-            stdout: result.stdout,
-        });
+            stdout: result.stdout
+        })
     }
 
     public getSourceDir(): string {
-        return this.getVariable("Build.SourcesDirectory");
+        return this.getVariable('Build.SourcesDirectory')
     }
 
     public setOutput(name: string, value: string): void {
-        taskLib.setVariable(name, value);
+        taskLib.setVariable(name, value)
     }
 
     public getInput(input: string, required?: boolean): string {
-        return taskLib.getInput(input, required);
+        return taskLib.getInput(input, required)
     }
 
     public getListInput(input: string, required?: boolean): string[] {
         return taskLib
             .getInput(input, required)
-            .split("\n")
-            .filter(x => x !== "");
+            .split('\n')
+            .filter(x => x !== '')
     }
 
     public getBooleanInput(input: string, required?: boolean): boolean {
-        return taskLib.getBoolInput(input, required);
+        return taskLib.getBoolInput(input, required)
     }
 
     public isValidInputFile(input: string, file: string): boolean {
-        return taskLib.filePathSupplied(input) && this.fileExists(file);
+        return taskLib.filePathSupplied(input) && this.fileExists(file)
     }
 
     public fileExists(file: string): boolean {
-        return taskLib.exist(file) && taskLib.stats(file).isFile();
+        return taskLib.exist(file) && taskLib.stats(file).isFile()
     }
 
     public directoryExists(file: string): boolean {
-        return taskLib.exist(file) && taskLib.stats(file).isDirectory();
+        return taskLib.exist(file) && taskLib.stats(file).isDirectory()
     }
 }
 
-export {
-    BuildAgent,
-};
+export {BuildAgent}

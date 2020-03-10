@@ -1,109 +1,111 @@
-import { injectable } from "inversify";
+import {injectable} from 'inversify'
 
-import { IBuildAgent, IExecResult } from "../../core/models";
+import {IBuildAgent, IExecResult} from '../../core/models'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-
     public get agentName(): string {
-        console.log("getAgentName");
-        return "Mock";
+        console.log('getAgentName')
+        return 'Mock'
     }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
-        console.log("find");
-        return "find";
+        console.log('find')
+        return 'find'
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
-        console.log("cacheDir");
-        return Promise.resolve("cacheDir");
+    public cacheDir(
+        sourceDir: string,
+        tool: string,
+        version: string,
+        arch?: string
+    ): Promise<string> {
+        console.log('cacheDir')
+        return Promise.resolve('cacheDir')
     }
 
     public createTempDir(): Promise<string> {
-        console.log("createTempDir");
-        return Promise.resolve("createTempDir");
+        console.log('createTempDir')
+        return Promise.resolve('createTempDir')
     }
 
     public debug(message: string): void {
-        console.log("debug");
+        console.log('debug')
     }
 
     public setFailed(message: string, done?: boolean): void {
-        console.log("setFailed");
+        console.log('setFailed')
     }
 
     public setSucceeded(message: string, done?: boolean): void {
-        console.log("setSucceeded");
+        console.log('setSucceeded')
     }
 
     public exportVariable(name: string, val: string): void {
-        console.log("exportVariable");
+        console.log('exportVariable')
     }
 
     public getVariable(name: string): string {
-        console.log("getVariable");
-        return "getVariable";
+        console.log('getVariable')
+        return 'getVariable'
     }
 
     public addPath(inputPath: string): void {
-        console.log("addPath");
+        console.log('addPath')
     }
 
     public which(tool: string, check?: boolean): Promise<string> {
-        console.log("which");
-        return Promise.resolve("which");
+        console.log('which')
+        return Promise.resolve('which')
     }
 
     public exec(exec: string, args: string[]): Promise<IExecResult> {
         return Promise.resolve({
             code: 0,
             error: null,
-            stderr: "result.stderr",
-            stdout: "result.stdout",
-        });
+            stderr: 'result.stderr',
+            stdout: 'result.stdout'
+        })
     }
 
     public getSourceDir(): string {
-        console.log("getSourceDir");
-        return "getSourceDir";
+        console.log('getSourceDir')
+        return 'getSourceDir'
     }
 
     public setOutput(name: string, value: string): void {
-        console.log("setOutput");
+        console.log('setOutput')
     }
 
     public getInput(input: string, required?: boolean): string {
-        console.log("getInput");
-        return "getInput";
+        console.log('getInput')
+        return 'getInput'
     }
 
     public getListInput(input: string, required?: boolean): string[] {
-        console.log("getListInput");
-        return ["getInput"];
+        console.log('getListInput')
+        return ['getInput']
     }
 
     public getBooleanInput(input: string, required?: boolean): boolean {
-        console.log("getBooleanInput");
-        return false;
+        console.log('getBooleanInput')
+        return false
     }
 
     public isValidInputFile(input: string, file: string) {
-        console.log("isValidInputFile");
-        return false;
+        console.log('isValidInputFile')
+        return false
     }
 
     public fileExists(file: string) {
-        console.log("fileExists");
-        return false;
+        console.log('fileExists')
+        return false
     }
 
     public directoryExists(file: string) {
-        console.log("directoryExists");
-        return false;
+        console.log('directoryExists')
+        return false
     }
 }
 
-export {
-    BuildAgent,
-};
+export {BuildAgent}

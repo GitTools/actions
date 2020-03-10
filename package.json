@@ -8,6 +8,8 @@
     },
     "main": "main.js",
     "scripts": {
+        "format": "prettier --write src/**/*.ts",
+        "format-check": "prettier --check src/**/*.ts",
         "build:mock": "webpack --config webpack.config.js --env.agent=mock",
         "build:azure": "webpack --config webpack.config.js --env.agent=azure",
         "build:github": "webpack --config webpack.config.js --env.agent=github",
@@ -39,13 +41,12 @@
         "@types/q": "^1.5.2",
         "@types/semver-compare": "^1.0.1",
         "@types/uuid": "^3.4.7",
-        "json-update": "^5.3.0",
+        "prettier": "^1.19.1",
         "reflect-metadata": "^0.1.13",
         "replace-in-file-webpack-plugin": "^1.0.6",
         "terser-webpack-plugin": "^2.3.5",
         "tfx-cli": "^0.7.11",
         "ts-loader": "^6.2.1",
-        "tslint": "^6.0.0",
         "typescript": "^3.8.3",
         "webpack": "^4.42.0",
         "webpack-cli": "^3.3.11"

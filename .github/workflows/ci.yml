@@ -23,6 +23,7 @@ jobs:
         git fetch --prune --unshallow
     - run: |
         npm install
+        npm run format-check
         npm run build:github
         npm run build:azure
       name: Build code

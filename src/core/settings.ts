@@ -1,10 +1,11 @@
-import { IBuildAgent, SetupFields, ISetupSettings } from "./models";
+import {IBuildAgent, SetupFields, ISetupSettings} from './models'
 
 export class Settings {
-
     public static getSetupSettings(buildAgent: IBuildAgent): ISetupSettings {
-        const versionSpec = buildAgent.getInput(SetupFields.versionSpec);
-        const includePrerelease = buildAgent.getBooleanInput(SetupFields.includePrerelease);
+        const versionSpec = buildAgent.getInput(SetupFields.versionSpec)
+        const includePrerelease = buildAgent.getBooleanInput(
+            SetupFields.includePrerelease
+        )
 
         return {
             versionSpec,

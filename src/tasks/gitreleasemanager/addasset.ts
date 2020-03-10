@@ -1,4 +1,4 @@
-import "reflect-metadata";
-import { addAsset } from "./main";
+import 'reflect-metadata'
+import {addAsset} from './main'
 
-addAsset();
+addAsset()
