@@ -4,11 +4,20 @@ import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
 import { IBuildAgent, IExecResult } from '../../core/models'
+import { IRequestOptions } from 'typed-rest-client/Interfaces'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
     public get agentName(): string {
         return 'Azure Pipelines'
+    }
+
+    public proxyConfiguration(url: string): IRequestOptions {
+        return {
+            proxy: taskLib.getHttpProxyConfiguration(url),
+            cert: taskLib.getHttpCertConfiguration(),
+            ignoreSslError: !!taskLib.getVariable('Agent.SkipCertValidation')
+        }
     }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
