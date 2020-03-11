@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
+import * as ifm from 'typed-rest-client/Interfaces'
 
 import { inject, injectable } from 'inversify'
 import { TYPES, IExecResult, IBuildAgent } from './models'
@@ -23,13 +24,20 @@ export class DotnetTool implements IDotnetTool {
     protected versionManager: IVersionManager
     private httpClient: http.HttpClient
 
+    private static readonly nugetRoot: string =
+        'https://api-v2v3search-0.nuget.org/'
+
     constructor(
         @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
         @inject(TYPES.IVersionManager) versionManager: IVersionManager
     ) {
         this.buildAgent = buildAgent
         this.versionManager = versionManager
-        this.httpClient = new http.HttpClient('dotnet')
+        this.httpClient = new http.HttpClient(
+            'dotnet',
+            undefined,
+            this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot)
+        )
     }
 
     public disableTelemetry(): void {
@@ -133,9 +141,12 @@ export class DotnetTool implements IDotnetTool {
             } ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
-        const downloadPath = `https://api-v2v3search-0.nuget.org/query?q=${encodeURIComponent(
-            toolName.toLowerCase()
-        )}&prerelease=${includePrerelease ? 'true' : 'false'}&semVerLevel=2.0.0`
+        const downloadPath = `${
+            DotnetTool.nugetRoot
+        }query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${
+            includePrerelease ? 'true' : 'false'
+        }&semVerLevel=2.0.0`
+
         const res = await this.httpClient.get(downloadPath)
 
         if (!res || res.message.statusCode !== 200) {

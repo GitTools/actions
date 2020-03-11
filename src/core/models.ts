@@ -1,3 +1,5 @@
+import { IRequestOptions } from 'typed-rest-client/Interfaces'
+
 export const TYPES = {
     IBuildAgent: Symbol.for('BuildAgent'),
     IDotnetTool: Symbol.for('DotnetTool'),
@@ -25,6 +27,7 @@ export interface IExecResult {
 
 export interface IBuildAgent {
     agentName: string
+    proxyConfiguration(url: string): IRequestOptions
     find(toolName: string, versionSpec: string, arch?: string): string
     cacheDir(
         sourceDir: string,

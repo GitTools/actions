@@ -1,9 +1,14 @@
 import { injectable } from 'inversify'
 
 import { IBuildAgent, IExecResult } from '../../core/models'
+import { IRequestOptions } from 'typed-rest-client/Interfaces'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+    proxyConfiguration(url: string): IRequestOptions {
+        console.log('proxyConfiguration')
+        return undefined
+    }
     public get agentName(): string {
         console.log('getAgentName')
         return 'Mock'

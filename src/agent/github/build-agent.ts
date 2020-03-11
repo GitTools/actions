@@ -1,7 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as urlApi from 'url'
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 import * as core from '@actions/core'
 import * as exe from '@actions/exec'
@@ -11,6 +12,10 @@ import * as toolCache from '@actions/tool-cache'
 import { injectable } from 'inversify'
 
 import { IBuildAgent, IExecResult } from '../../core/models'
+import {
+    IRequestOptions,
+    IProxyConfiguration
+} from 'typed-rest-client/Interfaces'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -20,6 +25,57 @@ class BuildAgent implements IBuildAgent {
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch)
+    }
+
+    public proxyConfiguration(url: string): IRequestOptions {
+        return {
+            proxy: this.getProxyConfiguration(url),
+            cert: undefined,
+            ignoreSslError: undefined
+        }
+    }
+
+    private getProxyConfiguration(requestedUrl: string): IProxyConfiguration {
+        let noProxy = process.env.NO_PROXY || process.env.no_proxy || null
+        let allowedHostsWithoutProxy
+        let dontUseProxy = false
+        if (noProxy) {
+            if (noProxy === '*') {
+                dontUseProxy = true
+            } else {
+                allowedHostsWithoutProxy = noProxy.split(',')
+                if (requestedUrl) {
+                    allowedHostsWithoutProxy.forEach(host => {
+                        if (new RegExp(host, 'i').test(requestedUrl)) {
+                            dontUseProxy = true
+                        }
+                    })
+                }
+            }
+        }
+
+        if (dontUseProxy) {
+            return undefined
+        }
+
+        let proxyURL =
+            process.env.HTTP_PROXY ||
+            process.env.http_proxy ||
+            process.env.HTTPS_PROXY ||
+            process.env.https_proxy ||
+            null
+
+        if (proxyURL) {
+            let url = new urlApi.URL(requestedUrl)
+
+            return {
+                proxyUrl: `${url.protocol}//${url.hostname}:${url.port}`,
+                proxyUsername: url.username,
+                proxyPassword: url.password,
+                proxyBypassHosts: allowedHostsWithoutProxy
+            }
+        }
+        return undefined
     }
 
     public cacheDir(
