@@ -60,7 +60,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         workDir: string,
         options: GitVersionSettings
     ): string[] {
-        const args = [workDir, '/output', 'json']
+        const args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
             useConfigFile,
