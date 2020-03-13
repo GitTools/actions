@@ -1,4 +1,4 @@
-import {IBuildAgent, SetupFields, ISetupSettings} from './models'
+import { IBuildAgent, SetupFields, ISetupSettings } from './models'
 
 export class Settings {
     public static getSetupSettings(buildAgent: IBuildAgent): ISetupSettings {

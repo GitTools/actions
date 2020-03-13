@@ -1,7 +1,7 @@
-import {IBuildAgent, TYPES, SetupFields} from '../../core/models'
-import {Settings as CommonSettings} from '../../core/settings'
-import {Settings} from '../../tools/gitversion/settings'
-import {IGitVersionTool, GitVersionTool} from '../../tools/gitversion/tool'
+import { IBuildAgent, TYPES } from '../../core/models'
+import { Settings as CommonSettings } from '../../core/settings'
+import { Settings } from '../../tools/gitversion/settings'
+import { IGitVersionTool, GitVersionTool } from '../../tools/gitversion/tool'
 import {
     GitVersionSettings,
     GitVersionOutput

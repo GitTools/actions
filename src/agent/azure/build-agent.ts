@@ -1,9 +1,9 @@
-import {injectable} from 'inversify'
+import { injectable } from 'inversify'
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
-import {IBuildAgent, IExecResult} from '../../core/models'
+import { IBuildAgent, IExecResult } from '../../core/models'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -78,7 +78,7 @@ class BuildAgent implements IBuildAgent {
     }
 
     public getInput(input: string, required?: boolean): string {
-        return taskLib.getInput(input, required)
+        return taskLib.getInput(input, required)?.trim()
     }
 
     public getListInput(input: string, required?: boolean): string[] {
@@ -105,4 +105,4 @@ class BuildAgent implements IBuildAgent {
     }
 }
 
-export {BuildAgent}
+export { BuildAgent }

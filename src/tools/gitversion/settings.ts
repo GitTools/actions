@@ -1,6 +1,6 @@
-import {IBuildAgent} from '../../core/models'
+import { IBuildAgent } from '../../core/models'
 
-import {GitVersionSettings, ExecuteFields} from './models'
+import { GitVersionSettings, ExecuteFields } from './models'
 
 export class Settings {
     public static getGitVersionSettings(
@@ -24,7 +24,7 @@ export class Settings {
             ExecuteFields.additionalArguments
         )
 
-        const srcDir = buildAgent.getSourceDir().replace(/\\/g, '/')
+        const srcDir = buildAgent.getSourceDir()?.replace(/\\/g, '/')
 
         return {
             targetPath,

@@ -1,10 +1,10 @@
-import {IBuildAgent, TYPES, SetupFields} from '../../core/models'
+import { IBuildAgent, TYPES, SetupFields } from '../../core/models'
 import {
     IGitReleaseManagerTool,
     GitReleaseManagerTool
 } from '../../tools/gitreleasemanager/tool'
-import {Settings as CommonSettings} from '../../core/settings'
-import {Settings} from '../../tools/gitreleasemanager/settings'
+import { Settings as CommonSettings } from '../../core/settings'
+import { Settings } from '../../tools/gitreleasemanager/settings'
 
 import container from '../../core/ioc'
 

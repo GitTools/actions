@@ -3,9 +3,9 @@ import * as os from 'os'
 import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
 
-import {inject, injectable} from 'inversify'
-import {TYPES, IExecResult, IBuildAgent} from './models'
-import {IVersionManager} from './versionManager'
+import { inject, injectable } from 'inversify'
+import { TYPES, IExecResult, IBuildAgent } from './models'
+import { IVersionManager } from './versionManager'
 
 export interface IDotnetTool {
     disableTelemetry(): void
@@ -145,7 +145,7 @@ export class DotnetTool implements IDotnetTool {
         const body: string = await res.readBody()
         const data = JSON.parse(body).data
 
-        const versions = (data[0].versions as {version: string}[]).map(
+        const versions = (data[0].versions as { version: string }[]).map(
             x => x.version
         )
         if (!versions || !versions.length) {

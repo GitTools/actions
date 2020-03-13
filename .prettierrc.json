@@ -5,7 +5,7 @@
     "semi": false,
     "singleQuote": true,
     "trailingComma": "none",
-    "bracketSpacing": false,
+    "bracketSpacing": true,
     "arrowParens": "avoid",
     "parser": "typescript"
 }

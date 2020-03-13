@@ -1,4 +1,4 @@
-import {IBuildAgent} from '../../core/models'
+import { IBuildAgent } from '../../core/models'
 import {
     GitReleaseManagerSettings,
     CommonFields,

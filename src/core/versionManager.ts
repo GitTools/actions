@@ -1,8 +1,8 @@
 import cmp from 'semver-compare'
 import * as semver from 'semver'
-import {injectable, inject} from 'inversify'
+import { injectable, inject } from 'inversify'
 
-import {IBuildAgent, TYPES} from './models'
+import { IBuildAgent, TYPES } from './models'
 
 export interface IVersionManager {
     isExplicitVersion(versionSpec: string): boolean

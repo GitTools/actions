@@ -1,6 +1,6 @@
-import {injectable} from 'inversify'
+import { injectable } from 'inversify'
 
-import {IBuildAgent, IExecResult} from '../../core/models'
+import { IBuildAgent, IExecResult } from '../../core/models'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -108,4 +108,4 @@ class BuildAgent implements IBuildAgent {
     }
 }
 
-export {BuildAgent}
+export { BuildAgent }

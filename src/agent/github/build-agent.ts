@@ -8,9 +8,9 @@ import * as exe from '@actions/exec'
 import * as io from '@actions/io'
 import * as toolCache from '@actions/tool-cache'
 
-import {injectable} from 'inversify'
+import { injectable } from 'inversify'
 
-import {IBuildAgent, IExecResult} from '../../core/models'
+import { IBuildAgent, IExecResult } from '../../core/models'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -115,12 +115,12 @@ class BuildAgent implements IBuildAgent {
     }
 
     public getInput(input: string, required?: boolean): string {
-        return core.getInput(input, {required} as core.InputOptions)
+        return core.getInput(input, { required } as core.InputOptions)?.trim()
     }
 
     public getListInput(input: string, required?: boolean): string[] {
         return core
-            .getInput(input, {required} as core.InputOptions)
+            .getInput(input, { required } as core.InputOptions)
             .split('\n')
             .filter(x => x !== '')
     }
@@ -167,4 +167,4 @@ class BuildAgent implements IBuildAgent {
     }
 }
 
-export {BuildAgent}
+export { BuildAgent }

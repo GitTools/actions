@@ -1,10 +1,10 @@
 import path = require('path')
 
-import {injectable, inject} from 'inversify'
-import {IExecResult, IBuildAgent, TYPES} from '../../core/models'
-import {DotnetTool, IDotnetTool} from '../../core/dotnet-tool'
-import {GitVersionSettings, GitVersionOutput, ExecuteFields} from './models'
-import {IVersionManager} from '../../core/versionManager'
+import { injectable, inject } from 'inversify'
+import { IExecResult, IBuildAgent, TYPES } from '../../core/models'
+import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
+import { GitVersionSettings, GitVersionOutput } from './models'
+import { IVersionManager } from '../../core/versionManager'
 
 export interface IGitVersionTool extends IDotnetTool {
     install(versionSpec: string, includePrerelease: boolean): Promise<void>
@@ -43,7 +43,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
 
     private getRepoDir(targetPath: string): string {
         let workDir: string
-        const srcDir = this.buildAgent.getSourceDir()
+        const srcDir = this.buildAgent.getSourceDir() || '.'
         if (!targetPath) {
             workDir = srcDir
         } else {
@@ -60,7 +60,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         workDir: string,
         options: GitVersionSettings
     ): string[] {
-        const args = [workDir, '/output', 'json', '/output', 'buildserver']
+        const args = [workDir, '/output', 'json']
 
         const {
             useConfigFile,
@@ -102,7 +102,9 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             }
         }
 
-        args.push(additionalArguments)
+        if (additionalArguments) {
+            args.push(additionalArguments)
+        }
         return args
     }
 

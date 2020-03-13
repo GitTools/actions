@@ -1,9 +1,9 @@
 import path = require('path')
 
-import {TYPES, IBuildAgent, IExecResult} from '../../core/models'
-import {injectable, inject} from 'inversify'
-import {DotnetTool, IDotnetTool} from '../../core/dotnet-tool'
-import {IVersionManager} from '../../core/versionManager'
+import { TYPES, IBuildAgent, IExecResult } from '../../core/models'
+import { injectable, inject } from 'inversify'
+import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
+import { IVersionManager } from '../../core/versionManager'
 
 import {
     GitReleaseManagerSettings,

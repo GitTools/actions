@@ -1,7 +1,7 @@
-import {Container} from 'inversify'
-import {IVersionManager, VersionManager} from './versionManager'
-import {TYPES, IBuildAgent} from './models'
-import {BuildAgent} from '../agent/mock/build-agent'
+import { Container } from 'inversify'
+import { IVersionManager, VersionManager } from './versionManager'
+import { TYPES, IBuildAgent } from './models'
+import { BuildAgent } from '../agent/mock/build-agent'
 
 const container = new Container()
 
