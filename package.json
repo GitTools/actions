@@ -34,13 +34,14 @@
         "azure-pipelines-tool-lib": "^0.12.0",
         "inversify": "^5.0.1",
         "typed-rest-client": "^1.7.2",
-        "uuid": "^3.4.0"
+        "uuid": "^7.0.2"
     },
     "devDependencies": {
         "@types/node": "^13.9.2",
         "@types/q": "^1.5.2",
         "@types/semver-compare": "^1.0.1",
-        "@types/uuid": "^3.4.7",
+        "@types/uuid": "^7.0.2",
+        "minimist": "^1.2.5",
         "prettier": "^1.19.1",
         "reflect-metadata": "^0.1.13",
         "replace-in-file-webpack-plugin": "^1.0.6",
@@ -49,7 +50,6 @@
         "ts-loader": "^6.2.1",
         "typescript": "^3.8.3",
         "webpack": "^4.42.0",
-        "webpack-cli": "^3.3.11",
-        "minimist": "^1.2.5"
+        "webpack-cli": "^3.3.11"
     }
 }
