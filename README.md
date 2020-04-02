@@ -2,7 +2,7 @@
 
 ![GitTools](docs/icon.png "GitTools")
 
-GitHub Actions that allow to install and use the GitVersion and GitReleaseManager tools
+GitHub Actions that allow to install and use the [GitVersion](https://github.com/GitTools/GitVersion) and [GitReleaseManager](https://github.com/GitTools/GitReleaseManager) tools
 
 [![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
 [![Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
