@@ -109,20 +109,23 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
-        let properties = Object.keys(gitversion);
-        let gitversionOutput = <any> gitversion;
+        let properties = Object.keys(gitversion)
+        let gitversionOutput = <any>gitversion
 
         properties.forEach(property => {
             const name = this.toCamelCase(property)
             const value = gitversionOutput[property]
-            this.buildAgent.setOutput(name, value);
-        });
+            this.buildAgent.setOutput(name, value)
+        })
     }
 
     private toCamelCase(input: string): string {
-        return input.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-            return index == 0 ? match.toLowerCase() : match.toUpperCase();
-        });
+        return input.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (
+            match,
+            index
+        ) {
+            if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
+            return index == 0 ? match.toLowerCase() : match.toUpperCase()
+        })
     }
 }

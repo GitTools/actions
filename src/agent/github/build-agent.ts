@@ -168,6 +168,7 @@ class BuildAgent implements IBuildAgent {
 
     public setOutput(name: string, value: string): void {
         core.setOutput(name, value)
+        core.exportVariable(`GITVERSION_${name.toUpperCase()}`, value)
     }
 
     public getInput(input: string, required?: boolean): string {
