@@ -1,4 +1,4 @@
-import { IBuildAgent, TYPES, SetupFields } from '../../core/models'
+import { IBuildAgent, TYPES } from '../../core/models'
 import {
     IGitReleaseManagerTool,
     GitReleaseManagerTool

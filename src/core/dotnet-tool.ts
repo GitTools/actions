@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
-import * as ifm from 'typed-rest-client/Interfaces'
 
 import { inject, injectable } from 'inversify'
 import { TYPES, IExecResult, IBuildAgent } from './models'
