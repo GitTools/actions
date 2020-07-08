@@ -103,7 +103,8 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
 
         if (additionalArguments) {
-            args.push(additionalArguments)
+            //args.push(additionalArguments)
+            Array.prototype.push.apply(args,additionalArguments.split(' '))
         }
         return args
     }
