@@ -16,12 +16,12 @@ GitHub Actions that allow to install and use the [GitVersion](https://github.com
 
 Examples for usage of **GitVersion**:
 
-- [GitHub Actions](docs/examples/github/gitversion/)
-- [Azure Pipeline tasks](docs/examples/azure/gitversion/)
+- [GitHub Actions](docs/examples/github/gitversion/index.md)
+- [Azure Pipeline tasks](docs/examples/azure/gitversion/index.md)
 
 ### GitReleaseManager
 
 Examples for usage of **GitReleaseManager**:
 
-- [GitHub Actions](docs/examples/github/gitreleasemanager)
-- [Azure Pipeline tasks](docs/examples/azure/gitreleasemanager)
+- [GitHub Actions](docs/examples/github/gitreleasemanager/index.md)
+- [Azure Pipeline tasks](docs/examples/azure/gitreleasemanager/index.md)
