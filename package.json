@@ -47,7 +47,7 @@
         "replace-in-file-webpack-plugin": "^1.0.6",
         "terser-webpack-plugin": "^4.2.3",
         "tfx-cli": "^0.8.3",
-        "ts-loader": "^8.0.8",
+        "ts-loader": "^8.0.9",
         "typescript": "^4.0.5",
         "webpack": "^4.44.2",
         "webpack-cli": "^4.1.0"
