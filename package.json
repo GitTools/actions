@@ -10,12 +10,12 @@
     "scripts": {
         "format": "prettier --write src/**/*.ts",
         "format-check": "prettier --check src/**/*.ts",
-        "build:mock": "webpack --config webpack.config.js --env.agent=mock",
-        "build:azure": "webpack --config webpack.config.js --env.agent=azure",
-        "build:github": "webpack --config webpack.config.js --env.agent=github",
-        "compress:mock": "npm run build:mock -- --env.task=compress",
-        "compress:azure": "npm run build:azure -- --env.task=compress",
-        "compress:github": "npm run build:github -- --env.task=compress",
+        "build:mock": "webpack --config webpack.config.js --env agent=mock",
+        "build:azure": "webpack --config webpack.config.js --env agent=azure",
+        "build:github": "webpack --config webpack.config.js --env agent=github",
+        "compress:mock": "npm run build:mock -- --env task=compress",
+        "compress:azure": "npm run build:azure -- --env task=compress",
+        "compress:github": "npm run build:github -- --env task=compress",
         "build": "npm run build:mock && npm run build:azure && npm run build:github",
         "compress": "npm run compress:mock && npm run compress:azure && npm run compress:github",
         "publish:azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
@@ -49,7 +49,7 @@
         "tfx-cli": "^0.8.3",
         "ts-loader": "^8.0.9",
         "typescript": "^4.0.5",
-        "webpack": "^4.44.2",
-        "webpack-cli": "^4.1.0"
+        "webpack": "^5.4.0",
+        "webpack-cli": "^4.2.0"
     }
 }
