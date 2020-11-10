@@ -67,7 +67,9 @@ class BuildAgent implements IBuildAgent {
 
     public exec(exec: string, args: string[]): Promise<IExecResult> {
         const tr = taskLib.tool(exec)
-        tr.arg(args)
+        // convert the array to a single string and let the tool runner handle quotes, spaces, escaping, ...
+        const argumentsAsString = args.join(' ')
+        tr.line(argumentsAsString)
 
         const result = tr.execSync()
         return Promise.resolve({
