@@ -43,7 +43,11 @@ export class DotnetTool implements IDotnetTool {
         this.buildAgent.exportVariable('DOTNET_CLI_TELEMETRY_OPTOUT', '1')
     }
 
-    public execute(cmd: string, args: string[], additionalArgs: string = ''): Promise<IExecResult> {
+    public execute(
+        cmd: string,
+        args: string[],
+        additionalArgs: string = ''
+    ): Promise<IExecResult> {
         console.log(`Command: ${cmd} ${args.join(' ')} ${additionalArgs}`)
         return this.buildAgent.exec(cmd, args, additionalArgs)
     }

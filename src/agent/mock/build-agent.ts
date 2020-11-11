@@ -64,7 +64,11 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve('which')
     }
 
-    public exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult> {
+    public exec(
+        exec: string,
+        args: string[],
+        additionalArguments?: string
+    ): Promise<IExecResult> {
         return Promise.resolve({
             code: 0,
             error: null,

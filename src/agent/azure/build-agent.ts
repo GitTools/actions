@@ -65,7 +65,11 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve(taskLib.which(tool, check))
     }
 
-    public exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult> {
+    public exec(
+        exec: string,
+        args: string[],
+        additionalArguments?: string
+    ): Promise<IExecResult> {
         const tr = taskLib.tool(exec)
         tr.arg(args)
         if (additionalArguments) {

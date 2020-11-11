@@ -139,21 +139,29 @@ class BuildAgent implements IBuildAgent {
         return io.which(tool, check)
     }
 
-    public async exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult> {
+    public async exec(
+        exec: string,
+        args: string[],
+        additionalArguments?: string
+    ): Promise<IExecResult> {
         const dotnetPath = await io.which(exec, true)
         let resultCode = 0
         let stdout = ''
         let stderr = ''
-        resultCode = await exe.exec(`"${dotnetPath}" ${additionalArguments ?? ''}`, args, {
-            listeners: {
-                stderr: (data: Buffer) => {
-                    stderr += data.toString()
-                },
-                stdout: (data: Buffer) => {
-                    stdout += data.toString()
+        resultCode = await exe.exec(
+            `"${dotnetPath}" ${additionalArguments ?? ''}`,
+            args,
+            {
+                listeners: {
+                    stderr: (data: Buffer) => {
+                        stderr += data.toString()
+                    },
+                    stdout: (data: Buffer) => {
+                        stdout += data.toString()
+                    }
                 }
             }
-        })
+        )
         return {
             code: resultCode,
             error: null,
