@@ -65,11 +65,12 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve(taskLib.which(tool, check))
     }
 
-    public exec(exec: string, args: string[]): Promise<IExecResult> {
+    public exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult> {
         const tr = taskLib.tool(exec)
-        // convert the array to a single string and let the tool runner handle quotes, spaces, escaping, ...
-        const argumentsAsString = args.join(' ')
-        tr.line(argumentsAsString)
+        tr.arg(args)
+        if (additionalArguments) {
+            tr.line(additionalArguments)
+        }
 
         const result = tr.execSync()
         return Promise.resolve({

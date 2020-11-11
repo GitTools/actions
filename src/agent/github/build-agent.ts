@@ -139,14 +139,12 @@ class BuildAgent implements IBuildAgent {
         return io.which(tool, check)
     }
 
-    public async exec(exec: string, args: string[]): Promise<IExecResult> {
+    public async exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult> {
         const dotnetPath = await io.which(exec, true)
-        // convert the array to a single string and let the tool runner handle quotes, spaces, escaping, ...
-        const argumentsAsString = args.join(' ')
         let resultCode = 0
         let stdout = ''
         let stderr = ''
-        resultCode = await exe.exec(`"${dotnetPath}" ${argumentsAsString}`, null, {
+        resultCode = await exe.exec(`"${dotnetPath}" ${additionalArguments ?? ''}`, args, {
             listeners: {
                 stderr: (data: Buffer) => {
                     stderr += data.toString()

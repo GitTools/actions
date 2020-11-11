@@ -38,7 +38,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
 
         const args = this.getArguments(workDir, options)
 
-        return this.execute('dotnet-gitversion', args)
+        return this.execute('dotnet-gitversion', args[0], args[1])
     }
 
     private getRepoDir(targetPath: string): string {
@@ -59,7 +59,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     private getArguments(
         workDir: string,
         options: GitVersionSettings
-    ): string[] {
+    ): [string[], string] {
         const args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
@@ -102,10 +102,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             }
         }
 
-        if (additionalArguments) {
-            args.push(additionalArguments)
-        }
-        return args
+        return [args, additionalArguments]
     }
 
     public writeGitVersionToAgent(gitversion: GitVersionOutput): void {

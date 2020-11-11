@@ -43,7 +43,7 @@ export interface IBuildAgent {
     getVariable(name: string): string
     addPath(inputPath: string): void
     which(tool: string, check?: boolean): Promise<string>
-    exec(exec: string, args: string[]): Promise<IExecResult>
+    exec(exec: string, args: string[], additionalArguments?: string): Promise<IExecResult>
 
     getSourceDir(): string
     isValidInputFile(input: string, file: string): boolean
