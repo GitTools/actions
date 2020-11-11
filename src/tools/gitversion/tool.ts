@@ -60,7 +60,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         workDir: string,
         options: GitVersionSettings
     ): string[] {
-        const args = [workDir, '/output', 'json', '/output', 'buildserver']
+        let args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
             useConfigFile,
@@ -103,8 +103,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
 
         if (additionalArguments) {
-            //args.push(additionalArguments)
-            Array.prototype.push.apply(args,additionalArguments.split(' '))
+            args = args.concat(this.argStringToArray(additionalArguments))
         }
         return args
     }
@@ -118,6 +117,68 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             const value = gitversionOutput[property]
             this.buildAgent.setOutput(name, value)
         })
+    }
+
+    private argStringToArray(argString: string): string[] {
+        var args: string[] = []
+
+        var inQuotes = false
+        var escaped = false
+        var lastCharWasSpace = true
+        var arg = ''
+
+        var append = function (c: string) {
+            // we only escape double quotes.
+            if (escaped && c !== '"') {
+                arg += '\\'
+            }
+
+            arg += c
+            escaped = false
+        }
+
+        for (var i = 0; i < argString.length; i++) {
+            var c = argString.charAt(i)
+
+            if (c === ' ' && !inQuotes) {
+                if (!lastCharWasSpace) {
+                    args.push(arg)
+                    arg = ''
+                }
+                lastCharWasSpace = true
+                continue
+            } else {
+                lastCharWasSpace = false
+            }
+
+            if (c === '"') {
+                if (!escaped) {
+                    inQuotes = !inQuotes
+                } else {
+                    append(c)
+                }
+                continue
+            }
+
+            if (c === '\\' && escaped) {
+                append(c)
+                continue
+            }
+
+            if (c === '\\' && inQuotes) {
+                escaped = true
+                continue
+            }
+
+            append(c)
+            lastCharWasSpace = false
+        }
+
+        if (!lastCharWasSpace) {
+            args.push(arg.trim())
+        }
+
+        return args
     }
 
     private toCamelCase(input: string): string {

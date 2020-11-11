@@ -26,7 +26,8 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
 }
 
 @injectable()
-export class GitReleaseManagerTool extends DotnetTool
+export class GitReleaseManagerTool
+    extends DotnetTool
     implements IGitReleaseManagerTool {
     constructor(
         @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
