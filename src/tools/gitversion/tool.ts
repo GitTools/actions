@@ -48,7 +48,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             workDir = srcDir
         } else {
             if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = path.join(srcDir, targetPath)
+                workDir = targetPath
             } else {
                 throw new Error('Directory not found at ' + targetPath)
             }
