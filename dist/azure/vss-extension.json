@@ -55,17 +55,15 @@
             "uri": "https://github.com/GitTools/actions/issues"
         }
     },
-    "screenshots": [{
-            "path": "images/pipeline-editor-tasks.png"
+    "screenshots": [
+        {
+            "path": "screenshots/pipeline-editor-setup-gitversion-task.png"
         },
         {
-            "path": "images/pipeline-editor-setup-gitversion-task.png"
+            "path": "screenshots/pipeline-editor-execute-gitversion-task.png"
         },
         {
-            "path": "images/pipeline-editor-execute-gitversion-task.png"
-        },
-        {
-            "path": "images/builds.png"
+            "path": "screenshots/builds.png"
         }
     ],
     "content": {

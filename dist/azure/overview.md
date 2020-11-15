@@ -4,16 +4,8 @@ It works with most branching strategies but has been designed mainly around GitF
 
 ## Azure Pipelines tasks
 
-![Azure Pipelines Tasks](https://raw.githubusercontent.com/chris-codeflow/actions/feature-236/dist/azure/images/pipeline-editor-tasks.png)
-
-## Azure Pipelines Setup GitVersion task
-
-![Azure Pipelines Setup GitVersion task](https://raw.githubusercontent.com/chris-codeflow/actions/feature-236/dist/azure/images/pipeline-editor-setup-gitversion-task.png)
-
-## Azure Pipelines Execute GitVersion task
-
-![Azure Pipelines Execute GitVersion task](https://raw.githubusercontent.com/chris-codeflow/actions/feature-236/dist/azure/images/pipeline-editor-execute-gitversion-task.png)
+![Azure Pipelines Tasks](screenshots/pipeline-editor-tasks.png)
 
 ## Azure Pipeline run examples
 
-![Builds](https://raw.githubusercontent.com/GitTools/actions/master/dist/azure/images/builds.png)
+![Azure Pipelines Runs](screenshots/builds.png)
