@@ -19,7 +19,8 @@
         { "path": "gitreleasemanager/close" },
         { "path": "gitreleasemanager/open" },
         { "path": "gitreleasemanager/publish" },
-        { "path": "gitreleasemanager/addasset" }
+        { "path": "gitreleasemanager/addasset" },
+        { "path": "images" }
     ],
     "categories": [
         "Azure Pipelines"
@@ -61,9 +62,6 @@
         },
         {
             "path": "screenshots/pipeline-editor-execute-gitversion-task.png"
-        },
-        {
-            "path": "screenshots/builds.png"
         }
     ],
     "content": {

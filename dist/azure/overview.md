@@ -4,8 +4,8 @@ It works with most branching strategies but has been designed mainly around GitF
 
 ## Azure Pipelines tasks
 
-![Azure Pipelines Tasks](screenshots/pipeline-editor-tasks.png)
+![Azure Pipelines Tasks](images/pipeline-editor-tasks.png)
 
-## Azure Pipeline run examples
+## Azure Pipelines run examples
 
-![Azure Pipelines Runs](screenshots/builds.png)
+![Azure Pipelines Runs](images/builds.png)
