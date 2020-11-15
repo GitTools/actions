@@ -5,7 +5,7 @@
   - task: gitversion/setup@0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '5.1.3'
+      versionSpec: '5.x'
   - task: gitversion/execute@0
     displayName: Use GitVersion
   - script: |
