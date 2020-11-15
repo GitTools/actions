@@ -56,10 +56,16 @@
         }
     },
     "screenshots": [{
-            "path": "images/builds.png"
+            "path": "images/pipeline-editor-tasks.png"
         },
         {
-            "path": "images/build-task.png"
+            "path": "images/pipeline-editor-setup-gitversion-task.png"
+        },
+        {
+            "path": "images/pipeline-editor-execute-gitversion-task.png"
+        },
+                    {
+            "path": "images/builds.png"
         }
     ],
     "content": {
