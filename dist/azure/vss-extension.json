@@ -20,7 +20,7 @@
         { "path": "gitreleasemanager/open" },
         { "path": "gitreleasemanager/publish" },
         { "path": "gitreleasemanager/addasset" },
-        { "path": "images" }
+        { "path": "images", "addressable": true }
     ],
     "categories": [
         "Azure Pipelines"
