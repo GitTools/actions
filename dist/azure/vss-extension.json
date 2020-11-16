@@ -61,7 +61,13 @@
             "path": "screenshots/pipeline-editor-setup-gitversion-task.png"
         },
         {
+            "path": "screenshots/pipeline-run-setup-gitversion-task.png"
+        },
+        {
             "path": "screenshots/pipeline-editor-execute-gitversion-task.png"
+        },
+        {
+            "path": "screenshots/pipeline-run-execute-gitversion-task.png"
         }
     ],
     "content": {
