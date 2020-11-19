@@ -90,7 +90,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
 ---
 
-- Example 2: Calculate the version for the build using the default config file (**GitVersion.yml**).
+- Example 2: Calculate the version for the build using a config file with the default name **GitVersion.yml**.
 
     ```yaml
     steps:
