@@ -29,7 +29,7 @@
         "@actions/core": "^1.2.6",
         "@actions/exec": "^1.0.4",
         "@actions/io": "^1.0.2",
-        "@actions/tool-cache": "^1.6.0",
+        "@actions/tool-cache": "^1.6.1",
         "azure-pipelines-task-lib": "^2.11.3",
         "azure-pipelines-tool-lib": "^0.13.2",
         "inversify": "^5.0.1",
@@ -37,7 +37,7 @@
         "uuid": "^8.3.1"
     },
     "devDependencies": {
-        "@types/node": "^14.14.7",
+        "@types/node": "^14.14.8",
         "@types/q": "^1.5.4",
         "@types/semver-compare": "^1.0.1",
         "@types/uuid": "^8.3.0",
@@ -49,7 +49,7 @@
         "tfx-cli": "^0.8.3",
         "ts-loader": "^8.0.11",
         "typescript": "^4.0.5",
-        "webpack": "^5.4.0",
+        "webpack": "^5.5.1",
         "webpack-cli": "^4.2.0"
     }
 }
