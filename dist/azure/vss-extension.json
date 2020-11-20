@@ -19,7 +19,8 @@
         { "path": "gitreleasemanager/close" },
         { "path": "gitreleasemanager/open" },
         { "path": "gitreleasemanager/publish" },
-        { "path": "gitreleasemanager/addasset" }
+        { "path": "gitreleasemanager/addasset" },
+        { "path": "images", "addressable": true }
     ],
     "categories": [
         "Azure Pipelines"
@@ -55,11 +56,18 @@
             "uri": "https://github.com/GitTools/actions/issues"
         }
     },
-    "screenshots": [{
-            "path": "images/builds.png"
+    "screenshots": [
+        {
+            "path": "screenshots/pipeline-editor-setup-gitversion-task.png"
         },
         {
-            "path": "images/build-task.png"
+            "path": "screenshots/pipeline-run-setup-gitversion-task.png"
+        },
+        {
+            "path": "screenshots/pipeline-editor-execute-gitversion-task.png"
+        },
+        {
+            "path": "screenshots/pipeline-run-execute-gitversion-task.png"
         }
     ],
     "content": {
