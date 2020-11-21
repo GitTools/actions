@@ -39,6 +39,7 @@ export interface GitVersionOutput {
     FullSemVer: string
     InformationalVersion: string
     BranchName: string
+    EscapedBranchName: string
     Sha: string
     ShortSha: string
     NuGetVersionV2: string
@@ -48,5 +49,6 @@ export interface GitVersionOutput {
     VersionSourceSha: string
     CommitsSinceVersionSource: number
     CommitsSinceVersionSourcePadded: string
+    UncommittedChanges: number
     CommitDate: string
 }

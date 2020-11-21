@@ -1,5 +1,5 @@
 name: use-actions
-description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs the specific version of GitVersion.Tool
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Contains actions to install a specific version of GitVersion and run it.
 author: GitTools
 branding:
   color: gray-dark
@@ -12,7 +12,7 @@ inputs:
   includePrerelease:
     description: Include pre-release versions when matching a version 
     required: false
-    default: false
+    default: 'false'
 runs:
   using: node12
   main: dist/github/setup/index.js
