@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** task using the examples below.
 
-## Task inputs
+## Inputs
 
 The Setup GitVersion task accepts the following inputs:
 
@@ -25,10 +25,10 @@ includePrerelease:
 
     ```yaml
     steps:
-    - task: gitversion/setup@0
-      displayName: Install GitVersion
-      inputs:
-        versionSpec: '5.x'
+      - task: gitversion/setup@0
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '5.x'
     ```
 
 ---
@@ -37,10 +37,10 @@ includePrerelease:
 
     ```yaml
     steps:
-    - task: gitversion/setup@0
-      displayName: Install GitVersion
-      inputs:
-        versionSpec: '5.5.0'
+      - task: gitversion/setup@0
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '5.5.0'
     ```
 
 ---
@@ -49,9 +49,9 @@ includePrerelease:
 
     ```yaml
     steps:
-    - task: gitversion/setup@0
-      displayName: Install GitVersion
-      inputs:
-        versionSpec: '6.x'
-        includePrerelease: true
+      - task: gitversion/setup@0
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '6.x'
+          includePrerelease: true
     ```
