@@ -96,7 +96,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
 
     ```yaml
     steps:
-      # gitversion/setup@v0.9.6 action ommitted for brevity.
+      # gitversion/setup@v0.9.6 action omitted for brevity.
 
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.6
@@ -131,7 +131,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
 
     ```yaml
     steps:
-      # gitversion/setup@v0.9.6 action ommitted for brevity.
+      # gitversion/setup@v0.9.6 action omitted for brevity.
 
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.6
@@ -146,7 +146,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
 
     ```yaml
     steps:
-      # gitversion/setup@v0.9.6 action ommitted for brevity.
+      # gitversion/setup@v0.9.6 action omitted for brevity.
 
       - name: Display GitVersion config
         uses: gittools/actions/gitversion/execute@v0.9.6
@@ -161,7 +161,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
 
     ```yaml
     steps:
-      # gitversion/setup@v0.9.6 action ommitted for brevity.
+      # gitversion/setup@v0.9.6 action omitted for brevity.
 
       - name: Determine Version
         id:   gitversion
@@ -199,7 +199,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
           echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
           echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
-          echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
+          echo "UncomittedChanges: ${{ steps.gitversion.outputs.uncomittedChanges }}"
           echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
     ```
 
@@ -207,7 +207,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
 
     ```yaml
     steps:
-      # gitversion/setup@v0.9.6 action ommitted for brevity.
+      # gitversion/setup@v0.9.6 action omitted for brevity.
 
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.6
@@ -229,7 +229,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
         outputs:
           branchName: ${{ steps.gitversion.outputs.branchName }} # To use an output in another job, you have to map it to a job output.
         steps:
-          # gitversion/execute step ommitted for brevity
+          # gitversion/execute step omitted for brevity
 
           - name: Determine Version
             id: gitversion
@@ -258,7 +258,7 @@ The outputs can be accessed across jobs by mapping them to job outputs and refer
         outputs:
           semVer: ${{ steps.gitversion.outputs.semVer }}
         steps:
-          # gitversion/execute step ommitted for brevity
+          # gitversion/execute step omitted for brevity
 
           - name: Determine Version
             id: gitversion
