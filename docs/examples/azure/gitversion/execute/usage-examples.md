@@ -84,7 +84,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Determine Version
@@ -96,7 +96,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Determine Version
@@ -121,7 +121,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Determine Version
@@ -136,7 +136,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Display GitVersion config
@@ -150,7 +150,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Determine Version
@@ -186,7 +186,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
           echo VersionSourceSha: $(GitVersion.VersionSourceSha)
           echo CommitsSinceVersionSource: $(GitVersion.CommitsSinceVersionSource)
           echo CommitsSinceVersionSourcePadded: $(GitVersion.CommitsSinceVersionSourcePadded)
-          echo UncommittedChanges: $(GitVersion.UncommittedChanges)
+          echo UncomittedChanges: $(GitVersion.UncomittedChanges)
           echo CommitDate: $(GitVersion.CommitDate)
     ```
 
@@ -196,7 +196,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Determine Version
@@ -218,7 +218,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
     job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Use GitVersion
@@ -237,7 +237,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
     job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      # gitversion/setup@0 task ommitted for brevity.
+      # gitversion/setup@0 task omitted for brevity.
 
       - task: gitversion/execute@0
         displayName: Use GitVersion
@@ -259,7 +259,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
           - job: CalculateVersion
             displayName: Calculate version number using GitVersion
             steps:
-              # gitversion/setup@0 task ommitted for brevity.
+              # gitversion/setup@0 task omitted for brevity.
 
               - task: gitversion/execute@0
                 displayName: Use GitVersion
@@ -281,7 +281,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
           - job: CalculateVersion
             displayName: Calculate version number using GitVersion
             steps:
-              # gitversion/setup@0 task ommitted for brevity.
+              # gitversion/setup@0 task omitted for brevity.
 
               - task: gitversion/execute@0
                 displayName: Use GitVersion
