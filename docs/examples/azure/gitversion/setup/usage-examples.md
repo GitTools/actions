@@ -2,6 +2,8 @@
 
 Find out how to use the **gitversion/setup** task using the examples below.
 
+> The examples use the latest _0.x_ version of the GitVersion Setup task.  It is recommended to use the latest released version in your own pipelines.
+
 ## Inputs
 
 The Setup GitVersion task accepts the following inputs:
@@ -21,37 +23,39 @@ includePrerelease:
 
 ## Usage examples
 
-- Example 1: Install the latest GitVersion 5 version.
+### Example 1
 
-    ```yaml
-    steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
-          versionSpec: '5.x'
-    ```
+Install the latest GitVersion 5 version.
 
----
+```yaml
+steps:
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
+```
 
-- Example 2: Install GitVersion 5.5.0.
+### Example 2
 
-    ```yaml
-    steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
-          versionSpec: '5.5.0'
-    ```
+Install GitVersion 5.5.0.
 
----
+```yaml
+steps:
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.5.0'
+```
 
-- Example 3: Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta1.1**.
+### Example 3
 
-    ```yaml
-    steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
-          versionSpec: '6.x'
-          includePrerelease: true
-    ```
+Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta1.1**.
+
+```yaml
+steps:
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '6.x'
+      includePrerelease: true
+```
