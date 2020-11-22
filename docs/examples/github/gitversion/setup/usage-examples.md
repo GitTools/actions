@@ -23,37 +23,39 @@ includePrerelease:
 
 ## Usage examples
 
-- Example 1: Install the latest GitVersion 5 version.
+### Example 1
 
-    ```yaml
-    steps:
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.6
-        with:
-          versionSpec: '5.x'
-    ```
+Install the latest GitVersion 5 version.
 
----
+```yaml
+steps:
+  - name: Install GitVersion
+    uses: gittools/actions/gitversion/setup@v0.9.6
+    with:
+      versionSpec: '5.x'
+```
 
-- Example 2: Install GitVersion 5.5.0.
+### Example 2
 
-    ```yaml
-    steps:
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.6
-        with:
-          versionSpec: '5.5.0'
-    ```
+Install GitVersion 5.5.0.
 
----
+```yaml
+steps:
+  - name: Install GitVersion
+    uses: gittools/actions/gitversion/setup@v0.9.6
+    with:
+      versionSpec: '5.5.0'
+```
 
-- Example 3: Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta1.1**.
+### Example 3
 
-    ```yaml
-    steps:
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.6
-        with:
-          versionSpec: '6.x'
-          includePrerelease: true
-    ```
+Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta1.1**.
+
+```yaml
+steps:
+  - name: Install GitVersion
+    uses: gittools/actions/gitversion/setup@v0.9.6
+    with:
+      versionSpec: '6.x'
+      includePrerelease: true
+```
