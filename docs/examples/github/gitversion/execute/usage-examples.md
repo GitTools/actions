@@ -116,7 +116,6 @@ steps:
     uses: gittools/actions/gitversion/execute@v0.9.6
     with:
       useConfigFile: true
-      configFilePath: 'GitVersion.yml'
 ```
 
 Example contents of **GitVersion.yml**:
