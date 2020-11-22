@@ -30,9 +30,9 @@ useConfigFile:
   required: false
   default: false
 configFilePath:
-  description: Optional path to config file (defaults to yml).
+  description: Optional path to config file (defaults to GitVersion.yml).
   required: false
-  default: ''
+  default: 'GitVersion.yml'
 updateAssemblyInfo:
   description: Whether to update versions in the AssemblyInfo files.
   required: false
@@ -116,6 +116,7 @@ steps:
     uses: gittools/actions/gitversion/execute@v0.9.6
     with:
       useConfigFile: true
+      configFilePath: 'GitVersion.yml'
 ```
 
 Example contents of **GitVersion.yml**:
