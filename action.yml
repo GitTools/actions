@@ -1,5 +1,5 @@
 name: use-actions
-description: GitHub Action for Easy Semantic Versioning with GitVersion. Contains actions to install a specific version of GitVersion and run it.
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Includes actions to setup and run a specific version of the tool
 author: GitTools
 branding:
   color: gray-dark

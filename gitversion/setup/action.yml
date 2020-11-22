@@ -1,5 +1,5 @@
 name: gitversion-setup
-description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs the specific version of GitVersion.Tool
+description: GitHub Action for Easy Semantic Versioning with GitVersion. Installs the specific version of GitVersion tool
 author: GitTools
 branding:
   color: gray-dark
