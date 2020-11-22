@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/execute** task using the examples below.
 
-## Task inputs
+## Inputs
 
 The Execute GitVersion task accepts the following inputs:
 
@@ -33,7 +33,7 @@ additionalArguments:
   default: ''
 ```
 
-## Task outputs
+## Outputs
 
 The Execute GitVersion task creates the following job-scoped variables and multi-job output variables:
 
@@ -57,7 +57,7 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - GitVersion.FullSemVer
 - GitVersion.InformationalVersion
 - GitVersion.BranchName
-- GitVersion.EscapedBranchName
+- GitVersion.EscapedBranchName (since 5.2.0)
 - GitVersion.Sha
 - GitVersion.ShortSha
 - GitVersion.NuGetVersionV2
@@ -66,8 +66,8 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - GitVersion.NuGetPreReleaseTag
 - GitVersion.VersionSourceSha
 - GitVersion.CommitsSinceVersionSource
-- GitVersion.CommitsSinceVersionSourcePadded
-- GitVersion.UncommittedChanges
+- GitVersion.CommitsSinceVersionSourcePadded (since 5.2.0)
+- GitVersion.UncommittedChanges (since 5.5.0)
 - GitVersion.CommitDate
 
 The job-scoped variables can be accessed using the macro syntax `$(GitVersion.<variableName>)` in subsequent steps in the same job.  Azure Pipelines also creates environment variables of the form `GITVERSION_<VARIABLENAME>`.  See examples 5 and 6.
@@ -84,6 +84,8 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
+      # gitversion/setup@0 task omitted for brevity.
+
       - task: gitversion/execute@0
         displayName: Determine Version
     ```
@@ -94,6 +96,8 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
+      # gitversion/setup@0 task omitted for brevity.
+
       - task: gitversion/execute@0
         displayName: Determine Version
         inputs:
@@ -117,6 +121,8 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
+      # gitversion/setup@0 task omitted for brevity.
+
       - task: gitversion/execute@0
         displayName: Determine Version
         inputs:
@@ -130,6 +136,8 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
     ```yaml
     steps:
+      # gitversion/setup@0 task omitted for brevity.
+
       - task: gitversion/execute@0
         displayName: Display GitVersion config
         inputs:
@@ -141,42 +149,45 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 - Example 5: Calculate the version for the build and display all the calculated variables in the next step.
 
     ```yaml
-    - task: gitversion/execute@0
-      displayName: Determine Version
+    steps:
+      # gitversion/setup@0 task omitted for brevity.
 
-    - script: |
-        echo Major: $(GitVersion.Major)
-        echo Minor: $(GitVersion.Minor)
-        echo Patch: $(GitVersion.Patch)
-        echo PreReleaseTag: $(GitVersion.PreReleaseTag)
-        echo PreReleaseTagWithDash: $(GitVersion.PreReleaseTagWithDash)
-        echo PreReleaseLabel: $(GitVersion.PreReleaseLabel)
-        echo PreReleaseNumber: $(GitVersion.PreReleaseNumber)
-        echo WeightedPreReleaseNumber: $(GitVersion.WeightedPreReleaseNumber)
-        echo BuildMetaData: $(GitVersion.BuildMetaData)
-        echo BuildMetaDataPadded: $(GitVersion.BuildMetaDataPadded)
-        echo FullBuildMetaData: $(GitVersion.FullBuildMetaData)
-        echo MajorMinorPatch: $(GitVersion.MajorMinorPatch)
-        echo SemVer: $(GitVersion.SemVer)
-        echo LegacySemVer: $(GitVersion.LegacySemVer)
-        echo LegacySemVerPadded: $(GitVersion.LegacySemVerPadded)
-        echo AssemblySemVer: $(GitVersion.AssemblySemVer)
-        echo AssemblySemFileVer: $(GitVersion.AssemblySemFileVer)
-        echo FullSemVer: $(GitVersion.FullSemVer)
-        echo InformationalVersion: $(GitVersion.InformationalVersion)
-        echo BranchName: $(GitVersion.BranchName)
-        echo EscapedBranchName: $(GitVersion.EscapedBranchName)
-        echo Sha: $(GitVersion.Sha)
-        echo ShortSha: $(GitVersion.ShortSha)
-        echo NuGetVersionV2: $(GitVersion.NuGetVersionV2)
-        echo NuGetVersion: $(GitVersion.NuGetVersion)
-        echo NuGetPreReleaseTagV2: $(GitVersion.NuGetPreReleaseTagV2)
-        echo NuGetPreReleaseTag: $(GitVersion.NuGetPreReleaseTag)
-        echo VersionSourceSha: $(GitVersion.VersionSourceSha)
-        echo CommitsSinceVersionSource: $(GitVersion.CommitsSinceVersionSource)
-        echo CommitsSinceVersionSourcePadded: $(GitVersion.CommitsSinceVersionSourcePadded)
-        echo UncommittedChanges: $(GitVersion.UncommittedChanges)
-        echo CommitDate: $(GitVersion.CommitDate)
+      - task: gitversion/execute@0
+        displayName: Determine Version
+
+      - script: |
+          echo Major: $(GitVersion.Major)
+          echo Minor: $(GitVersion.Minor)
+          echo Patch: $(GitVersion.Patch)
+          echo PreReleaseTag: $(GitVersion.PreReleaseTag)
+          echo PreReleaseTagWithDash: $(GitVersion.PreReleaseTagWithDash)
+          echo PreReleaseLabel: $(GitVersion.PreReleaseLabel)
+          echo PreReleaseNumber: $(GitVersion.PreReleaseNumber)
+          echo WeightedPreReleaseNumber: $(GitVersion.WeightedPreReleaseNumber)
+          echo BuildMetaData: $(GitVersion.BuildMetaData)
+          echo BuildMetaDataPadded: $(GitVersion.BuildMetaDataPadded)
+          echo FullBuildMetaData: $(GitVersion.FullBuildMetaData)
+          echo MajorMinorPatch: $(GitVersion.MajorMinorPatch)
+          echo SemVer: $(GitVersion.SemVer)
+          echo LegacySemVer: $(GitVersion.LegacySemVer)
+          echo LegacySemVerPadded: $(GitVersion.LegacySemVerPadded)
+          echo AssemblySemVer: $(GitVersion.AssemblySemVer)
+          echo AssemblySemFileVer: $(GitVersion.AssemblySemFileVer)
+          echo FullSemVer: $(GitVersion.FullSemVer)
+          echo InformationalVersion: $(GitVersion.InformationalVersion)
+          echo BranchName: $(GitVersion.BranchName)
+          echo EscapedBranchName: $(GitVersion.EscapedBranchName)
+          echo Sha: $(GitVersion.Sha)
+          echo ShortSha: $(GitVersion.ShortSha)
+          echo NuGetVersionV2: $(GitVersion.NuGetVersionV2)
+          echo NuGetVersion: $(GitVersion.NuGetVersion)
+          echo NuGetPreReleaseTagV2: $(GitVersion.NuGetPreReleaseTagV2)
+          echo NuGetPreReleaseTag: $(GitVersion.NuGetPreReleaseTag)
+          echo VersionSourceSha: $(GitVersion.VersionSourceSha)
+          echo CommitsSinceVersionSource: $(GitVersion.CommitsSinceVersionSource)
+          echo CommitsSinceVersionSourcePadded: $(GitVersion.CommitsSinceVersionSourcePadded)
+          echo UncomittedChanges: $(GitVersion.UncomittedChanges)
+          echo CommitDate: $(GitVersion.CommitDate)
     ```
 
 ---
@@ -184,16 +195,19 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 - Example 6: Calculate the version for the build and use the `GitVersion.NuGetVersion` variable to set the NuGet package version.
 
     ```yaml
-    - task: gitversion/execute@0
-      displayName: Determine Version
+    steps:
+      # gitversion/setup@0 task omitted for brevity.
 
-    - task: DotNetCoreCLI@2
-      displayName: Pack Example
-      inputs:
-        command: pack
-        packagesToPack: src/Example/LibExample.csproj
-        versioningScheme: byEnvVar
-        versionEnvVar: GitVersion.NuGetVersion # alternative syntax GITVERSION_NUGETVERSION (the former gets converted into the latter internally)
+      - task: gitversion/execute@0
+        displayName: Determine Version
+
+      - task: DotNetCoreCLI@2
+        displayName: Pack Example
+        inputs:
+          command: pack
+          packagesToPack: src/Example/LibExample.csproj
+          versioningScheme: byEnvVar
+          versionEnvVar: GitVersion.NuGetVersion # alternative syntax GITVERSION_NUGETVERSION (the former gets converted into the latter internally)
     ```
 
 ---
@@ -204,14 +218,11 @@ The multi-job output variables can be accessed across jobs and stages, in both c
     job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
-          versionSpec: '5.x'
+      # gitversion/setup@0 task omitted for brevity.
 
-       - task: gitversion/execute@0
-         displayName: Use GitVersion
-         name: Version # the step MUST be named to access its output variables in another job.
+      - task: gitversion/execute@0
+        displayName: Use GitVersion
+        name: Version # the step MUST be named to access its output variables in another job.
 
     job: CreateReleaseNotes
     condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main')
@@ -226,19 +237,15 @@ The multi-job output variables can be accessed across jobs and stages, in both c
     job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
-          versionSpec: '5.x'
+      # gitversion/setup@0 task omitted for brevity.
 
-       - task: gitversion/execute@0
-         displayName: Use GitVersion
-         name: Version # the step MUST be named to access its output variables in another job.
+      - task: gitversion/execute@0
+        displayName: Use GitVersion
+        name: Version # the step MUST be named to access its output variables in another job.
 
     job: BuildAndPack
     variables:
       Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion.MajorMinorPatch'] ]
-    steps:
     ```
 
 ---
@@ -252,10 +259,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
           - job: CalculateVersion
             displayName: Calculate version number using GitVersion
             steps:
-              - task: gitversion/setup@0
-                displayName: Install GitVersion
-                inputs:
-                  versionSpec: '5.x'
+              # gitversion/setup@0 task omitted for brevity.
 
               - task: gitversion/execute@0
                 displayName: Use GitVersion
@@ -277,10 +281,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
           - job: CalculateVersion
             displayName: Calculate version number using GitVersion
             steps:
-              - task: gitversion/setup@0
-                displayName: Install GitVersion
-                inputs:
-                  versionSpec: '5.x'
+              # gitversion/setup@0 task omitted for brevity.
 
               - task: gitversion/execute@0
                 displayName: Use GitVersion

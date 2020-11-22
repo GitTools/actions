@@ -73,6 +73,8 @@ outputs:
     description: 'The InformationalVersion value'
   branchName:
     description: 'The BranchName value'
+  escapedBranchName:
+    description: 'The EscapedBranchName value'
   sha:
     description: 'The Sha value'
   shortSha:
@@ -91,5 +93,7 @@ outputs:
     description: 'The CommitsSinceVersionSource value'
   commitsSinceVersionSourcePadded:
     description: 'The CommitsSinceVersionSourcePadded value'
+  uncommittedChanges:
+    description: 'The UncommittedChanges value'
   commitDate:
     description: 'The CommitDate value'

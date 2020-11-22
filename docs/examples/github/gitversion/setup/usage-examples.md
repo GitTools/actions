@@ -1,10 +1,12 @@
-# Setup GitVersion Task (gitversion/setup) Usage Examples
+# Setup GitVersion Action (gitversion/setup) Usage Examples
 
-Find out how to use the **gitversion/setup** task using the examples below.
+Find out how to use the **gitversion/setup** action using the examples below.
+
+> The examples use version _0.9.6_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
-The Setup GitVersion task accepts the following inputs:
+The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
@@ -25,9 +27,9 @@ includePrerelease:
 
     ```yaml
     steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.6
+        with:
           versionSpec: '5.x'
     ```
 
@@ -37,9 +39,9 @@ includePrerelease:
 
     ```yaml
     steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.6
+        with:
           versionSpec: '5.5.0'
     ```
 
@@ -49,9 +51,9 @@ includePrerelease:
 
     ```yaml
     steps:
-      - task: gitversion/setup@0
-        displayName: Install GitVersion
-        inputs:
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.6
+        with:
           versionSpec: '6.x'
           includePrerelease: true
     ```
