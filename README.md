@@ -10,7 +10,7 @@ GitHub Actions that allow the setup and use of the [GitVersion](https://github.c
 [![GitHub Release](https://img.shields.io/github/v/release/gittools/actions?logo=github&sort=semver)](https://github.com/GitTools/actions/releases/latest)
 
 [![Azure Pipelines Task](https://img.shields.io/badge/marketplace-gittools.gittools-blue?logo=azure-pipelines)](https://marketplace.visualstudio.com/items?itemName=gittools.gittools)
-[![Github Action](https://img.shields.io/badge/marketplace-use--actions-blue?logo=github)](https://github.com/marketplace/actions/gittools)
+[![Github Action](https://img.shields.io/badge/marketplace-gittools-blue?logo=github)](https://github.com/marketplace/actions/gittools)
 
 ## Usage
 
