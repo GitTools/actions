@@ -19,7 +19,7 @@ inputs:
   configFilePath:
     description: Optional path to config file (defaults to GitVersion.yml)
     required: false
-    default: ''
+    default: 'GitVersion.yml'
   updateAssemblyInfo:
     description: Whether to update versions in the AssemblyInfo files
     required: false
