@@ -30,7 +30,7 @@
         "@actions/exec": "^1.0.4",
         "@actions/io": "^1.0.2",
         "@actions/tool-cache": "^1.6.1",
-        "azure-pipelines-task-lib": "^2.11.3",
+        "azure-pipelines-task-lib": "^2.11.4",
         "azure-pipelines-tool-lib": "^0.13.2",
         "inversify": "^5.0.1",
         "typed-rest-client": "^1.8.0",
