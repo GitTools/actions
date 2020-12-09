@@ -34,7 +34,7 @@
         "azure-pipelines-tool-lib": "^0.13.2",
         "inversify": "^5.0.1",
         "typed-rest-client": "^1.8.0",
-        "uuid": "^8.3.1"
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@types/node": "^14.14.10",
