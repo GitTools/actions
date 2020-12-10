@@ -32,7 +32,7 @@
         "@actions/tool-cache": "^1.6.1",
         "azure-pipelines-task-lib": "^2.11.4",
         "azure-pipelines-tool-lib": "^0.13.2",
-        "inversify": "^5.0.1",
+        "inversify": "^5.0.5",
         "typed-rest-client": "^1.8.0",
         "uuid": "^8.3.2"
     },
