@@ -40,7 +40,8 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public disableTelemetry(): void {
-        this.buildAgent.exportVariable('DOTNET_CLI_TELEMETRY_OPTOUT', '1')
+        this.buildAgent.exportVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
+        this.buildAgent.exportVariable('DOTNET_NOLOGO', 'true')
     }
 
     public execute(cmd: string, args: string[]): Promise<IExecResult> {
