@@ -89,7 +89,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             args.push('/updateassemblyinfo')
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
-            if (updateAssemblyInfoFilename.length > 0) {
+            if (updateAssemblyInfoFilename?.length > 0) {
                 if (
                     this.buildAgent.isValidInputFile(
                         'updateAssemblyInfoFilename',
