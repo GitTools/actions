@@ -87,18 +87,22 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
         if (updateAssemblyInfo) {
             args.push('/updateassemblyinfo')
-            if (
-                this.buildAgent.isValidInputFile(
-                    'updateAssemblyInfoFilename',
-                    updateAssemblyInfoFilename
-                )
-            ) {
-                args.push(updateAssemblyInfoFilename)
-            } else {
-                throw new Error(
-                    'AssemblyInfoFilename file not found at ' +
+
+            // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
+            if (updateAssemblyInfoFilename?.length > 0) {
+                if (
+                    this.buildAgent.isValidInputFile(
+                        'updateAssemblyInfoFilename',
                         updateAssemblyInfoFilename
-                )
+                    )
+                ) {
+                    args.push(updateAssemblyInfoFilename)
+                } else {
+                    throw new Error(
+                        'AssemblyInfoFilename file not found at ' +
+                            updateAssemblyInfoFilename
+                    )
+                }
             }
         }
 
