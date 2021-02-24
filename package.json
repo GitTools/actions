@@ -48,7 +48,7 @@
         "terser-webpack-plugin": "^5.1.1",
         "tfx-cli": "^0.8.3",
         "ts-loader": "^8.0.17",
-        "typescript": "^4.1.5",
+        "typescript": "^4.2.2",
         "webpack": "^5.24.1",
         "webpack-cli": "^4.5.0"
     }
