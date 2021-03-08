@@ -2,9 +2,9 @@ pull_request_rules:
   - name: Automatic merge on dependabot success PR
     conditions:
       - author=dependabot
-      - check-success=CI / build (windows-latest) (pull_request)
-      - check-success=CI / build (ubuntu-latest) (pull_request)
-      - check-success=CI / build (macos-latest) (pull_request)
+      - check-success=build (windows-latest)
+      - check-success=build (ubuntu-latest)
+      - check-success=build (macos-latest)
     actions:
       merge:
         method: rebase
