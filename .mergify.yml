@@ -1,0 +1,17 @@
+pull_request_rules:
+  - name: Automatic merge on dependabot success PR
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+      - check-success=build (windows-latest)
+      - check-success=build (ubuntu-latest)
+      - check-success=build (macos-latest)
+    actions:
+      merge:
+        method: rebase
+        strict: smart
+  - name: Thank contributor
+    conditions:
+      - merged
+    actions:
+      comment:
+        message: "Thank you @{{author}} for your contribution!"
