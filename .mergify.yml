@@ -1,7 +1,7 @@
 pull_request_rules:
   - name: Automatic merge on dependabot success PR
     conditions:
-      - author=dependabot
+      - author~=^dependabot(|-preview)\[bot\]$
       - check-success=build (windows-latest)
       - check-success=build (ubuntu-latest)
       - check-success=build (macos-latest)
