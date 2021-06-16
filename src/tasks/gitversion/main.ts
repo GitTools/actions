@@ -42,8 +42,8 @@ export async function run() {
         const result = await gitVersionTool.run(settings)
         const { stdout } = result
         const jsonOutput = stdout.substring(
-            stdout.indexOf('{'),
-            stdout.indexOf('}') + 1
+            stdout.lastIndexOf('{'),
+            stdout.lastIndexOf('}') + 1
         )
 
         const gitversion = JSON.parse(jsonOutput) as GitVersionOutput
