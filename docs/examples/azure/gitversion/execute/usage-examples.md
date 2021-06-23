@@ -229,7 +229,7 @@ steps:
     name: Version # the step MUST be named to access its output variables in another job.
 
 job: CreateReleaseNotes
-condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main')
+condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main'))
 dependsOn: CalculateVersion
 ```
 
