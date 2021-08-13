@@ -33,7 +33,7 @@
         "azure-pipelines-task-lib": "^3.1.7",
         "azure-pipelines-tool-lib": "^1.0.2",
         "inversify": "^5.1.1",
-        "typed-rest-client": "^1.8.4",
+        "typed-rest-client": "^1.8.5",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
