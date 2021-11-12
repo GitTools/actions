@@ -14,7 +14,7 @@
     },
     "minimumAgentVersion": "2.115.0",
     "execution": {
-        "Node": {
+        "Node10": {
             "target": "bundle.js",
             "argumentFormat": "",
             "workingDirectory": "."
