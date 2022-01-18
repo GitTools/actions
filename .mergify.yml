@@ -8,13 +8,12 @@ pull_request_rules:
   - name: Automatic merge on dependabot PR after success CI
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
+      - '#commits-behind=0' # Only merge up to date pull requests
       - check-success=build (windows-latest)
       - check-success=build (ubuntu-latest)
       - check-success=build (macos-latest)
     actions:
       merge:
-        method: rebase
-        strict: smart
   - name: Thank contributor
     conditions:
       - merged
