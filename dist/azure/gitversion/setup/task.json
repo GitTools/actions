@@ -36,6 +36,14 @@
             "defaultValue": "false",
             "required": false,
             "helpMarkDown": "Include pre-release versions when matching a version"
+        },
+        {
+            "name": "ignoreFailedSources",
+            "type": "boolean",
+            "label": "Treat package source failures as warnings",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Treat package source failures as warnings"
         }
     ]
 }

@@ -1,13 +1,13 @@
 import path = require('path')
 
 import { injectable, inject } from 'inversify'
-import { IExecResult, IBuildAgent, TYPES } from '../../core/models'
+import { IExecResult, IBuildAgent, TYPES, ISetupSettings } from '../../core/models'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 import { GitVersionSettings, GitVersionOutput } from './models'
 import { IVersionManager } from '../../core/versionManager'
 
 export interface IGitVersionTool extends IDotnetTool {
-    install(versionSpec: string, includePrerelease: boolean): Promise<void>
+    install(setupSettings: ISetupSettings): Promise<void>
     run(options: GitVersionSettings): Promise<IExecResult>
     writeGitVersionToAgent(gitversion: GitVersionOutput): void
 }
@@ -21,15 +21,11 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         super(buildAgent, versionManager)
     }
 
-    public async install(
-        versionSpec: string,
-        includePrerelease: boolean
-    ): Promise<void> {
+    public async install(setupSettings: ISetupSettings): Promise<void> {
         await this.toolInstall(
             'GitVersion.Tool',
-            versionSpec,
             false,
-            includePrerelease
+            setupSettings
         )
     }
 

@@ -6,10 +6,14 @@ export class Settings {
         const includePrerelease = buildAgent.getBooleanInput(
             SetupFields.includePrerelease
         )
+        const ignoreFailedSources = buildAgent.getBooleanInput(
+            SetupFields.ignoreFailedSources
+        )
 
         return {
             versionSpec,
-            includePrerelease
+            includePrerelease,
+            ignoreFailedSources
         }
     }
 }

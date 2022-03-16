@@ -20,10 +20,7 @@ export async function setup() {
 
         const settings = CommonSettings.getSetupSettings(buildAgent)
 
-        await gitVersionTool.install(
-            settings.versionSpec,
-            settings.includePrerelease
-        )
+        await gitVersionTool.install(settings)
 
         buildAgent.setSucceeded('GitVersion installed successfully', true)
     } catch (error) {

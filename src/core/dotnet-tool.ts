@@ -4,16 +4,15 @@ import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
 
 import { inject, injectable } from 'inversify'
-import { TYPES, IExecResult, IBuildAgent } from './models'
+import { TYPES, IExecResult, IBuildAgent, ISetupSettings } from './models'
 import { IVersionManager } from './versionManager'
 
 export interface IDotnetTool {
     disableTelemetry(): void
     toolInstall(
         toolName: string,
-        versionSpec: string,
         checkLatest: boolean,
-        includePre: boolean
+        setupSettings: ISetupSettings
     ): Promise<string>
 }
 
@@ -51,16 +50,17 @@ export class DotnetTool implements IDotnetTool {
 
     public async toolInstall(
         toolName: string,
-        versionSpec: string,
         checkLatest: boolean,
-        includePre: boolean
+        setupSettings: ISetupSettings
     ): Promise<string> {
         console.log('')
         console.log('--------------------------')
-        console.log(`Installing ${toolName} version ` + versionSpec)
+        console.log(
+            `Installing ${toolName} version ` + setupSettings.versionSpec
+        )
         console.log('--------------------------')
 
-        if (this.versionManager.isExplicitVersion(versionSpec)) {
+        if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
             checkLatest = false // check latest doesn't make sense when explicit version
         }
 
@@ -69,16 +69,18 @@ export class DotnetTool implements IDotnetTool {
             //
             // Let's try and resolve the version spec locally first
             //
-            toolPath = this.buildAgent.find(toolName, versionSpec)
+            toolPath = this.buildAgent.find(toolName, setupSettings.versionSpec)
         }
 
         if (!toolPath) {
             let version: string
-            if (this.versionManager.isExplicitVersion(versionSpec)) {
+            if (
+                this.versionManager.isExplicitVersion(setupSettings.versionSpec)
+            ) {
                 //
                 // Explicit version was specified. No need to query for list of versions.
                 //
-                version = versionSpec
+                version = setupSettings.versionSpec
             } else {
                 //
                 // Let's query and resolve the latest version for the versionSpec.
@@ -88,12 +90,12 @@ export class DotnetTool implements IDotnetTool {
                 //
                 version = await this.queryLatestMatch(
                     toolName,
-                    versionSpec,
-                    includePre
+                    setupSettings.versionSpec,
+                    setupSettings.includePrerelease
                 )
                 if (!version) {
                     throw new Error(
-                        `Unable to find ${toolName} version '${versionSpec}'.`
+                        `Unable to find ${toolName} version '${setupSettings.versionSpec}'.`
                     )
                 }
 
@@ -106,7 +108,11 @@ export class DotnetTool implements IDotnetTool {
                 //
                 // Download, extract, cache
                 //
-                toolPath = await this.acquireTool(toolName, version)
+                toolPath = await this.acquireTool(
+                    toolName,
+                    version,
+                    setupSettings.ignoreFailedSources
+                )
             }
         }
 
@@ -170,10 +176,15 @@ export class DotnetTool implements IDotnetTool {
 
     private async acquireTool(
         toolName: string,
-        version: string
+        version: string,
+        ignoreFailedSources: boolean
     ): Promise<string> {
         const tempDirectory = await this.buildAgent.createTempDir()
         let args = ['tool', 'install', toolName, '--tool-path', tempDirectory]
+
+        if (ignoreFailedSources) {
+            args.push('--ignore-failed-sources')
+        }
 
         if (version) {
             version = this.versionManager.cleanVersion(version)

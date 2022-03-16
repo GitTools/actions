@@ -23,10 +23,7 @@ export async function setup() {
 
         const settings = CommonSettings.getSetupSettings(buildAgent)
 
-        await gitReleaseManagerTool.install(
-            settings.versionSpec,
-            settings.includePrerelease
-        )
+        await gitReleaseManagerTool.install(settings)
 
         buildAgent.setSucceeded(
             'GitVersionManager installed successfully',
