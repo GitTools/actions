@@ -1,6 +1,6 @@
 import path = require('path')
 
-import { TYPES, IBuildAgent, IExecResult } from '../../core/models'
+import { TYPES, IBuildAgent, IExecResult, ISetupSettings } from '../../core/models'
 import { injectable, inject } from 'inversify'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 import { IVersionManager } from '../../core/versionManager'
@@ -16,7 +16,7 @@ import {
 } from './models'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
-    install(versionSpec: string, includePrerelease: boolean): Promise<void>
+    install(setupSettings: ISetupSettings): Promise<void>
     create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult>
     discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult>
     close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult>
@@ -36,15 +36,11 @@ export class GitReleaseManagerTool
         super(buildAgent, versionManager)
     }
 
-    public async install(
-        versionSpec: string,
-        includePrerelease: boolean
-    ): Promise<void> {
+    public async install(setupSettings: ISetupSettings): Promise<void> {
         await this.toolInstall(
             'GitReleaseManager.Tool',
-            versionSpec,
             false,
-            includePrerelease
+            setupSettings
         )
     }
 
