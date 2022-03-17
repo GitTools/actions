@@ -17,6 +17,10 @@ includePrerelease:
   description: Include pre-release versions when matching a version.
   required: false
   default: false
+ignoreFailedSources:
+  description: Treat package source failures as warnings.
+  required: false
+  default: false
 ```
 
 ---
