@@ -31,7 +31,7 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: ./gitversion/execute
     - run: |
-        $date = Get-Date -format "yyMMddHHmm"
+        $date = Get-Date -format "yyMMddHH"
         $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
         $major = "${{steps.gitversion.outputs.major}}"
         $minor = "${{steps.gitversion.outputs.minor}}"
