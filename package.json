@@ -41,7 +41,7 @@
         "@types/q": "^1.5.5",
         "@types/semver-compare": "^1.0.1",
         "@types/uuid": "^8.3.4",
-        "minimist": "^1.2.5",
+        "minimist": "^1.2.6",
         "prettier": "^2.6.0",
         "reflect-metadata": "^0.1.13",
         "replace-in-file-webpack-plugin": "^1.0.6",
