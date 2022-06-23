@@ -49,7 +49,7 @@
         "terser-webpack-plugin": "^5.3.3",
         "tfx-cli": "^0.12.0",
         "trim-newlines": ">=4.0.2",
-        "ts-loader": "^9.3.0",
+        "ts-loader": "^9.3.1",
         "typescript": "^4.7.4",
         "underscore": ">=1.13.4",
         "validator": "^13.7.0",
