@@ -46,7 +46,7 @@
         "reflect-metadata": "^0.1.13",
         "replace-in-file-webpack-plugin": "^1.0.6",
         "shelljs": "^0.8.5",
-        "terser-webpack-plugin": "^5.3.4",
+        "terser-webpack-plugin": "^5.3.5",
         "tfx-cli": "^0.12.0",
         "trim-newlines": ">=4.0.2",
         "ts-loader": "^9.3.1",
