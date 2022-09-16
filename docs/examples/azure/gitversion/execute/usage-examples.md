@@ -4,6 +4,13 @@ Find out how to use the **gitversion/execute** task using the examples below.
 
 > The examples use the latest _0.x_ version of the GitVersion Execute task.  It is recommended to use the latest released version in your own pipelines.
 
+Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use fetchDepth of 0 like so:
+
+```yaml
+- checkout: self
+  fetchDepth: 1
+```
+
 ## Inputs
 
 The Execute GitVersion task accepts the following inputs:
