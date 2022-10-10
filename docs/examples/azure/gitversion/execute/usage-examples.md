@@ -8,7 +8,7 @@ Note that if the pipeline is setup to use a shallow git fetch mode the GitVersio
 
 ```yaml
 - checkout: self
-  fetchDepth: 1
+  fetchDepth: 0
 ```
 
 ## Inputs
