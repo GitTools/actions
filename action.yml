@@ -5,5 +5,5 @@ branding:
   color: gray-dark
   icon: git-pull-request
 runs:
-  using: node12
+  using: node16
   main: dist/github/setup/index.js
