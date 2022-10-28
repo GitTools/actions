@@ -1,5 +1,13 @@
 version: 2
 updates:
+- package-ecosystem: github-actions
+  labels:
+    - "dependencies"
+  commit-message:
+    prefix: "(build deps)"
+  directory: "/"
+  schedule:
+    interval: daily
 - package-ecosystem: npm
   directory: "/"
   schedule:
