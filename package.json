@@ -40,7 +40,7 @@
         "@types/node": "^18.11.9",
         "@types/q": "^1.5.5",
         "@types/semver-compare": "^1.0.1",
-        "@types/uuid": "^8.3.4",
+        "@types/uuid": "^9.0.0",
         "minimist": "^1.2.7",
         "prettier": "^2.8.0",
         "reflect-metadata": "^0.1.13",
