@@ -40,11 +40,13 @@ export class DotnetTool implements IDotnetTool {
     public async toolInstall(toolName: string, checkLatest: boolean, setupSettings: ISetupSettings): Promise<string> {
         console.log('')
         console.log('--------------------------')
-        console.log(`Installing ${toolName} version ` + setupSettings.versionSpec)
+        console.log(`Acquiring ${toolName} version spec: ${setupSettings.versionSpec}`)
         console.log('--------------------------')
 
+        let version: string
         if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
             checkLatest = false // check latest doesn't make sense when explicit version
+            version = setupSettings.versionSpec
         }
 
         let toolPath: string
@@ -56,7 +58,6 @@ export class DotnetTool implements IDotnetTool {
         }
 
         if (!toolPath) {
-            let version: string
             if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
                 //
                 // Explicit version was specified. No need to query for list of versions.
@@ -87,6 +88,9 @@ export class DotnetTool implements IDotnetTool {
             }
         }
 
+        console.log('--------------------------')
+        console.log(`${toolName} version: ${version} installed.`)
+        console.log('--------------------------')
         //
         // Prepend the tools path. This prepends the PATH for the current process and
         // instructs the agent to prepend for each task that follows.
