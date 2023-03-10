@@ -1,19 +1,20 @@
-import path = require('path')
+import * as path from 'path'
 
-import { TYPES, IBuildAgent, IExecResult, ISetupSettings } from '../../core/models'
-import { injectable, inject } from 'inversify'
+import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
+import { inject, injectable } from 'inversify'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 import { IVersionManager } from '../../core/versionManager'
 
 import {
-    GitReleaseManagerSettings,
+    GitReleaseManagerAddAssetSettings,
+    GitReleaseManagerCloseSettings,
     GitReleaseManagerCreateSettings,
     GitReleaseManagerDiscardSettings,
-    GitReleaseManagerCloseSettings,
     GitReleaseManagerOpenSettings,
     GitReleaseManagerPublishSettings,
-    GitReleaseManagerAddAssetSettings
+    GitReleaseManagerSettings
 } from './models'
+import { ISetupSettings } from '../common/models'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     install(setupSettings: ISetupSettings): Promise<void>
@@ -26,43 +27,28 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
 }
 
 @injectable()
-export class GitReleaseManagerTool
-    extends DotnetTool
-    implements IGitReleaseManagerTool {
-    constructor(
-        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
-        @inject(TYPES.IVersionManager) versionManager: IVersionManager
-    ) {
+export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseManagerTool {
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
         super(buildAgent, versionManager)
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {
-        await this.toolInstall(
-            'GitReleaseManager.Tool',
-            false,
-            setupSettings
-        )
+        await this.toolInstall('GitReleaseManager.Tool', false, setupSettings)
     }
 
-    public create(
-        settings: GitReleaseManagerCreateSettings
-    ): Promise<IExecResult> {
+    public create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult> {
         const args = this.getCreateArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public discard(
-        settings: GitReleaseManagerDiscardSettings
-    ): Promise<IExecResult> {
+    public discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult> {
         const args = this.getDiscardArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public close(
-        settings: GitReleaseManagerCloseSettings
-    ): Promise<IExecResult> {
+    public close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult> {
         const args = this.getCloseArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
@@ -74,17 +60,13 @@ export class GitReleaseManagerTool
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public publish(
-        settings: GitReleaseManagerPublishSettings
-    ): Promise<IExecResult> {
+    public publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult> {
         const args = this.getPublishArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public addAsset(
-        settings: GitReleaseManagerAddAssetSettings
-    ): Promise<IExecResult> {
+    public addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<IExecResult> {
         const args = this.getAddAssetArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
@@ -104,9 +86,7 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getCreateArguments(
-        settings: GitReleaseManagerCreateSettings
-    ): string[] {
+    private getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
         const args: string[] = ['create', ...this.getCommonArguments(settings)]
 
         if (settings.milestone) {
@@ -123,10 +103,7 @@ export class GitReleaseManagerTool
             if (this.buildAgent.fileExists(settings.inputFileName)) {
                 args.push('--inputFilePath', settings.inputFileName)
             } else {
-                throw new Error(
-                    'GitReleaseManager inputFilePath not found at ' +
-                        settings.inputFileName
-                )
+                throw new Error('GitReleaseManager inputFilePath not found at ' + settings.inputFileName)
             }
         }
         if (settings.isPreRelease) {
@@ -143,9 +120,7 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getDiscardArguments(
-        settings: GitReleaseManagerDiscardSettings
-    ): string[] {
+    private getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
         const args: string[] = ['discard', ...this.getCommonArguments(settings)]
 
         if (settings.milestone) {
@@ -155,9 +130,7 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getCloseArguments(
-        settings: GitReleaseManagerCloseSettings
-    ): string[] {
+    private getCloseArguments(settings: GitReleaseManagerCloseSettings): string[] {
         const args: string[] = ['close', ...this.getCommonArguments(settings)]
 
         if (settings.milestone) {
@@ -167,9 +140,7 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getOpenArguments(
-        settings: GitReleaseManagerOpenSettings
-    ): string[] {
+    private getOpenArguments(settings: GitReleaseManagerOpenSettings): string[] {
         const args: string[] = ['open', ...this.getCommonArguments(settings)]
 
         if (settings.milestone) {
@@ -179,9 +150,7 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getPublishArguments(
-        settings: GitReleaseManagerPublishSettings
-    ): string[] {
+    private getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
         const args: string[] = ['publish', ...this.getCommonArguments(settings)]
 
         if (settings.tagName) {
@@ -191,13 +160,8 @@ export class GitReleaseManagerTool
         return args
     }
 
-    private getAddAssetArguments(
-        settings: GitReleaseManagerAddAssetSettings
-    ): string[] {
-        const args: string[] = [
-            'addasset',
-            ...this.getCommonArguments(settings)
-        ]
+    private getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): string[] {
+        const args: string[] = ['addasset', ...this.getCommonArguments(settings)]
 
         if (settings.tagName) {
             args.push('--tagName', settings.tagName)

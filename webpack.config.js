@@ -7,7 +7,7 @@ function getConfig(mode, agent, entry) {
         entry: entry,
         target: 'node',
         mode: mode,
-        devtool: mode == 'development' ? 'inline-source-map' : false,
+        devtool: mode === 'development' ? 'inline-source-map' : false,
         module: {
             rules: [{
                 test: /\.tsx?$/,
@@ -43,7 +43,10 @@ function getConfig(mode, agent, entry) {
                     replace: 'let pkg = { version: "1.2.3" };'
                 }]
             }])
-        ]
+        ],
+        experiments: {
+            topLevelAwait: true
+        }
     }
 }
 
@@ -62,10 +65,10 @@ const entryPoints = [
 module.exports = (env) => {
     const task = env.task || 'compile';
     const agent = env.agent || 'mock';
-    const mode = task == 'compile' ? 'development' : 'production';
+    const mode = task === 'compile' ? 'development' : 'production';
     const entry = {};
     entryPoints.forEach(key => {
-        const resource = task == 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`;
+        const resource = task === 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`;
         entry[key] = path.resolve(__dirname, resource);
     });
 

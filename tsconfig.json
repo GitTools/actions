@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
+        "module": "ES2022",
         "moduleResolution": "node",
-        "target": "ES2016",
+        "target": "es2017",
         "noImplicitAny": true,
         "sourceMap": true,
-        "lib": ["ES2016"],
-        "types": ["reflect-metadata"],
-        "esModuleInterop":true,
+        "lib": [ "ES2016" ],
+        "types": [ "reflect-metadata" ],
+        "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     }
