@@ -169,7 +169,7 @@ export class DotnetTool implements IDotnetTool {
 
         this.buildAgent.debug(`got versions: ${versions.join(', ')}`)
 
-        return this.versionManager.evaluateVersions(versions, versionSpec)
+        return this.versionManager.evaluateVersions(versions, versionSpec, { includePrerelease })
     }
 
     private async acquireTool(
