@@ -23,7 +23,7 @@ export class DotnetTool implements IDotnetTool {
     private httpClient: http.HttpClient
 
     private static readonly nugetRoot: string =
-        'https://api-v2v3search-0.nuget.org/'
+        'https://azuresearch-usnc.nuget.org/'
 
     constructor(
         @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
@@ -147,11 +147,9 @@ export class DotnetTool implements IDotnetTool {
             } ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
-        const downloadPath = `${
-            DotnetTool.nugetRoot
-        }query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${
-            includePrerelease ? 'true' : 'false'
-        }&semVerLevel=2.0.0`
+        const toolNameParam = encodeURIComponent(toolName.toLowerCase());
+        const prereleaseParam = includePrerelease ? 'true' : 'false';
+        const downloadPath = `${DotnetTool.nugetRoot}query?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
         const res = await this.httpClient.get(downloadPath)
 
