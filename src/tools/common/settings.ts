@@ -10,13 +10,11 @@ export class SettingsProvider implements ISettingsProvider {
         const versionSpec = this.buildAgent.getInput(SetupFields.versionSpec)
         const includePrerelease = this.buildAgent.getBooleanInput(SetupFields.includePrerelease)
         const ignoreFailedSources = this.buildAgent.getBooleanInput(SetupFields.ignoreFailedSources)
-        const preferLatestVersion = this.buildAgent.getBooleanInput(SetupFields.preferLatestVersion)
 
         return {
             versionSpec,
             includePrerelease,
-            ignoreFailedSources,
-            preferLatestVersion
+            ignoreFailedSources
         }
     }
 }

@@ -20,7 +20,3 @@ inputs:
     description: Treat package source failures as warnings.
     required: false
     default: 'false'
-  preferLatestVersion:
-    description: Prefer to download the latest version matching the versionSpec, even if there is a local cached version.
-    required: false
-    default: 'false'

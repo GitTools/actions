@@ -226,19 +226,18 @@ steps:
 Calculate the version for the build and use the `GitVersion.BranchName` variable in a condition for starting another job.
 
 ```yaml
-jobs:
-  - job: CalculateVersion
-    displayName: Calculate version using GitVersion
-    steps:
-      # gitversion/setup@0 task omitted for brevity.
+job: CalculateVersion
+displayName: Calculate version using GitVersion
+steps:
+  # gitversion/setup@0 task omitted for brevity.
 
-      - task: gitversion/execute@0
-        displayName: Use GitVersion
-        name: Version # the step MUST be named to access its output variables in another job.
+  - task: gitversion/execute@0
+    displayName: Use GitVersion
+    name: Version # the step MUST be named to access its output variables in another job.
 
-  - job: CreateReleaseNotes
-    condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main'))
-    dependsOn: CalculateVersion
+job: CreateReleaseNotes
+condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main'))
+dependsOn: CalculateVersion
 ```
 
 ### Example 8
@@ -246,19 +245,18 @@ jobs:
 Calculate the version for the build and map the `GitVersion.SemVer` variable into a variable in another job.
 
 ```yaml
-jobs:
-  - job: CalculateVersion
-    displayName: Calculate version using GitVersion
-    steps:
-      # gitversion/setup@0 task omitted for brevity.
+job: CalculateVersion
+displayName: Calculate version using GitVersion
+steps:
+  # gitversion/setup@0 task omitted for brevity.
 
-      - task: gitversion/execute@0
-        displayName: Use GitVersion
-        name: Version # the step MUST be named to access its output variables in another job.
+  - task: gitversion/execute@0
+    displayName: Use GitVersion
+    name: Version # the step MUST be named to access its output variables in another job.
 
-  - job: BuildAndPack
-    variables:
-      Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion.MajorMinorPatch'] ]
+job: BuildAndPack
+variables:
+  Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion.MajorMinorPatch'] ]
 ```
 
 ### Example 9

@@ -4,13 +4,13 @@ import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
 
 import { inject, injectable } from 'inversify'
-import { IBuildAgent, IExecResult, TYPES } from './models'
+import { TYPES, IExecResult, IBuildAgent } from './models'
 import { IVersionManager } from './versionManager'
 import { ISetupSettings } from '../tools/common/models'
 
 export interface IDotnetTool {
     disableTelemetry(): void
-    toolInstall(toolName: string, setupSettings: ISetupSettings): Promise<string>
+    toolInstall(toolName: string, checkLatest: boolean, setupSettings: ISetupSettings): Promise<string>
 }
 
 @injectable()
@@ -37,14 +37,13 @@ export class DotnetTool implements IDotnetTool {
         return this.buildAgent.exec(cmd, args)
     }
 
-    public async toolInstall(toolName: string, setupSettings: ISetupSettings): Promise<string> {
+    public async toolInstall(toolName: string, checkLatest: boolean, setupSettings: ISetupSettings): Promise<string> {
         console.log('')
         console.log('--------------------------')
         console.log(`Acquiring ${toolName} version spec: ${setupSettings.versionSpec}`)
         console.log('--------------------------')
 
         let version: string
-        let checkLatest = setupSettings.preferLatestVersion
         if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
             checkLatest = false // check latest doesn't make sense when explicit version
             version = setupSettings.versionSpec

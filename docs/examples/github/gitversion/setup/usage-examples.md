@@ -34,7 +34,7 @@ Install the latest GitVersion 5 version.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v0
+    uses: gittools/actions/gitversion/setup@v0.9.7
     with:
       versionSpec: '5.x'
 ```
@@ -46,7 +46,7 @@ Install GitVersion 5.5.0.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v0
+    uses: gittools/actions/gitversion/setup@v0.9.7
     with:
       versionSpec: '5.5.0'
 ```
@@ -58,21 +58,8 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta1.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v0
+    uses: gittools/actions/gitversion/setup@v0.9.7
     with:
       versionSpec: '6.x'
       includePrerelease: true
-```
-
-### Example 4
-
-Install the latest GitVersion 5 version even it there is a cached version matching the versionSpec.
-
-```yaml
-steps:
-  - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v0
-    with:
-      versionSpec: '5.x'
-      preferLatestVersion: true
 ```

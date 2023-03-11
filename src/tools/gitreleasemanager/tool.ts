@@ -33,7 +33,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {
-        await this.toolInstall('GitReleaseManager.Tool', setupSettings)
+        await this.toolInstall('GitReleaseManager.Tool', false, setupSettings)
     }
 
     public create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult> {

@@ -21,8 +21,7 @@
         }
     },
     "instanceNameFormat": "gitversion/setup",
-    "inputs": [
-        {
+    "inputs": [{
             "name": "versionSpec",
             "type": "string",
             "label": "The version spec",
@@ -45,14 +44,6 @@
             "defaultValue": "false",
             "required": false,
             "helpMarkDown": "Treat package source failures as warnings"
-        },
-        {
-            "name": "preferLatestVersion",
-            "type": "boolean",
-            "label": "Prefer latest version",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Prefer to download the latest version matching the versionSpec, even if there is a local cached version."
         }
     ]
 }
