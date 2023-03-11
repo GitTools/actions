@@ -21,6 +21,10 @@ ignoreFailedSources:
   description: Treat package source failures as warnings.
   required: false
   default: false
+preferLatestVersion:
+  description: Prefer to download the latest version matching the versionSpec, even if there is a local cached version.
+  required: false
+  default: 'false'
 ```
 
 ---
@@ -62,4 +66,17 @@ steps:
     inputs:
       versionSpec: '6.x'
       includePrerelease: true
+```
+
+### Example 4
+
+Install the latest GitVersion 5 version even it there is a cached version matching the versionSpec.
+
+```yaml
+steps:
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
+      preferLatestVersion: true
 ```

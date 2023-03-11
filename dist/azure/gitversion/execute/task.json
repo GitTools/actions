@@ -21,7 +21,8 @@
         }
     },
     "instanceNameFormat": "gitversion/execute",
-    "groups": [{
+    "groups": [
+        {
             "name": "gitversionDetails",
             "displayName": "GitVersion details",
             "isExpanded": true
@@ -32,7 +33,8 @@
             "isExpanded": false
         }
     ],
-    "inputs": [{
+    "inputs": [
+        {
             "name": "targetPath",
             "type": "string",
             "label": "Working directory path",

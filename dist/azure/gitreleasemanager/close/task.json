@@ -21,40 +21,46 @@
         }
     },
     "instanceNameFormat": "gitreleasemanager/close",
-    "inputs": [{
-        "name": "owner",
-        "type": "string",
-        "label": "The owner of the repository",
-        "defaultValue": "",
-        "required": true,
-        "helpMarkDown": "The owner of the repository"
-    }, {
-        "name": "repository",
-        "type": "string",
-        "label": "The name of the repository",
-        "defaultValue": "",
-        "required": true,
-        "helpMarkDown": "The name of the repository"
-    }, {
-        "name": "token",
-        "type": "string",
-        "label": "The access token to access GitHub with",
-        "defaultValue": "",
-        "required": true,
-        "helpMarkDown": "The access token to access GitHub with"
-    }, {
-        "name": "milestone",
-        "type": "string",
-        "label": "The milestone to use",
-        "defaultValue": "",
-        "required": true,
-        "helpMarkDown": "The milestone to use"
-    }, {
-        "name": "targetDirectory",
-        "type": "string",
-        "label": "The directory on which GitReleaseManager should be executed. Defaults to current directory",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "The directory on which GitReleaseManager should be executed. Defaults to current directory"
-    }]
+    "inputs": [
+        {
+            "name": "owner",
+            "type": "string",
+            "label": "The owner of the repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The owner of the repository"
+        },
+        {
+            "name": "repository",
+            "type": "string",
+            "label": "The name of the repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the repository"
+        },
+        {
+            "name": "token",
+            "type": "string",
+            "label": "The access token to access GitHub with",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The access token to access GitHub with"
+        },
+        {
+            "name": "milestone",
+            "type": "string",
+            "label": "The milestone to use",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The milestone to use"
+        },
+        {
+            "name": "targetDirectory",
+            "type": "string",
+            "label": "The directory on which GitReleaseManager should be executed. Defaults to current directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The directory on which GitReleaseManager should be executed. Defaults to current directory"
+        }
+    ]
 }

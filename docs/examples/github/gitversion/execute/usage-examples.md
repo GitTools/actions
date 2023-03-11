@@ -100,10 +100,10 @@ Calculate the version for the build.
 
 ```yaml
 steps:
-  # gitversion/setup@v0.9.7 action omitted for brevity.
+  # gitversion/setup@v0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
 ```
 
 ### Example 2
@@ -113,7 +113,7 @@ Calculate the version for the build using a config file with the default name **
 ```yaml
 steps:
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
     with:
       useConfigFile: true
 ```
@@ -135,10 +135,10 @@ Calculate the version for the build using a config file named **VersionConfig.ym
 
 ```yaml
 steps:
-  # gitversion/setup@v0.9.7 action omitted for brevity.
+  # gitversion/setup@v0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
     with:
       useConfigFile: true
       configFilePath: VersionConfig.yml
@@ -150,10 +150,10 @@ Show the effective configuration for GitVersion by running the **/showConfig** c
 
 ```yaml
 steps:
-  # gitversion/setup@v0.9.7 action omitted for brevity.
+  # gitversion/setup@v0 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
     with:
       useConfigFile: true
       additionalArguments: '/showConfig'
@@ -165,11 +165,11 @@ Calculate the version for the build and display all the calculated variables in 
 
 ```yaml
 steps:
-  # gitversion/setup@v0.9.7 action omitted for brevity.
+  # gitversion/setup@v0 action omitted for brevity.
 
   - name: Determine Version
     id:   gitversion
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
 
   - name: Display GitVersion outputs
     run: |
@@ -213,10 +213,10 @@ Calculate the version for the build and display the value of the `GITVERSION_SEM
 
 ```yaml
 steps:
-  # gitversion/setup@v0.9.7 action omitted for brevity.
+  # gitversion/setup@v0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.9.7
+    uses: gittools/actions/gitversion/execute@v0
 
   - name: Display SemVer
     run: |
@@ -239,7 +239,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
+        uses: gittools/actions/gitversion/execute@v0
 
   create-release-notes:
     name: Create Release Notes
@@ -268,7 +268,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
+        uses: gittools/actions/gitversion/execute@v0
 
   display-semver:
     name: Display Semantic Version
