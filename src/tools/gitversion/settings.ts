@@ -1,27 +1,30 @@
-import { IBuildAgent, TYPES } from '../../core/models'
+import { IBuildAgent } from '../../core/models'
 
-import { ExecuteFields, GitVersionSettings, IGitVersionSettingsProvider } from './models'
-import { SettingsProvider } from '../common/settings'
-import { inject, injectable } from 'inversify'
+import { GitVersionSettings, ExecuteFields } from './models'
 
-@injectable()
-export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
+export class Settings {
+    public static getGitVersionSettings(
+        buildAgent: IBuildAgent
+    ): GitVersionSettings {
+        const targetPath = buildAgent.getInput(ExecuteFields.targetPath)
 
-    public getGitVersionSettings(): GitVersionSettings {
-        const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
+        const useConfigFile = buildAgent.getBooleanInput(
+            ExecuteFields.useConfigFile
+        )
+        const configFilePath = buildAgent.getInput(ExecuteFields.configFilePath)
 
-        const useConfigFile = this.buildAgent.getBooleanInput(ExecuteFields.useConfigFile)
-        const configFilePath = this.buildAgent.getInput(ExecuteFields.configFilePath)
+        const updateAssemblyInfo = buildAgent.getBooleanInput(
+            ExecuteFields.updateAssemblyInfo
+        )
+        const updateAssemblyInfoFilename = buildAgent.getInput(
+            ExecuteFields.updateAssemblyInfoFilename
+        )
 
-        const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
-        const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
+        const additionalArguments = buildAgent.getInput(
+            ExecuteFields.additionalArguments
+        )
 
-        const additionalArguments = this.buildAgent.getInput(ExecuteFields.additionalArguments)
-
-        const srcDir = this.buildAgent.getSourceDir()?.replace(/\\/g, '/')
+        const srcDir = buildAgent.getSourceDir()?.replace(/\\/g, '/')
 
         return {
             targetPath,

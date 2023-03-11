@@ -1,39 +1,35 @@
-import { IBuildAgent, TYPES } from '../../core/models'
+import { IBuildAgent } from '../../core/models'
 import {
-    AddAssetFields,
-    CloseFields,
+    GitReleaseManagerSettings,
     CommonFields,
     CreateFields,
     DiscardFields,
-    GitReleaseManagerAddAssetSettings,
-    GitReleaseManagerCloseSettings,
+    CloseFields,
+    OpenFields,
+    PublishFields,
+    AddAssetFields,
     GitReleaseManagerCreateSettings,
     GitReleaseManagerDiscardSettings,
+    GitReleaseManagerCloseSettings,
     GitReleaseManagerOpenSettings,
     GitReleaseManagerPublishSettings,
-    GitReleaseManagerSettings,
-    IGitReleaseManagerSettingsProvider,
-    OpenFields,
-    PublishFields
+    GitReleaseManagerAddAssetSettings
 } from './models'
-import { SettingsProvider } from '../common/settings'
-import { inject, injectable } from 'inversify'
 
-@injectable()
-export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
+export class Settings {
+    public static getCreateSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerCreateSettings {
+        const milestone = buildAgent.getInput(CreateFields.milestone)
+        const name = buildAgent.getInput(CreateFields.name)
+        const inputFileName = buildAgent.getInput(CreateFields.inputFileName)
+        const isPreRelease = buildAgent.getBooleanInput(
+            CreateFields.isPreRelease
+        )
+        const commit = buildAgent.getInput(CreateFields.commit)
+        const assets = buildAgent.getListInput(CreateFields.assets)
 
-    getCreateSettings(): GitReleaseManagerCreateSettings {
-        const milestone = this.buildAgent.getInput(CreateFields.milestone)
-        const name = this.buildAgent.getInput(CreateFields.name)
-        const inputFileName = this.buildAgent.getInput(CreateFields.inputFileName)
-        const isPreRelease = this.buildAgent.getBooleanInput(CreateFields.isPreRelease)
-        const commit = this.buildAgent.getInput(CreateFields.commit)
-        const assets = this.buildAgent.getListInput(CreateFields.assets)
-
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             milestone,
@@ -45,51 +41,61 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getDiscardSettings(): GitReleaseManagerDiscardSettings {
-        const milestone = this.buildAgent.getInput(DiscardFields.milestone)
+    public static getDiscardSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerDiscardSettings {
+        const milestone = buildAgent.getInput(DiscardFields.milestone)
 
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             milestone
         }
     }
 
-    getCloseSettings(): GitReleaseManagerCloseSettings {
-        const milestone = this.buildAgent.getInput(CloseFields.milestone)
+    public static getCloseSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerCloseSettings {
+        const milestone = buildAgent.getInput(CloseFields.milestone)
 
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             milestone
         }
     }
 
-    getOpenSettings(): GitReleaseManagerOpenSettings {
-        const milestone = this.buildAgent.getInput(OpenFields.milestone)
+    public static getOpenSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerOpenSettings {
+        const milestone = buildAgent.getInput(OpenFields.milestone)
 
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             milestone
         }
     }
 
-    getPublishSettings(): GitReleaseManagerPublishSettings {
-        const tagName = this.buildAgent.getInput(PublishFields.tagName)
+    public static getPublishSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerPublishSettings {
+        const tagName = buildAgent.getInput(PublishFields.tagName)
 
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             tagName
         }
     }
 
-    getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
-        const tagName = this.buildAgent.getInput(AddAssetFields.tagName)
-        const assets = this.buildAgent.getListInput(AddAssetFields.assets)
+    public static getAddAssetSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerAddAssetSettings {
+        const tagName = buildAgent.getInput(AddAssetFields.tagName)
+        const assets = buildAgent.getListInput(AddAssetFields.assets)
 
-        const commonSettings = this.getCommonSettings()
+        const commonSettings = Settings.getCommonSettings(buildAgent)
         return {
             ...commonSettings,
             tagName,
@@ -97,11 +103,15 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getCommonSettings(): GitReleaseManagerSettings {
-        const owner = this.buildAgent.getInput(CommonFields.owner, true)
-        const repository = this.buildAgent.getInput(CommonFields.repository, true)
-        const token = this.buildAgent.getInput(CommonFields.token, true)
-        const targetDirectory = this.buildAgent.getInput(CommonFields.targetDirectory)
+    private static getCommonSettings(
+        buildAgent: IBuildAgent
+    ): GitReleaseManagerSettings {
+        const owner = buildAgent.getInput(CommonFields.owner, true)
+        const repository = buildAgent.getInput(CommonFields.repository, true)
+        const token = buildAgent.getInput(CommonFields.token, true)
+        const targetDirectory = buildAgent.getInput(
+            CommonFields.targetDirectory
+        )
 
         return {
             owner,

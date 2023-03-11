@@ -4,13 +4,16 @@ import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
 
 import { inject, injectable } from 'inversify'
-import { TYPES, IExecResult, IBuildAgent } from './models'
+import { TYPES, IExecResult, IBuildAgent, ISetupSettings } from './models'
 import { IVersionManager } from './versionManager'
-import { ISetupSettings } from '../tools/common/models'
 
 export interface IDotnetTool {
     disableTelemetry(): void
-    toolInstall(toolName: string, checkLatest: boolean, setupSettings: ISetupSettings): Promise<string>
+    toolInstall(
+        toolName: string,
+        checkLatest: boolean,
+        setupSettings: ISetupSettings
+    ): Promise<string>
 }
 
 @injectable()
@@ -19,12 +22,20 @@ export class DotnetTool implements IDotnetTool {
     protected versionManager: IVersionManager
     private httpClient: http.HttpClient
 
-    private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/'
+    private static readonly nugetRoot: string =
+        'https://api-v2v3search-0.nuget.org/'
 
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
+    constructor(
+        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
+        @inject(TYPES.IVersionManager) versionManager: IVersionManager
+    ) {
         this.buildAgent = buildAgent
         this.versionManager = versionManager
-        this.httpClient = new http.HttpClient('dotnet', undefined, this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot))
+        this.httpClient = new http.HttpClient(
+            'dotnet',
+            undefined,
+            this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot)
+        )
     }
 
     public disableTelemetry(): void {
@@ -37,16 +48,20 @@ export class DotnetTool implements IDotnetTool {
         return this.buildAgent.exec(cmd, args)
     }
 
-    public async toolInstall(toolName: string, checkLatest: boolean, setupSettings: ISetupSettings): Promise<string> {
+    public async toolInstall(
+        toolName: string,
+        checkLatest: boolean,
+        setupSettings: ISetupSettings
+    ): Promise<string> {
         console.log('')
         console.log('--------------------------')
-        console.log(`Acquiring ${toolName} version spec: ${setupSettings.versionSpec}`)
+        console.log(
+            `Installing ${toolName} version ` + setupSettings.versionSpec
+        )
         console.log('--------------------------')
 
-        let version: string
         if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
             checkLatest = false // check latest doesn't make sense when explicit version
-            version = setupSettings.versionSpec
         }
 
         let toolPath: string
@@ -58,7 +73,10 @@ export class DotnetTool implements IDotnetTool {
         }
 
         if (!toolPath) {
-            if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
+            let version: string
+            if (
+                this.versionManager.isExplicitVersion(setupSettings.versionSpec)
+            ) {
                 //
                 // Explicit version was specified. No need to query for list of versions.
                 //
@@ -70,9 +88,15 @@ export class DotnetTool implements IDotnetTool {
                 // If your tool doesn't offer a mechanism to query,
                 // then it can only support exact version inputs.
                 //
-                version = await this.queryLatestMatch(toolName, setupSettings.versionSpec, setupSettings.includePrerelease)
+                version = await this.queryLatestMatch(
+                    toolName,
+                    setupSettings.versionSpec,
+                    setupSettings.includePrerelease
+                )
                 if (!version) {
-                    throw new Error(`Unable to find ${toolName} version '${setupSettings.versionSpec}'.`)
+                    throw new Error(
+                        `Unable to find ${toolName} version '${setupSettings.versionSpec}'.`
+                    )
                 }
 
                 //
@@ -84,20 +108,24 @@ export class DotnetTool implements IDotnetTool {
                 //
                 // Download, extract, cache
                 //
-                toolPath = await this.acquireTool(toolName, version, setupSettings.ignoreFailedSources)
+                toolPath = await this.acquireTool(
+                    toolName,
+                    version,
+                    setupSettings.ignoreFailedSources
+                )
             }
         }
 
-        console.log('--------------------------')
-        console.log(`${toolName} version: ${version} installed.`)
-        console.log('--------------------------')
         //
         // Prepend the tools path. This prepends the PATH for the current process and
         // instructs the agent to prepend for each task that follows.
         //
         this.buildAgent.debug(`toolPath: ${toolPath}`)
 
-        if (os.platform() !== 'win32' && !this.buildAgent.getVariable('DOTNET_ROOT')) {
+        if (
+            os.platform() !== 'win32' &&
+            !this.buildAgent.getVariable('DOTNET_ROOT')
+        ) {
             let dotnetPath = await this.buildAgent.which('dotnet')
             dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
             const dotnetRoot = path.dirname(dotnetPath)
@@ -108,14 +136,22 @@ export class DotnetTool implements IDotnetTool {
         return toolPath
     }
 
-    private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string> {
+    private async queryLatestMatch(
+        toolName: string,
+        versionSpec: string,
+        includePrerelease: boolean
+    ): Promise<string> {
         this.buildAgent.debug(
-            `querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
+            `querying tool versions for ${toolName}${
+                versionSpec ? `@${versionSpec}` : ''
+            } ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
-        const toolNameParam = encodeURIComponent(toolName.toLowerCase())
-        const prereleaseParam = includePrerelease ? 'true' : 'false'
-        const downloadPath = `${DotnetTool.nugetRoot}query?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
+        const downloadPath = `${
+            DotnetTool.nugetRoot
+        }query?q=${encodeURIComponent(toolName.toLowerCase())}&prerelease=${
+            includePrerelease ? 'true' : 'false'
+        }&semVerLevel=2.0.0`
 
         const res = await this.httpClient.get(downloadPath)
 
@@ -126,19 +162,23 @@ export class DotnetTool implements IDotnetTool {
         const body: string = await res.readBody()
         const data = JSON.parse(body).data
 
-        const versions = (data[0].versions as { version: string }[]).map(x => x.version)
+        const versions = (data[0].versions as { version: string }[]).map(
+            x => x.version
+        )
         if (!versions || !versions.length) {
             return null
         }
 
         this.buildAgent.debug(`got versions: ${versions.join(', ')}`)
 
-        return this.versionManager.evaluateVersions(versions, versionSpec, {
-            includePrerelease
-        })
+        return this.versionManager.evaluateVersions(versions, versionSpec)
     }
 
-    private async acquireTool(toolName: string, version: string, ignoreFailedSources: boolean): Promise<string> {
+    private async acquireTool(
+        toolName: string,
+        version: string,
+        ignoreFailedSources: boolean
+    ): Promise<string> {
         const tempDirectory = await this.buildAgent.createTempDir()
         let args = ['tool', 'install', toolName, '--tool-path', tempDirectory]
 

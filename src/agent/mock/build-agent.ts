@@ -19,7 +19,12 @@ class BuildAgent implements IBuildAgent {
         return 'find'
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheDir(
+        sourceDir: string,
+        tool: string,
+        version: string,
+        arch?: string
+    ): Promise<string> {
         console.log('cacheDir')
         return Promise.resolve('cacheDir')
     }

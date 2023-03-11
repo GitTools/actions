@@ -12,7 +12,10 @@ import * as toolCache from '@actions/tool-cache'
 import { injectable } from 'inversify'
 
 import { IBuildAgent, IExecResult } from '../../core/models'
-import { IRequestOptions, IProxyConfiguration } from 'typed-rest-client/Interfaces'
+import {
+    IRequestOptions,
+    IProxyConfiguration
+} from 'typed-rest-client/Interfaces'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -55,7 +58,12 @@ class BuildAgent implements IBuildAgent {
             return undefined
         }
 
-        let proxyURL = process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || null
+        let proxyURL =
+            process.env.HTTP_PROXY ||
+            process.env.http_proxy ||
+            process.env.HTTPS_PROXY ||
+            process.env.https_proxy ||
+            null
 
         if (proxyURL) {
             let url = new urlApi.URL(requestedUrl)
@@ -70,7 +78,12 @@ class BuildAgent implements IBuildAgent {
         return undefined
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheDir(
+        sourceDir: string,
+        tool: string,
+        version: string,
+        arch?: string
+    ): Promise<string> {
         return toolCache.cacheDir(sourceDir, tool, version, arch)
     }
 
