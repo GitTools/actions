@@ -46,42 +46,44 @@ additionalArguments:
 
 The Execute GitVersion task creates the following job-scoped variables and multi-job output variables:
 
-- GitVersion.Major
-- GitVersion.Minor
-- GitVersion.Patch
-- GitVersion.PreReleaseTag
-- GitVersion.PreReleaseTagWithDash
-- GitVersion.PreReleaseLabel
-- GitVersion.PreReleaseNumber
-- GitVersion.WeightedPreReleaseNumber
-- GitVersion.BuildMetaData
-- GitVersion.BuildMetaDataPadded
-- GitVersion.FullBuildMetaData
-- GitVersion.MajorMinorPatch
-- GitVersion.SemVer
-- GitVersion.LegacySemVer
-- GitVersion.LegacySemVerPadded
-- GitVersion.AssemblySemVer
-- GitVersion.AssemblySemFileVer
-- GitVersion.FullSemVer
-- GitVersion.InformationalVersion
-- GitVersion.BranchName
-- GitVersion.EscapedBranchName (since 5.2.0)
-- GitVersion.Sha
-- GitVersion.ShortSha
-- GitVersion.NuGetVersionV2
-- GitVersion.NuGetVersion
-- GitVersion.NuGetPreReleaseTagV2
-- GitVersion.NuGetPreReleaseTag
-- GitVersion.VersionSourceSha
-- GitVersion.CommitsSinceVersionSource
-- GitVersion.CommitsSinceVersionSourcePadded (since 5.2.0)
-- GitVersion.UncommittedChanges (since 5.5.0)
-- GitVersion.CommitDate
+- major
+- minor
+- patch
+- preReleaseTag
+- preReleaseTagWithDash
+- preReleaseLabel
+- preReleaseNumber
+- weightedPreReleaseNumber
+- buildMetaData
+- buildMetaDataPadded (removed in 6.0.0)
+- fullBuildMetaData
+- majorMinorPatch
+- semVer
+- legacySemVer (removed in 6.0.0)
+- legacySemVerPadded (removed in 6.0.0)
+- assemblySemVer
+- assemblySemFileVer
+- fullSemVer
+- informationalVersion
+- branchName
+- escapedBranchName (since 5.2.0)
+- sha
+- shortSha
+- nuGetVersionV2 (removed in 6.0.0)
+- nuGetVersion (removed in 6.0.0)
+- nuGetPreReleaseTagV2 (removed in 6.0.0)
+- nuGetPreReleaseTag (removed in 6.0.0)
+- versionSourceSha
+- commitsSinceVersionSource
+- commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
+- uncommittedChanges (since 5.5.0)
+- commitDate
 
-The job-scoped variables can be accessed using the macro syntax `$(GitVersion.<variableName>)` in subsequent steps in the same job.  Azure Pipelines also creates environment variables of the form `GITVERSION_<VARIABLENAME>`.  See examples [5](#example-5) and [6](#example-6).
+The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
 
-The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.  See examples [7](#example-7) to [10](#example-10).
+The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
+
+The multi-job output variables can be accessed across jobs and stages, in both conditions and variables. See examples [7](#example-7) to [10](#example-10).
 
 **GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
 
@@ -164,41 +166,78 @@ steps:
   # gitversion/setup@0 task omitted for brevity.
 
   - task: gitversion/execute@0
+    name: version # id to later be referenced
     displayName: Determine Version
 
-  - script: |
-      echo Major: $(GitVersion.Major)
-      echo Minor: $(GitVersion.Minor)
-      echo Patch: $(GitVersion.Patch)
-      echo PreReleaseTag: $(GitVersion.PreReleaseTag)
-      echo PreReleaseTagWithDash: $(GitVersion.PreReleaseTagWithDash)
-      echo PreReleaseLabel: $(GitVersion.PreReleaseLabel)
-      echo PreReleaseNumber: $(GitVersion.PreReleaseNumber)
-      echo WeightedPreReleaseNumber: $(GitVersion.WeightedPreReleaseNumber)
-      echo BuildMetaData: $(GitVersion.BuildMetaData)
-      echo BuildMetaDataPadded: $(GitVersion.BuildMetaDataPadded)
-      echo FullBuildMetaData: $(GitVersion.FullBuildMetaData)
-      echo MajorMinorPatch: $(GitVersion.MajorMinorPatch)
-      echo SemVer: $(GitVersion.SemVer)
-      echo LegacySemVer: $(GitVersion.LegacySemVer)
-      echo LegacySemVerPadded: $(GitVersion.LegacySemVerPadded)
-      echo AssemblySemVer: $(GitVersion.AssemblySemVer)
-      echo AssemblySemFileVer: $(GitVersion.AssemblySemFileVer)
-      echo FullSemVer: $(GitVersion.FullSemVer)
-      echo InformationalVersion: $(GitVersion.InformationalVersion)
-      echo BranchName: $(GitVersion.BranchName)
-      echo EscapedBranchName: $(GitVersion.EscapedBranchName)
-      echo Sha: $(GitVersion.Sha)
-      echo ShortSha: $(GitVersion.ShortSha)
-      echo NuGetVersionV2: $(GitVersion.NuGetVersionV2)
-      echo NuGetVersion: $(GitVersion.NuGetVersion)
-      echo NuGetPreReleaseTagV2: $(GitVersion.NuGetPreReleaseTagV2)
-      echo NuGetPreReleaseTag: $(GitVersion.NuGetPreReleaseTag)
-      echo VersionSourceSha: $(GitVersion.VersionSourceSha)
-      echo CommitsSinceVersionSource: $(GitVersion.CommitsSinceVersionSource)
-      echo CommitsSinceVersionSourcePadded: $(GitVersion.CommitsSinceVersionSourcePadded)
-      echo UncommittedChanges: $(GitVersion.UncommittedChanges)
-      echo CommitDate: $(GitVersion.CommitDate)
+  - displayName: Display GitVersion outputs (step output)
+    script: |
+      echo "Major: $(version.major)"
+      echo "Minor: $(version.minor)"
+      echo "Patch: $(version.patch)"
+      echo "PreReleaseTag: $(version.preReleaseTag)"
+      echo "PreReleaseTagWithDash: $(version.preReleaseTagWithDash)"
+      echo "PreReleaseLabel: $(version.preReleaseLabel)"
+      echo "PreReleaseNumber: $(version.preReleaseNumber)"
+      echo "WeightedPreReleaseNumber: $(version.weightedPreReleaseNumber)"
+      echo "BuildMetaData: $(version.buildMetaData)"
+      echo "BuildMetaDataPadded: $(version.buildMetaDataPadded)"
+      echo "FullBuildMetaData: $(version.fullBuildMetaData)"
+      echo "MajorMinorPatch: $(version.majorMinorPatch)"
+      echo "SemVer: $(version.semVer)"
+      echo "LegacySemVer: $(version.legacySemVer)"
+      echo "LegacySemVerPadded: $(version.legacySemVerPadded)"
+      echo "AssemblySemVer: $(version.assemblySemVer)"
+      echo "AssemblySemFileVer: $(version.assemblySemFileVer)"
+      echo "FullSemVer: $(version.fullSemVer)"
+      echo "InformationalVersion: $(version.informationalVersion)"
+      echo "BranchName: $(version.branchName)"
+      echo "EscapedBranchName: $(version.escapedBranchName)"
+      echo "Sha: $(version.sha)"
+      echo "ShortSha: $(version.shortSha)"
+      echo "NuGetVersionV2: $(version.nuGetVersionV2)"
+      echo "NuGetVersion: $(version.nuGetVersion)"
+      echo "NuGetPreReleaseTagV2: $(version.nuGetPreReleaseTagV2)"
+      echo "NuGetPreReleaseTag: $(version.nuGetPreReleaseTag)"
+      echo "VersionSourceSha: $(version.versionSourceSha)"
+      echo "CommitsSinceVersionSource: $(version.commitsSinceVersionSource)"
+      echo "CommitsSinceVersionSourcePadded: $(version.commitsSinceVersionSourcePadded)"
+      echo "UncommittedChanges: $(version.uncommittedChanges)"
+      echo "CommitDate: $(version.commitDate)"
+
+  - displayName: Display GitVersion outputs (step output with prefix)
+    script: |
+      echo "Major: $(version.GitVersion_Major)"
+      echo "Minor: $(version.GitVersion_Minor)"
+      echo "Patch: $(version.GitVersion_Patch)"
+      echo "PreReleaseTag: $(version.GitVersion_PreReleaseTag)"
+      echo "PreReleaseTagWithDash: $(version.GitVersion_PreReleaseTagWithDash)"
+      echo "PreReleaseLabel: $(version.GitVersion_PreReleaseLabel)"
+      echo "PreReleaseNumber: $(version.GitVersion_PreReleaseNumber)"
+      echo "WeightedPreReleaseNumber: $(version.GitVersion_WeightedPreReleaseNumber)"
+      echo "BuildMetaData: $(version.GitVersion_BuildMetaData)"
+      echo "BuildMetaDataPadded: $(version.GitVersion_BuildMetaDataPadded)"
+      echo "FullBuildMetaData: $(version.GitVersion_FullBuildMetaData)"
+      echo "MajorMinorPatch: $(version.GitVersion_MajorMinorPatch)"
+      echo "SemVer: $(version.GitVersion_SemVer)"
+      echo "LegacySemVer: $(version.GitVersion_LegacySemVer)"
+      echo "LegacySemVerPadded: $(version.GitVersion_LegacySemVerPadded)"
+      echo "AssemblySemVer: $(version.GitVersion_AssemblySemVer)"
+      echo "AssemblySemFileVer: $(version.GitVersion_AssemblySemFileVer)"
+      echo "FullSemVer: $(version.GitVersion_FullSemVer)"
+      echo "InformationalVersion: $(version.GitVersion_InformationalVersion)"
+      echo "BranchName: $(version.GitVersion_BranchName)"
+      echo "EscapedBranchName: $(version.GitVersion_EscapedBranchName)"
+      echo "Sha: $(version.GitVersion_Sha)"
+      echo "ShortSha: $(version.GitVersion_ShortSha)"
+      echo "NuGetVersionV2: $(version.GitVersion_NuGetVersionV2)"
+      echo "NuGetVersion: $(version.GitVersion_NuGetVersion)"
+      echo "NuGetPreReleaseTagV2: $(version.GitVersion_NuGetPreReleaseTagV2)"
+      echo "NuGetPreReleaseTag: $(version.GitVersion_NuGetPreReleaseTag)"
+      echo "VersionSourceSha: $(version.GitVersion_VersionSourceSha)"
+      echo "CommitsSinceVersionSource: $(version.GitVersion_CommitsSinceVersionSource)"
+      echo "CommitsSinceVersionSourcePadded: $(version.GitVersion_CommitsSinceVersionSourcePadded)"
+      echo "UncommittedChanges: $(version.GitVersion_UncommittedChanges)"
+      echo "CommitDate: $(version.GitVersion_CommitDate)"
 ```
 
 ### Example 6
@@ -212,18 +251,88 @@ steps:
   - task: gitversion/execute@0
     displayName: Determine Version
 
+  - displayName: Display GitVersion variables (without prefix)
+    script: |
+      echo "Major: $(major)"
+      echo "Minor: $(minor)"
+      echo "Patch: $(patch)"
+      echo "PreReleaseTag: $(preReleaseTag)"
+      echo "PreReleaseTagWithDash: $(preReleaseTagWithDash)"
+      echo "PreReleaseLabel: $(preReleaseLabel)"
+      echo "PreReleaseNumber: $(preReleaseNumber)"
+      echo "WeightedPreReleaseNumber: $(weightedPreReleaseNumber)"
+      echo "BuildMetaData: $(buildMetaData)"
+      echo "BuildMetaDataPadded: $(buildMetaDataPadded)"
+      echo "FullBuildMetaData: $(fullBuildMetaData)"
+      echo "MajorMinorPatch: $(majorMinorPatch)"
+      echo "SemVer: $(semVer)"
+      echo "LegacySemVer: $(legacySemVer)"
+      echo "LegacySemVerPadded: $(legacySemVerPadded)"
+      echo "AssemblySemVer: $(assemblySemVer)"
+      echo "AssemblySemFileVer: $(assemblySemFileVer)"
+      echo "FullSemVer: $(fullSemVer)"
+      echo "InformationalVersion: $(informationalVersion)"
+      echo "BranchName: $(branchName)"
+      echo "EscapedBranchName: $(escapedBranchName)"
+      echo "Sha: $(sha)"
+      echo "ShortSha: $(shortSha)"
+      echo "NuGetVersionV2: $(nuGetVersionV2)"
+      echo "NuGetVersion: $(nuGetVersion)"
+      echo "NuGetPreReleaseTagV2: $(nuGetPreReleaseTagV2)"
+      echo "NuGetPreReleaseTag: $(nuGetPreReleaseTag)"
+      echo "VersionSourceSha: $(versionSourceSha)"
+      echo "CommitsSinceVersionSource: $(commitsSinceVersionSource)"
+      echo "CommitsSinceVersionSourcePadded: $(commitsSinceVersionSourcePadded)"
+      echo "UncommittedChanges: $(uncommittedChanges)"
+      echo "CommitDate: $(commitDate)"
+
+  - displayName: Display GitVersion variables (with prefix)
+    script: |
+      echo "Major: $(GitVersion_Major)"
+      echo "Minor: $(GitVersion_Minor)"
+      echo "Patch: $(GitVersion_Patch)"
+      echo "PreReleaseTag: $(GitVersion_PreReleaseTag)"
+      echo "PreReleaseTagWithDash: $(GitVersion_PreReleaseTagWithDash)"
+      echo "PreReleaseLabel: $(GitVersion_PreReleaseLabel)"
+      echo "PreReleaseNumber: $(GitVersion_PreReleaseNumber)"
+      echo "WeightedPreReleaseNumber: $(GitVersion_WeightedPreReleaseNumber)"
+      echo "BuildMetaData: $(GitVersion_BuildMetaData)"
+      echo "BuildMetaDataPadded: $(GitVersion_BuildMetaDataPadded)"
+      echo "FullBuildMetaData: $(GitVersion_FullBuildMetaData)"
+      echo "MajorMinorPatch: $(GitVersion_MajorMinorPatch)"
+      echo "SemVer: $(GitVersion_SemVer)"
+      echo "LegacySemVer: $(GitVersion_LegacySemVer)"
+      echo "LegacySemVerPadded: $(GitVersion_LegacySemVerPadded)"
+      echo "AssemblySemVer: $(GitVersion_AssemblySemVer)"
+      echo "AssemblySemFileVer: $(GitVersion_AssemblySemFileVer)"
+      echo "FullSemVer: $(GitVersion_FullSemVer)"
+      echo "InformationalVersion: $(GitVersion_InformationalVersion)"
+      echo "BranchName: $(GitVersion_BranchName)"
+      echo "EscapedBranchName: $(GitVersion_EscapedBranchName)"
+      echo "Sha: $(GitVersion_Sha)"
+      echo "ShortSha: $(GitVersion_ShortSha)"
+      echo "NuGetVersionV2: $(GitVersion_NuGetVersionV2)"
+      echo "NuGetVersion: $(GitVersion_NuGetVersion)"
+      echo "NuGetPreReleaseTagV2: $(GitVersion_NuGetPreReleaseTagV2)"
+      echo "NuGetPreReleaseTag: $(GitVersion_NuGetPreReleaseTag)"
+      echo "VersionSourceSha: $(GitVersion_VersionSourceSha)"
+      echo "CommitsSinceVersionSource: $(GitVersion_CommitsSinceVersionSource)"
+      echo "CommitsSinceVersionSourcePadded: $(GitVersion_CommitsSinceVersionSourcePadded)"
+      echo "UncommittedChanges: $(GitVersion_UncommittedChanges)"
+      echo "CommitDate: $(GitVersion_CommitDate)"
+
   - task: DotNetCoreCLI@2
     displayName: Pack Example
     inputs:
       command: pack
       packagesToPack: src/Example/LibExample.csproj
       versioningScheme: byEnvVar
-      versionEnvVar: GitVersion.NuGetVersion # alternative syntax GITVERSION_NUGETVERSION (the former gets converted into the latter internally)
+      versionEnvVar: GitVersion_SemVer # alternative syntax GITVERSION_SEMVER (the former gets converted into the latter internally)
 ```
 
 ### Example 7
 
-Calculate the version for the build and use the `GitVersion.BranchName` variable in a condition for starting another job.
+Calculate the version for the build and use the `GitVersion_BranchName` variable in a condition for starting another job.
 
 ```yaml
 jobs:
@@ -237,13 +346,13 @@ jobs:
         name: Version # the step MUST be named to access its output variables in another job.
 
   - job: CreateReleaseNotes
-    condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion.BranchName'], 'main'))
+    condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion_BranchName'], 'main'))
     dependsOn: CalculateVersion
 ```
 
 ### Example 8
 
-Calculate the version for the build and map the `GitVersion.SemVer` variable into a variable in another job.
+Calculate the version for the build and map the `GitVersion_SemVer` variable into a variable in another job.
 
 ```yaml
 jobs:
@@ -258,7 +367,7 @@ jobs:
 
   - job: BuildAndPack
     variables:
-      Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion.MajorMinorPatch'] ]
+      Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion_MajorMinorPatch'] ]
 ```
 
 ### Example 9
@@ -279,7 +388,7 @@ stages:
             name: Version # the step MUST be named to access its output variables in another stage.
 
   - stage: S2
-    condition: and(succeeded(), gt(dependencies.S1.outputs['CalculateVersion.Version.GitVersion.Major'], 0))
+    condition: and(succeeded(), gt(dependencies.S1.outputs['CalculateVersion.Version.GitVersion_Major'], 0))
     dependsOn: S1
 ```
 
@@ -304,5 +413,5 @@ stages:
     jobs:
       - job: UpdateAssemblyVersions
         variables:
-          Ver.AssemblyVer: $[ stageDependencies.S1.CalculateVersion.outputs['Version.GitVersion.AssemblySemVer'] ] # Note the 'stageDependencies.<jobName>' syntax.
+          Ver.AssemblyVer: $[ stageDependencies.S1.CalculateVersion.outputs['Version.GitVersion_AssemblySemVer'] ] # Note the 'stageDependencies.<jobName>' syntax.
 ```
