@@ -1,4 +1,3 @@
-import cmp from 'semver-compare'
 import * as semver from 'semver'
 import { injectable, inject } from 'inversify'
 
@@ -6,7 +5,7 @@ import { IBuildAgent, TYPES } from './models'
 
 export interface IVersionManager {
     isExplicitVersion(versionSpec: string): boolean
-    evaluateVersions(versions: string[], versionSpec: string): string
+    evaluateVersions(versions: string[], versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): string
     cleanVersion(version: string): string
 }
 
@@ -27,13 +26,13 @@ export class VersionManager implements IVersionManager {
         return valid
     }
 
-    public evaluateVersions(versions: string[], versionSpec: string): string {
+    public evaluateVersions(versions: string[], versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): string {
         let version: string
         this.buildAgent.debug('evaluating ' + versions.length + ' versions')
-        versions = versions.sort(cmp)
+        versions = semver.sort(versions)
         for (let i = versions.length - 1; i >= 0; i--) {
             const potential: string = versions[i]
-            const satisfied: boolean = semver.satisfies(potential, versionSpec)
+            const satisfied: boolean = semver.satisfies(potential, versionSpec, optionsOrLoose)
             if (satisfied) {
                 version = potential
                 break

@@ -1,34 +1,26 @@
 import { IBuildAgent, TYPES } from '../../core/models'
-import {
-    IGitReleaseManagerTool,
-    GitReleaseManagerTool
-} from '../../tools/gitreleasemanager/tool'
-import { Settings as CommonSettings } from '../../core/settings'
-import { Settings } from '../../tools/gitreleasemanager/settings'
+import { IGitReleaseManagerTool, GitReleaseManagerTool } from '../../tools/gitreleasemanager/tool'
+import { IGitReleaseManagerSettingsProvider } from '../../tools/gitreleasemanager/models'
+import { GitReleaseManagerSettingsProvider } from '../../tools/gitreleasemanager/settings'
 
 import container from '../../core/ioc'
 
-container
-    .bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool)
-    .to(GitReleaseManagerTool)
+container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool)
+container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider).to(GitReleaseManagerSettingsProvider)
 
-const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(
-    TYPES.IGitReleaseManagerTool
-)
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
+const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool)
+const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
 
 export async function setup() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = CommonSettings.getSetupSettings(buildAgent)
+        const settings = settingsProvider.getSetupSettings()
 
         await gitReleaseManagerTool.install(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager installed successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager installed successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -38,14 +30,11 @@ export async function create() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getCreateSettings(buildAgent)
+        const settings = settingsProvider.getCreateSettings()
 
         await gitReleaseManagerTool.create(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager created release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager created release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -55,14 +44,11 @@ export async function discard() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getDiscardSettings(buildAgent)
+        const settings = settingsProvider.getDiscardSettings()
 
         await gitReleaseManagerTool.discard(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager discarded release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager discarded release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -72,14 +58,11 @@ export async function close() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getCloseSettings(buildAgent)
+        const settings = settingsProvider.getCloseSettings()
 
         await gitReleaseManagerTool.close(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager closed release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager closed release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -89,14 +72,11 @@ export async function open() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getOpenSettings(buildAgent)
+        const settings = settingsProvider.getOpenSettings()
 
         await gitReleaseManagerTool.open(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager opened release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager opened release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -106,14 +86,11 @@ export async function publish() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getPublishSettings(buildAgent)
+        const settings = settingsProvider.getPublishSettings()
 
         await gitReleaseManagerTool.publish(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager published release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager published release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -123,14 +100,11 @@ export async function addAsset() {
     try {
         gitReleaseManagerTool.disableTelemetry()
 
-        const settings = Settings.getAddAssetSettings(buildAgent)
+        const settings = settingsProvider.getAddAssetSettings()
 
         await gitReleaseManagerTool.addAsset(settings)
 
-        buildAgent.setSucceeded(
-            'GitVersionManager added assets to release successfully',
-            true
-        )
+        buildAgent.setSucceeded('GitVersionManager added assets to release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }

@@ -5,19 +5,9 @@ export const TYPES = {
     IDotnetTool: Symbol.for('DotnetTool'),
     IGitVersionTool: Symbol.for('GitVersionTool'),
     IGitReleaseManagerTool: Symbol.for('GitReleaseManagerTool'),
-    IVersionManager: Symbol.for('VersionManager')
-}
-
-export enum SetupFields {
-    includePrerelease = 'includePrerelease',
-    versionSpec = 'versionSpec',
-    ignoreFailedSources = 'ignoreFailedSources'
-}
-
-export interface ISetupSettings {
-    [SetupFields.versionSpec]: string
-    [SetupFields.includePrerelease]: boolean
-    [SetupFields.ignoreFailedSources]: boolean
+    IVersionManager: Symbol.for('VersionManager'),
+    IGitVersionSettingsProvider: Symbol.for('GitVersionSettingsProvider'),
+    IGitReleaseManagerSettingsProvider: Symbol.for('GitReleaseManagerSettingsProvider')
 }
 
 export interface IExecResult {
@@ -26,17 +16,11 @@ export interface IExecResult {
     code: number
     error: Error
 }
-
 export interface IBuildAgent {
     agentName: string
     proxyConfiguration(url: string): IRequestOptions
     find(toolName: string, versionSpec: string, arch?: string): string
-    cacheDir(
-        sourceDir: string,
-        tool: string,
-        version: string,
-        arch?: string
-    ): Promise<string>
+    cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>
     createTempDir(): Promise<string>
     debug(message: string): void
     setFailed(message: string, done?: boolean): void

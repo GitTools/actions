@@ -1,24 +1,23 @@
 import { IBuildAgent, TYPES } from '../../core/models'
-import { Settings as CommonSettings } from '../../core/settings'
-import { Settings } from '../../tools/gitversion/settings'
 import { IGitVersionTool, GitVersionTool } from '../../tools/gitversion/tool'
-import {
-    GitVersionSettings,
-    GitVersionOutput
-} from '../../tools/gitversion/models'
+import { GitVersionSettings, GitVersionOutput, IGitVersionSettingsProvider } from '../../tools/gitversion/models'
+import { GitVersionSettingsProvider } from '../../tools/gitversion/settings'
 
 import container from '../../core/ioc'
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool)
+container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)
 
-const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
+const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
+const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 export async function setup() {
     try {
         gitVersionTool.disableTelemetry()
+        console.log(`Agent: '${buildAgent.agentName}'`)
 
-        const settings = CommonSettings.getSetupSettings(buildAgent)
+        const settings = settingsProvider.getSetupSettings()
 
         await gitVersionTool.install(settings)
 
@@ -31,17 +30,13 @@ export async function setup() {
 export async function run() {
     try {
         gitVersionTool.disableTelemetry()
+        console.log(`Agent: '${buildAgent.agentName}'`)
 
-        const settings: GitVersionSettings = Settings.getGitVersionSettings(
-            buildAgent
-        )
+        const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
 
         const result = await gitVersionTool.run(settings)
         const { stdout } = result
-        const jsonOutput = stdout.substring(
-            stdout.lastIndexOf('{'),
-            stdout.lastIndexOf('}') + 1
-        )
+        const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
 
         const gitversion = JSON.parse(jsonOutput) as GitVersionOutput
         gitVersionTool.writeGitVersionToAgent(gitversion)
