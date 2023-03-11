@@ -28,8 +28,8 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public disableTelemetry(): void {
-        this.buildAgent.exportVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
-        this.buildAgent.exportVariable('DOTNET_NOLOGO', 'true')
+        this.buildAgent.setVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
+        this.buildAgent.setVariable('DOTNET_NOLOGO', 'true')
     }
 
     public execute(cmd: string, args: string[]): Promise<IExecResult> {
@@ -102,7 +102,7 @@ export class DotnetTool implements IDotnetTool {
             let dotnetPath = await this.buildAgent.which('dotnet')
             dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
             const dotnetRoot = path.dirname(dotnetPath)
-            this.buildAgent.exportVariable('DOTNET_ROOT', dotnetRoot)
+            this.buildAgent.setVariable('DOTNET_ROOT', dotnetRoot)
         }
         this.buildAgent.addPath(toolPath)
 

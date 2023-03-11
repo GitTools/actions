@@ -83,6 +83,9 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             const name = this.toCamelCase(property)
             const value = gitversionOutput[property]
             this.buildAgent.setOutput(name, value)
+            this.buildAgent.setOutput(`GitVersion_${name}`, value)
+            this.buildAgent.setVariable(name, value)
+            this.buildAgent.setVariable(`GitVersion_${name}`, value)
         })
     }
 

@@ -41,8 +41,8 @@ class BuildAgent implements IBuildAgent {
         console.log('setSucceeded')
     }
 
-    public exportVariable(name: string, val: string): void {
-        console.log('exportVariable')
+    public setVariable(name: string, val: string): void {
+        console.log('setVariable')
     }
 
     public getVariable(name: string): string {

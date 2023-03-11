@@ -34,4 +34,8 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: ./gitversion/execute
     - run: |
-        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+        echo "FullSemVer (env.fullSemVer)                                 : ${{ env.fullSemVer }}"
+        echo "FullSemVer (env.GitVersion_FullSemVer)                      : ${{ env.GitVersion_FullSemVer }}"
+        echo "FullSemVer (steps.gitversion.outputs.fullSemVer)            : ${{ steps.gitversion.outputs.fullSemVer }}"
+        echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
+      name: Use variables and output

@@ -25,7 +25,7 @@ export interface IBuildAgent {
     debug(message: string): void
     setFailed(message: string, done?: boolean): void
     setSucceeded(message: string, done?: boolean): void
-    exportVariable(name: string, val: string): void
+    setVariable(name: string, val: string): void
     getVariable(name: string): string
     addPath(inputPath: string): void
     which(tool: string, check?: boolean): Promise<string>

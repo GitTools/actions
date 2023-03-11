@@ -44,8 +44,8 @@ class BuildAgent implements IBuildAgent {
         taskLib.setResult(taskLib.TaskResult.Succeeded, message, done)
     }
 
-    public exportVariable(name: string, val: string): void {
-        taskLib.setVariable(name, val)
+    public setVariable(name: string, value: string): void {
+        taskLib.setVariable(name, value)
     }
 
     public getVariable(name: string): string {
@@ -78,7 +78,7 @@ class BuildAgent implements IBuildAgent {
     }
 
     public setOutput(name: string, value: string): void {
-        taskLib.setVariable(name, value)
+        taskLib.setVariable(name, value, false, true)
     }
 
     public getInput(input: string, required?: boolean): string {
