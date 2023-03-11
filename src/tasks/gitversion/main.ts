@@ -35,14 +35,19 @@ export async function run() {
         const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
 
         const result = await gitVersionTool.run(settings)
-        const { stdout } = result
-        const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
-
-        const gitversion = JSON.parse(jsonOutput) as GitVersionOutput
-        gitVersionTool.writeGitVersionToAgent(gitversion)
 
         if (result.code === 0) {
             buildAgent.setSucceeded('GitVersion executed successfully', true)
+            const { stdout } = result
+
+            if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
+                buildAgent.setFailed('GitVersion output is not valid JSON', true)
+            } else {
+                const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
+
+                const gitversion = JSON.parse(jsonOutput) as GitVersionOutput
+                gitVersionTool.writeGitVersionToAgent(gitversion)
+            }
         } else {
             buildAgent.setFailed(result.error.message, true)
         }
