@@ -26,11 +26,11 @@ jobs:
         npm run format-check
         npm run build:github
       name: Build code
-    - name: Install GitVersion
+    - name: gitversion/setup
       uses: ./gitversion/setup
       with:
         versionSpec: '5.x'
-    - name: Use GitVersion
+    - name: gitversion/execute
       id: gitversion # step id used as reference for output values
       uses: ./gitversion/execute
     - run: |
