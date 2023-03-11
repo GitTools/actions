@@ -31,6 +31,14 @@ preferLatestVersion:
 
 ## Usage examples
 
+In order for the gitversion to properly work you need to clone the repository with the entire history:
+
+```yaml
+steps:
+  - checkout: self
+    fetchDepth: 0
+```
+
 ### Example 1
 
 Install the latest GitVersion 5 version.
