@@ -24,12 +24,7 @@ class BuildAgent implements IBuildAgent {
         return toolLib.findLocalTool(toolName, versionSpec, arch)
     }
 
-    public cacheDir(
-        sourceDir: string,
-        tool: string,
-        version: string,
-        arch?: string
-    ): Promise<string> {
+    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         return toolLib.cacheDir(sourceDir, tool, version, arch)
     }
 

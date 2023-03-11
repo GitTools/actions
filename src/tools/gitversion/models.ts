@@ -1,3 +1,5 @@
+import { ISettingsProvider } from '../common/models'
+
 export enum ExecuteFields {
     targetPath = 'targetPath',
     useConfigFile = 'useConfigFile',
@@ -16,6 +18,10 @@ export interface GitVersionSettings {
     [ExecuteFields.updateAssemblyInfoFilename]: string
     [ExecuteFields.additionalArguments]: string
     [ExecuteFields.srcDir]: string
+}
+
+export interface IGitVersionSettingsProvider extends ISettingsProvider {
+    getGitVersionSettings(): GitVersionSettings
 }
 
 export interface GitVersionOutput {

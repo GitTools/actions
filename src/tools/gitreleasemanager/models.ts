@@ -1,3 +1,5 @@
+import { ISettingsProvider } from '../common/models'
+
 export enum CommonFields {
     repository = 'repository',
     owner = 'owner',
@@ -35,6 +37,22 @@ export enum AddAssetFields {
     assets = 'assets'
 }
 
+export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
+    getCreateSettings(): GitReleaseManagerCreateSettings
+
+    getDiscardSettings(): GitReleaseManagerDiscardSettings
+
+    getCloseSettings(): GitReleaseManagerCloseSettings
+
+    getOpenSettings(): GitReleaseManagerOpenSettings
+
+    getPublishSettings(): GitReleaseManagerPublishSettings
+
+    getAddAssetSettings(): GitReleaseManagerAddAssetSettings
+
+    getCommonSettings(): GitReleaseManagerSettings
+}
+
 export interface GitReleaseManagerSettings {
     [CommonFields.repository]: string
     [CommonFields.owner]: string
@@ -42,8 +60,7 @@ export interface GitReleaseManagerSettings {
     [CommonFields.targetDirectory]: string
 }
 
-export interface GitReleaseManagerCreateSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettings {
     [CreateFields.milestone]: string
     [CreateFields.name]: string
     [CreateFields.inputFileName]: string
@@ -52,28 +69,23 @@ export interface GitReleaseManagerCreateSettings
     [CreateFields.assets]?: string[]
 }
 
-export interface GitReleaseManagerDiscardSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerDiscardSettings extends GitReleaseManagerSettings {
     [DiscardFields.milestone]: string
 }
 
-export interface GitReleaseManagerCloseSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerCloseSettings extends GitReleaseManagerSettings {
     [CloseFields.milestone]: string
 }
 
-export interface GitReleaseManagerOpenSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings {
     [OpenFields.milestone]: string
 }
 
-export interface GitReleaseManagerPublishSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
     [PublishFields.tagName]: string
 }
 
-export interface GitReleaseManagerAddAssetSettings
-    extends GitReleaseManagerSettings {
+export interface GitReleaseManagerAddAssetSettings extends GitReleaseManagerSettings {
     [AddAssetFields.tagName]: string
     [AddAssetFields.assets]: string[]
 }

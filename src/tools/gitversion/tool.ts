@@ -1,10 +1,9 @@
-import path = require('path')
-
-import { injectable, inject } from 'inversify'
-import { IExecResult, IBuildAgent, TYPES, ISetupSettings } from '../../core/models'
+import { inject, injectable } from 'inversify'
+import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
-import { GitVersionSettings, GitVersionOutput } from './models'
+import { GitVersionOutput, GitVersionSettings } from './models'
 import { IVersionManager } from '../../core/versionManager'
+import { ISetupSettings } from '../common/models'
 
 export interface IGitVersionTool extends IDotnetTool {
     install(setupSettings: ISetupSettings): Promise<void>
@@ -14,19 +13,12 @@ export interface IGitVersionTool extends IDotnetTool {
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {
-    constructor(
-        @inject(TYPES.IBuildAgent) buildAgent: IBuildAgent,
-        @inject(TYPES.IVersionManager) versionManager: IVersionManager
-    ) {
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
         super(buildAgent, versionManager)
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {
-        await this.toolInstall(
-            'GitVersion.Tool',
-            false,
-            setupSettings
-        )
+        await this.toolInstall('GitVersion.Tool', false, setupSettings)
     }
 
     public run(options: GitVersionSettings): Promise<IExecResult> {
@@ -52,33 +44,16 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return workDir.replace(/\\/g, '/')
     }
 
-    private getArguments(
-        workDir: string,
-        options: GitVersionSettings
-    ): string[] {
+    private getArguments(workDir: string, options: GitVersionSettings): string[] {
         let args = [workDir, '/output', 'json', '/output', 'buildserver']
 
-        const {
-            useConfigFile,
-            configFilePath,
-            updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments
-        } = options
+        const { useConfigFile, configFilePath, updateAssemblyInfo, updateAssemblyInfoFilename, additionalArguments } = options
 
         if (useConfigFile) {
-            if (
-                this.buildAgent.isValidInputFile(
-                    'configFilePath',
-                    configFilePath
-                )
-            ) {
+            if (this.buildAgent.isValidInputFile('configFilePath', configFilePath)) {
                 args.push('/config', configFilePath)
             } else {
-                throw new Error(
-                    'GitVersion configuration file not found at ' +
-                        configFilePath
-                )
+                throw new Error('GitVersion configuration file not found at ' + configFilePath)
             }
         }
         if (updateAssemblyInfo) {
@@ -86,18 +61,10 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
             if (updateAssemblyInfoFilename?.length > 0) {
-                if (
-                    this.buildAgent.isValidInputFile(
-                        'updateAssemblyInfoFilename',
-                        updateAssemblyInfoFilename
-                    )
-                ) {
+                if (this.buildAgent.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
                     args.push(updateAssemblyInfoFilename)
                 } else {
-                    throw new Error(
-                        'AssemblyInfoFilename file not found at ' +
-                            updateAssemblyInfoFilename
-                    )
+                    throw new Error('AssemblyInfoFilename file not found at ' + updateAssemblyInfoFilename)
                 }
             }
         }
@@ -182,12 +149,9 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     private toCamelCase(input: string): string {
-        return input.replace(
-            /(?:^\w|[A-Z]|\b\w|\s+)/g,
-            function (match, index) {
-                if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
-                return index == 0 ? match.toLowerCase() : match.toUpperCase()
-            }
-        )
+        return input.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+            if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
+            return index == 0 ? match.toLowerCase() : match.toUpperCase()
+        })
     }
 }
