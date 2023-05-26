@@ -54,7 +54,7 @@
         "typescript": "^5.0.4",
         "underscore": ">=1.13.6",
         "validator": "^13.9.0",
-        "webpack": "^5.84.0",
+        "webpack": "^5.84.1",
         "webpack-cli": "^5.1.1"
     }
 }
