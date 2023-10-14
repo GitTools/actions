@@ -1,7 +1,7 @@
 {
     "name": "gittools-actions",
     "version": "1.0.0",
-    "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
+    "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
     "repository": {
         "type": "git",
         "url": "https://github.com/GitTools/use-gitversion.git"
