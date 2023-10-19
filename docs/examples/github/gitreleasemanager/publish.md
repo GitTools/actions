@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/publishv0
+  - uses: gittools/actions/gitreleasemanager/publish@v0
     name: Publish release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
