@@ -50,7 +50,7 @@
         "tfx-cli": "^0.16.0",
         "trim-newlines": ">=5.0.0",
         "ts-loader": "^9.5.1",
-        "typescript": "^5.3.2",
+        "typescript": "^5.3.3",
         "underscore": ">=1.13.6",
         "validator": "^13.11.0",
         "webpack": "^5.89.0",
