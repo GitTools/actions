@@ -5,7 +5,7 @@ branding:
   color: gray-dark
   icon: git-pull-request
 runs:
-  using: node16
+  using: node20
   main: ../../dist/github/gitversion/setup/bundle.js
 inputs:
   versionSpec:
