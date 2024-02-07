@@ -17,9 +17,9 @@ function update-task() {
     $patch
 )
     $file = Resolve-Path $file
-    $jqMajor = '.version.Major=\"' + $major +'\"';
-    $jqMinor = '.version.Minor=\"' + $minor +'\"';
-    $jqPatch = '.version.Patch=\"' + $patch +'\"';
+    $jqMajor = '.version.Major="' + $major +'"';
+    $jqMinor = '.version.Minor="' + $minor +'"';
+    $jqPatch = '.version.Patch="' + $patch +'"';
     Write-Host "Update task from $file to version $major.$minor.$patch"
 
     Get-Content $file | jq $jqMajor | jq $jqMinor| jq $jqPatch | Set-Content $file
@@ -36,7 +36,7 @@ function update-manifest() {
     $version
 )
     $file = Resolve-Path $file
-    $jqVersion = '.version=\"' + $version +'\"';
+    $jqVersion = '.version="' + $version +'"';
     Write-Host "Update manifest version to $version"
 
     Get-Content $file | jq $jqVersion | Set-Content $file
