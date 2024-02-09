@@ -37,7 +37,7 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
-        "@types/node": "^20.11.16",
+        "@types/node": "^20.11.17",
         "@types/q": "^1.5.8",
         "@types/semver": "^7.5.6",
         "@types/uuid": "^9.0.8",
