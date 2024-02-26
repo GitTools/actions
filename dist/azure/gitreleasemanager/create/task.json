@@ -12,9 +12,14 @@
         "Minor": "0",
         "Patch": "0"
     },
-    "minimumAgentVersion": "2.115.0",
+    "minimumAgentVersion": "2.220.0",
     "execution": {
         "Node10": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        },
+        "Node20": {
             "target": "bundle.js",
             "argumentFormat": "",
             "workingDirectory": "."

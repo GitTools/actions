@@ -37,7 +37,7 @@ jobs:
         $minor = "${{steps.gitversion.outputs.minor}}"
         $patch = "${{steps.gitversion.outputs.patch}}"
 
-        . .\dist\azure\update-version.ps1
+        . .\dist\azure\update-version.ps1 # Import the functions
         update-manifest .\dist\azure\vss-extension.json -Version $version
         dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor -Patch $patch }
 

@@ -2,7 +2,7 @@
     "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
     "name": "gitversion/execute",
     "friendlyName": "Execute GitVersion Task",
-    "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
+    "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
     "author": "GitTools Contributors",
     "helpMarkDown": "See the [documentation](https://gitversion.net/docs/) for help",
     "category": "Build",
@@ -12,9 +12,14 @@
         "Minor": "0",
         "Patch": "0"
     },
-    "minimumAgentVersion": "2.115.0",
+    "minimumAgentVersion": "2.220.0",
     "execution": {
         "Node10": {
+            "target": "bundle.js",
+            "argumentFormat": "",
+            "workingDirectory": "."
+        },
+        "Node20": {
             "target": "bundle.js",
             "argumentFormat": "",
             "workingDirectory": "."
