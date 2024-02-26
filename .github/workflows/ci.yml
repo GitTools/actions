@@ -8,6 +8,10 @@ on:
     branches:
     - main
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   build:
 
@@ -18,13 +22,22 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
+      if: github.event_name == 'push'
+      with:
+        token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+    - uses: actions/checkout@v4
+      if: github.event_name == 'pull_request'
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
     - run: |
         npm install
         npm run format-check
         npm run build:github
+        npm run build:azure
       name: Build code
     - name: gitversion/setup
       uses: ./gitversion/setup
@@ -39,3 +52,16 @@ jobs:
         echo "FullSemVer (steps.gitversion.outputs.fullSemVer)            : ${{ steps.gitversion.outputs.fullSemVer }}"
         echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
       name: Use variables and output
+    - name: Check for changes
+      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push'
+      id: status
+      run: |
+        if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
+    - name: Rebuild dist and push
+      run: |
+        git add --verbose .
+        git config user.name 'Artur Stolear'
+        git config user.email 'artur.stolear@gmail.com'
+        git commit -m 'dist update' --allow-empty
+        git push --force
+      if: steps.status.outputs.has_changes == '1'

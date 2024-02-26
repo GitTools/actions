@@ -3,6 +3,10 @@ on:
   release:
     types: [published]
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   build:
 
@@ -43,5 +47,4 @@ jobs:
 
         npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
 
-      shell: pwsh
       name: Publish Azure extension
