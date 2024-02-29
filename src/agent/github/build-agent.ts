@@ -128,7 +128,7 @@ class BuildAgent implements IBuildAgent {
 
     public async exec(exec: string, args: string[]): Promise<IExecResult> {
         const dotnetPath = await io.which(exec, true)
-        let result = await exe.getExecOutput(`"${dotnetPath}"`, args);
+        let result = await exe.getExecOutput(`"${dotnetPath}"`, args)
         return {
             code: result.exitCode,
             error: null,

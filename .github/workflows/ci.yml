@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [ windows-latest, ubuntu-latest, macos-13, macos-14 ]
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
@@ -37,8 +37,8 @@ jobs:
     - run: |
         npm install
         npm run format-check
-        npm run build:github
-        npm run build:azure
+        npm run build:agent:github
+        npm run build:agent:azure
       name: Build code
     - name: gitversion/setup
       uses: ./gitversion/setup

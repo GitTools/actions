@@ -21,8 +21,8 @@ jobs:
         git fetch --prune --unshallow
     - run: |
         npm install
-        npm run build:github
-        npm run build:azure
+        npm run build:agent:github
+        npm run build:agent:azure
 
         # npm run compress:github
         # npm run compress:azure

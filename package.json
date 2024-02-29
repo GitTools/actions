@@ -4,20 +4,19 @@
     "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
     "repository": {
         "type": "git",
-        "url": "https://github.com/GitTools/use-gitversion.git"
+        "url": "https://github.com/GitTools/actions.git"
     },
-    "main": "main.js",
+    "module": "ES2022",
+    "engines": {
+        "node": ">=20.0.0"
+    },
     "scripts": {
+        "build": "npm run build:mock && npm run build:azure && npm run build:github",
         "format": "prettier --write src/**/*.ts",
         "format-check": "prettier --check src/**/*.ts",
-        "build:mock": "webpack --config webpack.config.js --env agent=mock",
-        "build:azure": "webpack --config webpack.config.js --env agent=azure",
-        "build:github": "webpack --config webpack.config.js --env agent=github",
-        "compress:mock": "npm run build:mock -- --env task=compress",
-        "compress:azure": "npm run build:azure -- --env task=compress",
-        "compress:github": "npm run build:github -- --env task=compress",
-        "build": "npm run build:mock && npm run build:azure && npm run build:github",
-        "compress": "npm run compress:mock && npm run compress:azure && npm run compress:github",
+        "build:agent:mock": "webpack --config webpack.config.js --env agent=mock",
+        "build:agent:azure": "webpack --config webpack.config.js --env agent=azure",
+        "build:agent:github": "webpack --config webpack.config.js --env agent=github",
         "publish:azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
     },
     "author": "GitTools",
