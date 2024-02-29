@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
     - main
+  workflow_dispatch:
 
 defaults:
   run:
@@ -22,7 +23,7 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       with:
         token: ${{ secrets.PUSH_GITHUB_TOKEN }}
     - uses: actions/checkout@v4
