@@ -7,7 +7,9 @@ import { ISetupSettings } from '../common/models'
 
 export interface IGitVersionTool extends IDotnetTool {
     install(setupSettings: ISetupSettings): Promise<void>
+
     run(options: GitVersionSettings): Promise<IExecResult>
+
     writeGitVersionToAgent(gitversion: GitVersionOutput): void
 }
 
@@ -22,16 +24,17 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     public run(options: GitVersionSettings): Promise<IExecResult> {
-        const workDir = this.getRepoDir(options.targetPath)
+        const workDir = this.getRepoDir(options)
 
         const args = this.getArguments(workDir, options)
 
         return this.execute('dotnet-gitversion', args)
     }
 
-    private getRepoDir(targetPath: string): string {
+    private getRepoDir(options: GitVersionSettings): string {
+        const targetPath = options.targetPath
+        const srcDir = options.srcDir || '.'
         let workDir: string
-        const srcDir = this.buildAgent.getSourceDir() || '.'
         if (!targetPath) {
             workDir = srcDir
         } else {
@@ -47,7 +50,24 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     private getArguments(workDir: string, options: GitVersionSettings): string[] {
         let args = [workDir, '/output', 'json', '/output', 'buildserver']
 
-        const { useConfigFile, configFilePath, updateAssemblyInfo, updateAssemblyInfoFilename, additionalArguments } = options
+        const {
+            useConfigFile,
+            disableCache,
+            disableNormalization,
+            configFilePath,
+            updateAssemblyInfo,
+            updateAssemblyInfoFilename,
+            additionalArguments
+            //
+        } = options
+
+        if (disableCache) {
+            args.push('/nocache')
+        }
+
+        if (disableNormalization) {
+            args.push('/nonormalize')
+        }
 
         if (useConfigFile) {
             if (this.buildAgent.isValidInputFile('configFilePath', configFilePath)) {
@@ -56,6 +76,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
                 throw new Error('GitVersion configuration file not found at ' + configFilePath)
             }
         }
+
         if (updateAssemblyInfo) {
             args.push('/updateassemblyinfo')
 
@@ -93,14 +114,14 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     private argStringToArray(argString: string): string[] {
-        var args: string[] = []
+        const args: string[] = []
 
-        var inQuotes = false
-        var escaped = false
-        var lastCharWasSpace = true
-        var arg = ''
+        let inQuotes = false
+        let escaped = false
+        let lastCharWasSpace = true
+        let arg = ''
 
-        var append = function (c: string) {
+        const append = function (c: string) {
             // we only escape double quotes.
             if (escaped && c !== '"') {
                 arg += '\\'
@@ -110,8 +131,8 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             escaped = false
         }
 
-        for (var i = 0; i < argString.length; i++) {
-            var c = argString.charAt(i)
+        for (let i = 0; i < argString.length; i++) {
+            const c = argString.charAt(i)
 
             if (c === ' ' && !inQuotes) {
                 if (!lastCharWasSpace) {

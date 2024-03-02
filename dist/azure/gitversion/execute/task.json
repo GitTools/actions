@@ -49,6 +49,22 @@
             "groupName": "gitversionDetails"
         },
         {
+            "name": "disableCache",
+            "type": "boolean",
+            "label": "Disable Cache",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to disable GitVersion cache"
+        },
+        {
+            "name": "disableNormalization",
+            "type": "boolean",
+            "label": "Disable Normalization",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to disable GitVersion normalization"
+        },
+        {
             "name": "useConfigFile",
             "type": "boolean",
             "label": "Specify Configuration file",

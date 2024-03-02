@@ -11,7 +11,7 @@
         "node": ">=20.0.0"
     },
     "scripts": {
-        "build": "npm run build:mock && npm run build:azure && npm run build:github",
+        "build": "npm run build:agent:mock && npm run build:agent:azure && npm run build:agent:github",
         "format": "prettier --write src/**/*.ts",
         "format-check": "prettier --check src/**/*.ts",
         "build:agent:mock": "webpack --config webpack.config.js --env agent=mock",

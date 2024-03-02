@@ -12,6 +12,14 @@ inputs:
     description: Optionally supply the path to the working directory
     required: false
     default: ''
+  disableCache:
+    description: Whether to disable GitVersion cache
+    required: false
+    default: 'false'
+  disableNormalization:
+    description: Whether to disable GitVersion normalization
+    required: false
+    default: 'false'
   useConfigFile:
     description: Whether to use a custom configuration file
     required: false
