@@ -49,6 +49,22 @@
             "groupName": "gitversionDetails"
         },
         {
+            "name": "disableCache",
+            "type": "boolean",
+            "label": "Disable Cache",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to disable GitVersion cache"
+        },
+        {
+            "name": "disableNormalization",
+            "type": "boolean",
+            "label": "Disable Normalization",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to disable GitVersion normalization"
+        },
+        {
             "name": "useConfigFile",
             "type": "boolean",
             "label": "Specify Configuration file",
@@ -64,6 +80,14 @@
             "required": false,
             "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
             "visibleRule": "useConfigFile = true"
+        },
+        {
+            "name": "overrideConfig",
+            "type": "multiLine",
+            "label": "Override Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
         },
         {
             "name": "updateAssemblyInfo",

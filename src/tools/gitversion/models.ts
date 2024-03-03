@@ -2,8 +2,11 @@ import { ISettingsProvider } from '../common/models'
 
 export enum ExecuteFields {
     targetPath = 'targetPath',
+    disableCache = 'disableCache',
+    disableNormalization = 'disableNormalization',
     useConfigFile = 'useConfigFile',
     configFilePath = 'configFilePath',
+    overrideConfig = 'overrideConfig',
     updateAssemblyInfo = 'updateAssemblyInfo',
     updateAssemblyInfoFilename = 'updateAssemblyInfoFilename',
     additionalArguments = 'additionalArguments',
@@ -12,8 +15,11 @@ export enum ExecuteFields {
 
 export interface GitVersionSettings {
     [ExecuteFields.targetPath]: string
+    [ExecuteFields.disableCache]: boolean
+    [ExecuteFields.disableNormalization]: boolean
     [ExecuteFields.useConfigFile]: boolean
     [ExecuteFields.configFilePath]: string
+    [ExecuteFields.overrideConfig]: string[]
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
     [ExecuteFields.additionalArguments]: string

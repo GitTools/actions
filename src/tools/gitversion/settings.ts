@@ -13,8 +13,12 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
     public getGitVersionSettings(): GitVersionSettings {
         const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
 
+        const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache)
+        const disableNormalization = this.buildAgent.getBooleanInput(ExecuteFields.disableNormalization)
+
         const useConfigFile = this.buildAgent.getBooleanInput(ExecuteFields.useConfigFile)
         const configFilePath = this.buildAgent.getInput(ExecuteFields.configFilePath)
+        const overrideConfig = this.buildAgent.getListInput(ExecuteFields.overrideConfig)
 
         const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
         const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
@@ -25,8 +29,11 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         return {
             targetPath,
+            disableCache,
+            disableNormalization,
             useConfigFile,
             configFilePath,
+            overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
             additionalArguments,
