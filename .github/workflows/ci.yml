@@ -47,6 +47,13 @@ jobs:
     - name: gitversion/execute
       id: gitversion # step id used as reference for output values
       uses: ./gitversion/execute
+      with:
+        targetPath: './'
+        disableCache: true
+        disableNormalization: true
+        overrideConfig: |
+          next-version=1.0.0
+          update-build-number=false
     - run: |
         echo "Major      (major)                                          : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"
