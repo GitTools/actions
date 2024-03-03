@@ -51,7 +51,7 @@ export class DotnetTool implements IDotnetTool {
             }
         }
 
-        if (!this.versionManager.satisfies(version, versionRange)) {
+        if (!this.versionManager.satisfies(version, versionRange, { includePrerelease: setupSettings.includePrerelease })) {
             throw new Error(
                 `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${versionRange}'.` +
                     'Check https://raw.githubusercontent.com/GitTools/actions/main/docs/versions.md for more information'
