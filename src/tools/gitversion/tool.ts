@@ -20,7 +20,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {
-        await this.toolInstall('GitVersion.Tool', setupSettings)
+        await this.toolInstall('GitVersion.Tool', '>=5.10.0 <6.1.0', setupSettings)
     }
 
     public run(options: GitVersionSettings): Promise<IExecResult> {
