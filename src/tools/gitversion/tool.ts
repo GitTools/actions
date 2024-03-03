@@ -55,6 +55,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             disableCache,
             disableNormalization,
             configFilePath,
+            overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
             additionalArguments
@@ -75,6 +76,15 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             } else {
                 throw new Error('GitVersion configuration file not found at ' + configFilePath)
             }
+        }
+
+        if (overrideConfig) {
+            overrideConfig.forEach(config => {
+                config = config.trim()
+                if (config.match(/([a-zA-Z0-9]+(-[a-zA-Z]+)*=[a-zA-Z0-9\- :.']*)/)) {
+                    args.push('/overrideconfig', config)
+                }
+            })
         }
 
         if (updateAssemblyInfo) {

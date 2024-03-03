@@ -18,6 +18,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const useConfigFile = this.buildAgent.getBooleanInput(ExecuteFields.useConfigFile)
         const configFilePath = this.buildAgent.getInput(ExecuteFields.configFilePath)
+        const overrideConfig = this.buildAgent.getListInput(ExecuteFields.overrideConfig)
 
         const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
         const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
@@ -32,6 +33,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             disableNormalization,
             useConfigFile,
             configFilePath,
+            overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
             additionalArguments,

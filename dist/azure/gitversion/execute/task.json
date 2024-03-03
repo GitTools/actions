@@ -82,6 +82,14 @@
             "visibleRule": "useConfigFile = true"
         },
         {
+            "name": "overrideConfig",
+            "type": "multiLine",
+            "label": "Override Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
+        },
+        {
             "name": "updateAssemblyInfo",
             "type": "boolean",
             "label": "Update AssemblyInfo files",

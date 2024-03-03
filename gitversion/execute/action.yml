@@ -28,6 +28,13 @@ inputs:
     description: Optional path to config file (defaults to GitVersion.yml)
     required: false
     default: 'GitVersion.yml'
+  overrideConfig:
+    description: |
+        Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
+        update-build-number=false
+        next-version=1.0.0
+    required: false
+    default: ''
   updateAssemblyInfo:
     description: Whether to update versions in the AssemblyInfo files
     required: false

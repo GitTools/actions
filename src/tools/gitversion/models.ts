@@ -6,6 +6,7 @@ export enum ExecuteFields {
     disableNormalization = 'disableNormalization',
     useConfigFile = 'useConfigFile',
     configFilePath = 'configFilePath',
+    overrideConfig = 'overrideConfig',
     updateAssemblyInfo = 'updateAssemblyInfo',
     updateAssemblyInfoFilename = 'updateAssemblyInfoFilename',
     additionalArguments = 'additionalArguments',
@@ -18,6 +19,7 @@ export interface GitVersionSettings {
     [ExecuteFields.disableNormalization]: boolean
     [ExecuteFields.useConfigFile]: boolean
     [ExecuteFields.configFilePath]: string
+    [ExecuteFields.overrideConfig]: string[]
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
     [ExecuteFields.additionalArguments]: string
