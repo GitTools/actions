@@ -52,7 +52,6 @@ jobs:
         disableCache: true
         disableNormalization: false
         overrideConfig: |
-          next-version=1.0.0
           update-build-number=false
     - run: |
         echo "Major      (major)                                          : ${{ env.major }}"
