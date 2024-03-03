@@ -7,6 +7,7 @@ export interface IVersionManager {
     isExplicitVersion(versionSpec: string): boolean
     evaluateVersions(versions: string[], versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): string
     cleanVersion(version: string): string
+    satisfies(version: string, versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): boolean
 }
 
 @injectable()
@@ -51,5 +52,9 @@ export class VersionManager implements IVersionManager {
     public cleanVersion(version: string): string {
         this.buildAgent.debug('cleaning: ' + version)
         return semver.clean(version)
+    }
+
+    public satisfies(version: string, versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): boolean {
+        return semver.satisfies(version, versionSpec, optionsOrLoose)
     }
 }

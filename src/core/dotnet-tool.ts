@@ -10,7 +10,7 @@ import { ISetupSettings } from '../tools/common/models'
 
 export interface IDotnetTool {
     disableTelemetry(): void
-    toolInstall(toolName: string, setupSettings: ISetupSettings): Promise<string>
+    toolInstall(toolName: string, versionRange: string, setupSettings: ISetupSettings): Promise<string>
 }
 
 @injectable()
@@ -37,76 +37,59 @@ export class DotnetTool implements IDotnetTool {
         return this.buildAgent.exec(cmd, args)
     }
 
-    public async toolInstall(toolName: string, setupSettings: ISetupSettings): Promise<string> {
+    public async toolInstall(toolName: string, versionRange: string, setupSettings: ISetupSettings): Promise<string> {
+        let version: string | null = this.versionManager.cleanVersion(setupSettings.versionSpec) || setupSettings.versionSpec
         console.log('')
         console.log('--------------------------')
-        console.log(`Acquiring ${toolName} version spec: ${setupSettings.versionSpec}`)
+        console.log(`Acquiring ${toolName} version spec: ${version}`)
         console.log('--------------------------')
 
-        let version: string
-        let checkLatest = setupSettings.preferLatestVersion
-        if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
-            checkLatest = false // check latest doesn't make sense when explicit version
-            version = setupSettings.versionSpec
+        if (!this.versionManager.isExplicitVersion(version)) {
+            version = await this.queryLatestMatch(toolName, version, setupSettings.includePrerelease)
+            if (!version) {
+                throw new Error(`Unable to find ${toolName} version '${version}'.`)
+            }
         }
 
-        let toolPath: string
-        if (!checkLatest) {
-            //
-            // Let's try and resolve the version spec locally first
-            //
+        if (!this.versionManager.satisfies(version, versionRange)) {
+            throw new Error(
+                `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${versionRange}'.` +
+                    'Check https://raw.githubusercontent.com/GitTools/actions/main/docs/versions.md for more information'
+            )
+        }
+
+        let toolPath: string | null = null
+        if (!setupSettings.preferLatestVersion) {
             toolPath = this.buildAgent.find(toolName, setupSettings.versionSpec)
+            if (toolPath) {
+                console.log('--------------------------')
+                console.log(`${toolName} version: ${version} found in local cache at ${toolPath}.`)
+                console.log('--------------------------')
+            }
         }
 
         if (!toolPath) {
-            if (this.versionManager.isExplicitVersion(setupSettings.versionSpec)) {
-                //
-                // Explicit version was specified. No need to query for list of versions.
-                //
-                version = setupSettings.versionSpec
-            } else {
-                //
-                // Let's query and resolve the latest version for the versionSpec.
-                // If the version is an explicit version (1.1.1 or v1.1.1) then no need to query.
-                // If your tool doesn't offer a mechanism to query,
-                // then it can only support exact version inputs.
-                //
-                version = await this.queryLatestMatch(toolName, setupSettings.versionSpec, setupSettings.includePrerelease)
-                if (!version) {
-                    throw new Error(`Unable to find ${toolName} version '${setupSettings.versionSpec}'.`)
-                }
-
-                //
-                // Check the cache for the resolved version.
-                //
-                toolPath = this.buildAgent.find(toolName, version)
-            }
-            if (!toolPath) {
-                //
-                // Download, extract, cache
-                //
-                toolPath = await this.acquireTool(toolName, version, setupSettings.ignoreFailedSources)
-            }
+            toolPath = await this.acquireTool(toolName, version, setupSettings.ignoreFailedSources)
+            console.log('--------------------------')
+            console.log(`${toolName} version: ${version} installed.`)
+            console.log('--------------------------')
         }
 
-        console.log('--------------------------')
-        console.log(`${toolName} version: ${version} installed.`)
-        console.log('--------------------------')
-        //
-        // Prepend the tools path. This prepends the PATH for the current process and
-        // instructs the agent to prepend for each task that follows.
-        //
         this.buildAgent.debug(`toolPath: ${toolPath}`)
 
+        await this.setDotnetRoot()
+        this.buildAgent.addPath(toolPath)
+
+        return toolPath
+    }
+
+    protected async setDotnetRoot(): Promise<void> {
         if (os.platform() !== 'win32' && !this.buildAgent.getVariable('DOTNET_ROOT')) {
             let dotnetPath = await this.buildAgent.which('dotnet')
             dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
             const dotnetRoot = path.dirname(dotnetPath)
             this.buildAgent.setVariable('DOTNET_ROOT', dotnetRoot)
         }
-        this.buildAgent.addPath(toolPath)
-
-        return toolPath
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string> {

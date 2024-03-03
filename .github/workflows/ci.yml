@@ -50,7 +50,7 @@ jobs:
       with:
         targetPath: './'
         disableCache: true
-        disableNormalization: true
+        disableNormalization: false
         overrideConfig: |
           next-version=1.0.0
           update-build-number=false
