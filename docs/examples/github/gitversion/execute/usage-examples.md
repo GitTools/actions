@@ -2,7 +2,8 @@
 
 Find out how to use the **gitversion/execute** action using the examples below.
 
-For the GitVersion workflow to execute successfully, you must checkout your Git repository with `fetch-depth: 0` to fetch all history for all tags and branches, as follows:
+For the GitVersion workflow to execute successfully, you must checkout your Git repository with `fetch-depth: 0` to fetch all history for all tags and branches.
+You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml
 steps:
@@ -10,9 +11,14 @@ steps:
     uses: actions/checkout@v2
     with:
       fetch-depth: 0
+
+  - task: gitversion/setup@0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
 ```
 
-This step is omitted from the examples for brevity.
+These steps are omitted from the examples for brevity.
 
 > The examples use version _0.9.7_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
 
