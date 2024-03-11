@@ -12,7 +12,7 @@ steps:
     with:
       fetch-depth: 0
 
-  - task: gitversion/setup@0
+  - task: gitversion/setup@v0.13.4
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'
@@ -20,7 +20,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _0.9.7_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _0.13.4_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -106,10 +106,10 @@ Calculate the version for the build.
 
 ```yaml
 steps:
-  # gitversion/setup@v0 action omitted for brevity.
+  # gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
 ```
 
 ### Example 2
@@ -119,7 +119,7 @@ Calculate the version for the build using a config file with the default name **
 ```yaml
 steps:
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
     with:
       useConfigFile: true
 ```
@@ -141,10 +141,10 @@ Calculate the version for the build using a config file named **VersionConfig.ym
 
 ```yaml
 steps:
-  # gitversion/setup@v0 action omitted for brevity.
+  # gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
     with:
       useConfigFile: true
       configFilePath: VersionConfig.yml
@@ -156,10 +156,10 @@ Show the effective configuration for GitVersion by running the **/showConfig** c
 
 ```yaml
 steps:
-  # gitversion/setup@v0 action omitted for brevity.
+  # gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
     with:
       useConfigFile: true
       additionalArguments: '/showConfig'
@@ -171,11 +171,11 @@ Calculate the version for the build and display all the calculated variables in 
 
 ```yaml
 steps:
-  # gitversion/setup@v0 action omitted for brevity.
+  # gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     id:   gitversion # id to later be referenced
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
 
   - name: Display GitVersion outputs (step output)
     run: |
@@ -254,10 +254,10 @@ Calculate the version for the build and display the value of the `env.GitVersion
 
 ```yaml
 steps:
-  # gitversion/setup@v0 action omitted for brevity.
+  # gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0
+    uses: gittools/actions/gitversion/execute@v0.13.4
 
 
   - name: Display GitVersion variables (without prefix)
@@ -347,7 +347,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0
+        uses: gittools/actions/gitversion/execute@v0.13.4
 
   create-release-notes:
     name: Create Release Notes
@@ -376,7 +376,7 @@ jobs:
 
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0
+        uses: gittools/actions/gitversion/execute@v0.13.4
 
   display-semver:
     name: Display Semantic Version

@@ -11,7 +11,7 @@ You must also run the GitVersion Setup step before the Execute step:
 - checkout: self
   fetchDepth: 0
 
-- task: gitversion/setup@0
+- task: gitversion/setup@0.13.4
   displayName: Install GitVersion
   inputs:
     versionSpec: '5.x'
@@ -105,9 +105,9 @@ Calculate the version for the build.
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
 ```
 
@@ -117,9 +117,9 @@ Calculate the version for the build using a config file with the default name **
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
     inputs:
       useConfigFile: true
@@ -142,9 +142,9 @@ Calculate the version for the build using a config file named **VersionConfig.ym
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
     inputs:
       useConfigFile: true
@@ -157,9 +157,9 @@ Show the effective configuration for GitVersion by running the **/showConfig** c
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Display GitVersion config
     inputs:
       additionalArguments: '/showConfig'
@@ -171,9 +171,9 @@ Calculate the version for the build and display all the calculated variables in 
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     name: version # id to later be referenced
     displayName: Determine Version
 
@@ -254,9 +254,9 @@ Calculate the version for the build and use the `GitVersion.NuGetVersion` variab
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
 
   - displayName: Display GitVersion variables (without prefix)
@@ -347,9 +347,9 @@ jobs:
   - job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      # gitversion/setup@0 task omitted for brevity.
+      # gitversion/setup@0.13.4 task omitted for brevity.
 
-      - task: gitversion/execute@0
+      - task: gitversion/execute@0.13.4
         displayName: Use GitVersion
         name: Version # the step MUST be named to access its output variables in another job.
 
@@ -367,9 +367,9 @@ jobs:
   - job: CalculateVersion
     displayName: Calculate version using GitVersion
     steps:
-      # gitversion/setup@0 task omitted for brevity.
+      # gitversion/setup@0.13.4 task omitted for brevity.
 
-      - task: gitversion/execute@0
+      - task: gitversion/execute@0.13.4
         displayName: Use GitVersion
         name: Version # the step MUST be named to access its output variables in another job.
 
@@ -389,9 +389,9 @@ stages:
       - job: CalculateVersion
         displayName: Calculate version number using GitVersion
         steps:
-          # gitversion/setup@0 task omitted for brevity.
+          # gitversion/setup@0.13.4 task omitted for brevity.
 
-          - task: gitversion/execute@0
+          - task: gitversion/execute@0.13.4
             displayName: Use GitVersion
             name: Version # the step MUST be named to access its output variables in another stage.
 
@@ -411,9 +411,9 @@ stages:
       - job: CalculateVersion
         displayName: Calculate version number using GitVersion
         steps:
-          # gitversion/setup@0 task omitted for brevity.
+          # gitversion/setup@0.13.4 task omitted for brevity.
 
-          - task: gitversion/execute@0
+          - task: gitversion/execute@0.13.4
             displayName: Use GitVersion
             name: Version # the step MUST be named to access its output variables in another stage.
   - stage: S2
