@@ -33,7 +33,7 @@
             "label": "The version spec",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Required version in the form of 5.x or exact version like 5.0.0"
+            "helpMarkDown": "Required version in the form of 5.x or exact version like 5.12.0"
         },
         {
             "name": "includePrerelease",

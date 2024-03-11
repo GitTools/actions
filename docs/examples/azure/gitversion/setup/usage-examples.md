@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** task using the examples below.
 
-> The examples use the latest _0.x_ version of the GitVersion Setup task.  It is recommended to use the latest released version in your own pipelines.
+> The examples use version _0.13.4_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -10,7 +10,7 @@ The Setup GitVersion task accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 5.x or exact version like 5.0.0.
+  description: Required version in the form of 5.x or exact version like 5.12.0.
   required: true
   default: ''
 includePrerelease:
