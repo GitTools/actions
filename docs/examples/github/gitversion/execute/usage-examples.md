@@ -8,7 +8,7 @@ You must also run the GitVersion Setup step before the Execute step:
 ```yaml
 steps:
   - name: Checkout
-    uses: actions/checkout@v2
+    uses: actions/checkout@v4
     with:
       fetch-depth: 0
 
@@ -227,3 +227,82 @@ The action also creates environment variables of the form `${{ env.<outputName> 
 The outputs can be accessed across jobs by mapping them to job outputs and referencing the job outputs using the `needs` context in dependent jobs.  See examples [7](#example-7) and [8](#example-8).
 
 ### Example 8
+
+Calculate the version for the build and use the output in a subsequent steps within the same job.
+
+```yaml
+jobs:
+  GitVersion_v5_same_job:
+    name: GitVersion v5 (same job)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.13.4
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        id: version_step # step id used as reference for output values
+        uses: gittools/actions/gitversion/execute@v0.13.4
+
+      - run: |
+          echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
+        name: Display GitVersion variables (without prefix)
+
+      - run: |
+          echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.GitVersion_FullSemVer }}"
+        name: Display GitVersion variables (with prefix)
+
+      - run: |
+          echo "FullSemVer (steps.version_step.outputs.fullSemVer)            : ${{ steps.version_step.outputs.fullSemVer }}"
+        name: Display GitVersion outputs (step output without prefix)
+
+      - run: |
+          echo "FullSemVer (steps.version_step.outputs.GitVersion_FullSemVer) : ${{ steps.version_step.outputs.GitVersion_FullSemVer }}"
+        name: Display GitVersion outputs (step output with prefix)
+
+      - run: |
+          echo "FullSemVer (env.myvar_fullSemVer)            : ${{ env.myvar_fullSemVer }}"
+        name: Display mapped local env (outputs without prefix)
+        env:
+          myvar_fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
+
+      - run: |
+          echo "FullSemVer (env.myvar_GitVersion_FullSemVer) : ${{ env.myvar_GitVersion_FullSemVer }}"
+        name: Display mapped local env (outputs with prefix)
+        env:
+          myvar_GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
+
+      - run: |
+          echo "FullSemVer (env.myvar_fullSemVer)            : $env:myvar_fullSemVer"
+        name: Display mapped local env (pwsh - outputs without prefix)
+        shell: pwsh
+        env:
+          myvar_fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
+
+      - run: |
+          echo "FullSemVer (env.myvar_GitVersion_FullSemVer) : $env:myvar_GitVersion_FullSemVer"
+        name: Display mapped local env (pwsh - outputs with prefix)
+        shell: pwsh
+        env:
+          myvar_GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
+
+      - run: |
+          echo "FullSemVer (myvar_fullSemVer)            : $myvar_fullSemVer"
+        name: Display mapped local env (bash - outputs without prefix)
+        shell: bash
+        env:
+          myvar_fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
+
+      - run: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer) : $myvar_GitVersion_FullSemVer"
+        name: Display mapped local env (bash - outputs with prefix)
+        shell: bash
+        env:
+          myvar_GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
+```
