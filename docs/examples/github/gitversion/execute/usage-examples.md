@@ -182,6 +182,51 @@ steps:
 
 ### Example 5
 
+Calculate the version for the build. Disabling the cache and normalization.
+
+```yaml
+steps:
+  # gitversion/setup@v0.13.4 action omitted for brevity.
+
+  - name: Determine Version
+    uses: gittools/actions/gitversion/execute@v0.13.4
+    with:
+      disableCache: true
+      disableNormalization: true
+```
+
+### Example 6
+
+Calculate the version for the build. Update the version in the AssemblyInfo files.
+
+```yaml
+steps:
+  # gitversion/setup@v0.13.4 action omitted for brevity.
+
+  - name: Determine Version
+    uses: gittools/actions/gitversion/execute@v0.13.4
+    with:
+      updateAssemblyInfo: true
+```
+
+### Example 7
+
+Calculate the version for the build. Override the configuration file with the specified values.
+
+```yaml
+steps:
+  # gitversion/setup@v0.13.4 action omitted for brevity.
+
+  - name: Determine Version
+    uses: gittools/actions/gitversion/execute@v0.13.4
+    with:
+      overrideConfig: |
+        update-build-number=false
+        next-version=1.0.0
+```
+
+### Example 8
+
 Calculate the version for the build and display all the calculated variables in the next step.
 
 ```yaml
@@ -263,7 +308,7 @@ steps:
       echo "CommitDate: ${{ steps.gitversion.outputs.GitVersion_CommitDate }}"
 ```
 
-### Example 6
+### Example 9
 
 Calculate the version for the build and display the value of the `env.GitVersion_SemVer` environment variable.
 
@@ -346,7 +391,7 @@ steps:
       echo "CommitDate: ${{ env.GitVersion_CommitDate }}"
 ```
 
-### Example 7
+### Example 10
 
 Calculate the version for the build and use the `branchName` output in a condition for starting another job.
 
@@ -375,7 +420,7 @@ jobs:
           echo "Creating release notes for ${{ needs.calculate-version.outputs.branchName }} branch."
 ```
 
-### Example 8
+### Example 11
 
 Calculate the version for the build and map the `semVer` output into an environment variable in another job.
 

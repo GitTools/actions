@@ -182,6 +182,51 @@ steps:
 
 ### Example 5
 
+Calculate the version for the build. Disabling the cache and normalization.
+
+```yaml
+steps:
+  # gitversion/setup@0.13.4 task omitted for brevity.
+
+  - task: gitversion/execute@0.13.4
+    displayName: Determine Version
+    inputs:
+      disableCache: true
+      disableNormalization: true
+```
+
+### Example 6
+
+Calculate the version for the build. Update the version in the AssemblyInfo files.
+
+```yaml
+steps:
+  # gitversion/setup@0.13.4 task omitted for brevity.
+
+  - task: gitversion/execute@0.13.4
+    displayName: Determine Version
+    inputs:
+      updateAssemblyInfo: true
+```
+
+### Example 7
+
+Calculate the version for the build. Override the configuration file with the specified values.
+
+```yaml
+steps:
+  # gitversion/setup@0.13.4 task omitted for brevity.
+
+  - task: gitversion/execute@0.13.4
+    displayName: Determine Version
+    inputs:
+      overrideConfig: |
+        update-build-number=false
+        next-version=1.0.0
+```
+
+### Example 8
+
 Calculate the version for the build and display all the calculated variables in the next step.
 
 ```yaml
@@ -263,7 +308,7 @@ steps:
       echo "CommitDate: $(version.GitVersion_CommitDate)"
 ```
 
-### Example 6
+### Example 9
 
 Calculate the version for the build and use the `GitVersion.NuGetVersion` variable to set the NuGet package version.
 
@@ -353,7 +398,7 @@ steps:
       versionEnvVar: GitVersion_SemVer # alternative syntax GITVERSION_SEMVER (the former gets converted into the latter internally)
 ```
 
-### Example 7
+### Example 10
 
 Calculate the version for the build and use the `GitVersion_BranchName` variable in a condition for starting another job.
 
@@ -373,7 +418,7 @@ jobs:
     dependsOn: CalculateVersion
 ```
 
-### Example 8
+### Example 11
 
 Calculate the version for the build and map the `GitVersion_SemVer` variable into a variable in another job.
 
@@ -393,7 +438,7 @@ jobs:
       Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion_MajorMinorPatch'] ]
 ```
 
-### Example 9
+### Example 12
 
 Calculate the version for the build and use the `GitVersion.Major` output variable in a condition for starting another stage.
 
@@ -415,7 +460,7 @@ stages:
     dependsOn: S1
 ```
 
-### Example 10
+### Example 13
 
 Calculate the version for the build and map the `GitVersion.AssemblySemVer` variable into a variable in another job for a different stage.
 
