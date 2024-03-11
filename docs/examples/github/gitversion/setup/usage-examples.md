@@ -10,7 +10,7 @@ The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 5.x or exact version like 5.0.0.
+  description: Required version in the form of 5.x or exact version like 5.12.0.
   required: true
   default: ''
 includePrerelease:

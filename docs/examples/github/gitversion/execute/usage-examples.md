@@ -28,27 +28,42 @@ The Execute GitVersion action accepts the following inputs:
 
 ```yaml
 targetPath:
-  description: Optionally supply the path to the working directory.
+  description: Optionally supply the path to the working directory
   required: false
   default: ''
-useConfigFile:
-  description: Whether to use a custom configuration file.
+disableCache:
+  description: Whether to disable GitVersion cache
   required: false
-  default: false
+  default: 'false'
+disableNormalization:
+  description: Whether to disable GitVersion normalization
+  required: false
+  default: 'false'
+useConfigFile:
+  description: Whether to use a custom configuration file
+  required: false
+  default: 'false'
 configFilePath:
-  description: Optional path to config file (defaults to GitVersion.yml).
+  description: Optional path to config file (defaults to GitVersion.yml)
   required: false
   default: 'GitVersion.yml'
-updateAssemblyInfo:
-  description: Whether to update versions in the AssemblyInfo files.
+overrideConfig:
+  description: |
+    Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
+    update-build-number=false
+    next-version=1.0.0
   required: false
-  default: false
+  default: ''
+updateAssemblyInfo:
+  description: Whether to update versions in the AssemblyInfo files
+  required: false
+  default: 'false'
 updateAssemblyInfoFilename:
-  description: Update versions in specified file.
+  description: Update versions in specified file
   required: false
   default: ''
 additionalArguments:
-  description: Additional arguments to send to GitVersion.
+  description: Additional arguments to send to GitVersion
   required: false
   default: ''
 ```
