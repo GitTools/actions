@@ -1,23 +1,24 @@
-# Execute GitVersion Task (gitversion/execute) Usage Examples
+# Execute GitVersion Task (gitversion/execute) usage Examples
 
 Find out how to use the **gitversion/execute** task using the examples below.
-
-> The examples use the latest _0.x_ version of the GitVersion Execute task.  It is recommended to use the latest released version in your own pipelines.
 
 Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use `fetchDepth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml
-- checkout: self
-  fetchDepth: 0
+steps:
+  - checkout: self
+    fetchDepth: 0
 
-- task: gitversion/setup@0
-  displayName: Install GitVersion
-  inputs:
-    versionSpec: '5.x'
+  - task: gitversion/setup@0.13.4
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
 ```
 
 These steps are omitted from the examples for brevity.
+
+> The examples use version _0.13.4_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -25,27 +26,42 @@ The Execute GitVersion task accepts the following inputs:
 
 ```yaml
 targetPath:
-  description: Optionally supply the path to the working directory.
+  description: Optionally supply the path to the working directory
   required: false
   default: ''
-useConfigFile:
-  description: Whether to use a custom configuration file.
+disableCache:
+  description: Whether to disable GitVersion cache
   required: false
-  default: false
+  default: 'false'
+disableNormalization:
+  description: Whether to disable GitVersion normalization
+  required: false
+  default: 'false'
+useConfigFile:
+  description: Whether to use a custom configuration file
+  required: false
+  default: 'false'
 configFilePath:
-  description: Optional path to config file (defaults to GitVersion.yml).
+  description: Optional path to config file (defaults to GitVersion.yml)
+  required: false
+  default: 'GitVersion.yml'
+overrideConfig:
+  description: |
+    Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
+    update-build-number=false
+    next-version=1.0.0
   required: false
   default: ''
 updateAssemblyInfo:
-  description: Whether to update versions in the AssemblyInfo files.
+  description: Whether to update versions in the AssemblyInfo files
   required: false
-  default: false
+  default: 'false'
 updateAssemblyInfoFilename:
-  description: Update versions in specified file.
+  description: Update versions in specified file
   required: false
   default: ''
 additionalArguments:
-  description: Additional arguments to send to GitVersion.
+  description: Additional arguments to send to GitVersion
   required: false
   default: ''
 ```
@@ -86,40 +102,32 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
-
-The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
-
-The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
-
-The multi-job output variables can be accessed across jobs and stages, in both conditions and variables. See examples [7](#example-7) to [10](#example-10).
-
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
-
 ---
 
-## Examples
+## Execution Examples
 
 ### Example 1
-
-Calculate the version for the build.
+<details>
+  <summary>Calculate the version for the build.</summary>
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
 ```
+</details>
 
 ### Example 2
 
-Calculate the version for the build using a config file with the default name **GitVersion.yml**.
-
+<details>
+  <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
     inputs:
       useConfigFile: true
@@ -135,291 +143,346 @@ branches:
   pull-request:
     tag: pr
 ```
+</details>
 
 ### Example 3
 
-Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.
+<details>
+  <summary>Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.</summary>
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
     inputs:
       useConfigFile: true
       configFilePath: 'VersionConfig.yml'
 ```
+</details>
 
 ### Example 4
 
-Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).
+<details>
+  <summary>Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).</summary>
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Display GitVersion config
     inputs:
       additionalArguments: '/showConfig'
 ```
+</details>
 
 ### Example 5
 
-Calculate the version for the build and display all the calculated variables in the next step.
+<details>
+  <summary>Calculate the version for the build. Disabling the cache and normalization.</summary>
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
-    name: version # id to later be referenced
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
-
-  - displayName: Display GitVersion outputs (step output)
-    script: |
-      echo "Major: $(version.major)"
-      echo "Minor: $(version.minor)"
-      echo "Patch: $(version.patch)"
-      echo "PreReleaseTag: $(version.preReleaseTag)"
-      echo "PreReleaseTagWithDash: $(version.preReleaseTagWithDash)"
-      echo "PreReleaseLabel: $(version.preReleaseLabel)"
-      echo "PreReleaseNumber: $(version.preReleaseNumber)"
-      echo "WeightedPreReleaseNumber: $(version.weightedPreReleaseNumber)"
-      echo "BuildMetaData: $(version.buildMetaData)"
-      echo "BuildMetaDataPadded: $(version.buildMetaDataPadded)"
-      echo "FullBuildMetaData: $(version.fullBuildMetaData)"
-      echo "MajorMinorPatch: $(version.majorMinorPatch)"
-      echo "SemVer: $(version.semVer)"
-      echo "LegacySemVer: $(version.legacySemVer)"
-      echo "LegacySemVerPadded: $(version.legacySemVerPadded)"
-      echo "AssemblySemVer: $(version.assemblySemVer)"
-      echo "AssemblySemFileVer: $(version.assemblySemFileVer)"
-      echo "FullSemVer: $(version.fullSemVer)"
-      echo "InformationalVersion: $(version.informationalVersion)"
-      echo "BranchName: $(version.branchName)"
-      echo "EscapedBranchName: $(version.escapedBranchName)"
-      echo "Sha: $(version.sha)"
-      echo "ShortSha: $(version.shortSha)"
-      echo "NuGetVersionV2: $(version.nuGetVersionV2)"
-      echo "NuGetVersion: $(version.nuGetVersion)"
-      echo "NuGetPreReleaseTagV2: $(version.nuGetPreReleaseTagV2)"
-      echo "NuGetPreReleaseTag: $(version.nuGetPreReleaseTag)"
-      echo "VersionSourceSha: $(version.versionSourceSha)"
-      echo "CommitsSinceVersionSource: $(version.commitsSinceVersionSource)"
-      echo "CommitsSinceVersionSourcePadded: $(version.commitsSinceVersionSourcePadded)"
-      echo "UncommittedChanges: $(version.uncommittedChanges)"
-      echo "CommitDate: $(version.commitDate)"
-
-  - displayName: Display GitVersion outputs (step output with prefix)
-    script: |
-      echo "Major: $(version.GitVersion_Major)"
-      echo "Minor: $(version.GitVersion_Minor)"
-      echo "Patch: $(version.GitVersion_Patch)"
-      echo "PreReleaseTag: $(version.GitVersion_PreReleaseTag)"
-      echo "PreReleaseTagWithDash: $(version.GitVersion_PreReleaseTagWithDash)"
-      echo "PreReleaseLabel: $(version.GitVersion_PreReleaseLabel)"
-      echo "PreReleaseNumber: $(version.GitVersion_PreReleaseNumber)"
-      echo "WeightedPreReleaseNumber: $(version.GitVersion_WeightedPreReleaseNumber)"
-      echo "BuildMetaData: $(version.GitVersion_BuildMetaData)"
-      echo "BuildMetaDataPadded: $(version.GitVersion_BuildMetaDataPadded)"
-      echo "FullBuildMetaData: $(version.GitVersion_FullBuildMetaData)"
-      echo "MajorMinorPatch: $(version.GitVersion_MajorMinorPatch)"
-      echo "SemVer: $(version.GitVersion_SemVer)"
-      echo "LegacySemVer: $(version.GitVersion_LegacySemVer)"
-      echo "LegacySemVerPadded: $(version.GitVersion_LegacySemVerPadded)"
-      echo "AssemblySemVer: $(version.GitVersion_AssemblySemVer)"
-      echo "AssemblySemFileVer: $(version.GitVersion_AssemblySemFileVer)"
-      echo "FullSemVer: $(version.GitVersion_FullSemVer)"
-      echo "InformationalVersion: $(version.GitVersion_InformationalVersion)"
-      echo "BranchName: $(version.GitVersion_BranchName)"
-      echo "EscapedBranchName: $(version.GitVersion_EscapedBranchName)"
-      echo "Sha: $(version.GitVersion_Sha)"
-      echo "ShortSha: $(version.GitVersion_ShortSha)"
-      echo "NuGetVersionV2: $(version.GitVersion_NuGetVersionV2)"
-      echo "NuGetVersion: $(version.GitVersion_NuGetVersion)"
-      echo "NuGetPreReleaseTagV2: $(version.GitVersion_NuGetPreReleaseTagV2)"
-      echo "NuGetPreReleaseTag: $(version.GitVersion_NuGetPreReleaseTag)"
-      echo "VersionSourceSha: $(version.GitVersion_VersionSourceSha)"
-      echo "CommitsSinceVersionSource: $(version.GitVersion_CommitsSinceVersionSource)"
-      echo "CommitsSinceVersionSourcePadded: $(version.GitVersion_CommitsSinceVersionSourcePadded)"
-      echo "UncommittedChanges: $(version.GitVersion_UncommittedChanges)"
-      echo "CommitDate: $(version.GitVersion_CommitDate)"
+    inputs:
+      disableCache: true
+      disableNormalization: true
 ```
+</details>
 
 ### Example 6
 
-Calculate the version for the build and use the `GitVersion.NuGetVersion` variable to set the NuGet package version.
+<details>
+  <summary>Calculate the version for the build. Update the version in the AssemblyInfo files.</summary>
 
 ```yaml
 steps:
-  # gitversion/setup@0 task omitted for brevity.
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-  - task: gitversion/execute@0
+  - task: gitversion/execute@0.13.4
     displayName: Determine Version
-
-  - displayName: Display GitVersion variables (without prefix)
-    script: |
-      echo "Major: $(major)"
-      echo "Minor: $(minor)"
-      echo "Patch: $(patch)"
-      echo "PreReleaseTag: $(preReleaseTag)"
-      echo "PreReleaseTagWithDash: $(preReleaseTagWithDash)"
-      echo "PreReleaseLabel: $(preReleaseLabel)"
-      echo "PreReleaseNumber: $(preReleaseNumber)"
-      echo "WeightedPreReleaseNumber: $(weightedPreReleaseNumber)"
-      echo "BuildMetaData: $(buildMetaData)"
-      echo "BuildMetaDataPadded: $(buildMetaDataPadded)"
-      echo "FullBuildMetaData: $(fullBuildMetaData)"
-      echo "MajorMinorPatch: $(majorMinorPatch)"
-      echo "SemVer: $(semVer)"
-      echo "LegacySemVer: $(legacySemVer)"
-      echo "LegacySemVerPadded: $(legacySemVerPadded)"
-      echo "AssemblySemVer: $(assemblySemVer)"
-      echo "AssemblySemFileVer: $(assemblySemFileVer)"
-      echo "FullSemVer: $(fullSemVer)"
-      echo "InformationalVersion: $(informationalVersion)"
-      echo "BranchName: $(branchName)"
-      echo "EscapedBranchName: $(escapedBranchName)"
-      echo "Sha: $(sha)"
-      echo "ShortSha: $(shortSha)"
-      echo "NuGetVersionV2: $(nuGetVersionV2)"
-      echo "NuGetVersion: $(nuGetVersion)"
-      echo "NuGetPreReleaseTagV2: $(nuGetPreReleaseTagV2)"
-      echo "NuGetPreReleaseTag: $(nuGetPreReleaseTag)"
-      echo "VersionSourceSha: $(versionSourceSha)"
-      echo "CommitsSinceVersionSource: $(commitsSinceVersionSource)"
-      echo "CommitsSinceVersionSourcePadded: $(commitsSinceVersionSourcePadded)"
-      echo "UncommittedChanges: $(uncommittedChanges)"
-      echo "CommitDate: $(commitDate)"
-
-  - displayName: Display GitVersion variables (with prefix)
-    script: |
-      echo "Major: $(GitVersion_Major)"
-      echo "Minor: $(GitVersion_Minor)"
-      echo "Patch: $(GitVersion_Patch)"
-      echo "PreReleaseTag: $(GitVersion_PreReleaseTag)"
-      echo "PreReleaseTagWithDash: $(GitVersion_PreReleaseTagWithDash)"
-      echo "PreReleaseLabel: $(GitVersion_PreReleaseLabel)"
-      echo "PreReleaseNumber: $(GitVersion_PreReleaseNumber)"
-      echo "WeightedPreReleaseNumber: $(GitVersion_WeightedPreReleaseNumber)"
-      echo "BuildMetaData: $(GitVersion_BuildMetaData)"
-      echo "BuildMetaDataPadded: $(GitVersion_BuildMetaDataPadded)"
-      echo "FullBuildMetaData: $(GitVersion_FullBuildMetaData)"
-      echo "MajorMinorPatch: $(GitVersion_MajorMinorPatch)"
-      echo "SemVer: $(GitVersion_SemVer)"
-      echo "LegacySemVer: $(GitVersion_LegacySemVer)"
-      echo "LegacySemVerPadded: $(GitVersion_LegacySemVerPadded)"
-      echo "AssemblySemVer: $(GitVersion_AssemblySemVer)"
-      echo "AssemblySemFileVer: $(GitVersion_AssemblySemFileVer)"
-      echo "FullSemVer: $(GitVersion_FullSemVer)"
-      echo "InformationalVersion: $(GitVersion_InformationalVersion)"
-      echo "BranchName: $(GitVersion_BranchName)"
-      echo "EscapedBranchName: $(GitVersion_EscapedBranchName)"
-      echo "Sha: $(GitVersion_Sha)"
-      echo "ShortSha: $(GitVersion_ShortSha)"
-      echo "NuGetVersionV2: $(GitVersion_NuGetVersionV2)"
-      echo "NuGetVersion: $(GitVersion_NuGetVersion)"
-      echo "NuGetPreReleaseTagV2: $(GitVersion_NuGetPreReleaseTagV2)"
-      echo "NuGetPreReleaseTag: $(GitVersion_NuGetPreReleaseTag)"
-      echo "VersionSourceSha: $(GitVersion_VersionSourceSha)"
-      echo "CommitsSinceVersionSource: $(GitVersion_CommitsSinceVersionSource)"
-      echo "CommitsSinceVersionSourcePadded: $(GitVersion_CommitsSinceVersionSourcePadded)"
-      echo "UncommittedChanges: $(GitVersion_UncommittedChanges)"
-      echo "CommitDate: $(GitVersion_CommitDate)"
-
-  - task: DotNetCoreCLI@2
-    displayName: Pack Example
     inputs:
-      command: pack
-      packagesToPack: src/Example/LibExample.csproj
-      versioningScheme: byEnvVar
-      versionEnvVar: GitVersion_SemVer # alternative syntax GITVERSION_SEMVER (the former gets converted into the latter internally)
+      updateAssemblyInfo: true
 ```
+</details>
 
 ### Example 7
 
-Calculate the version for the build and use the `GitVersion_BranchName` variable in a condition for starting another job.
+<details>
+  <summary>Calculate the version for the build. Override the configuration file with the specified values.</summary>
 
 ```yaml
-jobs:
-  - job: CalculateVersion
-    displayName: Calculate version using GitVersion
-    steps:
-      # gitversion/setup@0 task omitted for brevity.
+steps:
+  # gitversion/setup@0.13.4 task omitted for brevity.
 
-      - task: gitversion/execute@0
-        displayName: Use GitVersion
-        name: Version # the step MUST be named to access its output variables in another job.
-
-  - job: CreateReleaseNotes
-    condition: and(succeeded(), eq(dependencies.CalculateVersion.outputs['Version.GitVersion_BranchName'], 'main'))
-    dependsOn: CalculateVersion
+  - task: gitversion/execute@0.13.4
+    displayName: Determine Version
+    inputs:
+      overrideConfig: |
+        update-build-number=false
+        next-version=1.0.0
 ```
+</details>
+
+## Output usage
+
+The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
+
+The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.
+
+The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
+
+**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.** You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
 
 ### Example 8
 
-Calculate the version for the build and map the `GitVersion_SemVer` variable into a variable in another job.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
 
 ```yaml
 jobs:
-  - job: CalculateVersion
-    displayName: Calculate version using GitVersion
+  - job: GitVersion_v5_same_job
+    displayName: GitVersion v5 (same job)
+    pool:
+      vmImage: ubuntu-latest
     steps:
-      # gitversion/setup@0 task omitted for brevity.
+      - checkout: self
+        fetchDepth: 0
 
-      - task: gitversion/execute@0
-        displayName: Use GitVersion
-        name: Version # the step MUST be named to access its output variables in another job.
+      - task: gitversion/setup@0.13.4
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '5.x'
 
-  - job: BuildAndPack
-    variables:
-      Ver.MajorMinorPatch: $[ dependencies.CalculateVersion.outputs['Version.GitVersion_MajorMinorPatch'] ]
+      - task: gitversion/execute@0.13.4
+        displayName: Determine Version
+        name: version_step # step id used as reference for output values
+        inputs:
+          overrideConfig: |
+            update-build-number=false
+
+      - pwsh: |
+          echo "FullSemVer (fullSemVer)            : $(fullSemVer)"
+        displayName: Display GitVersion variables (without prefix)
+
+      - pwsh: |
+          echo "FullSemVer (GitVersion_FullSemVer) : $(GitVersion_FullSemVer)"
+        displayName: Display GitVersion variables (with prefix)
+
+      - pwsh: |
+          echo "FullSemVer (version_step.fullSemVer)            : $(version_step.fullSemVer)"
+        displayName: Display GitVersion outputs (step output without prefix)
+
+      - pwsh: |
+          echo "FullSemVer (version_step.GitVersion_FullSemVer) : $(version_step.GitVersion_FullSemVer)"
+        displayName: Display GitVersion outputs (step output with prefix)
+
+      - pwsh: |
+          echo "FullSemVer (env:myvar_fullSemVer) : $env:myvar_fullSemVer"
+        displayName: Display mapped local env (pwsh - outputs without prefix)
+        env:
+          myvar_fullSemVer: $(version_step.fullSemVer)
+
+      - pwsh: |
+          echo "FullSemVer (env:myvar_GitVersion_FullSemVer) : $env:myvar_GitVersion_FullSemVer"
+        displayName: Display mapped local env (pwsh - outputs with prefix)
+        env:
+          myvar_GitVersion_FullSemVer: $(version_step.GitVersion_FullSemVer)
+
+      - bash: |
+          echo "FullSemVer (myvar_fullSemVer) : $myvar_fullSemVer"
+        displayName: Display mapped local env (bash - outputs without prefix)
+        env:
+          myvar_fullSemVer: $(version_step.fullSemVer)
+
+      - bash: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer) : $myvar_GitVersion_FullSemVer"
+        displayName: Display mapped local env (bash - outputs with prefix)
+        env:
+          myvar_GitVersion_FullSemVer: $(version_step.GitVersion_FullSemVer)
 ```
+</details>
 
 ### Example 9
-
-Calculate the version for the build and use the `GitVersion.Major` output variable in a condition for starting another stage.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
 
 ```yaml
-stages:
-  - stage: S1
-    jobs:
-      - job: CalculateVersion
-        displayName: Calculate version number using GitVersion
-        steps:
-          # gitversion/setup@0 task omitted for brevity.
+jobs:
+  - job: GitVersion_v5_cross_job
+    displayName: GitVersion v5 (cross job)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 0
 
-          - task: gitversion/execute@0
-            displayName: Use GitVersion
-            name: Version # the step MUST be named to access its output variables in another stage.
+      - task: gitversion/setup@0.13.4
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '5.x'
 
-  - stage: S2
-    condition: and(succeeded(), gt(dependencies.S1.outputs['CalculateVersion.Version.GitVersion_Major'], 0))
-    dependsOn: S1
+      - task: gitversion/execute@0.13.4
+        displayName: Determine Version
+        name: version_step # step id used as reference for output values
+        inputs:
+          overrideConfig: |
+            update-build-number=false
+
+  - job: GitVersion_v5_cross_job_consumer_without_prefix
+    displayName: GitVersion v5 (cross job consumer) - without prefix
+    dependsOn: GitVersion_v5_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
+    variables:
+      myvar_fullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.fullSemVer'] ]
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - pwsh: |
+          echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
+        displayName: Use mapped job variables (pwsh - outputs without prefix)
+
+      - pwsh: |
+          echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
+        displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
+        env:
+          localvar_fullSemVer: $(myvar_fullSemVer)
+
+      - bash: |
+          echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
+        displayName: Use mapped job variables (bash - outputs without prefix)
+
+      - bash: |
+          echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
+        displayName: Use mapped local env from job variables (bash - outputs without prefix)
+        env:
+          localvar_fullSemVer: $(myvar_fullSemVer)
+
+  - job: GitVersion_v5_cross_job_consumer_with_prefix
+    displayName: GitVersion v5 (cross job consumer) - with prefix
+    dependsOn: GitVersion_v5_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
+    variables:
+      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - pwsh: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
+        displayName: Use mapped job variables (pwsh - outputs with prefix)
+
+      - pwsh: |
+          echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
+        displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
+        env:
+          localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+
+      - bash: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer)   : $(myvar_GitVersion_FullSemVer)"
+        displayName: Use mapped job variables (bash - outputs with prefix)
+
+      - bash: |
+          echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+        displayName: Use mapped local env from job variables (bash - outputs with prefix)
+        env:
+          localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
 ```
+</details>
 
 ### Example 10
-
-Calculate the version for the build and map the `GitVersion.AssemblySemVer` variable into a variable in another job for a different stage.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>
 
 ```yaml
 stages:
-  - stage: S1
+  - stage: GitVersion_v5_cross_stage
+    displayName: GitVersion v5 (cross stage)
     jobs:
-      - job: CalculateVersion
-        displayName: Calculate version number using GitVersion
+      - job: GitVersion_v5_cross_stage_producer
+        displayName: GitVersion v5 (cross stage producer)
+        pool:
+          vmImage: ubuntu-latest
         steps:
-          # gitversion/setup@0 task omitted for brevity.
+          - checkout: self
+            fetchDepth: 0
 
-          - task: gitversion/execute@0
-            displayName: Use GitVersion
-            name: Version # the step MUST be named to access its output variables in another stage.
-  - stage: S2
-    dependsOn: S1
+          - task: gitversion/setup@0.13.4
+            displayName: Install GitVersion
+            inputs:
+              versionSpec: '5.x'
+
+          - task: gitversion/execute@0.13.4
+            displayName: Determine Version
+            name: version_step # step id used as reference for output values
+            inputs:
+              overrideConfig: |
+                update-build-number=false
+  - stage: GitVersion_v5_cross_stage_consumer_without_prefix
+    displayName: GitVersion v5 (cross stage consumer) - without prefix
+    dependsOn: GitVersion_v5_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
     jobs:
-      - job: UpdateAssemblyVersions
+      - job: GitVersion_v5_cross_stage_consumer_without_prefix
+        displayName: GitVersion v5 (cross stage consumer) - without prefix
         variables:
-          Ver.AssemblyVer: $[ stageDependencies.S1.CalculateVersion.outputs['Version.GitVersion_AssemblySemVer'] ] # Note the 'stageDependencies.<jobName>' syntax.
+          myvar_fullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.fullSemVer'] ]
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - pwsh: |
+              echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
+            displayName: Use mapped job variables (pwsh - outputs without prefix)
+
+          - pwsh: |
+              echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
+            displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
+            env:
+              localvar_fullSemVer: $(myvar_fullSemVer)
+
+          - bash: |
+              echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
+            displayName: Use mapped job variables (bash - outputs without prefix)
+
+          - bash: |
+              echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
+            displayName: Use mapped local env from job variables (bash - outputs without prefix)
+            env:
+              localvar_fullSemVer: $(myvar_fullSemVer)
+  - stage: GitVersion_v5_cross_stage_consumer_with_prefix
+    displayName: GitVersion v5 (cross stage consumer) - with prefix
+    dependsOn: GitVersion_v5_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
+    jobs:
+      - job: GitVersion_v5_cross_stage_consumer_with_prefix
+        displayName: GitVersion v5 (cross stage consumer) - with prefix
+        variables:
+          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - pwsh: |
+              echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
+            displayName: Use mapped job variables (pwsh - outputs with prefix)
+
+          - pwsh: |
+              echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
+            displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
+            env:
+              localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+
+          - bash: |
+              echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+            displayName: Use mapped job variables (bash - outputs with prefix)
+
+          - bash: |
+              echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+            displayName: Use mapped local env from job variables (bash - outputs with prefix)
+            env:
+              localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
 ```
+</details>
