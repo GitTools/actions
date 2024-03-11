@@ -107,8 +107,8 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 ## Execution Examples
 
 ### Example 1
-
-Calculate the version for the build.
+<details>
+  <summary>Calculate the version for the build.</summary>
 
 ```yaml
 steps:
@@ -117,11 +117,12 @@ steps:
   - task: gitversion/execute@0.13.4
     displayName: Determine Version
 ```
+</details>
 
 ### Example 2
 
-Calculate the version for the build using a config file with the default name **GitVersion.yml**.
-
+<details>
+  <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
 ```yaml
 steps:
   # gitversion/setup@0.13.4 task omitted for brevity.
@@ -142,10 +143,12 @@ branches:
   pull-request:
     tag: pr
 ```
+</details>
 
 ### Example 3
 
-Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.
+<details>
+  <summary>Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.</summary>
 
 ```yaml
 steps:
@@ -157,10 +160,12 @@ steps:
       useConfigFile: true
       configFilePath: 'VersionConfig.yml'
 ```
+</details>
 
 ### Example 4
 
-Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).
+<details>
+  <summary>Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).</summary>
 
 ```yaml
 steps:
@@ -171,10 +176,12 @@ steps:
     inputs:
       additionalArguments: '/showConfig'
 ```
+</details>
 
 ### Example 5
 
-Calculate the version for the build. Disabling the cache and normalization.
+<details>
+  <summary>Calculate the version for the build. Disabling the cache and normalization.</summary>
 
 ```yaml
 steps:
@@ -186,10 +193,12 @@ steps:
       disableCache: true
       disableNormalization: true
 ```
+</details>
 
 ### Example 6
 
-Calculate the version for the build. Update the version in the AssemblyInfo files.
+<details>
+  <summary>Calculate the version for the build. Update the version in the AssemblyInfo files.</summary>
 
 ```yaml
 steps:
@@ -200,10 +209,12 @@ steps:
     inputs:
       updateAssemblyInfo: true
 ```
+</details>
 
 ### Example 7
 
-Calculate the version for the build. Override the configuration file with the specified values.
+<details>
+  <summary>Calculate the version for the build. Override the configuration file with the specified values.</summary>
 
 ```yaml
 steps:
@@ -216,6 +227,7 @@ steps:
         update-build-number=false
         next-version=1.0.0
 ```
+</details>
 
 ## Output usage
 
@@ -223,13 +235,14 @@ The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.G
 
 The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
 
-The multi-job output variables can be accessed across jobs and stages, in both conditions and variables. See examples [7](#example-7) to [10](#example-10).
+The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
 
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
+**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.** You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
 
 ### Example 8
 
-Calculate the version for the build and use the output in a subsequent steps within the same job.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
 
 ```yaml
 jobs:
@@ -293,3 +306,84 @@ jobs:
         env:
           myvar_GitVersion_FullSemVer: $(version_step.GitVersion_FullSemVer)
 ```
+</details>
+
+### Example 9
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
+
+```yaml
+jobs:
+  - job: GitVersion_v5_cross_job
+    displayName: GitVersion v5 (cross job)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+      - task: gitversion/setup@0.13.4
+        displayName: Install GitVersion
+        inputs:
+          versionSpec: '5.x'
+
+      - task: gitversion/execute@0.13.4
+        displayName: Determine Version
+        name: version_step # step id used as reference for output values
+        inputs:
+          overrideConfig: |
+            update-build-number=false
+
+  - job: GitVersion_v5_cross_job_consumer_without_prefix
+    displayName: GitVersion v5 (cross job consumer) - without prefix
+    dependsOn: GitVersion_v5_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
+    variables:
+      myvar_fullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.fullSemVer'] ]
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - pwsh: |
+          echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
+        displayName: Use mapped job variables (pwsh - outputs without prefix)
+      - pwsh: |
+          echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
+        displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
+        env:
+          localvar_fullSemVer: $(myvar_fullSemVer)
+      - bash: |
+          echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
+        displayName: Use mapped job variables (bash - outputs without prefix)
+      - bash: |
+          echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
+        displayName: Use mapped local env from job variables (bash - outputs without prefix)
+        env:
+          localvar_fullSemVer: $(myvar_fullSemVer)
+
+  - job: GitVersion_v5_cross_job_consumer_with_prefix
+    displayName: GitVersion v5 (cross job consumer) - with prefix
+    dependsOn: GitVersion_v5_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
+    variables:
+      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - pwsh: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
+        displayName: Use mapped job variables (pwsh - outputs with prefix)
+      - pwsh: |
+          echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
+        displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
+        env:
+          localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+      - bash: |
+          echo "FullSemVer (myvar_GitVersion_FullSemVer)   : $(myvar_GitVersion_FullSemVer)"
+        displayName: Use mapped job variables (bash - outputs with prefix)
+      - bash: |
+          echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+        displayName: Use mapped local env from job variables (bash - outputs with prefix)
+        env:
+          localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+```
+</details>

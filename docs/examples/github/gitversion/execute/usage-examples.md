@@ -110,7 +110,8 @@ The Execute GitVersion action creates the following outputs:
 
 ### Example 1
 
-Calculate the version for the build.
+<details>
+  <summary>Calculate the version for the build.</summary>
 
 ```yaml
 steps:
@@ -119,10 +120,12 @@ steps:
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
 ```
+</details>
 
 ### Example 2
 
-Calculate the version for the build using a config file with the default name **GitVersion.yml**.
+<details>
+  <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
 
 ```yaml
 steps:
@@ -142,10 +145,12 @@ branches:
   pull-request:
     tag: pr
 ```
+</details>
 
 ### Example 3
 
-Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.
+<details>
+  <summary>Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.</summary>
 
 ```yaml
 steps:
@@ -157,10 +162,12 @@ steps:
       useConfigFile: true
       configFilePath: VersionConfig.yml
 ```
+</details>
 
 ### Example 4
 
-Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).
+<details>
+  <summary>Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).</summary>
 
 ```yaml
 steps:
@@ -172,10 +179,12 @@ steps:
       useConfigFile: true
       additionalArguments: '/showConfig'
 ```
+</details>
 
 ### Example 5
 
-Calculate the version for the build. Disabling the cache and normalization.
+<details>
+  <summary>Calculate the version for the build. Disabling the cache and normalization.</summary>
 
 ```yaml
 steps:
@@ -187,10 +196,12 @@ steps:
       disableCache: true
       disableNormalization: true
 ```
+</details>
 
 ### Example 6
 
-Calculate the version for the build. Update the version in the AssemblyInfo files.
+<details>
+  <summary>Calculate the version for the build. Update the version in the AssemblyInfo files.</summary>
 
 ```yaml
 steps:
@@ -201,10 +212,12 @@ steps:
     with:
       updateAssemblyInfo: true
 ```
+</details>
 
 ### Example 7
 
-Calculate the version for the build. Override the configuration file with the specified values.
+<details>
+  <summary>Calculate the version for the build. Override the configuration file with the specified values.</summary>
 
 ```yaml
 steps:
@@ -217,18 +230,18 @@ steps:
         update-build-number=false
         next-version=1.0.0
 ```
+</details>
 
 ## Output usage
 
 The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
 
-The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.  See example [6](#example-6).
-
-The outputs can be accessed across jobs by mapping them to job outputs and referencing the job outputs using the `needs` context in dependent jobs.  See examples [7](#example-7) and [8](#example-8).
+The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
 ### Example 8
 
-Calculate the version for the build and use the output in a subsequent steps within the same job.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
 
 ```yaml
 jobs:
@@ -306,10 +319,12 @@ jobs:
         env:
           myvar_GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
 ```
+</details>
 
 ### Example 9
 
-Calculate the version for the build and use the output in a subsequent job.
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
 
 ```yaml
 jobs:
@@ -449,3 +464,4 @@ jobs:
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 ```
+</details>
