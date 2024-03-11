@@ -23,12 +23,18 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', setupSettings)
     }
 
-    public run(options: GitVersionSettings): Promise<IExecResult> {
+    public async run(options: GitVersionSettings): Promise<IExecResult> {
+        const isShallowResult = await this.execute('git', ['rev-parse', '--is-shallow-repository'])
+        if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
+            throw new Error(
+                'The repository is shallow. Consider disabling shallow clones. See https://github.com/GitTools/actions/blob/main/docs/cloning.md for more information.'
+            )
+        }
         const workDir = this.getRepoDir(options)
 
         const args = this.getArguments(workDir, options)
 
-        return this.execute('dotnet-gitversion', args)
+        return await this.execute('dotnet-gitversion', args)
     }
 
     private getRepoDir(options: GitVersionSettings): string {
