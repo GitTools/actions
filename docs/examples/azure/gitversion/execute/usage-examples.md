@@ -1,23 +1,24 @@
-# Execute GitVersion Task (gitversion/execute) Usage Examples
+# Execute GitVersion Task (gitversion/execute) usage Examples
 
 Find out how to use the **gitversion/execute** task using the examples below.
-
-> The examples use the latest _0.x_ version of the GitVersion Execute task.  It is recommended to use the latest released version in your own pipelines.
 
 Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use `fetchDepth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml
-- checkout: self
-  fetchDepth: 0
+steps:
+  - checkout: self
+    fetchDepth: 0
 
-- task: gitversion/setup@0.13.4
-  displayName: Install GitVersion
-  inputs:
-    versionSpec: '5.x'
+  - task: gitversion/setup@0.13.4
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '5.x'
 ```
 
 These steps are omitted from the examples for brevity.
+
+> The examples use version _0.13.4_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -101,18 +102,9 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
-
-The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
-
-The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
-
-The multi-job output variables can be accessed across jobs and stages, in both conditions and variables. See examples [7](#example-7) to [10](#example-10).
-
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
-
 ---
 
-## Examples
+## Execution Examples
 
 ### Example 1
 
@@ -224,6 +216,16 @@ steps:
         update-build-number=false
         next-version=1.0.0
 ```
+
+## Output usage
+
+The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
+
+The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
+
+The multi-job output variables can be accessed across jobs and stages, in both conditions and variables. See examples [7](#example-7) to [10](#example-10).
+
+**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
 
 ### Example 8
 

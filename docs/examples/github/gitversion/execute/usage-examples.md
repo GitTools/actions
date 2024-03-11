@@ -1,8 +1,8 @@
-# Execute GitVersion Action (gitversion/execute) Usage Examples
+# Execute GitVersion Action (gitversion/execute) usage Examples
 
 Find out how to use the **gitversion/execute** action using the examples below.
 
-For the GitVersion workflow to execute successfully, you must checkout your Git repository with `fetch-depth: 0` to fetch all history for all tags and branches.
+Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute action will fail. It is required to use `fetch-depth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml
@@ -12,7 +12,7 @@ steps:
     with:
       fetch-depth: 0
 
-  - task: gitversion/setup@v0.13.4
+  - task: gittools/actions/gitversion/setup@v0.13.4
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'
@@ -104,16 +104,9 @@ The Execute GitVersion action creates the following outputs:
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
-
-The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
-
-The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.  See example [6](#example-6).
-
-The outputs can be accessed across jobs by mapping them to job outputs and referencing the job outputs using the `needs` context in dependent jobs.  See examples [7](#example-7) and [8](#example-8).
-
 ---
 
-## Examples
+## Execution Examples
 
 ### Example 1
 
@@ -121,7 +114,7 @@ Calculate the version for the build.
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -156,7 +149,7 @@ Calculate the version for the build using a config file named **VersionConfig.ym
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -171,7 +164,7 @@ Show the effective configuration for GitVersion by running the **/showConfig** c
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Display GitVersion config
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -186,7 +179,7 @@ Calculate the version for the build. Disabling the cache and normalization.
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -201,7 +194,7 @@ Calculate the version for the build. Update the version in the AssemblyInfo file
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -215,7 +208,7 @@ Calculate the version for the build. Override the configuration file with the sp
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
@@ -225,13 +218,21 @@ steps:
         next-version=1.0.0
 ```
 
+## Output usage
+
+The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
+
+The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.  See example [6](#example-6).
+
+The outputs can be accessed across jobs by mapping them to job outputs and referencing the job outputs using the `needs` context in dependent jobs.  See examples [7](#example-7) and [8](#example-8).
+
 ### Example 8
 
 Calculate the version for the build and display all the calculated variables in the next step.
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     id:   gitversion # id to later be referenced
@@ -314,7 +315,7 @@ Calculate the version for the build and display the value of the `env.GitVersion
 
 ```yaml
 steps:
-  # gitversion/setup@v0.13.4 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v0.13.4 action omitted for brevity.
 
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v0.13.4
