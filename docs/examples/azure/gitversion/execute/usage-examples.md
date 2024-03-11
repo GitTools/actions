@@ -387,3 +387,90 @@ jobs:
           localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
 ```
 </details>
+
+### Example 10
+<details>
+  <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>
+
+```yaml
+stages:
+  - stage: GitVersion_v5_cross_stage
+    displayName: GitVersion v5 (cross stage)
+    jobs:
+      - job: GitVersion_v5_cross_stage_producer
+        displayName: GitVersion v5 (cross stage producer)
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - task: gitversion/setup@0.13.4
+            displayName: Install GitVersion
+            inputs:
+              versionSpec: '5.x'
+
+          - task: gitversion/execute@0.13.4
+            displayName: Determine Version
+            name: version_step # step id used as reference for output values
+            inputs:
+              overrideConfig: |
+                update-build-number=false
+  - stage: GitVersion_v5_cross_stage_consumer_without_prefix
+    displayName: GitVersion v5 (cross stage consumer) - without prefix
+    dependsOn: GitVersion_v5_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
+    jobs:
+      - job: GitVersion_v5_cross_stage_consumer_without_prefix
+        displayName: GitVersion v5 (cross stage consumer) - without prefix
+        variables:
+          myvar_fullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.fullSemVer'] ]
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - pwsh: |
+              echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
+            displayName: Use mapped job variables (pwsh - outputs without prefix)
+          - pwsh: |
+              echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
+            displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
+            env:
+              localvar_fullSemVer: $(myvar_fullSemVer)
+          - bash: |
+              echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
+            displayName: Use mapped job variables (bash - outputs without prefix)
+          - bash: |
+              echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
+            displayName: Use mapped local env from job variables (bash - outputs without prefix)
+            env:
+              localvar_fullSemVer: $(myvar_fullSemVer)
+  - stage: GitVersion_v5_cross_stage_consumer_with_prefix
+    displayName: GitVersion v5 (cross stage consumer) - with prefix
+    dependsOn: GitVersion_v5_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
+    jobs:
+      - job: GitVersion_v5_cross_stage_consumer_with_prefix
+        displayName: GitVersion v5 (cross stage consumer) - with prefix
+        variables:
+          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - pwsh: |
+              echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
+            displayName: Use mapped job variables (pwsh - outputs with prefix)
+          - pwsh: |
+              echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
+            displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
+            env:
+              localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+          - bash: |
+              echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+            displayName: Use mapped job variables (bash - outputs with prefix)
+          - bash: |
+              echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
+            displayName: Use mapped local env from job variables (bash - outputs with prefix)
+            env:
+              localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+```
+</details>
