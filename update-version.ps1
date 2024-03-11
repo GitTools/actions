@@ -60,5 +60,5 @@ function update-md-files()
     $file = Resolve-Path $file
     Write-Host "Update md file $file version from $oldVersion to $newVersion"
 
-    ((Get-Content $file -Raw) -replace $oldVersion, $newVersion ) | Set-Content $file -NoNewline
+    ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
 }
