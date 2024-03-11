@@ -231,9 +231,9 @@ steps:
 
 ## Output usage
 
-The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.  See example [5](#example-5).
+The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
 
-The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.  See example [6](#example-6).
+The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.
 
 The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
 
@@ -346,14 +346,17 @@ jobs:
       - pwsh: |
           echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
         displayName: Use mapped job variables (pwsh - outputs without prefix)
+
       - pwsh: |
           echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
         displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
         env:
           localvar_fullSemVer: $(myvar_fullSemVer)
+
       - bash: |
           echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
         displayName: Use mapped job variables (bash - outputs without prefix)
+
       - bash: |
           echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
         displayName: Use mapped local env from job variables (bash - outputs without prefix)
@@ -372,14 +375,17 @@ jobs:
       - pwsh: |
           echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
         displayName: Use mapped job variables (pwsh - outputs with prefix)
+
       - pwsh: |
           echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
         displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
         env:
           localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+
       - bash: |
           echo "FullSemVer (myvar_GitVersion_FullSemVer)   : $(myvar_GitVersion_FullSemVer)"
         displayName: Use mapped job variables (bash - outputs with prefix)
+
       - bash: |
           echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
         displayName: Use mapped local env from job variables (bash - outputs with prefix)
@@ -431,14 +437,17 @@ stages:
           - pwsh: |
               echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
             displayName: Use mapped job variables (pwsh - outputs without prefix)
+
           - pwsh: |
               echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
             displayName: Use mapped local env from job variables (pwsh - outputs without prefix)
             env:
               localvar_fullSemVer: $(myvar_fullSemVer)
+
           - bash: |
               echo "FullSemVer (myvar_fullSemVer)   : $(myvar_fullSemVer)"
             displayName: Use mapped job variables (bash - outputs without prefix)
+
           - bash: |
               echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
             displayName: Use mapped local env from job variables (bash - outputs without prefix)
@@ -459,14 +468,17 @@ stages:
           - pwsh: |
               echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
             displayName: Use mapped job variables (pwsh - outputs with prefix)
+
           - pwsh: |
               echo "FullSemVer (env:localvar_GitVersion_FullSemVer)   : $env:localvar_GitVersion_FullSemVer"
             displayName: Use mapped local env from job variables (pwsh - outputs with prefix)
             env:
               localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+
           - bash: |
               echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
             displayName: Use mapped job variables (bash - outputs with prefix)
+
           - bash: |
               echo "FullSemVer (localvar_GitVersion_FullSemVer)   : $localvar_GitVersion_FullSemVer"
             displayName: Use mapped local env from job variables (bash - outputs with prefix)
