@@ -1,0 +1,33 @@
+name: Update examples version
+
+on:
+  repository_dispatch:
+    types: [ update-examples ]
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  update-examples-version:
+    if: ${{ github.event_name == 'repository_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+      - run: |
+          $oldTag = "${{ github.event.client_payload.oldTag }}"
+          $newTag = "${{ github.event.client_payload.newTag }}"
+
+          . .\update-version.ps1 # Import the functions
+          dir -r .\docs\**\*.md | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .github\**\*.yml | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .azure\**\*.yml | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
+
+          git add --verbose .
+          git config user.name 'Artur'
+          git config user.email 'arturcic@gmail.com'
+          git commit -m "update examples version to $newTag" --allow-empty
+          git push --force
+        name: Update examples version

@@ -1,7 +1,7 @@
 name: release
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 defaults:
   run:
@@ -9,42 +9,60 @@ defaults:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
     steps:
-    - uses: actions/checkout@v4
-    - name: Fetch all history for all tags and branches
-      run: |
-        git fetch --prune --unshallow
-    - run: |
-        npm install
-        npm run build:agent:github
-        npm run build:agent:azure
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+      - run: |
+          npm install
+          npm run build:agent:github
+          npm run build:agent:azure
 
-        # npm run compress:github
-        # npm run compress:azure
-      name: Build code
-    - name: Install GitVersion
-      uses: ./gitversion/setup
-      with:
-        versionSpec: '5.x'
-    - name: Use GitVersion
-      id: gitversion # step id used as reference for output values
-      uses: ./gitversion/execute
-    - run: |
-        $date = Get-Date -format "yyMMddHH"
-        $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
-        $major = "${{steps.gitversion.outputs.major}}"
-        $minor = "${{steps.gitversion.outputs.minor}}"
-        $patch = "${{steps.gitversion.outputs.patch}}"
+          # npm run compress:github
+          # npm run compress:azure
+        name: Build code
+      - name: Install GitVersion
+        uses: ./gitversion/setup
+        with:
+          versionSpec: '5.x'
+      - name: Use GitVersion
+        id: gitversion # step id used as reference for output values
+        uses: ./gitversion/execute
+      - run: |
+          $date = Get-Date -format "yyMMddHH"
+          $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
+          $major = "${{steps.gitversion.outputs.major}}"
+          $minor = "${{steps.gitversion.outputs.minor}}"
+          $patch = "${{steps.gitversion.outputs.patch}}"
 
-        . .\update-version.ps1 # Import the functions
-        update-manifest .\dist\azure\vss-extension.json -Version $version
-        dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor -Patch $patch }
+          . .\update-version.ps1 # Import the functions
+          update-manifest .\dist\azure\vss-extension.json -Version $version
+          dir -r .\dist\**\task.json | % { update-task $_ -Major $major -Minor $minor -Patch $patch }
 
-        npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
+          npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }}
+        name: Publish Azure extension
+      - name: Get tags
+        id: get-tags
+        shell: pwsh
+        run: |
+          # Finding the version from release tag
 
-      name: Publish Azure extension
+          $newTag = "${{steps.gitversion.outputs.majorMinorPatch}}"
+          $oldTag = $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)).Trim("v")
+          echo "Old tag: $oldTag"
+          echo "New tag: $newTag"
+
+          "oldTag=$oldTag" >> $env:GITHUB_OUTPUT
+          "newTag=$newTag" >> $env:GITHUB_OUTPUT
+      - uses: peter-evans/repository-dispatch@v3
+        name: Trigger Update Examples version
+        with:
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: update-examples
+          client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
