@@ -20,7 +20,7 @@ export async function setup() {
 
         await gitReleaseManagerTool.install(settings)
 
-        buildAgent.setSucceeded('GitVersionManager installed successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -34,7 +34,7 @@ export async function create() {
 
         await gitReleaseManagerTool.create(settings)
 
-        buildAgent.setSucceeded('GitVersionManager created release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager created release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -48,7 +48,7 @@ export async function discard() {
 
         await gitReleaseManagerTool.discard(settings)
 
-        buildAgent.setSucceeded('GitVersionManager discarded release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager discarded release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -62,7 +62,7 @@ export async function close() {
 
         await gitReleaseManagerTool.close(settings)
 
-        buildAgent.setSucceeded('GitVersionManager closed release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager closed release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -76,7 +76,7 @@ export async function open() {
 
         await gitReleaseManagerTool.open(settings)
 
-        buildAgent.setSucceeded('GitVersionManager opened release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager opened release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -90,7 +90,7 @@ export async function publish() {
 
         await gitReleaseManagerTool.publish(settings)
 
-        buildAgent.setSucceeded('GitVersionManager published release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager published release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
@@ -104,7 +104,7 @@ export async function addAsset() {
 
         await gitReleaseManagerTool.addAsset(settings)
 
-        buildAgent.setSucceeded('GitVersionManager added assets to release successfully', true)
+        buildAgent.setSucceeded('GitReleaseManager added assets to release successfully', true)
     } catch (error) {
         buildAgent.setFailed(error.message, true)
     }
