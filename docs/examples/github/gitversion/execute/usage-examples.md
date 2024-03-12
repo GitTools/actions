@@ -12,7 +12,7 @@ steps:
     with:
       fetch-depth: 0
 
-  - task: gittools/actions/gitversion/setup@v0.13.6
+  - task: gittools/actions/gitversion/setup@v1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'
@@ -20,7 +20,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _0.13.6_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _1.0.0_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -115,10 +115,10 @@ The Execute GitVersion action creates the following outputs:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
 ```
 </details>
 
@@ -130,7 +130,7 @@ steps:
 ```yaml
 steps:
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       useConfigFile: true
 ```
@@ -154,10 +154,10 @@ branches:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       useConfigFile: true
       configFilePath: VersionConfig.yml
@@ -171,10 +171,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       useConfigFile: true
       additionalArguments: '/showConfig'
@@ -188,10 +188,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       disableCache: true
       disableNormalization: true
@@ -205,10 +205,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       updateAssemblyInfo: true
 ```
@@ -221,10 +221,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v0.13.6 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v1.0.0 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v0.13.6
+    uses: gittools/actions/gitversion/execute@v1.0.0
     with:
       overrideConfig: |
         update-build-number=false
@@ -255,13 +255,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.13.6
+        uses: gittools/actions/gitversion/setup@v1.0.0
         with:
           versionSpec: '5.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values
-        uses: gittools/actions/gitversion/execute@v0.13.6
+        uses: gittools/actions/gitversion/execute@v1.0.0
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
@@ -344,13 +344,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.13.6
+        uses: gittools/actions/gitversion/setup@v1.0.0
         with:
           versionSpec: '5.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values
-        uses: gittools/actions/gitversion/execute@v0.13.6
+        uses: gittools/actions/gitversion/execute@v1.0.0
 
   GitVersion_v5_cross_job_consumer_without_prefix:
     name: GitVersion v5 (cross job consumer) - without prefix

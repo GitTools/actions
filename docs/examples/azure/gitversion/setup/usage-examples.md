@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** task using the examples below.
 
-> The examples use version _0.13.6_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _1.0.0_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -45,7 +45,7 @@ Install the latest GitVersion 5 version.
 
 ```yaml
 steps:
-  - task: gitversion/setup@0.13.6
+  - task: gitversion/setup@1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'
@@ -57,7 +57,7 @@ Install GitVersion 5.12.0.
 
 ```yaml
 steps:
-  - task: gitversion/setup@0.13.6
+  - task: gitversion/setup@1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.12.0'
@@ -69,7 +69,7 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6
 
 ```yaml
 steps:
-  - task: gitversion/setup@0.13.6
+  - task: gitversion/setup@1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.x'
@@ -82,7 +82,7 @@ Install the latest GitVersion 5 version even it there is a cached version matchi
 
 ```yaml
 steps:
-  - task: gitversion/setup@0.13.6
+  - task: gitversion/setup@1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'

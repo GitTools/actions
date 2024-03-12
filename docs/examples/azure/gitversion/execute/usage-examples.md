@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion/setup@0.13.6
+  - task: gitversion/setup@1.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '5.x'
@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _0.13.6_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _1.0.0_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -112,9 +112,9 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
 ```
 </details>
@@ -125,9 +125,9 @@ steps:
   <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
     inputs:
       useConfigFile: true
@@ -152,9 +152,9 @@ branches:
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
     inputs:
       useConfigFile: true
@@ -169,9 +169,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Display GitVersion config
     inputs:
       additionalArguments: '/showConfig'
@@ -185,9 +185,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
     inputs:
       disableCache: true
@@ -202,9 +202,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
     inputs:
       updateAssemblyInfo: true
@@ -218,9 +218,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@0.13.6 task omitted for brevity.
+  # gitversion/setup@1.0.0 task omitted for brevity.
 
-  - task: gitversion/execute@0.13.6
+  - task: gitversion/execute@1.0.0
     displayName: Determine Version
     inputs:
       overrideConfig: |
@@ -254,12 +254,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@0.13.6
+      - task: gitversion/setup@1.0.0
         displayName: Install GitVersion
         inputs:
           versionSpec: '5.x'
 
-      - task: gitversion/execute@0.13.6
+      - task: gitversion/execute@1.0.0
         displayName: Determine Version
         name: version_step # step id used as reference for output values
         inputs:
@@ -322,12 +322,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@0.13.6
+      - task: gitversion/setup@1.0.0
         displayName: Install GitVersion
         inputs:
           versionSpec: '5.x'
 
-      - task: gitversion/execute@0.13.6
+      - task: gitversion/execute@1.0.0
         displayName: Determine Version
         name: version_step # step id used as reference for output values
         inputs:
@@ -411,12 +411,12 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion/setup@0.13.6
+          - task: gitversion/setup@1.0.0
             displayName: Install GitVersion
             inputs:
               versionSpec: '5.x'
 
-          - task: gitversion/execute@0.13.6
+          - task: gitversion/execute@1.0.0
             displayName: Determine Version
             name: version_step # step id used as reference for output values
             inputs:

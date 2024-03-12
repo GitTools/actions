@@ -23,13 +23,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.13.6
+        uses: gittools/actions/gitversion/setup@v1.0.0
         with:
           versionSpec: '5.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values
-        uses: gittools/actions/gitversion/execute@v0.13.6
+        uses: gittools/actions/gitversion/execute@v1.0.0
 
   GitVersion_v5_cross_job_consumer_without_prefix:
     name: GitVersion v5 (cross job consumer) - without prefix

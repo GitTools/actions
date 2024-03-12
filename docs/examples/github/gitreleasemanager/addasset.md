@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/addasset@v0.13.6
+  - uses: gittools/actions/gitreleasemanager/addasset@v1.0.0
     name: Add asset to a release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
