@@ -39,6 +39,10 @@ disableNormalization:
   description: Whether to disable GitVersion normalization
   required: false
   default: 'false'
+disableShallowCloneCheck:
+  description: Whether to disable the check for shallow clone
+  required: false
+  default: 'false'
 useConfigFile:
   description: Whether to use a custom configuration file
   required: false
