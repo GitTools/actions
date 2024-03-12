@@ -2,11 +2,11 @@ name: checkout-path
 on:
   push:
     branches:
-      - checkout
+      - main
 
   pull_request:
     branches:
-      - checkout
+      - main
   workflow_dispatch:
 
 defaults:
@@ -25,14 +25,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: arturcic/gittools-actions/gitversion/setup@checkout
+        uses: gittools/actions/gitversion/setup@main
         with:
           versionSpec: '5.x'
-          preferLatestVersion: true
 
       - name: Determine version
         id: gitversion
-        uses: arturcic/gittools-actions/gitversion/execute@checkout
+        uses: gittools/actions/gitversion/execute@main
         with:
           targetPath: gv-repo
 
