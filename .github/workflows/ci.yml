@@ -54,17 +54,17 @@ jobs:
         overrideConfig: |
           update-build-number=false
     - run: |
-        echo "Major      (major)                                          : ${{ env.major }}"
+        echo "Major      (env.major)                                      : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"
         echo "Major      (steps.gitversion.outputs.major)                 : ${{ steps.gitversion.outputs.major }}"
         echo "Major      (steps.gitversion.outputs.GitVersion_Major)      : ${{ steps.gitversion.outputs.GitVersion_Major }}"
 
-        echo "Minor      (minor)                                          : ${{ env.minor }}"
+        echo "Minor      (env.minor)                                      : ${{ env.minor }}"
         echo "Minor      (env.GitVersion_Minor)                           : ${{ env.GitVersion_Minor }}"
         echo "Minor      (steps.gitversion.outputs.minor)                 : ${{ steps.gitversion.outputs.minor }}"
         echo "Minor      (steps.gitversion.outputs.GitVersion_Minor)      : ${{ steps.gitversion.outputs.GitVersion_Minor }}"
 
-        echo "Patch      (patch)                                          : ${{ env.patch }}"
+        echo "Patch      (env.patch)                                      : ${{ env.patch }}"
         echo "Patch      (env.GitVersion_Patch)                           : ${{ env.GitVersion_Patch }}"
         echo "Patch      (steps.gitversion.outputs.patch)                 : ${{ steps.gitversion.outputs.patch }}"
         echo "Patch      (steps.gitversion.outputs.GitVersion_Patch)      : ${{ steps.gitversion.outputs.GitVersion_Patch }}"
