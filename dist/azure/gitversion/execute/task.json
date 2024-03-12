@@ -65,6 +65,14 @@
             "helpMarkDown": "Whether to disable GitVersion normalization"
         },
         {
+            "name": "disableShallowCloneCheck",
+            "type": "boolean",
+            "label": "Disable Shallow Clone Check",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to disable GitVersion shallow clone check"
+        },
+        {
             "name": "useConfigFile",
             "type": "boolean",
             "label": "Specify Configuration file",

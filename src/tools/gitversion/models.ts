@@ -4,6 +4,7 @@ export enum ExecuteFields {
     targetPath = 'targetPath',
     disableCache = 'disableCache',
     disableNormalization = 'disableNormalization',
+    disableShallowCloneCheck = 'disableShallowCloneCheck',
     useConfigFile = 'useConfigFile',
     configFilePath = 'configFilePath',
     overrideConfig = 'overrideConfig',
@@ -17,6 +18,7 @@ export interface GitVersionSettings {
     [ExecuteFields.targetPath]: string
     [ExecuteFields.disableCache]: boolean
     [ExecuteFields.disableNormalization]: boolean
+    [ExecuteFields.disableShallowCloneCheck]: boolean
     [ExecuteFields.useConfigFile]: boolean
     [ExecuteFields.configFilePath]: string
     [ExecuteFields.overrideConfig]: string[]
