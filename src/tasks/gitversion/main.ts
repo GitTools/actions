@@ -45,8 +45,8 @@ export async function run() {
             } else {
                 const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
 
-                const gitversion = JSON.parse(jsonOutput) as GitVersionOutput
-                gitVersionTool.writeGitVersionToAgent(gitversion)
+                const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
+                gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
             }
         } else {
             buildAgent.setFailed(result.error.message, true)
