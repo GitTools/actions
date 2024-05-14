@@ -31,9 +31,6 @@ jobs:
       if: github.event_name == 'pull_request'
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
     - run: |
         npm install
         npm run format-check
