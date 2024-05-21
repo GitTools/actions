@@ -12,9 +12,9 @@ steps:
     with:
       fetch-depth: 0
 
-  - task: gittools/actions/gitversion/setup@v1.1.1
-    displayName: Install GitVersion
-    inputs:
+  - name: Install GitVersion
+    uses: gittools/actions/gitversion/setup@v1.1.1
+    with:
       versionSpec: '5.x'
 ```
 
