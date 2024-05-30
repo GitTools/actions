@@ -3,17 +3,17 @@ import * as path from 'path'
 import { inject, injectable } from 'inversify'
 
 import {
-    GitReleaseManagerAddAssetSettings,
-    GitReleaseManagerCloseSettings,
-    GitReleaseManagerCreateSettings,
-    GitReleaseManagerDiscardSettings,
-    GitReleaseManagerOpenSettings,
-    GitReleaseManagerPublishSettings,
-    GitReleaseManagerSettings
+    type GitReleaseManagerAddAssetSettings,
+    type GitReleaseManagerCloseSettings,
+    type GitReleaseManagerCreateSettings,
+    type GitReleaseManagerDiscardSettings,
+    type GitReleaseManagerOpenSettings,
+    type GitReleaseManagerPublishSettings,
+    type GitReleaseManagerSettings
 } from './models'
-import { SetupSettings, TYPES } from '../common/models'
+import { type SetupSettings, TYPES } from '../common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
-import { ExecResult } from '../../agents/common/models'
+import { type ExecResult } from '../../agents/common/models'
 import { IBuildAgent } from '../../agents/common/build-agent'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {

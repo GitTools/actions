@@ -5,15 +5,11 @@ export enum SetupFields {
     preferLatestVersion = 'preferLatestVersion'
 }
 
-export interface SetupSettings {
+export type SetupSettings = {
     [SetupFields.versionSpec]: string
     [SetupFields.includePrerelease]: boolean
     [SetupFields.ignoreFailedSources]: boolean
     [SetupFields.preferLatestVersion]: boolean
-}
-
-export interface ISettingsProvider {
-    getSetupSettings(): SetupSettings
 }
 
 export const TYPES = {

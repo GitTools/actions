@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
-import { GitVersionOutput, GitVersionSettings } from './models'
-import { SetupSettings, TYPES } from '../common/models'
-import { ExecResult } from '../../agents/common/models'
+import { type GitVersionOutput, type GitVersionSettings } from './models'
+import { type SetupSettings, TYPES } from '../common/models'
+import { type ExecResult } from '../../agents/common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { IBuildAgent } from '../../agents/common/build-agent'
 

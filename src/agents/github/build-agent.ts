@@ -12,7 +12,7 @@ import * as toolCache from '@actions/tool-cache'
 import { injectable } from 'inversify'
 
 import { IRequestOptions, IProxyConfiguration } from 'typed-rest-client/Interfaces'
-import { ExecResult } from '../common/models'
+import { type ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
 
 @injectable()

@@ -1,5 +1,5 @@
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import { ExecResult } from './models'
+import { type ExecResult } from './models'
 
 export interface IBuildAgent {
     agentName: string

@@ -4,21 +4,36 @@ import {
     CommonFields,
     CreateFields,
     DiscardFields,
-    GitReleaseManagerAddAssetSettings,
-    GitReleaseManagerCloseSettings,
-    GitReleaseManagerCreateSettings,
-    GitReleaseManagerDiscardSettings,
-    GitReleaseManagerOpenSettings,
-    GitReleaseManagerPublishSettings,
-    GitReleaseManagerSettings,
-    IGitReleaseManagerSettingsProvider,
+    type GitReleaseManagerAddAssetSettings,
+    type GitReleaseManagerCloseSettings,
+    type GitReleaseManagerCreateSettings,
+    type GitReleaseManagerDiscardSettings,
+    type GitReleaseManagerOpenSettings,
+    type GitReleaseManagerPublishSettings,
+    type GitReleaseManagerSettings,
     OpenFields,
     PublishFields
 } from './models'
-import { SettingsProvider } from '../common/settings'
+import { ISettingsProvider, SettingsProvider } from '../common/settings'
 import { inject, injectable } from 'inversify'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import { TYPES } from '../common/models'
+
+export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
+    getCreateSettings(): GitReleaseManagerCreateSettings
+
+    getDiscardSettings(): GitReleaseManagerDiscardSettings
+
+    getCloseSettings(): GitReleaseManagerCloseSettings
+
+    getOpenSettings(): GitReleaseManagerOpenSettings
+
+    getPublishSettings(): GitReleaseManagerPublishSettings
+
+    getAddAssetSettings(): GitReleaseManagerAddAssetSettings
+
+    getCommonSettings(): GitReleaseManagerSettings
+}
 
 @injectable()
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {

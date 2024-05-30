@@ -5,7 +5,7 @@ import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
 import * as os from 'os'
-import { ExecResult } from '../common/models'
+import { type ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
 
 @injectable()

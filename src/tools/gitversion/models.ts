@@ -1,5 +1,3 @@
-import { ISettingsProvider } from '../common/models'
-
 export enum ExecuteFields {
     targetPath = 'targetPath',
     disableCache = 'disableCache',
@@ -14,7 +12,7 @@ export enum ExecuteFields {
     srcDir = 'srcDir'
 }
 
-export interface GitVersionSettings {
+export type GitVersionSettings = {
     [ExecuteFields.targetPath]: string
     [ExecuteFields.disableCache]: boolean
     [ExecuteFields.disableNormalization]: boolean
@@ -28,11 +26,7 @@ export interface GitVersionSettings {
     [ExecuteFields.srcDir]: string
 }
 
-export interface IGitVersionSettingsProvider extends ISettingsProvider {
-    getGitVersionSettings(): GitVersionSettings
-}
-
-export interface GitVersionOutput {
+export type GitVersionOutput = {
     Major: number
     Minor: number
     Patch: number
