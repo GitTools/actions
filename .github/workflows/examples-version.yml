@@ -26,8 +26,8 @@ jobs:
           dir -r .azure\**\*.yml | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
 
           git add --verbose .
-          git config user.name 'Artur'
-          git config user.email 'arturcic@gmail.com'
+          git config user.name 'Artur Stolear'
+          git config user.email 'artur.stolear@gmail.com'
           git commit -m "update examples version to $newTag" --allow-empty
           git push --force
         name: Update examples version
