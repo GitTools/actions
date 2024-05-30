@@ -1,7 +1,7 @@
 import { injectable } from 'inversify'
 
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import { IExecResult } from '../common/models'
+import { ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
@@ -64,7 +64,7 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve('which')
     }
 
-    public exec(exec: string, args: string[]): Promise<IExecResult> {
+    public exec(exec: string, args: string[]): Promise<ExecResult> {
         return Promise.resolve({
             code: 0,
             error: null,

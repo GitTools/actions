@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify'
 import { GitVersionOutput, GitVersionSettings } from './models'
-import { ISetupSettings, TYPES } from '../common/models'
-import { IExecResult } from '../../agents/common/models'
+import { SetupSettings, TYPES } from '../common/models'
+import { ExecResult } from '../../agents/common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { IBuildAgent } from '../../agents/common/build-agent'
 
 export interface IGitVersionTool extends IDotnetTool {
-    install(setupSettings: ISetupSettings): Promise<void>
+    install(setupSettings: SetupSettings): Promise<void>
 
-    run(options: GitVersionSettings): Promise<IExecResult>
+    run(options: GitVersionSettings): Promise<ExecResult>
 
     writeGitVersionToAgent(gitversion: GitVersionOutput): void
 }
@@ -19,11 +19,11 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         super(buildAgent)
     }
 
-    public async install(setupSettings: ISetupSettings): Promise<void> {
+    public async install(setupSettings: SetupSettings): Promise<void> {
         await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', setupSettings)
     }
 
-    public async run(options: GitVersionSettings): Promise<IExecResult> {
+    public async run(options: GitVersionSettings): Promise<ExecResult> {
         const workDir = this.getRepoDir(options)
 
         if (!options.disableShallowCloneCheck) {
@@ -38,6 +38,23 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         const args = this.getArguments(workDir, options)
 
         return await this.execute('dotnet-gitversion', args)
+    }
+
+    public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
+        let properties = Object.keys(gitversion)
+        let gitversionOutput = <any>gitversion
+
+        properties.forEach(property => {
+            const name = this.toCamelCase(property)
+            let value = gitversionOutput[property]
+            if (value === 0) {
+                value = '0'
+            }
+            this.buildAgent.setOutput(name, value)
+            this.buildAgent.setOutput(`GitVersion_${name}`, value)
+            this.buildAgent.setVariable(name, value)
+            this.buildAgent.setVariable(`GitVersion_${name}`, value)
+        })
     }
 
     private getRepoDir(options: GitVersionSettings): string {
@@ -83,17 +100,17 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             if (this.buildAgent.isValidInputFile('configFilePath', configFilePath)) {
                 args.push('/config', configFilePath)
             } else {
-                throw new Error('GitVersion configuration file not found at ' + configFilePath)
+                throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
             }
         }
 
         if (overrideConfig) {
-            overrideConfig.forEach(config => {
+            for (let config of overrideConfig) {
                 config = config.trim()
                 if (config.match(/([a-zA-Z0-9]+(-[a-zA-Z]+)*=[a-zA-Z0-9\- :.']*)/)) {
                     args.push('/overrideconfig', config)
                 }
-            })
+            }
         }
 
         if (updateAssemblyInfo) {
@@ -104,7 +121,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
                 if (this.buildAgent.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
                     args.push(updateAssemblyInfoFilename)
                 } else {
-                    throw new Error('AssemblyInfoFilename file not found at ' + updateAssemblyInfoFilename)
+                    throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)
                 }
             }
         }
@@ -115,23 +132,6 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return args
     }
 
-    public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
-        let properties = Object.keys(gitversion)
-        let gitversionOutput = <any>gitversion
-
-        properties.forEach(property => {
-            const name = this.toCamelCase(property)
-            let value = gitversionOutput[property]
-            if (value === 0) {
-                value = '0'
-            }
-            this.buildAgent.setOutput(name, value)
-            this.buildAgent.setOutput(`GitVersion_${name}`, value)
-            this.buildAgent.setVariable(name, value)
-            this.buildAgent.setVariable(`GitVersion_${name}`, value)
-        })
-    }
-
     private argStringToArray(argString: string): string[] {
         const args: string[] = []
 
@@ -140,7 +140,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         let lastCharWasSpace = true
         let arg = ''
 
-        const append = function (c: string) {
+        const append = (c: string): void => {
             // we only escape double quotes.
             if (escaped && c !== '"') {
                 arg += '\\'
@@ -197,7 +197,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     private toCamelCase(input: string): string {
         return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function (match, index) {
             if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
-            return index == 0 ? match.toLowerCase() : match.toUpperCase()
+            return index === 0 ? match.toLowerCase() : match.toUpperCase()
         })
     }
 }

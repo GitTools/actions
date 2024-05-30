@@ -1,5 +1,5 @@
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import { IExecResult } from './models'
+import { ExecResult } from './models'
 
 export interface IBuildAgent {
     agentName: string
@@ -28,7 +28,7 @@ export interface IBuildAgent {
 
     which(tool: string, check?: boolean): Promise<string>
 
-    exec(exec: string, args: string[]): Promise<IExecResult>
+    exec(exec: string, args: string[]): Promise<ExecResult>
 
     getSourceDir(): string
 

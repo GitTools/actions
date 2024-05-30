@@ -11,19 +11,19 @@ import {
     GitReleaseManagerPublishSettings,
     GitReleaseManagerSettings
 } from './models'
-import { ISetupSettings, TYPES } from '../common/models'
+import { SetupSettings, TYPES } from '../common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
-import { IExecResult } from '../../agents/common/models'
+import { ExecResult } from '../../agents/common/models'
 import { IBuildAgent } from '../../agents/common/build-agent'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
-    install(setupSettings: ISetupSettings): Promise<void>
-    create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult>
-    discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult>
-    close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult>
-    open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult>
-    publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult>
-    addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<IExecResult>
+    install(setupSettings: SetupSettings): Promise<void>
+    create(settings: GitReleaseManagerCreateSettings): Promise<ExecResult>
+    discard(settings: GitReleaseManagerDiscardSettings): Promise<ExecResult>
+    close(settings: GitReleaseManagerCloseSettings): Promise<ExecResult>
+    open(settings: GitReleaseManagerOpenSettings): Promise<ExecResult>
+    publish(settings: GitReleaseManagerPublishSettings): Promise<ExecResult>
+    addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<ExecResult>
 }
 
 @injectable()
@@ -32,41 +32,41 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         super(buildAgent)
     }
 
-    public async install(setupSettings: ISetupSettings): Promise<void> {
+    public async install(setupSettings: SetupSettings): Promise<void> {
         await this.toolInstall('GitReleaseManager.Tool', '>=0.10.0 <0.18.0', setupSettings)
     }
 
-    public create(settings: GitReleaseManagerCreateSettings): Promise<IExecResult> {
+    public create(settings: GitReleaseManagerCreateSettings): Promise<ExecResult> {
         const args = this.getCreateArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public discard(settings: GitReleaseManagerDiscardSettings): Promise<IExecResult> {
+    public discard(settings: GitReleaseManagerDiscardSettings): Promise<ExecResult> {
         const args = this.getDiscardArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public close(settings: GitReleaseManagerCloseSettings): Promise<IExecResult> {
+    public close(settings: GitReleaseManagerCloseSettings): Promise<ExecResult> {
         const args = this.getCloseArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public open(settings: GitReleaseManagerOpenSettings): Promise<IExecResult> {
+    public open(settings: GitReleaseManagerOpenSettings): Promise<ExecResult> {
         const args = this.getOpenArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public publish(settings: GitReleaseManagerPublishSettings): Promise<IExecResult> {
+    public publish(settings: GitReleaseManagerPublishSettings): Promise<ExecResult> {
         const args = this.getPublishArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)
     }
 
-    public addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<IExecResult> {
+    public addAsset(settings: GitReleaseManagerAddAssetSettings): Promise<ExecResult> {
         const args = this.getAddAssetArguments(settings)
 
         return this.execute('dotnet-gitreleasemanager', args)

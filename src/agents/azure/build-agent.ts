@@ -5,7 +5,7 @@ import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
 import * as os from 'os'
-import { IExecResult } from '../common/models'
+import { ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
@@ -66,7 +66,7 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve(taskLib.which(tool, check))
     }
 
-    public exec(exec: string, args: string[]): Promise<IExecResult> {
+    public exec(exec: string, args: string[]): Promise<ExecResult> {
         const tr = taskLib.tool(exec)
         tr.arg(args)
 

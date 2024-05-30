@@ -1,8 +1,8 @@
-import { ISetupSettings, TYPES } from './models'
+import { SetupSettings, TYPES } from './models'
 import { inject, injectable } from 'inversify'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import * as http from 'typed-rest-client/HttpClient'
-import { IExecResult } from '../../agents/common/models'
+import { ExecResult } from '../../agents/common/models'
 import * as semver from 'semver'
 import os from 'os'
 import fs from 'fs'
@@ -11,7 +11,7 @@ import path from 'path'
 export interface IDotnetTool {
     disableTelemetry(): void
 
-    toolInstall(toolName: string, versionRange: string, setupSettings: ISetupSettings): Promise<string>
+    toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string>
 }
 
 @injectable()
@@ -27,16 +27,17 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public disableTelemetry(): void {
+        this.buildAgent.info('Disable Telemetry')
         this.buildAgent.setVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
         this.buildAgent.setVariable('DOTNET_NOLOGO', 'true')
     }
 
-    public execute(cmd: string, args: string[]): Promise<IExecResult> {
-        console.log(`Command: ${cmd} ${args.join(' ')}`)
+    public execute(cmd: string, args: string[]): Promise<ExecResult> {
+        this.buildAgent.info(`Command: ${cmd} ${args.join(' ')}`)
         return this.buildAgent.exec(cmd, args)
     }
 
-    public async toolInstall(toolName: string, versionRange: string, setupSettings: ISetupSettings): Promise<string> {
+    public async toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string> {
         let version: string | null = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec
         console.log('')
         console.log('--------------------------')
@@ -91,9 +92,9 @@ export class DotnetTool implements IDotnetTool {
         }
     }
 
-    private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string> {
-        this.buildAgent.debug(
-            `querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
+    private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
+        this.buildAgent.info(
+            `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
         const toolNameParam = encodeURIComponent(toolName.toLowerCase())
