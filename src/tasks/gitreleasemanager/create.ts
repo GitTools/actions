@@ -1,4 +1,5 @@
 import 'reflect-metadata'
-import { create } from './runner'
+import { Runner } from './runner'
 
-await create()
+const runner = new Runner()
+await runner.create()

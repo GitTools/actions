@@ -13,46 +13,49 @@ const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
 const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
-export async function setup() {
-    try {
-        gitVersionTool.disableTelemetry()
-        console.log(`Agent: '${buildAgent.agentName}'`)
+export class Runner {
 
-        const settings = settingsProvider.getSetupSettings()
+    async setup() {
+        try {
+            gitVersionTool.disableTelemetry()
+            console.log(`Agent: '${buildAgent.agentName}'`)
 
-        await gitVersionTool.install(settings)
+            const settings = settingsProvider.getSetupSettings()
 
-        buildAgent.setSucceeded('GitVersion installed successfully', true)
-    } catch (error) {
-        buildAgent.setFailed(error.message, true)
-    }
-}
+            await gitVersionTool.install(settings)
 
-export async function run() {
-    try {
-        gitVersionTool.disableTelemetry()
-        console.log(`Agent: '${buildAgent.agentName}'`)
-
-        const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
-
-        const result = await gitVersionTool.run(settings)
-
-        if (result.code === 0) {
-            buildAgent.setSucceeded('GitVersion executed successfully', true)
-            const { stdout } = result
-
-            if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
-                buildAgent.setFailed('GitVersion output is not valid JSON', true)
-            } else {
-                const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
-
-                const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
-                gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
-            }
-        } else {
-            buildAgent.setFailed(result.error.message, true)
+            buildAgent.setSucceeded('GitVersion installed successfully', true)
+        } catch (error) {
+            buildAgent.setFailed(error.message, true)
         }
-    } catch (error) {
-        buildAgent.setFailed(error, true)
+    }
+
+    async run() {
+        try {
+            gitVersionTool.disableTelemetry()
+            console.log(`Agent: '${buildAgent.agentName}'`)
+
+            const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
+
+            const result = await gitVersionTool.run(settings)
+
+            if (result.code === 0) {
+                buildAgent.setSucceeded('GitVersion executed successfully', true)
+                const { stdout } = result
+
+                if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
+                    buildAgent.setFailed('GitVersion output is not valid JSON', true)
+                } else {
+                    const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
+
+                    const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
+                    gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+                }
+            } else {
+                buildAgent.setFailed(result.error.message, true)
+            }
+        } catch (error) {
+            buildAgent.setFailed(error, true)
+        }
     }
 }

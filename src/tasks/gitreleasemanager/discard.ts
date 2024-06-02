@@ -1,4 +1,5 @@
 import 'reflect-metadata'
-import { discard } from './runner'
+import { Runner } from './runner'
 
-await discard()
+const runner = new Runner()
+await runner.discard()
