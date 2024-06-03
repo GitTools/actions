@@ -41,7 +41,7 @@
         "@types/semver": "^7.5.8",
         "@types/uuid": "^9.0.8",
         "minimist": "^1.2.8",
-        "prettier": "^3.2.5",
+        "prettier": "^3.3.0",
         "reflect-metadata": "^0.2.2",
         "replace-in-file-webpack-plugin": "^1.0.6",
         "shelljs": "^0.8.5",
