@@ -1,5 +1,5 @@
 import { IGitVersionTool, GitVersionTool } from './tool'
-import { type GitVersionOutput, type GitVersionSettings } from './models'
+import { type Commands, type GitVersionOutput, type GitVersionSettings } from './models'
 import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 import container from '../common/ioc'
@@ -14,7 +14,16 @@ const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 export class Runner {
-    async setup() {
+    async run(command: Commands): Promise<number> {
+        switch (command) {
+            case 'setup':
+                return await this.setup()
+            case 'execute':
+                return await this.execute()
+        }
+    }
+
+    private async setup(): Promise<number> {
         try {
             gitVersionTool.disableTelemetry()
             console.log(`Agent: '${buildAgent.agentName}'`)
@@ -24,12 +33,14 @@ export class Runner {
             await gitVersionTool.install(settings)
 
             buildAgent.setSucceeded('GitVersion installed successfully', true)
+            return 0
         } catch (error) {
             buildAgent.setFailed(error.message, true)
+            return -1
         }
     }
 
-    async run() {
+    private async execute(): Promise<number> {
         try {
             gitVersionTool.disableTelemetry()
             console.log(`Agent: '${buildAgent.agentName}'`)
@@ -49,12 +60,15 @@ export class Runner {
 
                     const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
                     gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+                    return 0
                 }
             } else {
                 buildAgent.setFailed(result.error.message, true)
+                return -1
             }
         } catch (error) {
             buildAgent.setFailed(error, true)
+            return -1
         }
     }
 }

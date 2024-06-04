@@ -1,3 +1,5 @@
+export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | 'open' | 'publish'
+
 export enum CommonFields {
     repository = 'repository',
     owner = 'owner',

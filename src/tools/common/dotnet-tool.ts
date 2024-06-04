@@ -38,10 +38,12 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public async toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string> {
+
+        await this.setDotnetRoot()
         let version: string | null = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec
         console.log('')
         console.log('--------------------------')
-        console.log(`Acquiring ${toolName} version spec: ${version}`)
+        console.log(`Acquiring ${toolName} for version spec: ${version}`)
         console.log('--------------------------')
 
         if (!this.isExplicitVersion(version)) {
@@ -60,6 +62,7 @@ export class DotnetTool implements IDotnetTool {
 
         let toolPath: string | null = null
         if (!setupSettings.preferLatestVersion) {
+            // Let's try and resolve the version locally first
             toolPath = this.buildAgent.find(toolName, setupSettings.versionSpec)
             if (toolPath) {
                 console.log('--------------------------')
@@ -69,15 +72,17 @@ export class DotnetTool implements IDotnetTool {
         }
 
         if (!toolPath) {
+            // Download, extract, cache
             toolPath = await this.installTool(toolName, version, setupSettings.ignoreFailedSources)
             console.log('--------------------------')
             console.log(`${toolName} version: ${version} installed.`)
             console.log('--------------------------')
         }
 
-        this.buildAgent.debug(`toolPath: ${toolPath}`)
+        // Prepend the tool's path. This prepends the PATH for the current process and
+        // instructs the agent to prepend for each task that follows.
+        this.buildAgent.debug(`Prepending ${toolPath} to PATH`)
 
-        await this.setDotnetRoot()
         this.buildAgent.addPath(toolPath)
 
         return toolPath

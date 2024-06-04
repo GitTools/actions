@@ -1,3 +1,5 @@
+export type Commands = 'setup' | 'execute'
+
 export enum ExecuteFields {
     targetPath = 'targetPath',
     disableCache = 'disableCache',

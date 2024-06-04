@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { Runner } from '../../tools/gitreleasemanager/runner'
+import { run } from '../../tools/gitreleasemanager/main'
 
-const runner = new Runner()
-await runner.publish()
+await run('publish')

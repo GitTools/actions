@@ -14,7 +14,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         super(buildAgent)
     }
 
-    public getGitVersionSettings(): GitVersionSettings {
+    getGitVersionSettings(): GitVersionSettings {
         const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
 
         const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache)

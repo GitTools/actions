@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { Runner } from '../../tools/gitversion/runner'
+import { run } from '../../tools/gitversion/main'
 
-const runner = new Runner()
-await runner.run()
+await run('execute')
