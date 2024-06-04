@@ -1,9 +1,9 @@
-import { IGitReleaseManagerTool, GitReleaseManagerTool } from '../../tools/gitreleasemanager/tool'
-import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from '../../tools/gitreleasemanager/settings'
+import { IGitReleaseManagerTool, GitReleaseManagerTool } from './tool'
+import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
-import container from '../ioc'
+import container from '../common/ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../../tools/common/models'
+import { TYPES } from '../common/models'
 
 container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool)
 container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider).to(GitReleaseManagerSettingsProvider)

@@ -1,10 +1,10 @@
-import { IGitVersionTool, GitVersionTool } from '../../tools/gitversion/tool'
-import { type GitVersionOutput, type GitVersionSettings } from '../../tools/gitversion/models'
-import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from '../../tools/gitversion/settings'
+import { IGitVersionTool, GitVersionTool } from './tool'
+import { type GitVersionOutput, type GitVersionSettings } from './models'
+import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
-import container from '../ioc'
+import container from '../common/ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../../tools/common/models'
+import { TYPES } from '../common/models'
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool)
 container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)

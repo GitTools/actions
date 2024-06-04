@@ -30,7 +30,7 @@ function getConfig(mode, agent, entry) {
             __filename: false
         },
         plugins: [
-            new webpack.NormalModuleReplacementPlugin(/agents\/local\/build-agent/, `../agents/${agent}/build-agent`),
+            new webpack.NormalModuleReplacementPlugin(/agents\/local\/build-agent/, `../../agents/${agent}/build-agent`),
             new ReplaceInFileWebpackPlugin([
                 {
                     dir: `dist/${agent}`,
