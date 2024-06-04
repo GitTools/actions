@@ -14,7 +14,6 @@ const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 export class Runner {
-
     async setup() {
         try {
             gitVersionTool.disableTelemetry()

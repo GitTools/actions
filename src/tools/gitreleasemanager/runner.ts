@@ -13,7 +13,6 @@ const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitRe
 const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
 
 export class Runner {
-
     async setup() {
         try {
             gitReleaseManagerTool.disableTelemetry()
