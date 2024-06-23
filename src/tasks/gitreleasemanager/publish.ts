@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { publish } from './main'
+import { publish } from './runner'
 
 await publish()

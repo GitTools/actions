@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { close } from './main'
+import { close } from './runner'
 
 await close()

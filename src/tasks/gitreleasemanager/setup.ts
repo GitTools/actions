@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { setup } from './main'
+import { setup } from './runner'
 
 await setup()

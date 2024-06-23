@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { open } from './main'
+import { open } from './runner'
 
 await open()

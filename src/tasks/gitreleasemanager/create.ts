@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { create } from './main'
+import { create } from './runner'
 
 await create()

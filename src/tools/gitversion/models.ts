@@ -23,7 +23,7 @@ export type GitVersionSettings = {
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
     [ExecuteFields.additionalArguments]: string
-    [ExecuteFields.srcDir]: string
+    [ExecuteFields.srcDir]: string | undefined
 }
 
 export type GitVersionOutput = {
