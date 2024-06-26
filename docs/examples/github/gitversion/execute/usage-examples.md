@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/execute** action using the examples below.
 
-Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute action will fail. It is required to use `fetch-depth: 0`.
+Note that if the pipeline is set up to use a shallow git fetch mode the GitVersion Execute action will fail. It is required to use `fetch-depth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml

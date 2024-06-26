@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/execute** task using the examples below.
 
-Note that if the pipeline is setup to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use `fetchDepth: 0`.
+Note that if the pipeline is set up to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use `fetchDepth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
 
 ```yaml
