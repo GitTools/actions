@@ -14,6 +14,14 @@ const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 export class Runner {
+    private buildAgent: IBuildAgent
+    private gitVersionTool: IGitVersionTool
+
+    constructor() {
+        this.buildAgent = buildAgent
+        this.gitVersionTool = gitVersionTool
+    }
+
     async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
@@ -25,50 +33,75 @@ export class Runner {
 
     private async setup(): Promise<number> {
         try {
-            gitVersionTool.disableTelemetry()
-            console.log(`Agent: '${buildAgent.agentName}'`)
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Installing GitVersion')
 
             const settings = settingsProvider.getSetupSettings()
 
-            await gitVersionTool.install(settings)
+            await this.gitVersionTool.install(settings)
 
-            buildAgent.setSucceeded('GitVersion installed successfully', true)
+            this.buildAgent.setSucceeded('GitVersion installed successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async execute(): Promise<number> {
         try {
-            gitVersionTool.disableTelemetry()
-            console.log(`Agent: '${buildAgent.agentName}'`)
+            this.disableTelemetry()
+
+            this.buildAgent.info('Executing GitVersion')
 
             const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
 
-            const result = await gitVersionTool.run(settings)
+            const result = await this.gitVersionTool.run(settings)
 
             if (result.code === 0) {
-                buildAgent.setSucceeded('GitVersion executed successfully', true)
+                this.buildAgent.info('GitVersion executed successfully')
                 const { stdout } = result
 
+                this.buildAgent.info('GitVersion output:')
+                this.buildAgent.info('-------------------')
+                this.buildAgent.info(stdout)
+                this.buildAgent.info('-------------------')
+                this.buildAgent.debug('Parsing GitVersion output')
+
                 if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
-                    buildAgent.setFailed('GitVersion output is not valid JSON', true)
+                    this.buildAgent.debug('GitVersion output is not valid JSON')
+                    this.buildAgent.setFailed('GitVersion output is not valid JSON', true)
+                    return -1
                 } else {
                     const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
 
                     const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
-                    gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+                    this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+                    this.buildAgent.setSucceeded('GitVersion executed successfully', true)
                     return 0
                 }
             } else {
-                buildAgent.setFailed(result.error.message, true)
+                this.buildAgent.debug('GitVersion failed')
+                const error = result.error
+                if (error instanceof Error) {
+                    this.buildAgent.setFailed(error.message, true)
+                }
                 return -1
             }
         } catch (error) {
-            buildAgent.setFailed(error, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
+    }
+
+    private disableTelemetry(): void {
+        this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`)
+        this.buildAgent.debug('Disabling telemetry')
+        this.gitVersionTool.disableTelemetry()
     }
 }

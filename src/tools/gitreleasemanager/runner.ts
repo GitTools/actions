@@ -14,6 +14,14 @@ const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitRe
 const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
 
 export class Runner {
+    private buildAgent: IBuildAgent
+    private gitReleaseManagerTool: IGitReleaseManagerTool
+
+    constructor() {
+        this.buildAgent = buildAgent
+        this.gitReleaseManagerTool = gitReleaseManagerTool
+    }
+    
     async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
@@ -35,113 +43,147 @@ export class Runner {
 
     private async setup(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Installing GitVersion')
 
             const settings = settingsProvider.getSetupSettings()
 
-            await gitReleaseManagerTool.install(settings)
+            await this.gitReleaseManagerTool.install(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async create(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Creating release')
 
             const settings = settingsProvider.getCreateSettings()
 
-            await gitReleaseManagerTool.create(settings)
+            await this.gitReleaseManagerTool.create(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager created release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager created release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async discard(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Discarding release')
 
             const settings = settingsProvider.getDiscardSettings()
 
-            await gitReleaseManagerTool.discard(settings)
+            await this.gitReleaseManagerTool.discard(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager discarded release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager discarded release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async close(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Closing release')
 
             const settings = settingsProvider.getCloseSettings()
 
-            await gitReleaseManagerTool.close(settings)
+            await this.gitReleaseManagerTool.close(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager closed release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager closed release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async open(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Opening release')
 
             const settings = settingsProvider.getOpenSettings()
 
-            await gitReleaseManagerTool.open(settings)
+            await this.gitReleaseManagerTool.open(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager opened release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager opened release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async publish(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Publishing release')
 
             const settings = settingsProvider.getPublishSettings()
 
-            await gitReleaseManagerTool.publish(settings)
+            await this.gitReleaseManagerTool.publish(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager published release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager published release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
     }
 
     private async addAsset(): Promise<number> {
         try {
-            gitReleaseManagerTool.disableTelemetry()
+            this.disableTelemetry()
+
+            this.buildAgent.debug('Adding asset to release')
 
             const settings = settingsProvider.getAddAssetSettings()
 
-            await gitReleaseManagerTool.addAsset(settings)
+            await this.gitReleaseManagerTool.addAsset(settings)
 
-            buildAgent.setSucceeded('GitReleaseManager added assets to release successfully', true)
+            this.buildAgent.setSucceeded('GitReleaseManager added assets to release successfully', true)
             return 0
         } catch (error) {
-            buildAgent.setFailed(error.message, true)
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
             return -1
         }
+    }
+
+    private disableTelemetry(): void {
+        this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`)
+        this.buildAgent.debug('Disabling telemetry')
+        this.gitReleaseManagerTool.disableTelemetry()
     }
 }
