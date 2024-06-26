@@ -20,3 +20,5 @@ export const TYPES = {
     IGitVersionSettingsProvider: Symbol.for('GitVersionSettingsProvider'),
     IGitReleaseManagerSettingsProvider: Symbol.for('GitReleaseManagerSettingsProvider')
 }
+
+export const keysFn = Object.keys as <T extends object>(obj: T) => (keyof T)[]

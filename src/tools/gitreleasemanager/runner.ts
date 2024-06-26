@@ -1,5 +1,4 @@
 import { IGitReleaseManagerTool, GitReleaseManagerTool } from './tool'
-import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
 import container from '../common/ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
@@ -7,7 +6,6 @@ import { TYPES } from '../common/models'
 import { type Commands } from './models'
 
 container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool)
-container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider).to(GitReleaseManagerSettingsProvider)
 
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
 const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool)

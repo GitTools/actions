@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify'
 import { type GitVersionOutput, type GitVersionSettings } from './models'
-import { TYPES } from '../common/models'
+import { keysFn, TYPES } from '../common/models'
 import { type ExecResult } from '../../agents/common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import container from '../common/ioc'
-import { IGitVersionSettingsProvider } from './settings'
+import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 export interface IGitVersionTool extends IDotnetTool {
     install(): Promise<void>
@@ -15,8 +15,8 @@ export interface IGitVersionTool extends IDotnetTool {
     writeGitVersionToAgent(gitVersion: GitVersionOutput): void
 }
 
+container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
-export const keysFn = Object.keys as <T extends object>(obj: T) => (keyof T)[]
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {

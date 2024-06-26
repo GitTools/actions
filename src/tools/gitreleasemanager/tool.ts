@@ -16,7 +16,7 @@ import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { type ExecResult } from '../../agents/common/models'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import container from '../common/ioc'
-import { IGitReleaseManagerSettingsProvider } from './settings'
+import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     install(): Promise<void>
@@ -28,6 +28,7 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
     addAsset(): Promise<ExecResult>
 }
 
+container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider).to(GitReleaseManagerSettingsProvider)
 const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
 
 @injectable()

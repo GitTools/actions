@@ -1,13 +1,11 @@
 import { IGitVersionTool, GitVersionTool } from './tool'
 import { type Commands, type GitVersionOutput } from './models'
-import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 import container from '../common/ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import { TYPES } from '../common/models'
 
 container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool)
-container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)
 
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
 const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
