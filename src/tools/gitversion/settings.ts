@@ -30,8 +30,6 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const additionalArguments = this.buildAgent.getInput(ExecuteFields.additionalArguments)
 
-        const srcDir = this.buildAgent.getSourceDir()?.replace(/\\/g, '/')
-
         return {
             targetPath,
             disableCache,
@@ -42,8 +40,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
-            additionalArguments,
-            srcDir
+            additionalArguments
         }
     }
 }

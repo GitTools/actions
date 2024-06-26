@@ -1,5 +1,5 @@
 import { IGitVersionTool, GitVersionTool } from './tool'
-import { type Commands, type GitVersionOutput, type GitVersionSettings } from './models'
+import { type Commands, type GitVersionOutput } from './models'
 import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 import container from '../common/ioc'

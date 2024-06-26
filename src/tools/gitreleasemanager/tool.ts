@@ -96,7 +96,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         args.push('--repository', settings.repository)
         args.push('--token', settings.token)
 
-        settings.targetDirectory = this.getRepoDir(settings.targetDirectory)
+        settings.targetDirectory = this.getRepoDir(settings)
 
         args.push('--targetDirectory', settings.targetDirectory)
 
@@ -194,18 +194,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getRepoDir(targetPath: string): string {
-        let workDir: string
-        const srcDir = this.buildAgent.getSourceDir()
-        if (!targetPath) {
-            workDir = srcDir
-        } else {
-            if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = path.join(srcDir, targetPath)
-            } else {
-                throw new Error('Directory not found at ' + targetPath)
-            }
-        }
-        return workDir.replace(/\\/g, '/')
+    private getRepoDir(settings: GitReleaseManagerSettings): string {
+        return super.getRepoPath(settings.targetDirectory)
     }
 }

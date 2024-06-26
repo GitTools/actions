@@ -38,7 +38,6 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public async toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string> {
-
         await this.setDotnetRoot()
         let version: string | null = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec
         console.log('')
@@ -95,6 +94,21 @@ export class DotnetTool implements IDotnetTool {
             const dotnetRoot = path.dirname(dotnetPath)
             this.buildAgent.setVariable('DOTNET_ROOT', dotnetRoot)
         }
+    }
+
+    protected getRepoPath(targetPath: string): string {
+        const srcDir = this.buildAgent.getSourceDir() || '.'
+        let workDir: string
+        if (!targetPath) {
+            workDir = srcDir
+        } else {
+            if (this.buildAgent.directoryExists(targetPath)) {
+                workDir = targetPath
+            } else {
+                throw new Error(`Directory not found at ${targetPath}`)
+            }
+        }
+        return workDir.replace(/\\/g, '/')
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {

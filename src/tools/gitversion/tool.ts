@@ -16,6 +16,7 @@ export interface IGitVersionTool extends IDotnetTool {
 }
 
 const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
+export const keysFn = Object.keys as <T extends object>(obj: T) => (keyof T)[]
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {
@@ -46,37 +47,27 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return await this.execute('dotnet-gitversion', args)
     }
 
-    public writeGitVersionToAgent(gitVersion: GitVersionOutput): void {
-        let properties = Object.keys(gitVersion)
-        let gitVersionOutput = <any>gitVersion
-
-        properties.forEach(property => {
+    public writeGitVersionToAgent(output: GitVersionOutput): void {
+        const keys = keysFn<GitVersionOutput>(output)
+        for (const property of keys) {
             const name = this.toCamelCase(property)
-            let value = gitVersionOutput[property]
-            if (value === 0) {
-                value = '0'
-            }
-            this.buildAgent.setOutput(name, value)
-            this.buildAgent.setOutput(`GitVersion_${name}`, value)
-            this.buildAgent.setVariable(name, value)
-            this.buildAgent.setVariable(`GitVersion_${name}`, value)
-        })
-    }
-
-    private getRepoDir(options: GitVersionSettings): string {
-        const targetPath = options.targetPath
-        const srcDir = options.srcDir || '.'
-        let workDir: string
-        if (!targetPath) {
-            workDir = srcDir
-        } else {
-            if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = targetPath
-            } else {
-                throw new Error('Directory not found at ' + targetPath)
+            try {
+                let value = output[property]?.toString()
+                if (value === '0') {
+                    value = '0'
+                }
+                this.buildAgent.setOutput(name, value)
+                this.buildAgent.setOutput(`GitVersion_${property}`, value)
+                this.buildAgent.setVariable(name, value)
+                this.buildAgent.setVariable(`GitVersion_${property}`, value)
+            } catch (error) {
+                this.buildAgent.error(`Unable to set output/variable for ${property}`)
             }
         }
-        return workDir.replace(/\\/g, '/')
+    }
+
+    private getRepoDir(settings: GitVersionSettings): string {
+        return super.getRepoPath(settings.targetPath)
     }
 
     private getArguments(workDir: string, options: GitVersionSettings): string[] {
