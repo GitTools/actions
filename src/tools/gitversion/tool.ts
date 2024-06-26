@@ -1,17 +1,21 @@
 import { inject, injectable } from 'inversify'
 import { type GitVersionOutput, type GitVersionSettings } from './models'
-import { type SetupSettings, TYPES } from '../common/models'
+import { TYPES } from '../common/models'
 import { type ExecResult } from '../../agents/common/models'
 import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { IBuildAgent } from '../../agents/common/build-agent'
+import container from '../common/ioc'
+import { IGitVersionSettingsProvider } from './settings'
 
 export interface IGitVersionTool extends IDotnetTool {
-    install(setupSettings: SetupSettings): Promise<void>
+    install(): Promise<void>
 
-    run(options: GitVersionSettings): Promise<ExecResult>
+    run(): Promise<ExecResult>
 
-    writeGitVersionToAgent(gitversion: GitVersionOutput): void
+    writeGitVersionToAgent(gitVersion: GitVersionOutput): void
 }
+
+const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {
@@ -19,14 +23,16 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         super(buildAgent)
     }
 
-    public async install(setupSettings: SetupSettings): Promise<void> {
-        await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', setupSettings)
+    public async install(): Promise<void> {
+        const settings = settingsProvider.getSetupSettings()
+        await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', settings)
     }
 
-    public async run(options: GitVersionSettings): Promise<ExecResult> {
-        const workDir = this.getRepoDir(options)
+    public async run(): Promise<ExecResult> {
+        const settings = settingsProvider.getGitVersionSettings()
+        const workDir = this.getRepoDir(settings)
 
-        if (!options.disableShallowCloneCheck) {
+        if (!settings.disableShallowCloneCheck) {
             const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
             if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
                 throw new Error(
@@ -35,18 +41,18 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             }
         }
 
-        const args = this.getArguments(workDir, options)
+        const args = this.getArguments(workDir, settings)
 
         return await this.execute('dotnet-gitversion', args)
     }
 
-    public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
-        let properties = Object.keys(gitversion)
-        let gitversionOutput = <any>gitversion
+    public writeGitVersionToAgent(gitVersion: GitVersionOutput): void {
+        let properties = Object.keys(gitVersion)
+        let gitVersionOutput = <any>gitVersion
 
         properties.forEach(property => {
             const name = this.toCamelCase(property)
-            let value = gitversionOutput[property]
+            let value = gitVersionOutput[property]
             if (value === 0) {
                 value = '0'
             }

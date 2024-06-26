@@ -11,7 +11,6 @@ container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).t
 
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
 const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
-const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 export class Runner {
     private buildAgent: IBuildAgent
@@ -37,9 +36,7 @@ export class Runner {
 
             this.buildAgent.debug('Installing GitVersion')
 
-            const settings = settingsProvider.getSetupSettings()
-
-            await this.gitVersionTool.install(settings)
+            await this.gitVersionTool.install()
 
             this.buildAgent.setSucceeded('GitVersion installed successfully', true)
             return 0
@@ -57,9 +54,7 @@ export class Runner {
 
             this.buildAgent.info('Executing GitVersion')
 
-            const settings: GitVersionSettings = settingsProvider.getGitVersionSettings()
-
-            const result = await this.gitVersionTool.run(settings)
+            const result = await this.gitVersionTool.run()
 
             if (result.code === 0) {
                 this.buildAgent.info('GitVersion executed successfully')

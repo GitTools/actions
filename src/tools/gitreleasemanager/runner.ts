@@ -11,7 +11,6 @@ container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSetti
 
 const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
 const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool)
-const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
 
 export class Runner {
     private buildAgent: IBuildAgent
@@ -21,7 +20,7 @@ export class Runner {
         this.buildAgent = buildAgent
         this.gitReleaseManagerTool = gitReleaseManagerTool
     }
-    
+
     async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
@@ -47,9 +46,7 @@ export class Runner {
 
             this.buildAgent.debug('Installing GitVersion')
 
-            const settings = settingsProvider.getSetupSettings()
-
-            await this.gitReleaseManagerTool.install(settings)
+            await this.gitReleaseManagerTool.install()
 
             this.buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
             return 0
@@ -67,9 +64,7 @@ export class Runner {
 
             this.buildAgent.debug('Creating release')
 
-            const settings = settingsProvider.getCreateSettings()
-
-            await this.gitReleaseManagerTool.create(settings)
+            await this.gitReleaseManagerTool.create()
 
             this.buildAgent.setSucceeded('GitReleaseManager created release successfully', true)
             return 0
@@ -87,9 +82,7 @@ export class Runner {
 
             this.buildAgent.debug('Discarding release')
 
-            const settings = settingsProvider.getDiscardSettings()
-
-            await this.gitReleaseManagerTool.discard(settings)
+            await this.gitReleaseManagerTool.discard()
 
             this.buildAgent.setSucceeded('GitReleaseManager discarded release successfully', true)
             return 0
@@ -107,9 +100,7 @@ export class Runner {
 
             this.buildAgent.debug('Closing release')
 
-            const settings = settingsProvider.getCloseSettings()
-
-            await this.gitReleaseManagerTool.close(settings)
+            await this.gitReleaseManagerTool.close()
 
             this.buildAgent.setSucceeded('GitReleaseManager closed release successfully', true)
             return 0
@@ -127,9 +118,7 @@ export class Runner {
 
             this.buildAgent.debug('Opening release')
 
-            const settings = settingsProvider.getOpenSettings()
-
-            await this.gitReleaseManagerTool.open(settings)
+            await this.gitReleaseManagerTool.open()
 
             this.buildAgent.setSucceeded('GitReleaseManager opened release successfully', true)
             return 0
@@ -147,9 +136,7 @@ export class Runner {
 
             this.buildAgent.debug('Publishing release')
 
-            const settings = settingsProvider.getPublishSettings()
-
-            await this.gitReleaseManagerTool.publish(settings)
+            await this.gitReleaseManagerTool.publish()
 
             this.buildAgent.setSucceeded('GitReleaseManager published release successfully', true)
             return 0
@@ -167,9 +154,7 @@ export class Runner {
 
             this.buildAgent.debug('Adding asset to release')
 
-            const settings = settingsProvider.getAddAssetSettings()
-
-            await this.gitReleaseManagerTool.addAsset(settings)
+            await this.gitReleaseManagerTool.addAsset()
 
             this.buildAgent.setSucceeded('GitReleaseManager added assets to release successfully', true)
             return 0
