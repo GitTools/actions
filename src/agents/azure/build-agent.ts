@@ -42,6 +42,10 @@ class BuildAgent implements IBuildAgent {
         process.stdout.write(message + os.EOL)
     }
 
+    public error(message: string): void {
+        taskLib.error(message)
+    }
+
     public setFailed(message: string, done?: boolean): void {
         taskLib.setResult(taskLib.TaskResult.Failed, message, done)
     }

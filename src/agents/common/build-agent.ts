@@ -16,6 +16,8 @@ export interface IBuildAgent {
 
     info(message: string): void
 
+    error(message: string): void
+
     setFailed(message: string, done?: boolean): void
 
     setSucceeded(message: string, done?: boolean): void
