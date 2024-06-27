@@ -10,6 +10,7 @@ import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+
     public get agentName(): string {
         return 'Azure Pipelines'
     }
@@ -26,12 +27,17 @@ class BuildAgent implements IBuildAgent {
         return toolLib.findLocalTool(toolName, versionSpec, arch)
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         return toolLib.cacheDir(sourceDir, tool, version, arch)
     }
 
-    public createTempDir(): Promise<string> {
+    public createTempDirectory(): Promise<string> {
         return Promise.resolve(taskLib.getVariable('Agent.TempDirectory'))
+    }
+
+    removeDirectory(dir: string): Promise<void> {
+        taskLib.rmRF(dir)
+        return Promise.resolve()
     }
 
     public debug(message: string): void {

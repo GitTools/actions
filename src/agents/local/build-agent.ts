@@ -3,6 +3,7 @@ import { injectable } from 'inversify'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
 import { type ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
+import fs from 'node:fs/promises'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -20,14 +21,18 @@ class BuildAgent implements IBuildAgent {
         return 'find'
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         console.log('cacheDir')
         return Promise.resolve('cacheDir')
     }
 
-    public createTempDir(): Promise<string> {
+    public createTempDirectory(): Promise<string> {
         console.log('createTempDir')
         return Promise.resolve('createTempDir')
+    }
+
+    async removeDirectory(dir: string): Promise<void> {
+        await fs.rm(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 1000 })
     }
 
     public debug(message: string): void {

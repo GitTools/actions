@@ -17,6 +17,7 @@ import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
+
     public get agentName(): string {
         return 'GitHub Actions'
     }
@@ -71,11 +72,11 @@ class BuildAgent implements IBuildAgent {
         return undefined
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         return toolCache.cacheDir(sourceDir, tool, version, arch)
     }
 
-    public async createTempDir(): Promise<string> {
+    public async createTempDirectory(): Promise<string> {
         const IS_WINDOWS = process.platform === 'win32'
 
         let tempDirectory: string = process.env.RUNNER_TEMP || ''
@@ -97,6 +98,10 @@ class BuildAgent implements IBuildAgent {
         const dest = path.join(tempDirectory, uuidv4())
         await io.mkdirP(dest)
         return dest
+    }
+
+    removeDirectory(dir: string): Promise<void> {
+        return io.rmRF(dir)
     }
 
     public debug(message: string): void {

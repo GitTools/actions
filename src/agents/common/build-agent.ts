@@ -8,9 +8,11 @@ export interface IBuildAgent {
 
     find(toolName: string, versionSpec: string, arch?: string): string
 
-    cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>
+    cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>
 
-    createTempDir(): Promise<string>
+    createTempDirectory(): Promise<string>
+
+    removeDirectory(dir: string): Promise<void>
 
     debug(message: string): void
 

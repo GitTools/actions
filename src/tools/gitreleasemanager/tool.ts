@@ -19,7 +19,6 @@ import container from '../common/ioc'
 import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
-    install(): Promise<void>
     create(): Promise<ExecResult>
     discard(): Promise<ExecResult>
     close(): Promise<ExecResult>
@@ -33,15 +32,20 @@ const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES
 
 @injectable()
 export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseManagerTool {
-    private settingsProvider: IGitReleaseManagerSettingsProvider
     constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
         super(buildAgent)
-        this.settingsProvider = settingsProvider
     }
 
-    public async install(): Promise<void> {
-        const settings = this.settingsProvider.getSetupSettings()
-        await this.toolInstall('GitReleaseManager.Tool', '>=0.10.0 <0.18.0', settings)
+    get toolName(): string {
+        return 'GitReleaseManager.Tool'
+    }
+
+    get versionRange(): string | null {
+        return '>=0.10.0 <0.18.0'
+    }
+
+    get settingsProvider(): IGitReleaseManagerSettingsProvider {
+        return settingsProvider
     }
 
     public create(): Promise<ExecResult> {

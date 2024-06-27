@@ -8,8 +8,6 @@ import container from '../common/ioc'
 import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 export interface IGitVersionTool extends IDotnetTool {
-    install(): Promise<void>
-
     run(): Promise<ExecResult>
 
     writeGitVersionToAgent(gitVersion: GitVersionOutput): void
@@ -24,13 +22,20 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         super(buildAgent)
     }
 
-    public async install(): Promise<void> {
-        const settings = settingsProvider.getSetupSettings()
-        await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', settings)
+    get toolName(): string {
+        return 'GitVersion.Tool'
+    }
+
+    get versionRange(): string | null {
+        return '>=5.2.0 <6.1.0'
+    }
+
+    get settingsProvider(): IGitVersionSettingsProvider {
+        return settingsProvider
     }
 
     public async run(): Promise<ExecResult> {
-        const settings = settingsProvider.getGitVersionSettings()
+        const settings = this.settingsProvider.getGitVersionSettings()
         const workDir = this.getRepoDir(settings)
 
         if (!settings.disableShallowCloneCheck) {

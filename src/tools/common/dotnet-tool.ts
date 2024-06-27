@@ -1,4 +1,4 @@
-import { type SetupSettings, TYPES } from './models'
+import { TYPES } from './models'
 import { inject, injectable } from 'inversify'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import * as http from 'typed-rest-client/HttpClient'
@@ -7,15 +7,18 @@ import * as semver from 'semver'
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
+import { ISettingsProvider } from './settings'
 
 export interface IDotnetTool {
     disableTelemetry(): void
 
-    toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string>
+    install(): Promise<string>
 }
 
+type NugetVersions = { data: { versions: { version: string }[] }[] }
+
 @injectable()
-export class DotnetTool implements IDotnetTool {
+export abstract class DotnetTool implements IDotnetTool {
     protected buildAgent: IBuildAgent
     private httpClient: http.HttpClient
 
@@ -25,6 +28,11 @@ export class DotnetTool implements IDotnetTool {
         this.buildAgent = buildAgent
         this.httpClient = new http.HttpClient('dotnet', undefined, this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot))
     }
+    abstract get settingsProvider(): ISettingsProvider
+
+    abstract get toolName(): string
+
+    abstract get versionRange(): string | null
 
     public disableTelemetry(): void {
         this.buildAgent.info('Disable Telemetry')
@@ -37,24 +45,28 @@ export class DotnetTool implements IDotnetTool {
         return this.buildAgent.exec(cmd, args)
     }
 
-    public async toolInstall(toolName: string, versionRange: string, setupSettings: SetupSettings): Promise<string> {
+    public async install(): Promise<string> {
+        const dotnetExePath = await this.buildAgent.which('dotnet', true)
+        this.buildAgent.debug(`whichPath: ${dotnetExePath}`)
         await this.setDotnetRoot()
+
+        const setupSettings = this.settingsProvider.getSetupSettings()
+
         let version: string | null = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec
-        console.log('')
-        console.log('--------------------------')
-        console.log(`Acquiring ${toolName} for version spec: ${version}`)
-        console.log('--------------------------')
+        this.buildAgent.info('--------------------------')
+        this.buildAgent.info(`Acquiring ${this.toolName} for version spec: ${version}`)
+        this.buildAgent.info('--------------------------')
 
         if (!this.isExplicitVersion(version)) {
-            version = await this.queryLatestMatch(toolName, version, setupSettings.includePrerelease)
+            version = await this.queryLatestMatch(this.toolName, version, setupSettings.includePrerelease)
             if (!version) {
-                throw new Error(`Unable to find ${toolName} version '${version}'.`)
+                throw new Error(`Unable to find ${this.toolName} version '${version}'.`)
             }
         }
 
-        if (!semver.satisfies(version, versionRange, { includePrerelease: setupSettings.includePrerelease })) {
+        if (this.versionRange && !semver.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) {
             throw new Error(
-                `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${versionRange}'.` +
+                `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${this.versionRange}'.` +
                     'See https://github.com/GitTools/actions/blob/main/docs/versions.md for more information.'
             )
         }
@@ -62,26 +74,25 @@ export class DotnetTool implements IDotnetTool {
         let toolPath: string | null = null
         if (!setupSettings.preferLatestVersion) {
             // Let's try and resolve the version locally first
-            toolPath = this.buildAgent.find(toolName, setupSettings.versionSpec)
+            toolPath = this.buildAgent.find(this.toolName, version)
             if (toolPath) {
-                console.log('--------------------------')
-                console.log(`${toolName} version: ${version} found in local cache at ${toolPath}.`)
-                console.log('--------------------------')
+                this.buildAgent.info('--------------------------')
+                this.buildAgent.info(`${this.toolName} version: ${version} found in local cache at ${toolPath}.`)
+                this.buildAgent.info('--------------------------')
             }
         }
 
         if (!toolPath) {
             // Download, extract, cache
-            toolPath = await this.installTool(toolName, version, setupSettings.ignoreFailedSources)
-            console.log('--------------------------')
-            console.log(`${toolName} version: ${version} installed.`)
-            console.log('--------------------------')
+            toolPath = await this.installTool(this.toolName, version, setupSettings.ignoreFailedSources)
+            this.buildAgent.info('--------------------------')
+            this.buildAgent.info(`${this.toolName} version: ${version} installed.`)
+            this.buildAgent.info('--------------------------')
         }
 
         // Prepend the tool's path. This prepends the PATH for the current process and
         // instructs the agent to prepend for each task that follows.
-        this.buildAgent.debug(`Prepending ${toolPath} to PATH`)
-
+        this.buildAgent.info(`Prepending ${toolPath} to PATH`)
         this.buildAgent.addPath(toolPath)
 
         return toolPath
@@ -89,8 +100,13 @@ export class DotnetTool implements IDotnetTool {
 
     protected async setDotnetRoot(): Promise<void> {
         if (os.platform() !== 'win32' && !this.buildAgent.getVariable('DOTNET_ROOT')) {
-            let dotnetPath = await this.buildAgent.which('dotnet')
-            dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
+            let dotnetPath = await this.buildAgent.which('dotnet', true)
+
+            const stats = fs.lstatSync(dotnetPath)
+            if (stats.isSymbolicLink()) {
+                dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
+            }
+
             const dotnetRoot = path.dirname(dotnetPath)
             this.buildAgent.setVariable('DOTNET_ROOT', dotnetRoot)
         }
@@ -120,16 +136,16 @@ export class DotnetTool implements IDotnetTool {
         const prereleaseParam = includePrerelease ? 'true' : 'false'
         const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
-        const res = await this.httpClient.get(downloadPath)
+        const response = await this.httpClient.get(downloadPath)
 
-        if (!res || res.message.statusCode !== 200) {
+        if (!response || response.message.statusCode !== 200) {
+            this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.message.statusCode : 'unknown'}`)
             return null
         }
 
-        const body: string = await res.readBody()
-        const data = JSON.parse(body).data
+        const { data } = JSON.parse(await response.readBody()) as NugetVersions
 
-        const versions = (data[0].versions as { version: string }[]).map(x => x.version)
+        const versions = data[0].versions.map(x => x.version)
         if (!versions || !versions.length) {
             return null
         }
@@ -147,29 +163,33 @@ export class DotnetTool implements IDotnetTool {
     }
 
     private async installTool(toolName: string, version: string, ignoreFailedSources: boolean): Promise<string> {
-        const tempDirectory = await this.buildAgent.createTempDir()
-        let args = ['tool', 'install', toolName, '--tool-path', tempDirectory]
-
-        if (ignoreFailedSources) {
-            args.push('--ignore-failed-sources')
+        const semverVersion = semver.clean(version)
+        if (!semverVersion) {
+            throw new Error(`Invalid version spec: ${version}`)
         }
 
-        if (version) {
-            version = semver.clean(version)
-            args = args.concat(['--version', version])
+        const tempDirectory = await this.buildAgent.createTempDirectory()
+
+        if (!tempDirectory) {
+            throw new Error('Unable to create temp directory')
+        }
+
+        const args = ['tool', 'install', toolName, '--tool-path', tempDirectory, '--version', semverVersion]
+        if (ignoreFailedSources) {
+            args.push('--ignore-failed-sources')
         }
 
         const result = await this.execute('dotnet', args)
         const status = result.code === 0 ? 'success' : 'failure'
         const message = result.code === 0 ? result.stdout : result.stderr
 
-        this.buildAgent.debug(`tool install result: ${status} ${message}`)
+        this.buildAgent.debug(`Tool install result: ${status} ${message}`)
 
-        if (result.code) {
-            throw new Error('Error installing tool')
+        if (result.code !== 0) {
+            throw new Error(message)
         }
 
-        return await this.buildAgent.cacheDir(tempDirectory, toolName, version)
+        return await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion)
     }
 
     private isExplicitVersion(versionSpec: string): boolean {
