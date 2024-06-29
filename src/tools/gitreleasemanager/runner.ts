@@ -42,9 +42,12 @@ export class Runner {
         try {
             this.disableTelemetry()
 
-            this.buildAgent.debug('Installing GitVersion')
+            this.buildAgent.debug('Installing GitReleaseManager')
+            const toolPath = await this.gitReleaseManagerTool.install()
 
-            await this.gitReleaseManagerTool.install()
+            const pathVariable = this.gitReleaseManagerTool.toolPathVariable
+            this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`)
+            this.buildAgent.setVariable(pathVariable, toolPath)
 
             this.buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
             return 0

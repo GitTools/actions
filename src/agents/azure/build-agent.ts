@@ -1,16 +1,17 @@
+import * as os from 'os'
+import * as path from 'path'
+
 import { injectable } from 'inversify'
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import * as os from 'os'
 import { type ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-
     public get agentName(): string {
         return 'Azure Pipelines'
     }
@@ -66,6 +67,10 @@ class BuildAgent implements IBuildAgent {
 
     public getVariable(name: string): string {
         return taskLib.getVariable(name)
+    }
+
+    getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
     }
 
     public addPath(inputPath: string): void {

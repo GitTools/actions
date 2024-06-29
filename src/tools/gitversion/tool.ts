@@ -22,13 +22,22 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         super(buildAgent)
     }
 
-    get toolName(): string {
+    get packageName(): string {
         return 'GitVersion.Tool'
+    }
+
+    get toolName(): string {
+        return 'dotnet-gitversion'
+    }
+
+    get toolPathVariable(): string {
+        return 'GITVERSION_PATH'
     }
 
     get versionRange(): string | null {
         return '>=5.2.0 <6.1.0'
     }
+
 
     get settingsProvider(): IGitVersionSettingsProvider {
         return settingsProvider

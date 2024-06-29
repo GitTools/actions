@@ -1,9 +1,11 @@
+import fs from 'node:fs/promises'
+import * as path from 'path'
+
 import { injectable } from 'inversify'
 
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
 import { type ExecResult } from '../common/models'
 import { IBuildAgent } from '../common/build-agent'
-import fs from 'node:fs/promises'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -62,6 +64,10 @@ class BuildAgent implements IBuildAgent {
     public getVariable(name: string): string {
         console.log('getVariable')
         return 'getVariable'
+    }
+
+    getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
     }
 
     public addPath(inputPath: string): void {

@@ -17,7 +17,6 @@ import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-
     public get agentName(): string {
         return 'GitHub Actions'
     }
@@ -130,6 +129,10 @@ class BuildAgent implements IBuildAgent {
 
     public getVariable(name: string): string {
         return process.env[name]
+    }
+
+    getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
     }
 
     public addPath(inputPath: string): void {

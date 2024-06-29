@@ -20,10 +20,15 @@ import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider }
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     create(): Promise<ExecResult>
+
     discard(): Promise<ExecResult>
+
     close(): Promise<ExecResult>
+
     open(): Promise<ExecResult>
+
     publish(): Promise<ExecResult>
+
     addAsset(): Promise<ExecResult>
 }
 
@@ -36,13 +41,22 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         super(buildAgent)
     }
 
-    get toolName(): string {
+    get packageName(): string {
         return 'GitReleaseManager.Tool'
+    }
+
+    get toolName(): string {
+        return 'dotnet-gitreleasemanager'
+    }
+
+    get toolPathVariable(): string {
+        return 'GITRELEASEMANAGER_PATH'
     }
 
     get versionRange(): string | null {
         return '>=0.10.0 <0.18.0'
     }
+
 
     get settingsProvider(): IGitReleaseManagerSettingsProvider {
         return settingsProvider
@@ -90,11 +104,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return this.executeTool(args)
     }
 
-    private async executeTool(args: string[]): Promise<ExecResult> {
-        return this.execute('dotnet-gitreleasemanager', args)
-    }
-
-    private getCommonArguments(settings: GitReleaseManagerSettings): string[] {
+    protected getCommonArguments(settings: GitReleaseManagerSettings): string[] {
         const args: string[] = []
 
         args.push('--owner', settings.owner)

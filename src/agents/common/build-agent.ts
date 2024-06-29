@@ -28,6 +28,8 @@ export interface IBuildAgent {
 
     getVariable(name: string): string
 
+    getVariableAsPath(name: string): string
+
     addPath(inputPath: string): void
 
     which(tool: string, check?: boolean): Promise<string>
