@@ -9,7 +9,7 @@ import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-    proxyConfiguration(url: string): IRequestOptions {
+    public proxyConfiguration(url: string): IRequestOptions {
         console.log('proxyConfiguration')
         return undefined
     }
@@ -18,7 +18,7 @@ class BuildAgent implements IBuildAgent {
         return 'Local'
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         console.log('find')
         return 'find'
     }
@@ -66,7 +66,7 @@ class BuildAgent implements IBuildAgent {
         return 'getVariable'
     }
 
-    getVariableAsPath(name: string): string {
+    public getVariableAsPath(name: string): string {
         return path.resolve(path.normalize(this.getVariable(name)))
     }
 

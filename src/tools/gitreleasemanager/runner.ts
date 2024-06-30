@@ -19,7 +19,7 @@ export class Runner {
         this.gitReleaseManagerTool = gitReleaseManagerTool
     }
 
-    async run(command: Commands): Promise<number> {
+    public async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
                 return await this.setup()

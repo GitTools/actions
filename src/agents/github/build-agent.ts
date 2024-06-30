@@ -21,7 +21,7 @@ class BuildAgent implements IBuildAgent {
         return 'GitHub Actions'
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch)
     }
 
@@ -99,7 +99,7 @@ class BuildAgent implements IBuildAgent {
         return dest
     }
 
-    removeDirectory(dir: string): Promise<void> {
+    public removeDirectory(dir: string): Promise<void> {
         return io.rmRF(dir)
     }
 
@@ -131,7 +131,7 @@ class BuildAgent implements IBuildAgent {
         return process.env[name]
     }
 
-    getVariableAsPath(name: string): string {
+    public getVariableAsPath(name: string): string {
         return path.resolve(path.normalize(this.getVariable(name)))
     }
 

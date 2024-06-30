@@ -50,11 +50,6 @@ export abstract class DotnetTool implements IDotnetTool {
         this.buildAgent.setVariable('DOTNET_NOLOGO', 'true')
     }
 
-    public execute(cmd: string, args: string[]): Promise<ExecResult> {
-        this.buildAgent.info(`Command: ${cmd} ${args.join(' ')}`)
-        return this.buildAgent.exec(cmd, args)
-    }
-
     public async install(): Promise<string> {
         const dotnetExePath = await this.buildAgent.which('dotnet', true)
         this.buildAgent.debug(`whichPath: ${dotnetExePath}`)
@@ -84,7 +79,7 @@ export abstract class DotnetTool implements IDotnetTool {
         let toolPath: string | null = null
         if (!setupSettings.preferLatestVersion) {
             // Let's try and resolve the version locally first
-            toolPath = this.buildAgent.find(this.packageName, version)
+            toolPath = this.buildAgent.findLocalTool(this.packageName, version)
             if (toolPath) {
                 this.buildAgent.info('--------------------------')
                 this.buildAgent.info(`${this.packageName} version: ${version} found in local cache at ${toolPath}.`)
@@ -147,6 +142,11 @@ export abstract class DotnetTool implements IDotnetTool {
             }
         }
         return workDir.replace(/\\/g, '/')
+    }
+
+    protected execute(cmd: string, args: string[]): Promise<ExecResult> {
+        this.buildAgent.info(`Command: ${cmd} ${args.join(' ')}`)
+        return this.buildAgent.exec(cmd, args)
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {

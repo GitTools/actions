@@ -11,7 +11,7 @@ export interface ISettingsProvider {
 export class SettingsProvider implements ISettingsProvider {
     constructor(protected buildAgent: IBuildAgent) {}
 
-    getSetupSettings(): SetupSettings {
+    public getSetupSettings(): SetupSettings {
         const versionSpec = this.buildAgent.getInput(SetupFields.versionSpec)
         const includePrerelease = this.buildAgent.getBooleanInput(SetupFields.includePrerelease)
         const ignoreFailedSources = this.buildAgent.getBooleanInput(SetupFields.ignoreFailedSources)

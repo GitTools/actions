@@ -6,7 +6,7 @@ export interface IBuildAgent {
 
     proxyConfiguration(url: string): IRequestOptions
 
-    find(toolName: string, versionSpec: string, arch?: string): string
+    findLocalTool(toolName: string, versionSpec: string, arch?: string): string
 
     cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>
 

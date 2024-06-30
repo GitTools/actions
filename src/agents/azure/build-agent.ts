@@ -24,7 +24,7 @@ class BuildAgent implements IBuildAgent {
         }
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         return toolLib.findLocalTool(toolName, versionSpec, arch)
     }
 
@@ -36,7 +36,7 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve(taskLib.getVariable('Agent.TempDirectory'))
     }
 
-    removeDirectory(dir: string): Promise<void> {
+    public removeDirectory(dir: string): Promise<void> {
         taskLib.rmRF(dir)
         return Promise.resolve()
     }
@@ -69,7 +69,7 @@ class BuildAgent implements IBuildAgent {
         return taskLib.getVariable(name)
     }
 
-    getVariableAsPath(name: string): string {
+    public getVariableAsPath(name: string): string {
         return path.resolve(path.normalize(this.getVariable(name)))
     }
 
