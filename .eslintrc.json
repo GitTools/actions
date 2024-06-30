@@ -121,6 +121,7 @@
     "ignorePatterns": [
         "packages/glob/__tests__/_temp/**/",
         "gitversion/**/",
+        "gitreleasemanager/**/",
         "dist/"
     ],
     "env": {
