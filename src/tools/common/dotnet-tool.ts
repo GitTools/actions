@@ -6,14 +6,13 @@ import * as path from 'node:path'
 import * as semver from 'semver'
 import { IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
+import { NugetVersions } from './models.ts'
 
 export interface IDotnetTool {
     disableTelemetry(): void
 
     install(): Promise<string>
 }
-
-type NugetVersions = { data: { versions: { version: string }[] }[] }
 
 export abstract class DotnetTool implements IDotnetTool {
     private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/query'

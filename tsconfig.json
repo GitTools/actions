@@ -25,6 +25,9 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "paths": {
+            "@lib": [
+                "./tools/lib.ts"
+            ],
             "@agents/common": [
                 "./agents/common"
             ],

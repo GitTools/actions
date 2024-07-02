@@ -1,17 +1,8 @@
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import 'node:process';
-import 'node:child_process';
-import { parseArgs } from 'node:util';
-import { s as semver } from './semver.js';
 import * as crypto from 'node:crypto';
+import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
-
-async function getAgent(buildAgent) {
-  const agent = `../agents/${buildAgent}/build-agent.js`;
-  const module = await import(agent);
-  return new module.BuildAgent();
-}
+import * as path from 'node:path';
+import { s as semver } from './semver.js';
 
 var SetupFields = /* @__PURE__ */ ((SetupFields2) => {
   SetupFields2["includePrerelease"] = "includePrerelease";
@@ -207,15 +198,7 @@ class SettingsProvider {
   }
 }
 
-function parseCliArgs() {
-  return parseArgs({
-    options: {
-      command: { type: "string", short: "c" },
-      buildAgent: { type: "string", short: "a" }
-    }
-  }).values;
-}
 const keysFn = Object.keys;
 
-export { DotnetTool as D, SettingsProvider as S, getAgent as g, keysFn as k, parseCliArgs as p };
+export { DotnetTool as D, SettingsProvider as S, keysFn as k };
 //# sourceMappingURL=tools.js.map

@@ -1,6 +1,5 @@
-import { S as SettingsProvider, D as DotnetTool, p as parseCliArgs, g as getAgent } from '../common/tools.js';
 import * as path from 'path';
-import 'node:util';
+import { S as SettingsProvider, D as DotnetTool } from '../common/tools.js';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
@@ -382,8 +381,5 @@ class Runner {
   }
 }
 
-const { command, buildAgent } = parseCliArgs();
-const agent = await getAgent(buildAgent);
-const runner = new Runner(agent);
-await runner.run(command);
+export { Runner };
 //# sourceMappingURL=gitreleasemanager.js.map

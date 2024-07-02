@@ -1,5 +1,2 @@
-import { run, folderName } from '../tool.js'
-
-const command = folderName(import.meta.url)
-
-await run('github', command)
+import { run } from '../../dist/lib.js'
+await run('github', import.meta.url)

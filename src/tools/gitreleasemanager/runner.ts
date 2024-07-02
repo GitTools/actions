@@ -1,8 +1,9 @@
 import { IBuildAgent } from '@agents/common'
+import { IRunner } from '@tools/common'
 import { type Commands } from './models'
 import { GitReleaseManagerTool } from './tool'
 
-export class Runner {
+export class Runner implements IRunner {
     private readonly gitReleaseManagerTool: GitReleaseManagerTool
 
     constructor(private readonly buildAgent: IBuildAgent) {
