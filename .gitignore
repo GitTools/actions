@@ -28,6 +28,6 @@ dist-ssr
 .taskkey
 *.vsix
 
-/dist/mock/
+/dist/local/
 
 .debug/

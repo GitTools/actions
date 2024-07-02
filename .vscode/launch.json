@@ -7,9 +7,9 @@
         {
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "Build-Mock",
-            "name": "Debug Mock Setup GitVersion",
-            "program": "${workspaceFolder}/dist/mock/gitversion/setup/bundle.js",
+            "preLaunchTask": "Build-Local",
+            "name": "Debug Local Setup GitVersion",
+            "program": "${workspaceFolder}/dist/local/gitversion/setup/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {
@@ -31,9 +31,9 @@
         {
             "type": "node",
             "request": "launch",
-            "preLaunchTask": "Build-Mock",
-            "name": "Debug Mock Execute GitVersion",
-            "program": "${workspaceFolder}/dist/mock/gitversion/execute/bundle.js",
+            "preLaunchTask": "Build-Local",
+            "name": "Debug Local Execute GitVersion",
+            "program": "${workspaceFolder}/dist/local/gitversion/execute/bundle.js",
             "outFiles": [ "${workspaceFolder}/**/*.js" ]
         },
         {

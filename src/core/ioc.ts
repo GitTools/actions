@@ -1,7 +1,7 @@
 import { Container } from 'inversify'
 import { IVersionManager, VersionManager } from './versionManager'
 import { TYPES, IBuildAgent } from './models'
-import { BuildAgent } from '../agents/mock/build-agent'
+import { BuildAgent } from '../agents/local/build-agent'
 
 const container = new Container()
 

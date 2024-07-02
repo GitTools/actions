@@ -11,7 +11,7 @@ class BuildAgent implements IBuildAgent {
     }
     public get agentName(): string {
         console.log('getAgentName')
-        return 'Mock'
+        return 'Local'
     }
 
     public find(toolName: string, versionSpec: string, arch?: string): string {
