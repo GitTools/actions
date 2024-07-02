@@ -29,8 +29,8 @@ function getConfig(mode, agent, entry) {
         },
         plugins: [
             new webpack.NormalModuleReplacementPlugin(
-                /agent\/mock\/build-agent/,
-                `../agent/${agent}/build-agent`
+                /agents\/mock\/build-agent/,
+                `../agents/${agent}/build-agent`
             ),
             new ReplaceInFileWebpackPlugin([{
                 dir: `dist/${agent}`,
