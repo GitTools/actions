@@ -4,9 +4,11 @@ import * as path from 'path'
 import * as http from 'typed-rest-client/HttpClient'
 
 import { inject, injectable } from 'inversify'
-import { IBuildAgent, IExecResult, TYPES } from './models'
+import { TYPES } from './models'
 import { ISetupSettings } from '../tools/common/models'
 import * as semver from 'semver'
+import { IExecResult } from '../agents/common/models'
+import { IBuildAgent } from '../agents/common/build-agent'
 
 export interface IDotnetTool {
     disableTelemetry(): void

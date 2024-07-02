@@ -3,9 +3,10 @@ import { injectable } from 'inversify'
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
 import * as os from 'os'
+import { IExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {

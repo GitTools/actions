@@ -1,8 +1,9 @@
-import { IBuildAgent, TYPES } from '../../core/models'
+import { TYPES } from '../../core/models'
 
 import { ExecuteFields, GitVersionSettings, IGitVersionSettingsProvider } from './models'
 import { SettingsProvider } from '../common/settings'
 import { inject, injectable } from 'inversify'
+import { IBuildAgent } from '../../agents/common/build-agent'
 
 @injectable()
 export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {

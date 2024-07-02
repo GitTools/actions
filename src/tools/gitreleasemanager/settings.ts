@@ -1,4 +1,4 @@
-import { IBuildAgent, TYPES } from '../../core/models'
+import { TYPES } from '../../core/models'
 import {
     AddAssetFields,
     CloseFields,
@@ -18,6 +18,7 @@ import {
 } from './models'
 import { SettingsProvider } from '../common/settings'
 import { inject, injectable } from 'inversify'
+import { IBuildAgent } from '../../agents/common/build-agent'
 
 @injectable()
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {

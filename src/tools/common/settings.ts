@@ -1,6 +1,7 @@
 import { injectable } from 'inversify'
 import { ISettingsProvider, ISetupSettings, SetupFields } from './models'
-import { IBuildAgent } from '../../core/models'
+
+import { IBuildAgent } from '../../agents/common/build-agent'
 
 @injectable()
 export class SettingsProvider implements ISettingsProvider {

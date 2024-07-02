@@ -11,8 +11,9 @@ import * as toolCache from '@actions/tool-cache'
 
 import { injectable } from 'inversify'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions, IProxyConfiguration } from 'typed-rest-client/Interfaces'
+import { IExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {

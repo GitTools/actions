@@ -1,7 +1,8 @@
 import { injectable } from 'inversify'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
+import { IExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {

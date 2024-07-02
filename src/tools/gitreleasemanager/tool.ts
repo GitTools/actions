@@ -1,6 +1,6 @@
 import * as path from 'path'
 
-import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
+import { TYPES } from '../../core/models'
 import { inject, injectable } from 'inversify'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 
@@ -14,6 +14,8 @@ import {
     GitReleaseManagerSettings
 } from './models'
 import { ISetupSettings } from '../common/models'
+import { IExecResult } from '../../agents/common/models'
+import { IBuildAgent } from '../../agents/common/build-agent'
 
 export interface IGitReleaseManagerTool extends IDotnetTool {
     install(setupSettings: ISetupSettings): Promise<void>
