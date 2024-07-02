@@ -1,14 +1,12 @@
-import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
-import * as http from 'typed-rest-client/HttpClient'
-
+import { ISetupSettings, TYPES } from './models'
 import { inject, injectable } from 'inversify'
-import { TYPES } from './models'
-import { ISetupSettings } from '../tools/common/models'
+import { IBuildAgent } from '../../agents/common/build-agent'
+import * as http from 'typed-rest-client/HttpClient'
+import { IExecResult } from '../../agents/common/models'
 import * as semver from 'semver'
-import { IExecResult } from '../agents/common/models'
-import { IBuildAgent } from '../agents/common/build-agent'
+import os from 'os'
+import fs from 'fs'
+import path from 'path'
 
 export interface IDotnetTool {
     disableTelemetry(): void

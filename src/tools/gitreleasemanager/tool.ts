@@ -1,8 +1,6 @@
 import * as path from 'path'
 
-import { TYPES } from '../../core/models'
 import { inject, injectable } from 'inversify'
-import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 
 import {
     GitReleaseManagerAddAssetSettings,
@@ -13,7 +11,8 @@ import {
     GitReleaseManagerPublishSettings,
     GitReleaseManagerSettings
 } from './models'
-import { ISetupSettings } from '../common/models'
+import { ISetupSettings, TYPES } from '../common/models'
+import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
 import { IExecResult } from '../../agents/common/models'
 import { IBuildAgent } from '../../agents/common/build-agent'
 

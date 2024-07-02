@@ -1,7 +1,7 @@
 import { Container } from 'inversify'
-import { TYPES } from './models'
 import { BuildAgent } from '../agents/local/build-agent'
 import { IBuildAgent } from '../agents/common/build-agent'
+import { TYPES } from '../tools/common/models'
 
 const container = new Container()
 
