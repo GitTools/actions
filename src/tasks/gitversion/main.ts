@@ -2,7 +2,7 @@ import { IGitVersionTool, GitVersionTool } from '../../tools/gitversion/tool'
 import { GitVersionSettings, GitVersionOutput, IGitVersionSettingsProvider } from '../../tools/gitversion/models'
 import { GitVersionSettingsProvider } from '../../tools/gitversion/settings'
 
-import container from '../../core/ioc'
+import container from '../ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import { TYPES } from '../../tools/common/models'
 

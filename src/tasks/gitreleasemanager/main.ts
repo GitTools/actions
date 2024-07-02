@@ -2,7 +2,7 @@ import { IGitReleaseManagerTool, GitReleaseManagerTool } from '../../tools/gitre
 import { IGitReleaseManagerSettingsProvider } from '../../tools/gitreleasemanager/models'
 import { GitReleaseManagerSettingsProvider } from '../../tools/gitreleasemanager/settings'
 
-import container from '../../core/ioc'
+import container from '../ioc'
 import { IBuildAgent } from '../../agents/common/build-agent'
 import { TYPES } from '../../tools/common/models'
 
