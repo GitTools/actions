@@ -3,7 +3,6 @@ import * as path from 'path'
 import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
 import { inject, injectable } from 'inversify'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
-import { IVersionManager } from '../../core/versionManager'
 
 import {
     GitReleaseManagerAddAssetSettings,
@@ -28,8 +27,8 @@ export interface IGitReleaseManagerTool extends IDotnetTool {
 
 @injectable()
 export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseManagerTool {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
-        super(buildAgent, versionManager)
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
+        super(buildAgent)
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {

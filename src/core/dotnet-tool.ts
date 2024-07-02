@@ -5,8 +5,8 @@ import * as http from 'typed-rest-client/HttpClient'
 
 import { inject, injectable } from 'inversify'
 import { IBuildAgent, IExecResult, TYPES } from './models'
-import { IVersionManager } from './versionManager'
 import { ISetupSettings } from '../tools/common/models'
+import * as semver from 'semver'
 
 export interface IDotnetTool {
     disableTelemetry(): void
@@ -17,14 +17,12 @@ export interface IDotnetTool {
 @injectable()
 export class DotnetTool implements IDotnetTool {
     protected buildAgent: IBuildAgent
-    protected versionManager: IVersionManager
     private httpClient: http.HttpClient
 
     private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/query'
 
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
         this.buildAgent = buildAgent
-        this.versionManager = versionManager
         this.httpClient = new http.HttpClient('dotnet', undefined, this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot))
     }
 
@@ -39,20 +37,20 @@ export class DotnetTool implements IDotnetTool {
     }
 
     public async toolInstall(toolName: string, versionRange: string, setupSettings: ISetupSettings): Promise<string> {
-        let version: string | null = this.versionManager.cleanVersion(setupSettings.versionSpec) || setupSettings.versionSpec
+        let version: string | null = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec
         console.log('')
         console.log('--------------------------')
         console.log(`Acquiring ${toolName} version spec: ${version}`)
         console.log('--------------------------')
 
-        if (!this.versionManager.isExplicitVersion(version)) {
+        if (!this.isExplicitVersion(version)) {
             version = await this.queryLatestMatch(toolName, version, setupSettings.includePrerelease)
             if (!version) {
                 throw new Error(`Unable to find ${toolName} version '${version}'.`)
             }
         }
 
-        if (!this.versionManager.satisfies(version, versionRange, { includePrerelease: setupSettings.includePrerelease })) {
+        if (!semver.satisfies(version, versionRange, { includePrerelease: setupSettings.includePrerelease })) {
             throw new Error(
                 `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${versionRange}'.` +
                     'See https://github.com/GitTools/actions/blob/main/docs/versions.md for more information.'
@@ -70,7 +68,7 @@ export class DotnetTool implements IDotnetTool {
         }
 
         if (!toolPath) {
-            toolPath = await this.acquireTool(toolName, version, setupSettings.ignoreFailedSources)
+            toolPath = await this.installTool(toolName, version, setupSettings.ignoreFailedSources)
             console.log('--------------------------')
             console.log(`${toolName} version: ${version} installed.`)
             console.log('--------------------------')
@@ -118,12 +116,17 @@ export class DotnetTool implements IDotnetTool {
 
         this.buildAgent.debug(`got versions: ${versions.join(', ')}`)
 
-        return this.versionManager.evaluateVersions(versions, versionSpec, {
-            includePrerelease
-        })
+        const version = semver.maxSatisfying(versions, versionSpec, { includePrerelease })
+        if (version) {
+            this.buildAgent.info(`Found matching version: ${version}`)
+        } else {
+            this.buildAgent.info('match not found')
+        }
+
+        return version
     }
 
-    private async acquireTool(toolName: string, version: string, ignoreFailedSources: boolean): Promise<string> {
+    private async installTool(toolName: string, version: string, ignoreFailedSources: boolean): Promise<string> {
         const tempDirectory = await this.buildAgent.createTempDir()
         let args = ['tool', 'install', toolName, '--tool-path', tempDirectory]
 
@@ -132,7 +135,7 @@ export class DotnetTool implements IDotnetTool {
         }
 
         if (version) {
-            version = this.versionManager.cleanVersion(version)
+            version = semver.clean(version)
             args = args.concat(['--version', version])
         }
 
@@ -147,5 +150,13 @@ export class DotnetTool implements IDotnetTool {
         }
 
         return await this.buildAgent.cacheDir(tempDirectory, toolName, version)
+    }
+
+    private isExplicitVersion(versionSpec: string): boolean {
+        const cleanedVersionSpec = semver.clean(versionSpec)
+        const valid = semver.valid(cleanedVersionSpec) != null
+        this.buildAgent.debug(`Is version explicit? ${valid}`)
+
+        return valid
     }
 }

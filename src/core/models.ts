@@ -5,7 +5,6 @@ export const TYPES = {
     IDotnetTool: Symbol.for('DotnetTool'),
     IGitVersionTool: Symbol.for('GitVersionTool'),
     IGitReleaseManagerTool: Symbol.for('GitReleaseManagerTool'),
-    IVersionManager: Symbol.for('VersionManager'),
     IGitVersionSettingsProvider: Symbol.for('GitVersionSettingsProvider'),
     IGitReleaseManagerSettingsProvider: Symbol.for('GitReleaseManagerSettingsProvider')
 }

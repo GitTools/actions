@@ -2,7 +2,6 @@ import { inject, injectable } from 'inversify'
 import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
 import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
 import { GitVersionOutput, GitVersionSettings } from './models'
-import { IVersionManager } from '../../core/versionManager'
 import { ISetupSettings } from '../common/models'
 
 export interface IGitVersionTool extends IDotnetTool {
@@ -15,8 +14,8 @@ export interface IGitVersionTool extends IDotnetTool {
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
-        super(buildAgent, versionManager)
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
+        super(buildAgent)
     }
 
     public async install(setupSettings: ISetupSettings): Promise<void> {
