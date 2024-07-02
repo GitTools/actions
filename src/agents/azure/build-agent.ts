@@ -5,6 +5,7 @@ import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
 import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
+import * as os from 'os'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -34,6 +35,10 @@ class BuildAgent implements IBuildAgent {
 
     public debug(message: string): void {
         taskLib.debug(message)
+    }
+
+    public info(message: string): void {
+        process.stdout.write(message + os.EOL)
     }
 
     public setFailed(message: string, done?: boolean): void {

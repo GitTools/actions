@@ -23,6 +23,7 @@ export interface IBuildAgent {
     cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string>
     createTempDir(): Promise<string>
     debug(message: string): void
+    info(message: string): void
     setFailed(message: string, done?: boolean): void
     setSucceeded(message: string, done?: boolean): void
     setVariable(name: string, val: string): void

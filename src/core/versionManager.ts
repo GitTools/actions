@@ -18,39 +18,25 @@ export class VersionManager implements IVersionManager {
     }
 
     public isExplicitVersion(versionSpec: string): boolean {
-        const c = semver.clean(versionSpec)
-        this.buildAgent.debug('isExplicit: ' + c)
-
-        const valid = semver.valid(c) != null
-        this.buildAgent.debug('explicit? ' + valid)
+        const cleanedVersionSpec = semver.clean(versionSpec)
+        const valid = semver.valid(cleanedVersionSpec) != null
+        this.buildAgent.debug(`Is version explicit? ${valid}`)
 
         return valid
     }
 
     public evaluateVersions(versions: string[], versionSpec: string, optionsOrLoose?: boolean | semver.RangeOptions): string {
-        let version: string
-        this.buildAgent.debug('evaluating ' + versions.length + ' versions')
-        versions = semver.sort(versions)
-        for (let i = versions.length - 1; i >= 0; i--) {
-            const potential: string = versions[i]
-            const satisfied: boolean = semver.satisfies(potential, versionSpec, optionsOrLoose)
-            if (satisfied) {
-                version = potential
-                break
-            }
-        }
-
+        const version = semver.maxSatisfying(versions, versionSpec, optionsOrLoose)
         if (version) {
-            this.buildAgent.debug('matched: ' + version)
+            this.buildAgent.info(`Found matching version: ${version}`)
         } else {
-            this.buildAgent.debug('match not found')
+            this.buildAgent.info('match not found')
         }
 
         return version
     }
 
     public cleanVersion(version: string): string {
-        this.buildAgent.debug('cleaning: ' + version)
         return semver.clean(version)
     }
 

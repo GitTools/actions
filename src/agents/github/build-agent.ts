@@ -102,6 +102,10 @@ class BuildAgent implements IBuildAgent {
         core.debug(message)
     }
 
+    public info(message: string): void {
+        core.info(message)
+    }
+
     public setFailed(message: string, done?: boolean): void {
         core.setFailed(message)
     }

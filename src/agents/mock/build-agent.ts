@@ -33,6 +33,10 @@ class BuildAgent implements IBuildAgent {
         console.log('debug')
     }
 
+    public info(message: string): void {
+        console.log(message)
+    }
+
     public setFailed(message: string, done?: boolean): void {
         console.log('setFailed')
     }
