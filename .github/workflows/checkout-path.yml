@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - main
-      - refactoring
 
   pull_request:
     branches:
       - main
+
   workflow_dispatch:
 
 defaults:
@@ -26,13 +26,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v1.1.1
+        uses: gittools/actions/gitversion/setup@main
         with:
           versionSpec: '5.x'
 
       - name: Determine version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v1.1.1
+        uses: gittools/actions/gitversion/execute@main
         with:
           targetPath: gv-repo
 

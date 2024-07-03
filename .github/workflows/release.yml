@@ -20,11 +20,10 @@ jobs:
           token: ${{ secrets.PUSH_GITHUB_TOKEN }}
       - run: |
           npm install
+          npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
 
-          # npm run compress:github
-          # npm run compress:azure
         name: Build code
       - name: Install GitVersion
         uses: ./gitversion/setup
