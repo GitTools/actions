@@ -15,12 +15,12 @@
   "minimumAgentVersion": "2.220.0",
   "execution": {
     "Node10": {
-      "target": "bundle.js",
+      "target": "main.js",
       "argumentFormat": "",
       "workingDirectory": "."
     },
     "Node20": {
-      "target": "bundle.js",
+      "target": "main.js",
       "argumentFormat": "",
       "workingDirectory": "."
     }
