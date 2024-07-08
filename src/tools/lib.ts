@@ -12,14 +12,14 @@ type CliArgs = {
 }
 
 export async function getAgent(buildAgent: string | undefined): Promise<IBuildAgent> {
-    const agent = `./${buildAgent}/agent.js`
+    const agent = `./${buildAgent}/agent.mjs`
     const module: { BuildAgent: new () => IBuildAgent } = await import(agent)
     return new module.BuildAgent()
 }
 
 export async function getToolRunner(buildAgent: string | undefined, tool: string | undefined): Promise<IRunner> {
     const agent = await getAgent(buildAgent)
-    const toolRunner = `./${tool}.js`
+    const toolRunner = `./${tool}.mjs`
     const module: { Runner: new (buildAgent: IBuildAgent) => IRunner } = await import(toolRunner)
     return new module.Runner(agent)
 }

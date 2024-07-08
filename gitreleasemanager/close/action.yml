@@ -6,7 +6,7 @@ branding:
   icon: git-pull-request
 runs:
   using: node20
-  main: main.js
+  main: main.mjs
 inputs:
   owner:
     description: The owner of the repository

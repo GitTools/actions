@@ -23,8 +23,8 @@ export function viteConfig(entry: { [p: string]: string }, manualChunks: (id: st
             rollupOptions: {
                 external: [...builtinModules, ...builtinModules.map(module => `node:${module}`)],
                 output: {
-                    entryFileNames: '[name].js',
-                    chunkFileNames: '[name].js',
+                    entryFileNames: '[name].mjs',
+                    chunkFileNames: '[name].mjs',
                     manualChunks: (id: string) => {
                         if (id.includes('node_modules/semver') || id.includes('node_modules/lru-cache') || id.includes('node_modules/yallist')) {
                             return `libs/semver`

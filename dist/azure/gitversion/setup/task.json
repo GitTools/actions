@@ -14,8 +14,8 @@
   },
   "minimumAgentVersion": "3.224.0",
   "execution": {
-    "Node20": {
-      "target": "main.js",
+    "Node20_1": {
+      "target": "main.mjs",
       "argumentFormat": "",
       "workingDirectory": "."
     }

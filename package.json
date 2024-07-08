@@ -28,7 +28,7 @@
         "run:local:gitversion": "node dist/tools/gitversion.js --agent local",
         "run:azure:gitversion": "node dist/tools/gitversion.js --agent azure",
         "cli:github:gitversion": "node dist/cli.js --agent github --tool gitversion --command setup",
-        "run:github:gitversion": "node gitversion/setup/main.js",
+        "run:github:gitversion": "node gitversion/setup/main.mjs",
 
         "run:local:gitreleasemanager": "node dist/local/gitreleasemanager.js --agent local",
         "run:azure:gitreleasemanager": "node dist/azure/gitreleasemanager.js --agent azure",
