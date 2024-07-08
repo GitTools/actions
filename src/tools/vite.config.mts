@@ -12,7 +12,7 @@ const config = (): UserConfig => {
     const entry = {
         ...tools,
         ['libs/lib']: resolve(__dirname, 'lib.ts'),
-        //['cli']: resolve(__dirname, 'cli.ts')
+        ['cli']: resolve(__dirname, 'cli.ts')
     }
 
     const manualChunks = (id: string): string | undefined => {
