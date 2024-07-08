@@ -25,7 +25,15 @@ export function viteConfig(entry: { [p: string]: string }, manualChunks: (id: st
                 output: {
                     entryFileNames: '[name].js',
                     chunkFileNames: '[name].js',
-                    manualChunks
+                    manualChunks: (id: string) => {
+                        if (id.includes('node_modules/semver') || id.includes('node_modules/lru-cache') || id.includes('node_modules/yallist')) {
+                            return `libs/semver`
+                        }
+                        const chunk = manualChunks(id)
+                        if (chunk) {
+                            return chunk
+                        }
+                    }
                 }
             },
             emptyOutDir: false,

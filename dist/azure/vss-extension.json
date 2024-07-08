@@ -43,6 +43,42 @@
     {
       "path": "images",
       "addressable": true
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitversion/setup/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitversion/execute/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/setup/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/create/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/discard/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/close/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/open/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/publish/libs"
+    },
+    {
+      "path": "../libs",
+      "packagePath": "gitreleasemanager/addasset/libs"
     }
   ],
   "categories": [

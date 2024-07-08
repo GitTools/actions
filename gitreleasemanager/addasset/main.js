@@ -1,2 +1,2 @@
-import { run } from '../../dist/lib.js'
+import { run } from '../../dist/libs/lib.js'
 await run('github', import.meta.url)
