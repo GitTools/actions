@@ -12,13 +12,8 @@
     "Minor": 0,
     "Patch": 1
   },
-  "minimumAgentVersion": "2.220.0",
+  "minimumAgentVersion": "3.224.0",
   "execution": {
-    "Node10": {
-      "target": "main.js",
-      "argumentFormat": "",
-      "workingDirectory": "."
-    },
     "Node20": {
       "target": "main.js",
       "argumentFormat": "",
