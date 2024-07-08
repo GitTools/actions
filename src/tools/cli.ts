@@ -1,5 +1,5 @@
 import { getToolRunner, parseCliArgs } from '@lib'
 
-const { buildAgent, tool,  command } = parseCliArgs()
-const runner = await getToolRunner(buildAgent, tool)
+const { agent, tool, command } = parseCliArgs()
+const runner = await getToolRunner(agent, tool)
 await runner.run(command)

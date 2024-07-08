@@ -1,4 +1,4 @@
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { type SetupSettings, SetupFields } from './models'
 
 export interface ISettingsProvider {

@@ -1,6 +1,6 @@
 import * as os from 'node:os'
 import process from 'node:process'
-import { BuildAgentBase, IBuildAgent } from '@agents/common'
+import { BuildAgentBase, type IBuildAgent } from '@agents/common'
 import { ExitCode, issueCommand, issueFileCommand, prepareKeyValueMessage, toCommandValue } from './command'
 
 export class BuildAgent extends BuildAgentBase implements IBuildAgent {

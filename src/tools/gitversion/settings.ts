@@ -1,4 +1,4 @@
-import { ISettingsProvider, SettingsProvider } from '@tools/common'
+import { type ISettingsProvider, SettingsProvider } from '@tools/common'
 import { ExecuteFields, type GitVersionSettings } from './models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {

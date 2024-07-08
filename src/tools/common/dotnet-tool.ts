@@ -4,9 +4,9 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 
 import * as semver from 'semver'
-import { IBuildAgent, type ExecResult } from '@agents/common'
+import { type IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
-import { NugetVersions } from './models.ts'
+import { NugetVersions } from './models'
 
 export interface IDotnetTool {
     disableTelemetry(): void

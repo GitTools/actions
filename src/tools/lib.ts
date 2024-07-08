@@ -6,20 +6,20 @@ import { type IBuildAgent } from '@agents/common'
 import { type IRunner } from '@tools/common'
 
 type CliArgs = {
-    buildAgent: string
+    agent: string
     tool: string
     command: string
 }
 
 export async function getAgent(buildAgent: string | undefined): Promise<IBuildAgent> {
-    const agent = `./agents/${buildAgent}/build-agent.js`
+    const agent = `./${buildAgent}/agent.js`
     const module: { BuildAgent: new () => IBuildAgent } = await import(agent)
     return new module.BuildAgent()
 }
 
 export async function getToolRunner(buildAgent: string | undefined, tool: string | undefined): Promise<IRunner> {
     const agent = await getAgent(buildAgent)
-    const toolRunner = `./tools/${tool}.js`
+    const toolRunner = `./${tool}.js`
     const module: { Runner: new (buildAgent: IBuildAgent) => IRunner } = await import(toolRunner)
     return new module.Runner(agent)
 }
@@ -27,7 +27,7 @@ export async function getToolRunner(buildAgent: string | undefined, tool: string
 export function parseCliArgs(): CliArgs {
     return parseArgs({
         options: {
-            buildAgent: { type: 'string', short: 'a' },
+            agent: { type: 'string', short: 'a' },
             tool: { type: 'string', short: 't' },
             command: { type: 'string', short: 'c' }
         }

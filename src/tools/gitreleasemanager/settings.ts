@@ -1,21 +1,20 @@
-import { ISettingsProvider, SettingsProvider } from '@tools/common'
+import { type ISettingsProvider, SettingsProvider } from '@tools/common'
 import {
     AddAssetFields,
     CloseFields,
     CommonFields,
     CreateFields,
     DiscardFields,
+    OpenFields,
+    PublishFields,
     type GitReleaseManagerAddAssetSettings,
     type GitReleaseManagerCloseSettings,
     type GitReleaseManagerCreateSettings,
     type GitReleaseManagerDiscardSettings,
     type GitReleaseManagerOpenSettings,
     type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings,
-    OpenFields,
-    PublishFields
+    type GitReleaseManagerSettings
 } from './models'
-
 export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
     getCreateSettings(): GitReleaseManagerCreateSettings
 

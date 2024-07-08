@@ -1,7 +1,7 @@
 import { type ExecResult } from '@agents/common'
 import { DotnetTool, keysFn } from '@tools/common'
 import { type GitVersionOutput, type GitVersionSettings } from './models'
-import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
+import { GitVersionSettingsProvider, type IGitVersionSettingsProvider } from './settings'
 
 export class GitVersionTool extends DotnetTool {
     get packageName(): string {

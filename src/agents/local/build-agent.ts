@@ -1,6 +1,6 @@
 import * as process from 'node:process'
 
-import { BuildAgentBase, IBuildAgent } from '@agents/common'
+import { BuildAgentBase, type IBuildAgent } from '@agents/common'
 
 export class BuildAgent extends BuildAgentBase implements IBuildAgent {
     agentName = 'Local'

@@ -1,7 +1,7 @@
 import * as path from 'path'
 
 import { DotnetTool } from '@tools/common'
-import { ExecResult } from '@agents/common'
+import { type ExecResult } from '@agents/common'
 
 import {
     type GitReleaseManagerAddAssetSettings,

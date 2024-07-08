@@ -1,5 +1,5 @@
-import { IBuildAgent } from '@agents/common'
-import { IRunner } from '@tools/common'
+import { type IBuildAgent } from '@agents/common'
+import { type IRunner } from '@tools/common'
 import { type Commands } from './models'
 import { GitReleaseManagerTool } from './tool'
 
