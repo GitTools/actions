@@ -17,12 +17,12 @@ function update-task() {
     $patch
 )
     $file = Resolve-Path $file
-    $jqMajor = '.version.Major="' + $major +'"';
-    $jqMinor = '.version.Minor="' + $minor +'"';
-    $jqPatch = '.version.Patch="' + $patch +'"';
+    $jqMajor = '.version.Major=' + $major;
+    $jqMinor = '.version.Minor=' + $minor;
+    $jqPatch = '.version.Patch=' + $patch;
     Write-Host "Update task from $file to version $major.$minor.$patch"
 
-    Get-Content $file | jq $jqMajor | jq $jqMinor | jq $jqPatch | Set-Content $file -NoNewline
+    Get-Content $file | jq $jqMajor | jq $jqMinor | jq $jqPatch | ConvertFrom-Json -Depth 5 | ConvertTo-Json -Depth 5 | Set-Content $file -NoNewline
 }
 
 function update-manifest() {
@@ -39,7 +39,7 @@ function update-manifest() {
     $jqVersion = '.version="' + $version +'"';
     Write-Host "Update manifest $file version to $version"
 
-    Get-Content $file | jq $jqVersion | Set-Content $file -NoNewline
+    Get-Content $file | jq $jqVersion | ConvertFrom-Json -Depth 5 | ConvertTo-Json -Depth 5 | Set-Content $file -NoNewline
 }
 
 function update-md-files()

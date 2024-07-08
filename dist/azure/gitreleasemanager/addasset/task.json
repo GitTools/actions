@@ -1,79 +1,79 @@
 {
-    "id": "b803651c-21ac-4851-9fbf-c75b0e82e4c5",
-    "name": "gitreleasemanager/addasset",
-    "friendlyName": "Add Asset GitReleaseManager Task",
-    "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
-    "author": "GitTools Contributors",
-    "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
-    "category": "Build",
-    "demands": [],
-    "version": {
-        "Major": "1",
-        "Minor": "0",
-        "Patch": "0"
+  "id": "b803651c-21ac-4851-9fbf-c75b0e82e4c5",
+  "name": "gitreleasemanager/addasset",
+  "friendlyName": "Add Asset GitReleaseManager Task",
+  "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
+  "author": "GitTools Contributors",
+  "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
+  "category": "Build",
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "minimumAgentVersion": "2.220.0",
+  "execution": {
+    "Node10": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
     },
-    "minimumAgentVersion": "2.220.0",
-    "execution": {
-        "Node10": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        },
-        "Node20": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        }
+    "Node20": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
+    }
+  },
+  "instanceNameFormat": "gitreleasemanager/addasset",
+  "inputs": [
+    {
+      "name": "owner",
+      "type": "string",
+      "label": "The owner of the repository",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The owner of the repository"
     },
-    "instanceNameFormat": "gitreleasemanager/addasset",
-    "inputs": [
-        {
-            "name": "owner",
-            "type": "string",
-            "label": "The owner of the repository",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "The owner of the repository"
-        },
-        {
-            "name": "repository",
-            "type": "string",
-            "label": "The name of the repository",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "The name of the repository"
-        },
-        {
-            "name": "token",
-            "type": "string",
-            "label": "The access token to access GitHub with",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "The access token to access GitHub with"
-        },
-        {
-            "name": "tagName",
-            "type": "string",
-            "label": "The name of the release",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "The name of the release"
-        },
-        {
-            "name": "assets",
-            "type": "multiLine",
-            "label": "Path(s) to the file(s) to include in the release",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Path(s) to the file(s) to include in the release. Separated by newline"
-        },
-        {
-            "name": "targetDirectory",
-            "type": "string",
-            "label": "The directory on which GitReleaseManager should be executed. Defaults to current directory",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "The directory on which GitReleaseManager should be executed. Defaults to current directory"
-        }
-    ]
+    {
+      "name": "repository",
+      "type": "string",
+      "label": "The name of the repository",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the repository"
+    },
+    {
+      "name": "token",
+      "type": "string",
+      "label": "The access token to access GitHub with",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The access token to access GitHub with"
+    },
+    {
+      "name": "tagName",
+      "type": "string",
+      "label": "The name of the release",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the release"
+    },
+    {
+      "name": "assets",
+      "type": "multiLine",
+      "label": "Path(s) to the file(s) to include in the release",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path(s) to the file(s) to include in the release. Separated by newline"
+    },
+    {
+      "name": "targetDirectory",
+      "type": "string",
+      "label": "The directory on which GitReleaseManager should be executed. Defaults to current directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The directory on which GitReleaseManager should be executed. Defaults to current directory"
+    }
+  ]
 }

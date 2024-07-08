@@ -1,127 +1,127 @@
 {
-    "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
-    "name": "gitversion/execute",
-    "friendlyName": "Execute GitVersion Task",
-    "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
-    "author": "GitTools Contributors",
-    "helpMarkDown": "See the [documentation](https://gitversion.net/docs/) for help",
-    "category": "Build",
-    "demands": [],
-    "version": {
-        "Major": "1",
-        "Minor": "0",
-        "Patch": "0"
+  "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
+  "name": "gitversion/execute",
+  "friendlyName": "Execute GitVersion Task",
+  "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
+  "author": "GitTools Contributors",
+  "helpMarkDown": "See the [documentation](https://gitversion.net/docs/) for help",
+  "category": "Build",
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "minimumAgentVersion": "2.220.0",
+  "execution": {
+    "Node10": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
     },
-    "minimumAgentVersion": "2.220.0",
-    "execution": {
-        "Node10": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        },
-        "Node20": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        }
+    "Node20": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
+    }
+  },
+  "instanceNameFormat": "gitversion/execute",
+  "groups": [
+    {
+      "name": "gitversionDetails",
+      "displayName": "GitVersion details",
+      "isExpanded": true
     },
-    "instanceNameFormat": "gitversion/execute",
-    "groups": [
-        {
-            "name": "gitversionDetails",
-            "displayName": "GitVersion details",
-            "isExpanded": true
-        },
-        {
-            "name": "additional",
-            "displayName": "Additional Options",
-            "isExpanded": false
-        }
-    ],
-    "inputs": [
-        {
-            "name": "targetPath",
-            "type": "string",
-            "label": "Working directory path",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Optionally supply the path to the working directory",
-            "groupName": "gitversionDetails"
-        },
-        {
-            "name": "disableCache",
-            "type": "boolean",
-            "label": "Disable Cache",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Whether to disable GitVersion cache"
-        },
-        {
-            "name": "disableNormalization",
-            "type": "boolean",
-            "label": "Disable Normalization",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Whether to disable GitVersion normalization"
-        },
-        {
-            "name": "disableShallowCloneCheck",
-            "type": "boolean",
-            "label": "Disable Shallow Clone Check",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Whether to disable GitVersion shallow clone check"
-        },
-        {
-            "name": "useConfigFile",
-            "type": "boolean",
-            "label": "Specify Configuration file",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Whether to use a custom configuration file"
-        },
-        {
-            "name": "configFilePath",
-            "type": "filePath",
-            "label": "Configuration file",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
-            "visibleRule": "useConfigFile = true"
-        },
-        {
-            "name": "overrideConfig",
-            "type": "multiLine",
-            "label": "Override Configuration",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
-        },
-        {
-            "name": "updateAssemblyInfo",
-            "type": "boolean",
-            "label": "Update AssemblyInfo files",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
-        },
-        {
-            "name": "updateAssemblyInfoFilename",
-            "type": "string",
-            "label": "Update Assembly File",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Update versions in specified file",
-            "visibleRule": "updateAssemblyInfo = true"
-        },
-        {
-            "name": "additionalArguments",
-            "type": "string",
-            "label": "Additional GitVersion arguments",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Additional arguments to send to GitVersion",
-            "groupName": "additional"
-        }
-    ]
+    {
+      "name": "additional",
+      "displayName": "Additional Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "targetPath",
+      "type": "string",
+      "label": "Working directory path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optionally supply the path to the working directory",
+      "groupName": "gitversionDetails"
+    },
+    {
+      "name": "disableCache",
+      "type": "boolean",
+      "label": "Disable Cache",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to disable GitVersion cache"
+    },
+    {
+      "name": "disableNormalization",
+      "type": "boolean",
+      "label": "Disable Normalization",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to disable GitVersion normalization"
+    },
+    {
+      "name": "disableShallowCloneCheck",
+      "type": "boolean",
+      "label": "Disable Shallow Clone Check",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to disable GitVersion shallow clone check"
+    },
+    {
+      "name": "useConfigFile",
+      "type": "boolean",
+      "label": "Specify Configuration file",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to use a custom configuration file"
+    },
+    {
+      "name": "configFilePath",
+      "type": "filePath",
+      "label": "Configuration file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
+      "visibleRule": "useConfigFile = true"
+    },
+    {
+      "name": "overrideConfig",
+      "type": "multiLine",
+      "label": "Override Configuration",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
+    },
+    {
+      "name": "updateAssemblyInfo",
+      "type": "boolean",
+      "label": "Update AssemblyInfo files",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
+    },
+    {
+      "name": "updateAssemblyInfoFilename",
+      "type": "string",
+      "label": "Update Assembly File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Update versions in specified file",
+      "visibleRule": "updateAssemblyInfo = true"
+    },
+    {
+      "name": "additionalArguments",
+      "type": "string",
+      "label": "Additional GitVersion arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments to send to GitVersion",
+      "groupName": "additional"
+    }
+  ]
 }

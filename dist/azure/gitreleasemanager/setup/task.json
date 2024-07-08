@@ -1,63 +1,63 @@
 {
-    "id": "e3022448-b00d-4b57-b504-606a0bcf8279",
-    "name": "gitreleasemanager/setup",
-    "friendlyName": "Setup GitReleaseManager Task",
-    "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
-    "author": "GitTools Contributors",
-    "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
-    "category": "Build",
-    "demands": [],
-    "version": {
-        "Major": "1",
-        "Minor": "0",
-        "Patch": "0"
+  "id": "e3022448-b00d-4b57-b504-606a0bcf8279",
+  "name": "gitreleasemanager/setup",
+  "friendlyName": "Setup GitReleaseManager Task",
+  "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
+  "author": "GitTools Contributors",
+  "helpMarkDown": "See the [documentation](https://gittools.github.io/GitReleaseManager/docs/) for help",
+  "category": "Build",
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "minimumAgentVersion": "2.220.0",
+  "execution": {
+    "Node10": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
     },
-    "minimumAgentVersion": "2.220.0",
-    "execution": {
-        "Node10": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        },
-        "Node20": {
-            "target": "bundle.js",
-            "argumentFormat": "",
-            "workingDirectory": "."
-        }
+    "Node20": {
+      "target": "bundle.js",
+      "argumentFormat": "",
+      "workingDirectory": "."
+    }
+  },
+  "instanceNameFormat": "gitreleasemanager/setup",
+  "inputs": [
+    {
+      "name": "versionSpec",
+      "type": "string",
+      "label": "The version spec",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Required version in the form of 0.17.x or exact version like 0.17.0"
     },
-    "instanceNameFormat": "gitreleasemanager/setup",
-    "inputs": [
-        {
-            "name": "versionSpec",
-            "type": "string",
-            "label": "The version spec",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Required version in the form of 0.17.x or exact version like 0.17.0"
-        },
-        {
-            "name": "includePrerelease",
-            "type": "boolean",
-            "label": "Include pre-release versions",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Include pre-release versions when matching a version"
-        },
-        {
-            "name": "ignoreFailedSources",
-            "type": "boolean",
-            "label": "Treat package source failures as warnings",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Treat package source failures as warnings"
-        },
-        {
-            "name": "preferLatestVersion",
-            "type": "boolean",
-            "label": "Prefer latest version",
-            "defaultValue": "false",
-            "required": false,
-            "helpMarkDown": "Prefer to download the latest version matching the versionSpec, even if there is a local cached version."
-        }
-    ]
+    {
+      "name": "includePrerelease",
+      "type": "boolean",
+      "label": "Include pre-release versions",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Include pre-release versions when matching a version"
+    },
+    {
+      "name": "ignoreFailedSources",
+      "type": "boolean",
+      "label": "Treat package source failures as warnings",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Treat package source failures as warnings"
+    },
+    {
+      "name": "preferLatestVersion",
+      "type": "boolean",
+      "label": "Prefer latest version",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Prefer to download the latest version matching the versionSpec, even if there is a local cached version."
+    }
+  ]
 }
