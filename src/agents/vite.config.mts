@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import { UserConfig } from 'vite'
-import { viteConfig } from '../vite.common.config'
+import { viteConfig } from '../vite.common.config.mjs'
 
 const config = ({ mode: agent }: Partial<UserConfig>): UserConfig => {
     if (agent === 'local-agent') {
