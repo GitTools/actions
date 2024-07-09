@@ -25,14 +25,13 @@
         "build:agent:azure": "vite build --config src/agents/vite.config.mts --mode azure",
         "build:agent:github": "vite build --config src/agents/vite.config.mts --mode github",
 
-        "run:local:gitversion": "node dist/tools/gitversion.js --agent local",
-        "run:azure:gitversion": "node dist/tools/gitversion.js --agent azure",
-        "cli:github:gitversion": "node dist/cli.js --agent github --tool gitversion --command setup",
-        "run:github:gitversion": "node gitversion/setup/main.mjs",
+        "run:local:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent local",
+        "run:azure:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent azure",
+        "run:github:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent github",
 
-        "run:local:gitreleasemanager": "node dist/local/gitreleasemanager.js --agent local",
-        "run:azure:gitreleasemanager": "node dist/azure/gitreleasemanager.js --agent azure",
-        "run:github:gitreleasemanager": "node dist/github/gitreleasemanager.js --agent github",
+        "run:local:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent local",
+        "run:azure:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent azure",
+        "run:github:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent github",
 
         "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.mts",
         "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.mts",
