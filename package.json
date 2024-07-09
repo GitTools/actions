@@ -34,7 +34,9 @@
         "run:github:gitreleasemanager": "node dist/github/gitreleasemanager.js --buildAgent github",
 
         "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
-        "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts"
+        "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
+
+        "publish:azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
     },
     "devDependencies": {
         "@types/node": "^20.14.8",
@@ -52,6 +54,7 @@
         "eslint-plugin-vitest": "^0.3.26",
         "npm-run-all2": "^6.2.0",
         "prettier": "^3.3.2",
+        "tfx-cli": "^0.17.0",
         "typescript": "^5.5.2",
         "vite": "^5.3.1",
         "vite-node": "^1.6.0",
