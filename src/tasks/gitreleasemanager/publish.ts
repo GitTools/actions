@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { publish } from './main'
+import { run } from '../../tools/gitreleasemanager/main'
 
-await publish()
+await run('publish')

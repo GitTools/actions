@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { discard } from './main'
+import { run } from '../../tools/gitreleasemanager/main'
 
-await discard()
+await run('discard')

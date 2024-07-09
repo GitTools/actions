@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { close } from './main'
+import { run } from '../../tools/gitreleasemanager/main'
 
-await close()
+await run('close')

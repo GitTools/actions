@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { run } from './main'
+import { run } from '../../tools/gitversion/main'
 
-await run()
+await run('execute')

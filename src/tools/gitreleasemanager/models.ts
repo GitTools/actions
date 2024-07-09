@@ -1,4 +1,4 @@
-import { ISettingsProvider } from '../common/models'
+export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | 'open' | 'publish'
 
 export enum CommonFields {
     repository = 'repository',
@@ -37,23 +37,7 @@ export enum AddAssetFields {
     assets = 'assets'
 }
 
-export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
-    getCreateSettings(): GitReleaseManagerCreateSettings
-
-    getDiscardSettings(): GitReleaseManagerDiscardSettings
-
-    getCloseSettings(): GitReleaseManagerCloseSettings
-
-    getOpenSettings(): GitReleaseManagerOpenSettings
-
-    getPublishSettings(): GitReleaseManagerPublishSettings
-
-    getAddAssetSettings(): GitReleaseManagerAddAssetSettings
-
-    getCommonSettings(): GitReleaseManagerSettings
-}
-
-export interface GitReleaseManagerSettings {
+export type GitReleaseManagerSettings = {
     [CommonFields.repository]: string
     [CommonFields.owner]: string
     [CommonFields.token]: string

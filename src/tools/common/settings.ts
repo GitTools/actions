@@ -1,12 +1,17 @@
 import { injectable } from 'inversify'
-import { ISettingsProvider, ISetupSettings, SetupFields } from './models'
-import { IBuildAgent } from '../../core/models'
+import { type SetupSettings, SetupFields } from './models'
+
+import { IBuildAgent } from '../../agents/common/build-agent'
+
+export interface ISettingsProvider {
+    getSetupSettings(): SetupSettings
+}
 
 @injectable()
 export class SettingsProvider implements ISettingsProvider {
     constructor(protected buildAgent: IBuildAgent) {}
 
-    public getSetupSettings(): ISetupSettings {
+    public getSetupSettings(): SetupSettings {
         const versionSpec = this.buildAgent.getInput(SetupFields.versionSpec)
         const includePrerelease = this.buildAgent.getBooleanInput(SetupFields.includePrerelease)
         const ignoreFailedSources = this.buildAgent.getBooleanInput(SetupFields.ignoreFailedSources)

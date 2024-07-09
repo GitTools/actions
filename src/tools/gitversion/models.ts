@@ -1,4 +1,4 @@
-import { ISettingsProvider } from '../common/models'
+export type Commands = 'setup' | 'execute'
 
 export enum ExecuteFields {
     targetPath = 'targetPath',
@@ -10,11 +10,10 @@ export enum ExecuteFields {
     overrideConfig = 'overrideConfig',
     updateAssemblyInfo = 'updateAssemblyInfo',
     updateAssemblyInfoFilename = 'updateAssemblyInfoFilename',
-    additionalArguments = 'additionalArguments',
-    srcDir = 'srcDir'
+    additionalArguments = 'additionalArguments'
 }
 
-export interface GitVersionSettings {
+export type GitVersionSettings = {
     [ExecuteFields.targetPath]: string
     [ExecuteFields.disableCache]: boolean
     [ExecuteFields.disableNormalization]: boolean
@@ -25,14 +24,9 @@ export interface GitVersionSettings {
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
     [ExecuteFields.additionalArguments]: string
-    [ExecuteFields.srcDir]: string
 }
 
-export interface IGitVersionSettingsProvider extends ISettingsProvider {
-    getGitVersionSettings(): GitVersionSettings
-}
-
-export interface GitVersionOutput {
+export type GitVersionOutput = {
     Major: number
     Minor: number
     Patch: number

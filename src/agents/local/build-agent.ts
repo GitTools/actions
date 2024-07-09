@@ -1,36 +1,52 @@
+import fs from 'node:fs/promises'
+import * as path from 'path'
+
 import { injectable } from 'inversify'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
+import { type ExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
-    proxyConfiguration(url: string): IRequestOptions {
+    public proxyConfiguration(url: string): IRequestOptions {
         console.log('proxyConfiguration')
         return undefined
     }
     public get agentName(): string {
         console.log('getAgentName')
-        return 'Mock'
+        return 'Local'
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         console.log('find')
         return 'find'
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         console.log('cacheDir')
         return Promise.resolve('cacheDir')
     }
 
-    public createTempDir(): Promise<string> {
+    public createTempDirectory(): Promise<string> {
         console.log('createTempDir')
         return Promise.resolve('createTempDir')
     }
 
+    async removeDirectory(dir: string): Promise<void> {
+        await fs.rm(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 1000 })
+    }
+
     public debug(message: string): void {
         console.log('debug')
+    }
+
+    public info(message: string): void {
+        console.log(message)
+    }
+
+    public error(message: string): void {
+        console.error(message)
     }
 
     public setFailed(message: string, done?: boolean): void {
@@ -50,6 +66,10 @@ class BuildAgent implements IBuildAgent {
         return 'getVariable'
     }
 
+    public getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
+    }
+
     public addPath(inputPath: string): void {
         console.log('addPath')
     }
@@ -59,7 +79,7 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve('which')
     }
 
-    public exec(exec: string, args: string[]): Promise<IExecResult> {
+    public exec(exec: string, args: string[]): Promise<ExecResult> {
         return Promise.resolve({
             code: 0,
             error: null,

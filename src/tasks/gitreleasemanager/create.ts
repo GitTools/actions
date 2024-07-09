@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { create } from './main'
+import { run } from '../../tools/gitreleasemanager/main'
 
-await create()
+await run('create')

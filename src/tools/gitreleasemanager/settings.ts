@@ -1,23 +1,37 @@
-import { IBuildAgent, TYPES } from '../../core/models'
 import {
     AddAssetFields,
     CloseFields,
     CommonFields,
     CreateFields,
     DiscardFields,
-    GitReleaseManagerAddAssetSettings,
-    GitReleaseManagerCloseSettings,
-    GitReleaseManagerCreateSettings,
-    GitReleaseManagerDiscardSettings,
-    GitReleaseManagerOpenSettings,
-    GitReleaseManagerPublishSettings,
-    GitReleaseManagerSettings,
-    IGitReleaseManagerSettingsProvider,
+    type GitReleaseManagerAddAssetSettings,
+    type GitReleaseManagerCloseSettings,
+    type GitReleaseManagerCreateSettings,
+    type GitReleaseManagerDiscardSettings,
+    type GitReleaseManagerOpenSettings,
+    type GitReleaseManagerPublishSettings,
+    type GitReleaseManagerSettings,
     OpenFields,
     PublishFields
 } from './models'
-import { SettingsProvider } from '../common/settings'
+import { ISettingsProvider, SettingsProvider } from '../common/settings'
 import { inject, injectable } from 'inversify'
+import { IBuildAgent } from '../../agents/common/build-agent'
+import { TYPES } from '../common/models'
+
+export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
+    getCreateSettings(): GitReleaseManagerCreateSettings
+
+    getDiscardSettings(): GitReleaseManagerDiscardSettings
+
+    getCloseSettings(): GitReleaseManagerCloseSettings
+
+    getOpenSettings(): GitReleaseManagerOpenSettings
+
+    getPublishSettings(): GitReleaseManagerPublishSettings
+
+    getAddAssetSettings(): GitReleaseManagerAddAssetSettings
+}
 
 @injectable()
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {
@@ -25,7 +39,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         super(buildAgent)
     }
 
-    getCreateSettings(): GitReleaseManagerCreateSettings {
+    public getCreateSettings(): GitReleaseManagerCreateSettings {
         const milestone = this.buildAgent.getInput(CreateFields.milestone)
         const name = this.buildAgent.getInput(CreateFields.name)
         const inputFileName = this.buildAgent.getInput(CreateFields.inputFileName)
@@ -45,7 +59,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getDiscardSettings(): GitReleaseManagerDiscardSettings {
+    public getDiscardSettings(): GitReleaseManagerDiscardSettings {
         const milestone = this.buildAgent.getInput(DiscardFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -55,7 +69,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getCloseSettings(): GitReleaseManagerCloseSettings {
+    public getCloseSettings(): GitReleaseManagerCloseSettings {
         const milestone = this.buildAgent.getInput(CloseFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -65,7 +79,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getOpenSettings(): GitReleaseManagerOpenSettings {
+    public getOpenSettings(): GitReleaseManagerOpenSettings {
         const milestone = this.buildAgent.getInput(OpenFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -75,7 +89,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getPublishSettings(): GitReleaseManagerPublishSettings {
+    public getPublishSettings(): GitReleaseManagerPublishSettings {
         const tagName = this.buildAgent.getInput(PublishFields.tagName)
 
         const commonSettings = this.getCommonSettings()
@@ -85,7 +99,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
+    public getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
         const tagName = this.buildAgent.getInput(AddAssetFields.tagName)
         const assets = this.buildAgent.getListInput(AddAssetFields.assets)
 
@@ -97,7 +111,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getCommonSettings(): GitReleaseManagerSettings {
+    private getCommonSettings(): GitReleaseManagerSettings {
         const owner = this.buildAgent.getInput(CommonFields.owner, true)
         const repository = this.buildAgent.getInput(CommonFields.repository, true)
         const token = this.buildAgent.getInput(CommonFields.token, true)

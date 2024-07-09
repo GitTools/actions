@@ -1,10 +1,14 @@
+import * as os from 'os'
+import * as path from 'path'
+
 import { injectable } from 'inversify'
 
 import * as taskLib from 'azure-pipelines-task-lib/task'
 import * as toolLib from 'azure-pipelines-tool-lib/tool'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions } from 'typed-rest-client/Interfaces'
+import { type ExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -20,20 +24,33 @@ class BuildAgent implements IBuildAgent {
         }
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         return toolLib.findLocalTool(toolName, versionSpec, arch)
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         return toolLib.cacheDir(sourceDir, tool, version, arch)
     }
 
-    public createTempDir(): Promise<string> {
+    public createTempDirectory(): Promise<string> {
         return Promise.resolve(taskLib.getVariable('Agent.TempDirectory'))
+    }
+
+    public removeDirectory(dir: string): Promise<void> {
+        taskLib.rmRF(dir)
+        return Promise.resolve()
     }
 
     public debug(message: string): void {
         taskLib.debug(message)
+    }
+
+    public info(message: string): void {
+        process.stdout.write(message + os.EOL)
+    }
+
+    public error(message: string): void {
+        taskLib.error(message)
     }
 
     public setFailed(message: string, done?: boolean): void {
@@ -52,6 +69,10 @@ class BuildAgent implements IBuildAgent {
         return taskLib.getVariable(name)
     }
 
+    public getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
+    }
+
     public addPath(inputPath: string): void {
         toolLib.prependPath(inputPath)
     }
@@ -60,7 +81,7 @@ class BuildAgent implements IBuildAgent {
         return Promise.resolve(taskLib.which(tool, check))
     }
 
-    public exec(exec: string, args: string[]): Promise<IExecResult> {
+    public exec(exec: string, args: string[]): Promise<ExecResult> {
         const tr = taskLib.tool(exec)
         tr.arg(args)
 

@@ -1,6 +1,6 @@
-const path = require('path');
-const webpack = require('webpack');
-const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin')
 
 function getConfig(mode, agent, entry) {
     return {
@@ -9,40 +9,44 @@ function getConfig(mode, agent, entry) {
         mode: mode,
         devtool: mode === 'development' ? 'inline-source-map' : false,
         module: {
-            rules: [{
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            }],
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/
+                }
+            ]
         },
         resolve: {
-            extensions: ['.tsx', '.ts', '.js', '.json'],
+            extensions: ['.tsx', '.ts', '.js', '.json']
         },
         output: {
             libraryTarget: 'commonjs2',
             filename: '[name]/bundle.js',
-            path: path.resolve(__dirname, `dist/${agent}`),
+            path: path.resolve(__dirname, `dist/${agent}`)
         },
         node: {
             __dirname: false,
             __filename: false
         },
         plugins: [
-            new webpack.NormalModuleReplacementPlugin(
-                /agent\/mock\/build-agent/,
-                `../agent/${agent}/build-agent`
-            ),
-            new ReplaceInFileWebpackPlugin([{
-                dir: `dist/${agent}`,
-                test: /bundle.js/,
-                rules: [{
-                    search: /__webpack_require__\(.*\)\(resourceFile\)/,
-                    replace: '_loadResJson(resourceFile)'
-                }, {
-                    search: /let pkg.*'package.json'\)\);/,
-                    replace: 'let pkg = { version: "1.2.3" };'
-                }]
-            }])
+            new webpack.NormalModuleReplacementPlugin(/agents\/local\/build-agent/, `../../agents/${agent}/build-agent`),
+            new ReplaceInFileWebpackPlugin([
+                {
+                    dir: `dist/${agent}`,
+                    test: /bundle.js/,
+                    rules: [
+                        {
+                            search: /__webpack_require__\(.*\)\(resourceFile\)/,
+                            replace: '_loadResJson(resourceFile)'
+                        },
+                        {
+                            search: /let pkg.*'package.json'\)\);/,
+                            replace: 'let pkg = { version: "1.2.3" };'
+                        }
+                    ]
+                }
+            ])
         ],
         experiments: {
             topLevelAwait: true
@@ -59,18 +63,18 @@ const entryPoints = [
     'gitreleasemanager/close',
     'gitreleasemanager/open',
     'gitreleasemanager/publish',
-    'gitreleasemanager/addasset',
-];
+    'gitreleasemanager/addasset'
+]
 
-module.exports = (env) => {
-    const task = env.task || 'compile';
-    const agent = env.agent || 'mock';
-    const mode = task === 'compile' ? 'development' : 'production';
-    const entry = {};
+module.exports = env => {
+    const task = env.task || 'compile'
+    const agent = env.agent || 'local'
+    const mode = task === 'compile' ? 'development' : 'production'
+    const entry = {}
     entryPoints.forEach(key => {
-        const resource = task === 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`;
-        entry[key] = path.resolve(__dirname, resource);
-    });
+        const resource = task === 'compile' ? `src/tasks/${key}.ts` : `dist/${agent}/${key}/bundle.js`
+        entry[key] = path.resolve(__dirname, resource)
+    })
 
-    return getConfig(mode, agent, entry);
-};
+    return getConfig(mode, agent, entry)
+}

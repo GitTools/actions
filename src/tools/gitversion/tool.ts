@@ -1,59 +1,80 @@
 import { inject, injectable } from 'inversify'
-import { IBuildAgent, IExecResult, TYPES } from '../../core/models'
-import { DotnetTool, IDotnetTool } from '../../core/dotnet-tool'
-import { GitVersionOutput, GitVersionSettings } from './models'
-import { IVersionManager } from '../../core/versionManager'
-import { ISetupSettings } from '../common/models'
+import { type GitVersionOutput, type GitVersionSettings } from './models'
+import { keysFn, TYPES } from '../common/models'
+import { type ExecResult } from '../../agents/common/models'
+import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
+import { IBuildAgent } from '../../agents/common/build-agent'
+import container from '../common/ioc'
+import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
 export interface IGitVersionTool extends IDotnetTool {
-    install(setupSettings: ISetupSettings): Promise<void>
+    run(): Promise<ExecResult>
 
-    run(options: GitVersionSettings): Promise<IExecResult>
-
-    writeGitVersionToAgent(gitversion: GitVersionOutput): void
+    writeGitVersionToAgent(gitVersion: GitVersionOutput): void
 }
+
+container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)
+const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
 
 @injectable()
 export class GitVersionTool extends DotnetTool implements IGitVersionTool {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent, @inject(TYPES.IVersionManager) versionManager: IVersionManager) {
-        super(buildAgent, versionManager)
+    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
+        super(buildAgent)
     }
 
-    public async install(setupSettings: ISetupSettings): Promise<void> {
-        await this.toolInstall('GitVersion.Tool', '>=5.2.0 <6.1.0', setupSettings)
+    get packageName(): string {
+        return 'GitVersion.Tool'
     }
 
-    public async run(options: GitVersionSettings): Promise<IExecResult> {
-        const workDir = this.getRepoDir(options)
+    get toolName(): string {
+        return 'dotnet-gitversion'
+    }
 
-        if (!options.disableShallowCloneCheck) {
-            const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
-            if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
-                throw new Error(
-                    'The repository is shallow. Consider disabling shallow clones. See https://github.com/GitTools/actions/blob/main/docs/cloning.md for more information.'
-                )
+    get toolPathVariable(): string {
+        return 'GITVERSION_PATH'
+    }
+
+    get versionRange(): string | null {
+        return '>=5.2.0 <6.1.0'
+    }
+
+    get settingsProvider(): IGitVersionSettingsProvider {
+        return settingsProvider
+    }
+
+    public async run(): Promise<ExecResult> {
+        const settings = this.settingsProvider.getGitVersionSettings()
+        const workDir = this.getRepoDir(settings)
+
+        await this.checkShallowClone(settings, workDir)
+
+        const args = this.getArguments(workDir, settings)
+
+        await this.setDotnetRoot()
+        return this.executeTool(args)
+    }
+
+    public writeGitVersionToAgent(output: GitVersionOutput): void {
+        const keys = keysFn<GitVersionOutput>(output)
+        for (const property of keys) {
+            const name = this.toCamelCase(property)
+            try {
+                let value = output[property]?.toString()
+                if (value === '0') {
+                    value = '0'
+                }
+                this.buildAgent.setOutput(name, value)
+                this.buildAgent.setOutput(`GitVersion_${property}`, value)
+                this.buildAgent.setVariable(name, value)
+                this.buildAgent.setVariable(`GitVersion_${property}`, value)
+            } catch (error) {
+                this.buildAgent.error(`Unable to set output/variable for ${property}`)
             }
         }
-
-        const args = this.getArguments(workDir, options)
-
-        return await this.execute('dotnet-gitversion', args)
     }
 
-    private getRepoDir(options: GitVersionSettings): string {
-        const targetPath = options.targetPath
-        const srcDir = options.srcDir || '.'
-        let workDir: string
-        if (!targetPath) {
-            workDir = srcDir
-        } else {
-            if (this.buildAgent.directoryExists(targetPath)) {
-                workDir = targetPath
-            } else {
-                throw new Error('Directory not found at ' + targetPath)
-            }
-        }
-        return workDir.replace(/\\/g, '/')
+    private getRepoDir(settings: GitVersionSettings): string {
+        return super.getRepoPath(settings.targetPath)
     }
 
     private getArguments(workDir: string, options: GitVersionSettings): string[] {
@@ -83,17 +104,17 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
             if (this.buildAgent.isValidInputFile('configFilePath', configFilePath)) {
                 args.push('/config', configFilePath)
             } else {
-                throw new Error('GitVersion configuration file not found at ' + configFilePath)
+                throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
             }
         }
 
         if (overrideConfig) {
-            overrideConfig.forEach(config => {
+            for (let config of overrideConfig) {
                 config = config.trim()
                 if (config.match(/([a-zA-Z0-9]+(-[a-zA-Z]+)*=[a-zA-Z0-9\- :.']*)/)) {
                     args.push('/overrideconfig', config)
                 }
-            })
+            }
         }
 
         if (updateAssemblyInfo) {
@@ -104,7 +125,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
                 if (this.buildAgent.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
                     args.push(updateAssemblyInfoFilename)
                 } else {
-                    throw new Error('AssemblyInfoFilename file not found at ' + updateAssemblyInfoFilename)
+                    throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)
                 }
             }
         }
@@ -115,23 +136,6 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return args
     }
 
-    public writeGitVersionToAgent(gitversion: GitVersionOutput): void {
-        let properties = Object.keys(gitversion)
-        let gitversionOutput = <any>gitversion
-
-        properties.forEach(property => {
-            const name = this.toCamelCase(property)
-            let value = gitversionOutput[property]
-            if (value === 0) {
-                value = '0'
-            }
-            this.buildAgent.setOutput(name, value)
-            this.buildAgent.setOutput(`GitVersion_${name}`, value)
-            this.buildAgent.setVariable(name, value)
-            this.buildAgent.setVariable(`GitVersion_${name}`, value)
-        })
-    }
-
     private argStringToArray(argString: string): string[] {
         const args: string[] = []
 
@@ -140,7 +144,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         let lastCharWasSpace = true
         let arg = ''
 
-        const append = function (c: string) {
+        const append = (c: string): void => {
             // we only escape double quotes.
             if (escaped && c !== '"') {
                 arg += '\\'
@@ -194,10 +198,21 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return args
     }
 
+    private async checkShallowClone(settings: GitVersionSettings, workDir: string): Promise<void> {
+        if (!settings.disableShallowCloneCheck) {
+            const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
+            if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
+                throw new Error(
+                    'The repository is shallow. Consider disabling shallow clones. See https://github.com/GitTools/actions/blob/main/docs/cloning.md for more information.'
+                )
+            }
+        }
+    }
+
     private toCamelCase(input: string): string {
         return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function (match, index) {
             if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
-            return index == 0 ? match.toLowerCase() : match.toUpperCase()
+            return index === 0 ? match.toLowerCase() : match.toUpperCase()
         })
     }
 }

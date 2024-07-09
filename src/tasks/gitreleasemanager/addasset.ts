@@ -1,4 +1,4 @@
 import 'reflect-metadata'
-import { addAsset } from './main'
+import { run } from '../../tools/gitreleasemanager/main'
 
-await addAsset()
+await run('addasset')

@@ -11,8 +11,9 @@ import * as toolCache from '@actions/tool-cache'
 
 import { injectable } from 'inversify'
 
-import { IBuildAgent, IExecResult } from '../../core/models'
 import { IRequestOptions, IProxyConfiguration } from 'typed-rest-client/Interfaces'
+import { type ExecResult } from '../common/models'
+import { IBuildAgent } from '../common/build-agent'
 
 @injectable()
 class BuildAgent implements IBuildAgent {
@@ -20,7 +21,7 @@ class BuildAgent implements IBuildAgent {
         return 'GitHub Actions'
     }
 
-    public find(toolName: string, versionSpec: string, arch?: string): string {
+    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
         return toolCache.find(toolName, versionSpec, arch)
     }
 
@@ -70,11 +71,11 @@ class BuildAgent implements IBuildAgent {
         return undefined
     }
 
-    public cacheDir(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
+    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
         return toolCache.cacheDir(sourceDir, tool, version, arch)
     }
 
-    public async createTempDir(): Promise<string> {
+    public async createTempDirectory(): Promise<string> {
         const IS_WINDOWS = process.platform === 'win32'
 
         let tempDirectory: string = process.env.RUNNER_TEMP || ''
@@ -98,8 +99,20 @@ class BuildAgent implements IBuildAgent {
         return dest
     }
 
+    public removeDirectory(dir: string): Promise<void> {
+        return io.rmRF(dir)
+    }
+
     public debug(message: string): void {
         core.debug(message)
+    }
+
+    public info(message: string): void {
+        core.info(message)
+    }
+
+    public error(message: string): void {
+        core.error(message)
     }
 
     public setFailed(message: string, done?: boolean): void {
@@ -118,6 +131,10 @@ class BuildAgent implements IBuildAgent {
         return process.env[name]
     }
 
+    public getVariableAsPath(name: string): string {
+        return path.resolve(path.normalize(this.getVariable(name)))
+    }
+
     public addPath(inputPath: string): void {
         core.addPath(inputPath)
     }
@@ -126,7 +143,7 @@ class BuildAgent implements IBuildAgent {
         return io.which(tool, check)
     }
 
-    public async exec(exec: string, args: string[]): Promise<IExecResult> {
+    public async exec(exec: string, args: string[]): Promise<ExecResult> {
         const dotnetPath = await io.which(exec, true)
         let result = await exe.getExecOutput(`"${dotnetPath}"`, args)
         return {

@@ -5,13 +5,20 @@ export enum SetupFields {
     preferLatestVersion = 'preferLatestVersion'
 }
 
-export interface ISetupSettings {
+export type SetupSettings = {
     [SetupFields.versionSpec]: string
     [SetupFields.includePrerelease]: boolean
     [SetupFields.ignoreFailedSources]: boolean
     [SetupFields.preferLatestVersion]: boolean
 }
 
-export interface ISettingsProvider {
-    getSetupSettings(): ISetupSettings
+export const TYPES = {
+    IBuildAgent: Symbol.for('BuildAgent'),
+    IDotnetTool: Symbol.for('DotnetTool'),
+    IGitVersionTool: Symbol.for('GitVersionTool'),
+    IGitReleaseManagerTool: Symbol.for('GitReleaseManagerTool'),
+    IGitVersionSettingsProvider: Symbol.for('GitVersionSettingsProvider'),
+    IGitReleaseManagerSettingsProvider: Symbol.for('GitReleaseManagerSettingsProvider')
 }
+
+export const keysFn = Object.keys as <T extends object>(obj: T) => (keyof T)[]
