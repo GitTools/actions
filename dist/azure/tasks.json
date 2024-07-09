@@ -1,0 +1,42 @@
+{
+  "gitversion": {
+    "setup": {
+      "test": "67561427-431b-4ab7-97bb-aa71c8deb5d0",
+      "prod": "a06c02ae-7b9a-4082-90dc-fe27b500e54f"
+    },
+    "execute": {
+      "test": "9b58ed30-0deb-4083-b007-5f6ce7787544",
+      "prod": "9013cf7f-ee8d-49f4-a39b-db244928d391"
+    }
+  },
+  "gitreleasemanager": {
+    "setup": {
+      "test": "9bcd25be-3019-481a-bca1-5b935ce1538b",
+      "prod": "e3022448-b00d-4b57-b504-606a0bcf8279"
+    },
+    "publish": {
+      "test": "2cd41def-54d8-45f3-9567-07242afd624b",
+      "prod": "b3c54483-4140-45d8-b442-3a0b096b5f7f"
+    },
+    "open": {
+      "test": "c7d6e958-c010-4c33-9f29-017257201aa2",
+      "prod": "5d437bf5-f193-4449-b531-c4c69eebaa48"
+    },
+    "discard": {
+      "test": "13c52c58-7d93-4aca-a011-4310b9b4d95c",
+      "prod": "9ae78b66-6100-4522-8106-b7ae00bbfcdf"
+    },
+    "create": {
+      "test": "930f4353-abcc-421c-9187-660d0f3cf3f7",
+      "prod": "c77d38be-46a9-4ef1-a181-2d6050ed23d2"
+    },
+    "close": {
+      "test": "b0825d48-79a2-4cff-9413-f52386a67b4d",
+      "prod": "f5304356-f6e3-48e9-9b65-a9efa41ce7a2"
+    },
+    "addasset": {
+      "test": "16670609-2a4a-48a0-9ece-6fd159719052",
+      "prod": "b803651c-21ac-4851-9fbf-c75b0e82e4c5"
+    }
+  }
+}

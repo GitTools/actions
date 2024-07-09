@@ -20,7 +20,7 @@
 
         "build:tools": "vite build --config src/tools/vite.config.mts",
         "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
-
+      
         "build:agent:local": "vite build --config src/agents/vite.config.mts --mode local-agent",
         "build:agent:azure": "vite build --config src/agents/vite.config.mts --mode azure",
         "build:agent:github": "vite build --config src/agents/vite.config.mts --mode github",
@@ -36,6 +36,7 @@
         "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.mts",
         "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.mts",
 
+        "publish:prepare": "./dist/azure/updateTasks.mjs",
         "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --no-wait-validation --auth-type pat"
     },
     "devDependencies": {
@@ -52,6 +53,7 @@
         "eslint-plugin-prettier": "^5.1.3",
         "eslint-plugin-promise": "^6.1.1",
         "eslint-plugin-vitest": "^0.3.26",
+        "glob": "^11.0.0",
         "npm-run-all2": "^6.2.0",
         "prettier": "^3.3.2",
         "tfx-cli": "^0.17.0",
