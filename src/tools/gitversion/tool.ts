@@ -38,7 +38,6 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         return '>=5.2.0 <6.1.0'
     }
 
-
     get settingsProvider(): IGitVersionSettingsProvider {
         return settingsProvider
     }
@@ -47,18 +46,12 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         const settings = this.settingsProvider.getGitVersionSettings()
         const workDir = this.getRepoDir(settings)
 
-        if (!settings.disableShallowCloneCheck) {
-            const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
-            if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
-                throw new Error(
-                    'The repository is shallow. Consider disabling shallow clones. See https://github.com/GitTools/actions/blob/main/docs/cloning.md for more information.'
-                )
-            }
-        }
+        await this.checkShallowClone(settings, workDir)
 
         const args = this.getArguments(workDir, settings)
 
-        return await this.execute('dotnet-gitversion', args)
+        await this.setDotnetRoot()
+        return this.executeTool(args)
     }
 
     public writeGitVersionToAgent(output: GitVersionOutput): void {
@@ -203,6 +196,17 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
 
         return args
+    }
+
+    private async checkShallowClone(settings: GitVersionSettings, workDir: string): Promise<void> {
+        if (!settings.disableShallowCloneCheck) {
+            const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
+            if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {
+                throw new Error(
+                    'The repository is shallow. Consider disabling shallow clones. See https://github.com/GitTools/actions/blob/main/docs/cloning.md for more information.'
+                )
+            }
+        }
     }
 
     private toCamelCase(input: string): string {

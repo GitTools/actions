@@ -57,7 +57,6 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return '>=0.10.0 <0.18.0'
     }
 
-
     get settingsProvider(): IGitReleaseManagerSettingsProvider {
         return settingsProvider
     }
