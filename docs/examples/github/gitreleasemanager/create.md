@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/create@v1.1.1
+  - uses: gittools/actions/gitreleasemanager/create@v1.2.0
     name: Create release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
