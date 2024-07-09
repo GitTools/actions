@@ -7,7 +7,7 @@ async function getAgent(buildAgent) {
 }
 async function getToolRunner(buildAgent, tool) {
   const agent = await getAgent(buildAgent);
-  const toolRunner = `./${tool}.mjs`;
+  const toolRunner = `./libs/${tool}.mjs`;
   const module = await import(toolRunner);
   return new module.Runner(agent);
 }

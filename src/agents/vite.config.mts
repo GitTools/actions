@@ -9,12 +9,12 @@ const config = ({ mode: agent }: Partial<UserConfig>): UserConfig => {
     console.log(`Building for agent: ${agent}`)
 
     const entry = {
-        [`libs/${agent}/agent`]: resolve(__dirname, `${agent}/build-agent.ts`)
+        [`tools/${agent}/agent`]: resolve(__dirname, `${agent}/build-agent.ts`)
     }
 
     const manualChunks = (id: string): string | undefined => {
         if (id.includes('agents/common')) {
-            return `libs/agents`
+            return `tools/libs/agents`
         }
     }
 

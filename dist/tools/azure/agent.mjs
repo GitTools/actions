@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 import * as process from 'node:process';
-import { B as BuildAgentBase } from '../agents.mjs';
+import { B as BuildAgentBase } from '../libs/agents.mjs';
 
 const CMD_PREFIX = "##vso[";
 var TaskResult = /* @__PURE__ */ ((TaskResult2) => {

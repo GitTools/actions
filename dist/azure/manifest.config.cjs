@@ -18,8 +18,6 @@ module.exports = (env) => {
         { id: 'addasset', path: 'gitreleasemanager/addasset' }
     ]
 
-    const libsPath = '../libs'
-    const generateFiles = (tasks) => tasks.map(task => ({ path: libsPath, packagePath: `${task.path}/libs` }))
     const generateContributions = (tasks, tool) => tasks.map(task => ({
         id: `${task.id}-${tool}-task`,
         type: 'ms.vss-distributed-task.task',
@@ -49,10 +47,14 @@ module.exports = (env) => {
         ],
         files: [
             { path: 'images', addressable: true },
-            ...gitversion.map(task => ({ path: task.path })),
-            ...gitreleasemanager.map(task => ({ path: task.path })),
-            ...generateFiles(gitversion),
-            ...generateFiles(gitreleasemanager)
+            ...gitversion.map(task => ({ path: task.path, packagePath: `${task.path}` })),
+            ...gitversion.map(task => ({ path: '../tools/azure', packagePath: `${task.path}/tools/azure` })),
+            ...gitversion.map(task => ({ path: '../tools/libs', packagePath: `${task.path}/tools/libs` })),
+            ...gitversion.map(task => ({ path: '../tools/lib.mjs', packagePath: `${task.path}/tools/lib.mjs` })),
+            ...gitreleasemanager.map(task => ({ path: task.path, packagePath: `${task.path}` })),
+            ...gitreleasemanager.map(task => ({ path: '../tools/azure', packagePath: `${task.path}/tools/azure` })),
+            ...gitreleasemanager.map(task => ({ path: '../tools/libs', packagePath: `${task.path}/tools/libs` })),
+            ...gitreleasemanager.map(task => ({ path: '../tools/lib.mjs', packagePath: `${task.path}/tools/lib.mjs` })),
         ],
         categories: [
             'Azure Pipelines'

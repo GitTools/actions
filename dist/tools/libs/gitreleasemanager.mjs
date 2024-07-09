@@ -35,11 +35,11 @@ var OpenFields = /* @__PURE__ */ ((OpenFields2) => {
   return OpenFields2;
 })(OpenFields || {});
 var PublishFields = /* @__PURE__ */ ((PublishFields2) => {
-  PublishFields2["tagName"] = "tagName";
+  PublishFields2["milestone"] = "milestone";
   return PublishFields2;
 })(PublishFields || {});
 var AddAssetFields = /* @__PURE__ */ ((AddAssetFields2) => {
-  AddAssetFields2["tagName"] = "tagName";
+  AddAssetFields2["milestone"] = "milestone";
   AddAssetFields2["assets"] = "assets";
   return AddAssetFields2;
 })(AddAssetFields || {});
@@ -88,20 +88,20 @@ class GitReleaseManagerSettingsProvider extends SettingsProvider {
     };
   }
   getPublishSettings() {
-    const tagName = this.buildAgent.getInput(PublishFields.tagName);
+    const milestone = this.buildAgent.getInput(PublishFields.milestone);
     const commonSettings = this.getCommonSettings();
     return {
       ...commonSettings,
-      tagName
+      milestone
     };
   }
   getAddAssetSettings() {
-    const tagName = this.buildAgent.getInput(AddAssetFields.tagName);
+    const milestone = this.buildAgent.getInput(AddAssetFields.milestone);
     const assets = this.buildAgent.getListInput(AddAssetFields.assets);
     const commonSettings = this.getCommonSettings();
     return {
       ...commonSettings,
-      tagName,
+      milestone,
       assets
     };
   }
@@ -226,15 +226,15 @@ class GitReleaseManagerTool extends DotnetTool {
   }
   async getPublishArguments(settings) {
     const args = ["publish", ...await this.getCommonArguments(settings)];
-    if (settings.tagName) {
-      args.push("--tagName", settings.tagName);
+    if (settings.milestone) {
+      args.push("--tagName", settings.milestone);
     }
     return args;
   }
   async getAddAssetArguments(settings) {
     const args = ["addasset", ...await this.getCommonArguments(settings)];
-    if (settings.tagName) {
-      args.push("--tagName", settings.tagName);
+    if (settings.milestone) {
+      args.push("--tagName", settings.milestone);
     }
     if (settings.assets && settings.assets.length > 0) {
       settings.assets = settings.assets.map((asset) => {

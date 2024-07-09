@@ -1,4 +1,4 @@
-import { parseCliArgs, getToolRunner } from './libs/lib.mjs';
+import { parseCliArgs, getToolRunner } from './lib.mjs';
 
 const { agent, tool, command } = parseCliArgs();
 const runner = await getToolRunner(agent, tool);

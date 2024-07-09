@@ -1,3 +1,3 @@
-import { run } from './libs/lib.mjs'
+import { run } from './tools/lib.mjs'
 await run('azure', 'gitreleasemanager', 'setup')
 

@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 import process__default from 'node:process';
-import { B as BuildAgentBase } from '../agents.mjs';
+import { B as BuildAgentBase } from '../libs/agents.mjs';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 

@@ -1,2 +1,2 @@
-import { run } from '../../dist/libs/lib.mjs'
+import { run } from '../../dist/tools/lib.mjs'
 await run('github', 'gitreleasemanager', 'discard')

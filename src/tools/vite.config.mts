@@ -5,19 +5,19 @@ import { viteConfig } from '../vite.common.config.mjs'
 const config = (): UserConfig => {
     const tools = ['gitversion', 'gitreleasemanager']
         .map(tool => ({
-            [`libs/${tool}`]: resolve(__dirname, `${tool}/runner.ts`)
+            [`tools/libs/${tool}`]: resolve(__dirname, `${tool}/runner.ts`)
         }))
         .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 
     const entry = {
         ...tools,
-        ['libs/lib']: resolve(__dirname, 'lib.ts'),
-        ['cli']: resolve(__dirname, 'cli.ts')
+        ['tools/lib']: resolve(__dirname, 'lib.ts'),
+        ['tools/cli']: resolve(__dirname, 'cli.ts')
     }
 
     const manualChunks = (id: string): string | undefined => {
         if (id.includes('tools/common')) {
-            return `libs/tools`
+            return `tools/libs/tools`
         }
     }
 

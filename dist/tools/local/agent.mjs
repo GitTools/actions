@@ -1,5 +1,5 @@
 import * as process from 'node:process';
-import { B as BuildAgentBase } from '../agents.mjs';
+import { B as BuildAgentBase } from '../libs/agents.mjs';
 
 class BuildAgent extends BuildAgentBase {
   agentName = "Local";

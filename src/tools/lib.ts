@@ -17,7 +17,7 @@ export async function getAgent(buildAgent: string | undefined): Promise<IBuildAg
 
 export async function getToolRunner(buildAgent: string | undefined, tool: string | undefined): Promise<IRunner> {
     const agent = await getAgent(buildAgent)
-    const toolRunner = `./${tool}.mjs`
+    const toolRunner = `./libs/${tool}.mjs`
     const module: { Runner: new (buildAgent: IBuildAgent) => IRunner } = await import(toolRunner)
     return new module.Runner(agent)
 }
