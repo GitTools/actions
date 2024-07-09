@@ -1,2 +1,2 @@
 import { run } from '../../dist/libs/lib.mjs'
-await run('github', import.meta.url)
+await run('github', 'gitreleasemanager', 'create')

@@ -1,2 +1,2 @@
 import { run } from './libs/lib.mjs'
-await run('azure', import.meta.url)
+await run('azure', 'gitversion', 'setup')

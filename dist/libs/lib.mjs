@@ -1,5 +1,3 @@
-import * as path from 'node:path';
-import * as url from 'node:url';
 import { parseArgs } from 'node:util';
 
 async function getAgent(buildAgent) {
@@ -22,13 +20,8 @@ function parseCliArgs() {
     }
   }).values;
 }
-async function run(buildAgent, scriptUrl) {
-  const filename = url.fileURLToPath(scriptUrl);
-  const commandPath = path.dirname(filename);
-  const toolPath = path.dirname(commandPath);
-  const command = path.parse(commandPath).name;
-  const toolName = path.parse(toolPath).name;
-  const runner = await getToolRunner(buildAgent, toolName);
+async function run(agent, tool, command) {
+  const runner = await getToolRunner(agent, tool);
   return await runner.run(command);
 }
 

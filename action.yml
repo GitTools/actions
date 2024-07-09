@@ -6,5 +6,5 @@ branding:
   icon: git-pull-request
 runs:
   using: node20
-  main: 'dist/tools/gitversion.js --buildAgent github --command setup'
+  main: 'gitversion/setup/main.js'
 

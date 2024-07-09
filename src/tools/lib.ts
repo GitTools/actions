@@ -1,5 +1,3 @@
-import * as path from 'node:path'
-import * as url from 'node:url'
 import { parseArgs } from 'node:util'
 
 import { type IBuildAgent } from '@agents/common'
@@ -34,13 +32,7 @@ export function parseCliArgs(): CliArgs {
     }).values as CliArgs
 }
 
-export async function run(buildAgent: string, scriptUrl: string | url.URL): Promise<number> {
-    const filename = url.fileURLToPath(scriptUrl)
-    const commandPath = path.dirname(filename)
-    const toolPath = path.dirname(commandPath)
-    const command = path.parse(commandPath).name
-    const toolName = path.parse(toolPath).name
-
-    const runner = await getToolRunner(buildAgent, toolName)
+export async function run(agent: string, tool: string, command: string): Promise<number> {
+    const runner = await getToolRunner(agent, tool)
     return await runner.run(command)
 }
