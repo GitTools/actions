@@ -6,7 +6,8 @@ branding:
   icon: git-pull-request
 runs:
   using: node20
-  main: ../../dist/github/gitversion/setup/bundle.js
+  main: 'main.js'
+
 inputs:
   versionSpec:
     description: Required version in the form of 5.x or exact version like 5.12.0

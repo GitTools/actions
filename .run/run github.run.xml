@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="run github" type="CompoundRunConfigurationType">
+        <toRun name="run:github:gitreleasemanager (execute)" type="js.build_tools.npm"/>
+        <toRun name="run:github:gitreleasemanager (setup)" type="js.build_tools.npm"/>
+        <toRun name="run:github:gitversion (execute)" type="js.build_tools.npm"/>
+        <toRun name="run:github:gitversion (setup)" type="js.build_tools.npm"/>
+        <method v="2"/>
+    </configuration>
+</component>

@@ -35,6 +35,7 @@ jobs:
     - run: |
         npm install
         npm run format-check
+        npm run build:tools
         npm run build:agent:github
         npm run build:agent:azure
       name: Build code

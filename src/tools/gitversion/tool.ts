@@ -1,27 +1,9 @@
-import { inject, injectable } from 'inversify'
+import { type ExecResult } from '@agents/common'
+import { DotnetTool, keysFn } from '@tools/common'
 import { type GitVersionOutput, type GitVersionSettings } from './models'
-import { keysFn, TYPES } from '../common/models'
-import { type ExecResult } from '../../agents/common/models'
-import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import container from '../common/ioc'
 import { GitVersionSettingsProvider, IGitVersionSettingsProvider } from './settings'
 
-export interface IGitVersionTool extends IDotnetTool {
-    run(): Promise<ExecResult>
-
-    writeGitVersionToAgent(gitVersion: GitVersionOutput): void
-}
-
-container.bind<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider).to(GitVersionSettingsProvider)
-const settingsProvider = container.get<IGitVersionSettingsProvider>(TYPES.IGitVersionSettingsProvider)
-
-@injectable()
-export class GitVersionTool extends DotnetTool implements IGitVersionTool {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
-
+export class GitVersionTool extends DotnetTool {
     get packageName(): string {
         return 'GitVersion.Tool'
     }
@@ -39,22 +21,22 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
     }
 
     get settingsProvider(): IGitVersionSettingsProvider {
-        return settingsProvider
+        return new GitVersionSettingsProvider(this.buildAgent)
     }
 
-    public async run(): Promise<ExecResult> {
+    async run(): Promise<ExecResult> {
         const settings = this.settingsProvider.getGitVersionSettings()
-        const workDir = this.getRepoDir(settings)
+        const workDir = await this.getRepoDir(settings)
 
         await this.checkShallowClone(settings, workDir)
 
-        const args = this.getArguments(workDir, settings)
+        const args = await this.getArguments(workDir, settings)
 
         await this.setDotnetRoot()
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public writeGitVersionToAgent(output: GitVersionOutput): void {
+    writeGitVersionToAgent(output: GitVersionOutput): void {
         const keys = keysFn<GitVersionOutput>(output)
         for (const property of keys) {
             const name = this.toCamelCase(property)
@@ -73,11 +55,11 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
     }
 
-    private getRepoDir(settings: GitVersionSettings): string {
-        return super.getRepoPath(settings.targetPath)
+    protected async getRepoDir(settings: GitVersionSettings): Promise<string> {
+        return await super.getRepoPath(settings.targetPath)
     }
 
-    private getArguments(workDir: string, options: GitVersionSettings): string[] {
+    protected async getArguments(workDir: string, options: GitVersionSettings): Promise<string[]> {
         let args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
@@ -101,7 +83,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
 
         if (useConfigFile) {
-            if (this.buildAgent.isValidInputFile('configFilePath', configFilePath)) {
+            if (await this.isValidInputFile('configFilePath', configFilePath)) {
                 args.push('/config', configFilePath)
             } else {
                 throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
@@ -122,7 +104,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
             if (updateAssemblyInfoFilename?.length > 0) {
-                if (this.buildAgent.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
+                if (await this.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
                     args.push(updateAssemblyInfoFilename)
                 } else {
                     throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)

@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="run:azure:gitreleasemanager (execute)" type="js.build_tools.npm" folderName="run" activateToolWindowBeforeRun="false">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="run:azure:gitreleasemanager" />
+    </scripts>
+    <arguments value="-- --command execute" />
+    <node-interpreter value="project" />
+    <node-options value="-r dotenv/config" />
+    <envs />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="build:tools" run_configuration_type="js.build_tools.npm" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="build:agent:azure" run_configuration_type="js.build_tools.npm" />
+    </method>
+  </configuration>
+</component>

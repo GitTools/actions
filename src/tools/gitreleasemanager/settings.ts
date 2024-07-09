@@ -1,3 +1,4 @@
+import { ISettingsProvider, SettingsProvider } from '@tools/common'
 import {
     AddAssetFields,
     CloseFields,
@@ -14,10 +15,6 @@ import {
     OpenFields,
     PublishFields
 } from './models'
-import { ISettingsProvider, SettingsProvider } from '../common/settings'
-import { inject, injectable } from 'inversify'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../common/models'
 
 export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
     getCreateSettings(): GitReleaseManagerCreateSettings
@@ -31,15 +28,12 @@ export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
     getPublishSettings(): GitReleaseManagerPublishSettings
 
     getAddAssetSettings(): GitReleaseManagerAddAssetSettings
+
+    getCommonSettings(): GitReleaseManagerSettings
 }
 
-@injectable()
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
-
-    public getCreateSettings(): GitReleaseManagerCreateSettings {
+    getCreateSettings(): GitReleaseManagerCreateSettings {
         const milestone = this.buildAgent.getInput(CreateFields.milestone)
         const name = this.buildAgent.getInput(CreateFields.name)
         const inputFileName = this.buildAgent.getInput(CreateFields.inputFileName)
@@ -59,7 +53,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    public getDiscardSettings(): GitReleaseManagerDiscardSettings {
+    getDiscardSettings(): GitReleaseManagerDiscardSettings {
         const milestone = this.buildAgent.getInput(DiscardFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -69,7 +63,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    public getCloseSettings(): GitReleaseManagerCloseSettings {
+    getCloseSettings(): GitReleaseManagerCloseSettings {
         const milestone = this.buildAgent.getInput(CloseFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -79,7 +73,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    public getOpenSettings(): GitReleaseManagerOpenSettings {
+    getOpenSettings(): GitReleaseManagerOpenSettings {
         const milestone = this.buildAgent.getInput(OpenFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -111,7 +105,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    private getCommonSettings(): GitReleaseManagerSettings {
+    getCommonSettings(): GitReleaseManagerSettings {
         const owner = this.buildAgent.getInput(CommonFields.owner, true)
         const repository = this.buildAgent.getInput(CommonFields.repository, true)
         const token = this.buildAgent.getInput(CommonFields.token, true)

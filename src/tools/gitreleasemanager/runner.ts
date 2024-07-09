@@ -1,25 +1,15 @@
-import { IGitReleaseManagerTool, GitReleaseManagerTool } from './tool'
-
-import container from '../common/ioc'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../common/models'
+import { IBuildAgent } from '@agents/common'
 import { type Commands } from './models'
-
-container.bind<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool).to(GitReleaseManagerTool)
-
-const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
-const gitReleaseManagerTool = container.get<IGitReleaseManagerTool>(TYPES.IGitReleaseManagerTool)
+import { GitReleaseManagerTool } from './tool'
 
 export class Runner {
-    private buildAgent: IBuildAgent
-    private gitReleaseManagerTool: IGitReleaseManagerTool
+    private readonly gitReleaseManagerTool: GitReleaseManagerTool
 
-    constructor() {
-        this.buildAgent = buildAgent
-        this.gitReleaseManagerTool = gitReleaseManagerTool
+    constructor(private readonly buildAgent: IBuildAgent) {
+        this.gitReleaseManagerTool = new GitReleaseManagerTool(this.buildAgent)
     }
 
-    public async run(command: Commands): Promise<number> {
+    async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
                 return await this.setup()

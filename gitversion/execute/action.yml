@@ -6,7 +6,7 @@ branding:
   icon: git-pull-request
 runs:
   using: node20
-  main: ../../dist/github/gitversion/execute/bundle.js
+  main: main.js
 inputs:
   targetPath:
     description: Optionally supply the path to the working directory

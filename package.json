@@ -1,58 +1,64 @@
 {
     "name": "gittools-actions",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
     "repository": {
         "type": "git",
         "url": "https://github.com/GitTools/actions.git"
     },
+    "type": "module",
     "module": "ES2022",
     "engines": {
         "node": ">=20.0.0"
     },
     "scripts": {
-        "build": "npm run build:agent:local && npm run build:agent:azure && npm run build:agent:github",
-        "format": "prettier --write src/**/*.ts",
-        "format-check": "prettier --check src/**/*.ts",
-        "build:agent:local": "webpack --config webpack.config.js --env agent=local",
-        "build:agent:azure": "webpack --config webpack.config.js --env agent=azure",
-        "build:agent:github": "webpack --config webpack.config.js --env agent=github",
-        "publish:azure": "tfx extension publish --root ./dist/azure --no-wait-validation --auth-type pat"
-    },
-    "author": "GitTools",
-    "contributors": [
-        "GitTools contributors"
-    ],
-    "license": "MIT",
-    "dependencies": {
-        "@actions/core": "^1.10.1",
-        "@actions/exec": "^1.1.1",
-        "@actions/io": "^1.1.3",
-        "@actions/tool-cache": "^2.0.1",
-        "azure-pipelines-tool-lib": "^2.0.7",
-        "inversify": "^6.0.2",
-        "semver": "^7.6.2",
-        "typed-rest-client": "^2.0.2",
-        "uuid": "^10.0.0"
+        "build": "run-p build:tools build:agents",
+        "test": "run-p test:tools test:agents",
+        "lint": "eslint --ext .ts src",
+        "format": "prettier --write 'src/**/*.ts'",
+        "format-check": "prettier --check 'src/**/*.ts'",
+
+        "build:tools": "vite build --config src/tools/vite.config.ts",
+        "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
+
+        "build:agent:local": "vite build --config src/agents/vite.config.ts --mode local-agent",
+        "build:agent:azure": "vite build --config src/agents/vite.config.ts --mode azure",
+        "build:agent:github": "vite build --config src/agents/vite.config.ts --mode github",
+
+        "run:local:gitversion": "node dist/tools/gitversion.js --buildAgent local",
+        "run:azure:gitversion": "node dist/tools/gitversion.js --buildAgent azure",
+        "run:github:gitversion": "node dist/tools/gitversion.js --buildAgent github",
+
+        "run:local:gitreleasemanager": "node dist/local/gitreleasemanager.js --buildAgent local",
+        "run:azure:gitreleasemanager": "node dist/azure/gitreleasemanager.js --buildAgent azure",
+        "run:github:gitreleasemanager": "node dist/github/gitreleasemanager.js --buildAgent github",
+
+        "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
+        "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts"
     },
     "devDependencies": {
-        "@types/node": "^20.14.10",
-        "@types/q": "^1.5.8",
+        "@types/node": "^20.14.8",
         "@types/semver": "^7.5.8",
-        "@types/uuid": "^10.0.0",
-        "minimist": "^1.2.8",
+        "@typescript-eslint/eslint-plugin": "^6.21.0",
+        "dotenv": "^16.4.5",
+        "eslint": "^8.57.0",
+        "eslint-config-love": "^54.0.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-github": "^4.10.2",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-n": "^16.6.2",
+        "eslint-plugin-prettier": "^5.1.3",
+        "eslint-plugin-promise": "^6.1.1",
+        "eslint-plugin-vitest": "^0.3.26",
+        "npm-run-all2": "^6.2.0",
         "prettier": "^3.3.2",
-        "reflect-metadata": "^0.2.2",
-        "replace-in-file-webpack-plugin": "^1.0.6",
-        "shelljs": "^0.8.5",
-        "terser-webpack-plugin": "^5.3.10",
-        "tfx-cli": "^0.17.0",
-        "trim-newlines": ">=5.0.0",
-        "ts-loader": "^9.5.1",
-        "typescript": "^5.5.3",
-        "underscore": ">=1.13.6",
-        "validator": "^13.12.0",
-        "webpack": "^5.92.1",
-        "webpack-cli": "^5.1.4"
+        "typescript": "^5.5.2",
+        "vite": "^5.3.1",
+        "vite-node": "^1.6.0",
+        "vite-tsconfig-paths": "^4.3.2",
+        "vitest": "^1.6.0"
+    },
+    "dependencies": {
+        "semver": "^7.6.2"
     }
 }
