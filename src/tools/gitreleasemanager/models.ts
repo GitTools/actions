@@ -29,11 +29,11 @@ export enum OpenFields {
 }
 
 export enum PublishFields {
-    tagName = 'tagName'
+    milestone = 'milestone'
 }
 
 export enum AddAssetFields {
-    tagName = 'tagName',
+    milestone = 'milestone',
     assets = 'assets'
 }
 
@@ -66,10 +66,10 @@ export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings
 }
 
 export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
-    [PublishFields.tagName]: string
+    [PublishFields.milestone]: string
 }
 
 export interface GitReleaseManagerAddAssetSettings extends GitReleaseManagerSettings {
-    [AddAssetFields.tagName]: string
+    [AddAssetFields.milestone]: string
     [AddAssetFields.assets]: string[]
 }

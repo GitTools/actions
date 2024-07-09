@@ -90,23 +90,23 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
     }
 
     public getPublishSettings(): GitReleaseManagerPublishSettings {
-        const tagName = this.buildAgent.getInput(PublishFields.tagName)
+        const milestone = this.buildAgent.getInput(PublishFields.milestone)
 
         const commonSettings = this.getCommonSettings()
         return {
             ...commonSettings,
-            tagName
+            milestone
         }
     }
 
     public getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
-        const tagName = this.buildAgent.getInput(AddAssetFields.tagName)
+        const milestone = this.buildAgent.getInput(AddAssetFields.milestone)
         const assets = this.buildAgent.getListInput(AddAssetFields.assets)
 
         const commonSettings = this.getCommonSettings()
         return {
             ...commonSettings,
-            tagName,
+            milestone,
             assets
         }
     }
