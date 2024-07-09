@@ -184,8 +184,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
     private getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
         const args: string[] = ['publish', ...this.getCommonArguments(settings)]
 
-        if (settings.tagName) {
-            args.push('--tagName', settings.tagName)
+        if (settings.milestone) {
+            args.push('--tagName', settings.milestone)
         }
 
         return args
@@ -194,8 +194,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
     private getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): string[] {
         const args: string[] = ['addasset', ...this.getCommonArguments(settings)]
 
-        if (settings.tagName) {
-            args.push('--tagName', settings.tagName)
+        if (settings.milestone) {
+            args.push('--tagName', settings.milestone)
         }
         if (settings.assets && settings.assets.length > 0) {
             settings.assets = settings.assets.map(asset => {
