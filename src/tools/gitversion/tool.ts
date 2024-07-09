@@ -46,6 +46,7 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         const settings = this.settingsProvider.getGitVersionSettings()
         const workDir = this.getRepoDir(settings)
 
+        await this.disableGitExtensionWorkTreeConfig(workDir)
         await this.checkShallowClone(settings, workDir)
 
         const args = this.getArguments(workDir, settings)
@@ -209,8 +210,16 @@ export class GitVersionTool extends DotnetTool implements IGitVersionTool {
         }
     }
 
+    private async disableGitExtensionWorkTreeConfig(workDir: string): Promise<void> {
+        // git config --unset-all extensions.worktreeconfig
+        const result = await this.execute('git', ['config', '--local', '--unset-all', 'extensions.worktreeConfig'])
+        if (result.code !== 0) {
+            throw new Error('Failed to disable git extension worktreeconfig')
+        }
+    }
+
     private toCamelCase(input: string): string {
-        return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function (match, index) {
+        return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function(match, index) {
             if (+match === 0) return '' // or if (/\s+/.test(match)) for white spaces
             return index === 0 ? match.toLowerCase() : match.toUpperCase()
         })
