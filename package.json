@@ -14,10 +14,10 @@
   "scripts": {
     "build": "run-p build:tools build:agents",
     "test": "run-p test:tools test:agents",
-    "lint": "eslint --ext .ts src",
-    "lint-fix": "eslint --ext .ts src --fix",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "format-check": "prettier --check \"src/**/*.ts\"",
+    "lint:check": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts src --fix",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "format:fix": "prettier --write \"src/**/*.ts\"",
 
     "build:tools": "vite build --config src/tools/vite.config.mts",
     "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
