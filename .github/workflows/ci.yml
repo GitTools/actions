@@ -34,7 +34,12 @@ jobs:
         fetch-depth: 0
     - run: |
         npm install
+      name: Install dependencies
+    - run: |
+        npm run lint
         npm run format-check
+      name: Check code formatting
+    - run: |
         npm run build:tools
         npm run build:agent:github
         npm run build:agent:azure
