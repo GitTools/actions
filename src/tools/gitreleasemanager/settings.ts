@@ -81,8 +81,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
             milestone
         }
     }
-
-    public getPublishSettings(): GitReleaseManagerPublishSettings {
+    getPublishSettings(): GitReleaseManagerPublishSettings {
         const milestone = this.buildAgent.getInput(PublishFields.milestone)
 
         const commonSettings = this.getCommonSettings()
@@ -92,7 +91,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    public getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
+    getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
         const milestone = this.buildAgent.getInput(AddAssetFields.milestone)
         const assets = this.buildAgent.getListInput(AddAssetFields.assets)
 
