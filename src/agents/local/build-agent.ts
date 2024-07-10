@@ -1,131 +1,38 @@
-import fs from 'node:fs/promises'
-import * as path from 'path'
+import * as process from 'node:process'
 
-import { injectable } from 'inversify'
+import { BuildAgentBase, type IBuildAgent } from '@agents/common'
 
-import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import { type ExecResult } from '../common/models'
-import { IBuildAgent } from '../common/build-agent'
+export class BuildAgent extends BuildAgentBase implements IBuildAgent {
+    agentName = 'Local'
 
-@injectable()
-class BuildAgent implements IBuildAgent {
-    public proxyConfiguration(url: string): IRequestOptions {
-        console.log('proxyConfiguration')
-        return undefined
-    }
-    public get agentName(): string {
-        console.log('getAgentName')
-        return 'Local'
+    sourceDirVariable = 'AGENT_SOURCE_DIR'
+    tempDirVariable = 'AGENT_TEMP_DIR'
+    cacheDirVariable = 'AGENT_TOOLS_DIR'
+
+    debug = (message: string): void => {
+        process.stdout.write(`[debug] ${message}`)
     }
 
-    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
-        console.log('find')
-        return 'find'
+    info = (message: string): void => {
+        process.stdout.write(`[info] - ${message}`)
     }
 
-    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
-        console.log('cacheDir')
-        return Promise.resolve('cacheDir')
+    warn = (message: string): void => {
+        process.stderr.write(`[warn] - ${message}`)
     }
 
-    public createTempDirectory(): Promise<string> {
-        console.log('createTempDir')
-        return Promise.resolve('createTempDir')
+    error = (message: string): void => {
+        process.stderr.write(`[error] - ${message}`)
     }
 
-    async removeDirectory(dir: string): Promise<void> {
-        await fs.rm(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 1000 })
-    }
+    setSucceeded = (message: string, done?: boolean): void => this.info(`setSucceeded - ${message} - ${done}`)
 
-    public debug(message: string): void {
-        console.log('debug')
-    }
+    setFailed = (message: string, done?: boolean): void => this.error(`setFailed - ${message} - ${done}`)
 
-    public info(message: string): void {
-        console.log(message)
-    }
+    setOutput = (name: string, value: string): void => this.debug(`setOutput - ${name} - ${value}`)
 
-    public error(message: string): void {
-        console.error(message)
-    }
-
-    public setFailed(message: string, done?: boolean): void {
-        console.log('setFailed')
-    }
-
-    public setSucceeded(message: string, done?: boolean): void {
-        console.log('setSucceeded')
-    }
-
-    public setVariable(name: string, val: string): void {
-        console.log('setVariable')
-    }
-
-    public getVariable(name: string): string {
-        console.log('getVariable')
-        return 'getVariable'
-    }
-
-    public getVariableAsPath(name: string): string {
-        return path.resolve(path.normalize(this.getVariable(name)))
-    }
-
-    public addPath(inputPath: string): void {
-        console.log('addPath')
-    }
-
-    public which(tool: string, check?: boolean): Promise<string> {
-        console.log('which')
-        return Promise.resolve('which')
-    }
-
-    public exec(exec: string, args: string[]): Promise<ExecResult> {
-        return Promise.resolve({
-            code: 0,
-            error: null,
-            stderr: 'result.stderr',
-            stdout: 'result.stdout'
-        })
-    }
-
-    public getSourceDir(): string {
-        console.log('getSourceDir')
-        return 'getSourceDir'
-    }
-
-    public setOutput(name: string, value: string): void {
-        console.log('setOutput')
-    }
-
-    public getInput(input: string, required?: boolean): string {
-        console.log('getInput')
-        return 'getInput'
-    }
-
-    public getListInput(input: string, required?: boolean): string[] {
-        console.log('getListInput')
-        return ['getInput']
-    }
-
-    public getBooleanInput(input: string, required?: boolean): boolean {
-        console.log('getBooleanInput')
-        return false
-    }
-
-    public isValidInputFile(input: string, file: string) {
-        console.log('isValidInputFile')
-        return false
-    }
-
-    public fileExists(file: string) {
-        console.log('fileExists')
-        return false
-    }
-
-    public directoryExists(file: string) {
-        console.log('directoryExists')
-        return false
+    setVariable(name: string, value: string): void {
+        this.debug(`setVariable - ${name} - ${value}`)
+        process.env[name] = value
     }
 }
-
-export { BuildAgent }

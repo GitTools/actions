@@ -1,20 +1,12 @@
+import { type ISettingsProvider, SettingsProvider } from '@tools/common'
 import { ExecuteFields, type GitVersionSettings } from './models'
-import { ISettingsProvider, SettingsProvider } from '../common/settings'
-import { inject, injectable } from 'inversify'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../common/models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {
     getGitVersionSettings(): GitVersionSettings
 }
 
-@injectable()
 export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
-
-    public getGitVersionSettings(): GitVersionSettings {
+    getGitVersionSettings(): GitVersionSettings {
         const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
 
         const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache)

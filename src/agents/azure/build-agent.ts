@@ -1,130 +1,73 @@
-import * as os from 'os'
-import * as path from 'path'
+import * as os from 'node:os'
+import * as process from 'node:process'
+import { BuildAgentBase, type IBuildAgent } from '@agents/common'
+import { issueCommand, TaskResult } from './command'
 
-import { injectable } from 'inversify'
+export class BuildAgent extends BuildAgentBase implements IBuildAgent {
+    agentName = 'Azure Pipelines'
 
-import * as taskLib from 'azure-pipelines-task-lib/task'
-import * as toolLib from 'azure-pipelines-tool-lib/tool'
+    sourceDirVariable = 'BUILD_SOURCESDIRECTORY'
+    tempDirVariable = 'AGENT_TEMPDIRECTORY'
+    cacheDirVariable = 'AGENT_TOOLSDIRECTORY'
 
-import { IRequestOptions } from 'typed-rest-client/Interfaces'
-import { type ExecResult } from '../common/models'
-import { IBuildAgent } from '../common/build-agent'
-
-@injectable()
-class BuildAgent implements IBuildAgent {
-    public get agentName(): string {
-        return 'Azure Pipelines'
+    addPath(inputPath: string): void {
+        super.addPath(inputPath)
+        issueCommand('task.prependpath', {}, inputPath)
     }
 
-    public proxyConfiguration(url: string): IRequestOptions {
-        return {
-            proxy: taskLib.getHttpProxyConfiguration(url),
-            cert: taskLib.getHttpCertConfiguration(),
-            ignoreSslError: !!taskLib.getVariable('Agent.SkipCertValidation')
-        }
-    }
-
-    public findLocalTool(toolName: string, versionSpec: string, arch?: string): string {
-        return toolLib.findLocalTool(toolName, versionSpec, arch)
-    }
-
-    public cacheToolDirectory(sourceDir: string, tool: string, version: string, arch?: string): Promise<string> {
-        return toolLib.cacheDir(sourceDir, tool, version, arch)
-    }
-
-    public createTempDirectory(): Promise<string> {
-        return Promise.resolve(taskLib.getVariable('Agent.TempDirectory'))
-    }
-
-    public removeDirectory(dir: string): Promise<void> {
-        taskLib.rmRF(dir)
-        return Promise.resolve()
-    }
-
-    public debug(message: string): void {
-        taskLib.debug(message)
-    }
-
-    public info(message: string): void {
+    info = (message: string): void => {
         process.stdout.write(message + os.EOL)
     }
 
-    public error(message: string): void {
-        taskLib.error(message)
+    debug = (message: string): void => issueCommand('task.debug', {}, message)
+
+    warn = (message: string): void => issueCommand('task.issue', { type: 'warning' }, message)
+
+    error = (message: string): void => issueCommand('task.issue', { type: 'error' }, message)
+
+    setSucceeded = (message: string, done?: boolean): void => this._setResult(TaskResult.Succeeded, message, done)
+
+    setFailed = (message: string, done?: boolean): void => this._setResult(TaskResult.Failed, message, done)
+
+    setOutput = (name: string, value: string): void => this._setVariable(name, value, true)
+
+    setVariable = (name: string, value: string): void => this._setVariable(name, value)
+
+    private _setResult(result: TaskResult, message: string, done?: boolean): void {
+        this.debug(`task result: ${TaskResult[result]}`)
+        // add an error issue
+        if (result === TaskResult.Failed && message) {
+            this.error(message)
+        } else if (result === TaskResult.SucceededWithIssues && message) {
+            this.warn(message)
+        } else {
+            this.info(message)
+        }
+        // task.complete
+        const properties: Record<string, string> = { result: TaskResult[result] }
+        if (done) {
+            properties['done'] = 'true'
+        }
+        issueCommand('task.complete', properties, message)
     }
 
-    public setFailed(message: string, done?: boolean): void {
-        taskLib.setResult(taskLib.TaskResult.Failed, message, done)
+    private _setVariable(name: string, val: string, isOutput = false): void {
+        const key: string = this._getVariableKey(name)
+        const varValue = val || ''
+        process.env[key] = varValue
+
+        issueCommand(
+            'task.setvariable',
+            {
+                variable: name || '',
+                isOutput: (isOutput || false).toString(),
+                issecret: 'false'
+            },
+            varValue
+        )
     }
 
-    public setSucceeded(message: string, done?: boolean): void {
-        taskLib.setResult(taskLib.TaskResult.Succeeded, message, done)
-    }
-
-    public setVariable(name: string, value: string): void {
-        taskLib.setVariable(name, value)
-    }
-
-    public getVariable(name: string): string {
-        return taskLib.getVariable(name)
-    }
-
-    public getVariableAsPath(name: string): string {
-        return path.resolve(path.normalize(this.getVariable(name)))
-    }
-
-    public addPath(inputPath: string): void {
-        toolLib.prependPath(inputPath)
-    }
-
-    public which(tool: string, check?: boolean): Promise<string> {
-        return Promise.resolve(taskLib.which(tool, check))
-    }
-
-    public exec(exec: string, args: string[]): Promise<ExecResult> {
-        const tr = taskLib.tool(exec)
-        tr.arg(args)
-
-        const result = tr.execSync()
-        return Promise.resolve({
-            code: result.code,
-            error: result.error,
-            stderr: result.stderr,
-            stdout: result.stdout
-        })
-    }
-
-    public getSourceDir(): string {
-        return this.getVariable('Build.SourcesDirectory')
-    }
-
-    public setOutput(name: string, value: string): void {
-        taskLib.setVariable(name, value, false, true)
-    }
-
-    public getInput(input: string, required?: boolean): string {
-        return taskLib.getInput(input, required)?.trim()
-    }
-
-    public getListInput(input: string, required?: boolean): string[] {
-        return taskLib.getDelimitedInput(input, '\n', required).filter(x => x !== '')
-    }
-
-    public getBooleanInput(input: string, required?: boolean): boolean {
-        return taskLib.getBoolInput(input, required)
-    }
-
-    public isValidInputFile(input: string, file: string): boolean {
-        return taskLib.filePathSupplied(input) && this.fileExists(file)
-    }
-
-    public fileExists(file: string): boolean {
-        return taskLib.exist(file) && taskLib.stats(file).isFile()
-    }
-
-    public directoryExists(file: string): boolean {
-        return taskLib.exist(file) && taskLib.stats(file).isDirectory()
+    private _getVariableKey(name: string): string {
+        return name.replace(/\./g, '_').replace(/ /g, '_').toUpperCase()
     }
 }
-
-export { BuildAgent }

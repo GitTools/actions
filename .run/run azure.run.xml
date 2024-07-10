@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="run azure" type="CompoundRunConfigurationType">
+        <toRun name="run:azure:gitreleasemanager (execute)" type="js.build_tools.npm"/>
+        <toRun name="run:azure:gitreleasemanager (setup)" type="js.build_tools.npm"/>
+        <toRun name="run:azure:gitversion (execute)" type="js.build_tools.npm"/>
+        <toRun name="run:azure:gitversion (setup)" type="js.build_tools.npm"/>
+        <method v="2"/>
+    </configuration>
+</component>

@@ -1,25 +1,16 @@
-import { IGitVersionTool, GitVersionTool } from './tool'
+import { type IBuildAgent } from '@agents/common'
+import { type IRunner } from '@tools/common'
 import { type Commands, type GitVersionOutput } from './models'
+import { GitVersionTool } from './tool'
 
-import container from '../common/ioc'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import { TYPES } from '../common/models'
+export class Runner implements IRunner {
+    private readonly gitVersionTool: GitVersionTool
 
-container.bind<IGitVersionTool>(TYPES.IGitVersionTool).to(GitVersionTool)
-
-const buildAgent = container.get<IBuildAgent>(TYPES.IBuildAgent)
-const gitVersionTool = container.get<IGitVersionTool>(TYPES.IGitVersionTool)
-
-export class Runner {
-    private buildAgent: IBuildAgent
-    private gitVersionTool: IGitVersionTool
-
-    constructor() {
-        this.buildAgent = buildAgent
-        this.gitVersionTool = gitVersionTool
+    constructor(private readonly buildAgent: IBuildAgent) {
+        this.gitVersionTool = new GitVersionTool(this.buildAgent)
     }
 
-    public async run(command: Commands): Promise<number> {
+    async run(command: Commands): Promise<number> {
         switch (command) {
             case 'setup':
                 return await this.setup()

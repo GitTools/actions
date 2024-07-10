@@ -1,7 +1,7 @@
-import { type Commands } from './models'
-import { Runner } from './runner'
+import { type Commands, Runner } from '@tools/gitreleasemanager'
+import { getAgent, parseCliArgs } from '@lib'
 
-export async function run(command: Commands) {
-    const runner = new Runner()
-    await runner.run(command)
-}
+const { command, agent } = parseCliArgs()
+const buildAgent = await getAgent(agent)
+const runner = new Runner(buildAgent)
+await runner.run(command as Commands)

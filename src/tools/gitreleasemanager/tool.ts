@@ -1,6 +1,7 @@
 import * as path from 'path'
 
-import { inject, injectable } from 'inversify'
+import { DotnetTool } from '@tools/common'
+import { type ExecResult } from '@agents/common'
 
 import {
     type GitReleaseManagerAddAssetSettings,
@@ -11,36 +12,9 @@ import {
     type GitReleaseManagerPublishSettings,
     type GitReleaseManagerSettings
 } from './models'
-import { TYPES } from '../common/models'
-import { DotnetTool, IDotnetTool } from '../common/dotnet-tool'
-import { type ExecResult } from '../../agents/common/models'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import container from '../common/ioc'
 import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
-export interface IGitReleaseManagerTool extends IDotnetTool {
-    create(): Promise<ExecResult>
-
-    discard(): Promise<ExecResult>
-
-    close(): Promise<ExecResult>
-
-    open(): Promise<ExecResult>
-
-    publish(): Promise<ExecResult>
-
-    addAsset(): Promise<ExecResult>
-}
-
-container.bind<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider).to(GitReleaseManagerSettingsProvider)
-const settingsProvider = container.get<IGitReleaseManagerSettingsProvider>(TYPES.IGitReleaseManagerSettingsProvider)
-
-@injectable()
-export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseManagerTool {
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        super(buildAgent)
-    }
-
+export class GitReleaseManagerTool extends DotnetTool {
     get packageName(): string {
         return 'GitReleaseManager.Tool'
     }
@@ -58,67 +32,67 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
     }
 
     get settingsProvider(): IGitReleaseManagerSettingsProvider {
-        return settingsProvider
+        return new GitReleaseManagerSettingsProvider(this.buildAgent)
     }
 
-    public create(): Promise<ExecResult> {
+    async create(): Promise<ExecResult> {
         const settings = this.settingsProvider.getCreateSettings()
-        const args = this.getCreateArguments(settings)
+        const args = await this.getCreateArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public discard(): Promise<ExecResult> {
+    async discard(): Promise<ExecResult> {
         const settings = this.settingsProvider.getDiscardSettings()
-        const args = this.getDiscardArguments(settings)
+        const args = await this.getDiscardArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public close(): Promise<ExecResult> {
+    async close(): Promise<ExecResult> {
         const settings = this.settingsProvider.getCloseSettings()
-        const args = this.getCloseArguments(settings)
+        const args = await this.getCloseArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public open(): Promise<ExecResult> {
+    async open(): Promise<ExecResult> {
         const settings = this.settingsProvider.getOpenSettings()
-        const args = this.getOpenArguments(settings)
+        const args = await this.getOpenArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public publish(): Promise<ExecResult> {
+    async publish(): Promise<ExecResult> {
         const settings = this.settingsProvider.getPublishSettings()
-        const args = this.getPublishArguments(settings)
+        const args = await this.getPublishArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    public addAsset(): Promise<ExecResult> {
+    async addAsset(): Promise<ExecResult> {
         const settings = this.settingsProvider.getAddAssetSettings()
-        const args = this.getAddAssetArguments(settings)
+        const args = await this.getAddAssetArguments(settings)
 
-        return this.executeTool(args)
+        return await this.executeTool(args)
     }
 
-    protected getCommonArguments(settings: GitReleaseManagerSettings): string[] {
+    protected async getCommonArguments(settings: GitReleaseManagerSettings): Promise<string[]> {
         const args: string[] = []
 
         args.push('--owner', settings.owner)
         args.push('--repository', settings.repository)
         args.push('--token', settings.token)
 
-        settings.targetDirectory = this.getRepoDir(settings)
+        settings.targetDirectory = await this.getRepoDir(settings)
 
         args.push('--targetDirectory', settings.targetDirectory)
 
         return args
     }
 
-    private getCreateArguments(settings: GitReleaseManagerCreateSettings): string[] {
-        const args: string[] = ['create', ...this.getCommonArguments(settings)]
+    protected async getCreateArguments(settings: GitReleaseManagerCreateSettings): Promise<string[]> {
+        const args: string[] = ['create', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--milestone', settings.milestone)
@@ -131,7 +105,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         }
 
         if (settings.inputFileName) {
-            if (this.buildAgent.fileExists(settings.inputFileName)) {
+            if (await this.buildAgent.fileExists(settings.inputFileName)) {
                 args.push('--inputFilePath', settings.inputFileName)
             } else {
                 throw new Error(`GitReleaseManager inputFilePath not found at ${settings.inputFileName}`)
@@ -151,8 +125,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getDiscardArguments(settings: GitReleaseManagerDiscardSettings): string[] {
-        const args: string[] = ['discard', ...this.getCommonArguments(settings)]
+    protected async getDiscardArguments(settings: GitReleaseManagerDiscardSettings): Promise<string[]> {
+        const args: string[] = ['discard', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--milestone', settings.milestone)
@@ -161,8 +135,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getCloseArguments(settings: GitReleaseManagerCloseSettings): string[] {
-        const args: string[] = ['close', ...this.getCommonArguments(settings)]
+    protected async getCloseArguments(settings: GitReleaseManagerCloseSettings): Promise<string[]> {
+        const args: string[] = ['close', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--milestone', settings.milestone)
@@ -171,8 +145,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getOpenArguments(settings: GitReleaseManagerOpenSettings): string[] {
-        const args: string[] = ['open', ...this.getCommonArguments(settings)]
+    protected async getOpenArguments(settings: GitReleaseManagerOpenSettings): Promise<string[]> {
+        const args: string[] = ['open', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--milestone', settings.milestone)
@@ -181,8 +155,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getPublishArguments(settings: GitReleaseManagerPublishSettings): string[] {
-        const args: string[] = ['publish', ...this.getCommonArguments(settings)]
+    protected async getPublishArguments(settings: GitReleaseManagerPublishSettings): Promise<string[]> {
+        const args: string[] = ['publish', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--tagName', settings.milestone)
@@ -191,8 +165,8 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): string[] {
-        const args: string[] = ['addasset', ...this.getCommonArguments(settings)]
+    protected async getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): Promise<string[]> {
+        const args: string[] = ['addasset', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
             args.push('--tagName', settings.milestone)
@@ -208,7 +182,7 @@ export class GitReleaseManagerTool extends DotnetTool implements IGitReleaseMana
         return args
     }
 
-    private getRepoDir(settings: GitReleaseManagerSettings): string {
-        return super.getRepoPath(settings.targetDirectory)
+    protected async getRepoDir(settings: GitReleaseManagerSettings): Promise<string> {
+        return await this.getRepoPath(settings.targetDirectory)
     }
 }

@@ -1,38 +1,23 @@
-import { TYPES } from './models'
-import { inject, injectable } from 'inversify'
-import { IBuildAgent } from '../../agents/common/build-agent'
-import * as http from 'typed-rest-client/HttpClient'
-import { type ExecResult } from '../../agents/common/models'
+import * as crypto from 'node:crypto'
+import * as fs from 'node:fs/promises'
+import * as os from 'node:os'
+import * as path from 'node:path'
+
 import * as semver from 'semver'
-import os from 'os'
-import fs from 'fs'
-import path from 'path'
+import { type IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
+import { NugetVersions } from './models'
 
 export interface IDotnetTool {
-    get packageName(): string
-    get toolName(): string
-    get toolPathVariable(): string
-    get versionRange(): string | null
-
     disableTelemetry(): void
 
     install(): Promise<string>
 }
 
-type NugetVersions = { data: { versions: { version: string }[] }[] }
-
-@injectable()
 export abstract class DotnetTool implements IDotnetTool {
-    protected buildAgent: IBuildAgent
-    private httpClient: http.HttpClient
-
     private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/query'
 
-    constructor(@inject(TYPES.IBuildAgent) buildAgent: IBuildAgent) {
-        this.buildAgent = buildAgent
-        this.httpClient = new http.HttpClient('dotnet', undefined, this.buildAgent.proxyConfiguration(DotnetTool.nugetRoot))
-    }
+    constructor(protected buildAgent: IBuildAgent) {}
 
     abstract get packageName(): string
 
@@ -44,13 +29,13 @@ export abstract class DotnetTool implements IDotnetTool {
 
     abstract get settingsProvider(): ISettingsProvider
 
-    public disableTelemetry(): void {
+    disableTelemetry(): void {
         this.buildAgent.info('Disable Telemetry')
         this.buildAgent.setVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
         this.buildAgent.setVariable('DOTNET_NOLOGO', 'true')
     }
 
-    public async install(): Promise<string> {
+    async install(): Promise<string> {
         const dotnetExePath = await this.buildAgent.which('dotnet', true)
         this.buildAgent.debug(`whichPath: ${dotnetExePath}`)
         await this.setDotnetRoot()
@@ -79,7 +64,7 @@ export abstract class DotnetTool implements IDotnetTool {
         let toolPath: string | null = null
         if (!setupSettings.preferLatestVersion) {
             // Let's try and resolve the version locally first
-            toolPath = this.buildAgent.findLocalTool(this.packageName, version)
+            toolPath = await this.buildAgent.findLocalTool(this.packageName, version)
             if (toolPath) {
                 this.buildAgent.info('--------------------------')
                 this.buildAgent.info(`${this.packageName} version: ${version} found in local cache at ${toolPath}.`)
@@ -103,15 +88,19 @@ export abstract class DotnetTool implements IDotnetTool {
         return toolPath
     }
 
+    protected async execute(cmd: string, args: string[]): Promise<ExecResult> {
+        this.buildAgent.info(`Command: ${cmd} ${args.join(' ')}`)
+        return await this.buildAgent.exec(cmd, args)
+    }
+
     protected async setDotnetRoot(): Promise<void> {
         if (os.platform() !== 'win32' && !this.buildAgent.getVariable('DOTNET_ROOT')) {
             let dotnetPath = await this.buildAgent.which('dotnet', true)
 
-            const stats = fs.lstatSync(dotnetPath)
+            const stats = await fs.lstat(dotnetPath)
             if (stats.isSymbolicLink()) {
-                dotnetPath = fs.readlinkSync(dotnetPath) || dotnetPath
+                dotnetPath = (await fs.readlink(dotnetPath)) || dotnetPath
             }
-
             const dotnetRoot = path.dirname(dotnetPath)
             this.buildAgent.setVariable('DOTNET_ROOT', dotnetRoot)
         }
@@ -126,27 +115,32 @@ export abstract class DotnetTool implements IDotnetTool {
         if (!toolPath) {
             toolPath = await this.buildAgent.which(this.toolName, true)
         }
-        return this.execute(toolPath, args)
+        return await this.execute(toolPath, args)
     }
 
-    protected getRepoPath(targetPath: string): string {
-        const srcDir = this.buildAgent.getSourceDir() || '.'
+    protected async isValidInputFile(input: string, file: string): Promise<boolean> {
+        return this.filePathSupplied(input) && (await this.buildAgent.fileExists(file))
+    }
+
+    protected filePathSupplied(file: string): boolean {
+        const pathValue = path.resolve(this.buildAgent.getInput(file) || '')
+        const repoRoot = this.buildAgent.sourceDir
+        return pathValue !== repoRoot
+    }
+
+    protected async getRepoPath(targetPath: string): Promise<string> {
+        const srcDir = this.buildAgent.sourceDir || '.'
         let workDir: string
         if (!targetPath) {
             workDir = srcDir
         } else {
-            if (this.buildAgent.directoryExists(targetPath)) {
+            if (await this.buildAgent.directoryExists(targetPath)) {
                 workDir = targetPath
             } else {
                 throw new Error(`Directory not found at ${targetPath}`)
             }
         }
         return workDir.replace(/\\/g, '/')
-    }
-
-    protected execute(cmd: string, args: string[]): Promise<ExecResult> {
-        this.buildAgent.info(`Command: ${cmd} ${args.join(' ')}`)
-        return this.buildAgent.exec(cmd, args)
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
@@ -158,16 +152,14 @@ export abstract class DotnetTool implements IDotnetTool {
         const prereleaseParam = includePrerelease ? 'true' : 'false'
         const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
-        const response = await this.httpClient.get(downloadPath)
+        const response = await fetch(downloadPath)
 
-        if (!response || response.message.statusCode !== 200) {
-            this.buildAgent.info(
-                `failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.message.statusCode : 'unknown'}`
-            )
+        if (!response || !response.ok) {
+            this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : 'unknown'}`)
             return null
         }
 
-        const { data } = JSON.parse(await response.readBody()) as NugetVersions
+        const { data } = (await response.json()) as NugetVersions
 
         const versions = data[0].versions.map(x => x.version)
         if (!versions || !versions.length) {
@@ -192,7 +184,7 @@ export abstract class DotnetTool implements IDotnetTool {
             throw new Error(`Invalid version spec: ${version}`)
         }
 
-        const tempDirectory = await this.buildAgent.createTempDirectory()
+        const tempDirectory = await this.createTempDirectory()
 
         if (!tempDirectory) {
             throw new Error('Unable to create temp directory')
@@ -213,7 +205,25 @@ export abstract class DotnetTool implements IDotnetTool {
             throw new Error(message)
         }
 
-        return await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion)
+        const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion)
+        this.buildAgent.debug(`Cached tool path: ${toolPath}`)
+        this.buildAgent.debug(`Cleaning up temp directory: ${tempDirectory}`)
+        await this.buildAgent.removeDirectory(tempDirectory)
+
+        return toolPath
+    }
+
+    async createTempDirectory(): Promise<string> {
+        const tempRootDir = this.buildAgent.tempDir
+        if (!tempRootDir) {
+            throw new Error('Temp directory not set')
+        }
+
+        const uuid = crypto.randomUUID()
+        const tempPath = path.join(tempRootDir, uuid)
+        this.buildAgent.debug(`Creating temp directory ${tempPath}`)
+        await fs.mkdir(tempPath, { recursive: true })
+        return tempPath
     }
 
     private isExplicitVersion(versionSpec: string): boolean {

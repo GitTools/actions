@@ -1,14 +1,62 @@
 {
     "compilerOptions": {
+        "baseUrl": "./src",
+        "target": "ES2022",
         "module": "ES2022",
-        "moduleResolution": "node",
-        "target": "es2017",
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "lib": [ "ES2016" ],
-        "types": [ "reflect-metadata" ],
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
-    }
+        "moduleResolution": "bundler",
+        "useDefineForClassFields": true,
+        "lib": [
+            "ES2020"
+        ],
+        "types": [
+            "node",
+            "vite/client"
+        ],
+        "skipLibCheck": true,
+        /* Bundler mode */
+        /*"moduleResolution": "bundler",*/
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "paths": {
+            "@lib": [
+                "./tools/lib.ts"
+            ],
+            "@agents/common": [
+                "./agents/common"
+            ],
+            "@agents/azure": [
+                "./agents/azure"
+            ],
+            "@agents/local": [
+                "./agents/local"
+            ],
+            "@agents/github": [
+                "./agents/github"
+            ],
+            "@tools/common": [
+                "./tools/common"
+            ],
+            "@tools/gitreleasemanager": [
+                "./tools/gitreleasemanager"
+            ],
+            "@tools/gitversion": [
+                "./tools/gitversion"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "tests/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }
