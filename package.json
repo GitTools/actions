@@ -60,7 +60,7 @@
     "tfx-cli": "^0.17.0",
     "typescript": "^5.5.3",
     "vite": "^5.3.3",
-    "vite-node": "^2.0.1",
+    "vite-node": "^2.0.2",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^2.0.1"
   },
