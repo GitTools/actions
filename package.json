@@ -56,7 +56,7 @@
     "eslint-plugin-vitest": "^0.5.4",
     "glob": "^11.0.0",
     "npm-run-all2": "^6.2.2",
-    "prettier": "^3.3.2",
+    "prettier": "^3.3.3",
     "tfx-cli": "^0.17.0",
     "typescript": "^5.5.3",
     "vite": "^5.3.3",
