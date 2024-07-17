@@ -962,6 +962,8 @@ var hasRequiredRange;
 function requireRange () {
 	if (hasRequiredRange) return range;
 	hasRequiredRange = 1;
+	const SPACE_CHARACTERS = /\s+/g;
+
 	// hoisted class for cyclic dependency
 	class Range {
 	  constructor (range, options) {
@@ -982,7 +984,7 @@ function requireRange () {
 	      // just put it in the set and return
 	      this.raw = range.value;
 	      this.set = [[range]];
-	      this.format();
+	      this.formatted = undefined;
 	      return this
 	    }
 
@@ -993,10 +995,7 @@ function requireRange () {
 	    // First reduce all whitespace as much as possible so we do not have to rely
 	    // on potentially slow regexes like \s*. This is then stored and used for
 	    // future error messages as well.
-	    this.raw = range
-	      .trim()
-	      .split(/\s+/)
-	      .join(' ');
+	    this.raw = range.trim().replace(SPACE_CHARACTERS, ' ');
 
 	    // First, split on ||
 	    this.set = this.raw
@@ -1030,14 +1029,29 @@ function requireRange () {
 	      }
 	    }
 
-	    this.format();
+	    this.formatted = undefined;
+	  }
+
+	  get range () {
+	    if (this.formatted === undefined) {
+	      this.formatted = '';
+	      for (let i = 0; i < this.set.length; i++) {
+	        if (i > 0) {
+	          this.formatted += '||';
+	        }
+	        const comps = this.set[i];
+	        for (let k = 0; k < comps.length; k++) {
+	          if (k > 0) {
+	            this.formatted += ' ';
+	          }
+	          this.formatted += comps[k].toString().trim();
+	        }
+	      }
+	    }
+	    return this.formatted
 	  }
 
 	  format () {
-	    this.range = this.set
-	      .map((comps) => comps.join(' ').trim())
-	      .join('||')
-	      .trim();
 	    return this.range
 	  }
 
