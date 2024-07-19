@@ -16,7 +16,11 @@ const config = defineConfig({
         globals: true,
         include: ['**/__tests__/**/*.spec.[tj]s'],
         exclude: ['**/node_modules/**', '**/dist/**'],
-        testTimeout: 60000
+        reporters: ['junit'],
+        testTimeout: 60000,
+        outputFile: {
+            junit: './junit-report.xml'
+        }
     }
 })
 export default config

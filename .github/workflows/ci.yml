@@ -57,8 +57,12 @@ jobs:
         overrideConfig: |
           update-build-number=false
     - run: |
-        npm run test
+        npm run test:ci
       name: Run tests
+    - name: Test Summary
+      uses: test-summary/action@v2.4
+      with:
+        paths: junit-report.xml
     - run: |
         echo "Major      (env.major)                                      : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"

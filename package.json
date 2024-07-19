@@ -34,6 +34,7 @@
     "run:azure:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent azure",
     "run:github:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent github",
 
+    "test:ci": "vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
     "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
 

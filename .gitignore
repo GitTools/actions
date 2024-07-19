@@ -31,3 +31,5 @@ dist-ssr
 /dist/agents/local/
 
 .debug/
+
+junit-report.xml
