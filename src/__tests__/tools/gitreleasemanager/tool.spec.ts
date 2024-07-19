@@ -10,6 +10,7 @@ import {
     GitReleaseManagerSettings,
     GitReleaseManagerTool
 } from '@tools/gitreleasemanager'
+import * as path from 'node:path'
 
 class TestGitReleaseManagerTool extends GitReleaseManagerTool {
     private _isValidInputFile = false
@@ -214,7 +215,7 @@ describe('GitReleaseManagerTool', () => {
                     'inputFileName',
                     '--pre',
                     '--assets',
-                    'targetDirectory/asset1,targetDirectory/asset2'
+                    `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
                 ])
             })
         })
@@ -332,7 +333,7 @@ describe('GitReleaseManagerTool', () => {
                     '--tagName',
                     'tagName',
                     '--assets',
-                    'targetDirectory/asset1,targetDirectory/asset2'
+                    `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
                 ])
             })
         })

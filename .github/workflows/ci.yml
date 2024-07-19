@@ -57,6 +57,9 @@ jobs:
         overrideConfig: |
           update-build-number=false
     - run: |
+        npm run test
+      name: Run tests
+    - run: |
         echo "Major      (env.major)                                      : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"
         echo "Major      (steps.gitversion.outputs.major)                 : ${{ steps.gitversion.outputs.major }}"

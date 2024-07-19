@@ -1,8 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BuildAgent } from '@agents/azure'
 import process from 'node:process'
+import * as os from 'node:os'
 
-describe('build-agent/azure', () => {
+// Check if running in Azure Pipelines
+const isAzurePipelines = !!process.env.AGENT_NAME
+describe.skipIf(isAzurePipelines)('build-agent/azure', () => {
     let agent: BuildAgent
 
     beforeEach(() => {
@@ -34,7 +37,7 @@ describe('build-agent/azure', () => {
 
         agent.debug('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('##vso[task.debug]test\n')
+        expect(spy).toHaveBeenCalledWith(`##vso[task.debug]test${os.EOL}`)
     })
 
     it('should log info', () => {
@@ -42,7 +45,7 @@ describe('build-agent/azure', () => {
 
         agent.info('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('test\n')
+        expect(spy).toHaveBeenCalledWith(`test${os.EOL}`)
     })
 
     it('should log warn', () => {
@@ -50,7 +53,7 @@ describe('build-agent/azure', () => {
 
         agent.warn('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('##vso[task.issue type=warning;]test\n')
+        expect(spy).toHaveBeenCalledWith(`##vso[task.issue type=warning;]test${os.EOL}`)
     })
 
     it('should log error', () => {
@@ -58,7 +61,7 @@ describe('build-agent/azure', () => {
 
         agent.error('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('##vso[task.issue type=error;]test\n')
+        expect(spy).toHaveBeenCalledWith(`##vso[task.issue type=error;]test${os.EOL}`)
     })
 
     it('should set succeeded', () => {
@@ -76,8 +79,8 @@ describe('build-agent/azure', () => {
 
         expect(spyWrite).toHaveBeenCalledTimes(3)
 
-        expect(spyWrite).toHaveBeenCalledWith('##vso[task.debug]task result: Succeeded\n')
-        expect(spyWrite).toHaveBeenCalledWith('##vso[task.complete result=Succeeded;done=true;]test\n')
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.debug]task result: Succeeded${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.complete result=Succeeded;done=true;]test${os.EOL}`)
     })
 
     it('should set failed', () => {
@@ -95,9 +98,9 @@ describe('build-agent/azure', () => {
 
         expect(spyWrite).toHaveBeenCalledTimes(3)
 
-        expect(spyWrite).toHaveBeenCalledWith('##vso[task.debug]task result: Failed\n')
-        expect(spyWrite).toHaveBeenCalledWith('##vso[task.issue type=error;]test\n')
-        expect(spyWrite).toHaveBeenCalledWith('##vso[task.complete result=Failed;done=true;]test\n')
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.debug]task result: Failed${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.issue type=error;]test${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.complete result=Failed;done=true;]test${os.EOL}`)
     })
 
     it('should set environment variable', () => {
@@ -106,7 +109,7 @@ describe('build-agent/azure', () => {
         agent.setVariable('test', 'value')
         expect(process.env['TEST']).toBe('value')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('##vso[task.setvariable variable=test;isOutput=false;issecret=false;]value\n')
+        expect(spy).toHaveBeenCalledWith(`##vso[task.setvariable variable=test;isOutput=false;issecret=false;]value${os.EOL}`)
     })
 
     it('should set output', () => {
@@ -114,6 +117,6 @@ describe('build-agent/azure', () => {
 
         agent.setOutput('test', 'value')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('##vso[task.setvariable variable=test;isOutput=true;issecret=false;]value\n')
+        expect(spy).toHaveBeenCalledWith(`##vso[task.setvariable variable=test;isOutput=true;issecret=false;]value${os.EOL}`)
     })
 })

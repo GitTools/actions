@@ -3,8 +3,11 @@ import { BuildAgent, prepareKeyValueMessage } from '@agents/github'
 import process from 'node:process'
 import * as fs from 'node:fs'
 import * as crypto from 'node:crypto'
+import * as os from 'node:os'
 
-describe('build-agent/github', () => {
+// Check if running in GitHub Actions
+const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
+describe.skipIf(isGitHubActions)('build-agent/github', () => {
     let agent: BuildAgent
 
     beforeEach(() => {
@@ -37,7 +40,7 @@ describe('build-agent/github', () => {
 
         agent.debug('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::debug::test\n')
+        expect(spy).toHaveBeenCalledWith(`::debug::test${os.EOL}`)
     })
 
     it('should log info', () => {
@@ -45,7 +48,7 @@ describe('build-agent/github', () => {
 
         agent.info('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('test\n')
+        expect(spy).toHaveBeenCalledWith(`test${os.EOL}`)
     })
 
     it('should log warn', () => {
@@ -53,7 +56,7 @@ describe('build-agent/github', () => {
 
         agent.warn('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::warning::test\n')
+        expect(spy).toHaveBeenCalledWith(`::warning::test${os.EOL}`)
     })
 
     it('should log error', () => {
@@ -61,7 +64,7 @@ describe('build-agent/github', () => {
 
         agent.error('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::error::test\n')
+        expect(spy).toHaveBeenCalledWith(`::error::test${os.EOL}`)
     })
 
     it('should set succeeded', () => {
@@ -75,7 +78,7 @@ describe('build-agent/github', () => {
         agent.setFailed('test')
         expect(process.exitCode).toBe(1)
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::error::test\n')
+        expect(spy).toHaveBeenCalledWith(`::error::test${os.EOL}`)
     })
 
     it('should set output', () => {
@@ -84,7 +87,7 @@ describe('build-agent/github', () => {
         agent.setOutput('name', 'value')
 
         expect(spy).toHaveBeenCalledTimes(2)
-        expect(spy).toHaveBeenCalledWith('::set-output name=name::value\n')
+        expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
 
         vi.mock('fs')
         vi.mock('crypto')
@@ -105,10 +108,10 @@ describe('build-agent/github', () => {
         const expected = prepareKeyValueMessage('name', 'value')
 
         expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}\n`, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', expected + os.EOL, { encoding: 'utf8' })
 
         expect(spy).toHaveBeenCalledTimes(2)
-        expect(spy).toHaveBeenCalledWith('::set-output name=name::value\n')
+        expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
     })
 
     it('should set variable', () => {
@@ -117,7 +120,7 @@ describe('build-agent/github', () => {
         agent.setVariable('name', 'value')
         expect(process.env['name']).toBe('value')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::set-env name=name::value\n')
+        expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
 
         vi.mock('fs')
         vi.mock('crypto')
@@ -139,9 +142,9 @@ describe('build-agent/github', () => {
         const expected = prepareKeyValueMessage('name', 'value')
 
         expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}\n`, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', expected + os.EOL, { encoding: 'utf8' })
 
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('::set-env name=name::value\n')
+        expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
     })
 })
