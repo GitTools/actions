@@ -28,7 +28,7 @@ export class GitReleaseManagerTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '>=0.10.0 <0.18.0'
+        return '>=0.10.0 <0.20.0'
     }
 
     get settingsProvider(): IGitReleaseManagerSettingsProvider {
