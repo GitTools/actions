@@ -24,7 +24,7 @@ Install the latest GitReleaseManager 0.18.x version.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.0
+    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
     with:
       versionSpec: '0.18.x'
 ```
@@ -36,7 +36,7 @@ Install specific GitReleaseManager version 0.18.0.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.0
+    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
     with:
       versionSpec: '0.18.0'
 ```
@@ -48,7 +48,7 @@ Install the latest GitReleaseManager 0.18.x version even it there is a cached ve
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.0
+    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
     with:
       versionSpec: '0.18.x'
       preferLatestVersion: true
