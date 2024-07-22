@@ -8,7 +8,7 @@
       token: ${{ secrets.GITHUB_TOKEN }}
       owner: 'someOwner'
       repository: 'someRepository'
-      tagName: '0.1.0'
+      milestone: '0.1.0'
       assets: |
         src/test.txt
         src/test1.txt

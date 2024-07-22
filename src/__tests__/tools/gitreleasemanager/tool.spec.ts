@@ -293,7 +293,7 @@ describe('GitReleaseManagerTool', () => {
             it('should return correct publish arguments', async () => {
                 const args = await tool.getPublishArguments({
                     ...commonSettings,
-                    milestone: 'tagName'
+                    milestone: 'milestone'
                 } as GitReleaseManagerPublishSettings)
 
                 expect(args).toEqual([
@@ -307,7 +307,7 @@ describe('GitReleaseManagerTool', () => {
                     '--targetDirectory',
                     'targetDirectory',
                     '--tagName',
-                    'tagName'
+                    'milestone'
                 ])
             })
         })
@@ -316,7 +316,7 @@ describe('GitReleaseManagerTool', () => {
             it('should return correct add asset arguments', async () => {
                 const args = await tool.getAddAssetArguments({
                     ...commonSettings,
-                    milestone: 'tagName',
+                    milestone: 'milestone',
                     assets: ['asset1', 'asset2']
                 } as GitReleaseManagerAddAssetSettings)
 
@@ -331,7 +331,7 @@ describe('GitReleaseManagerTool', () => {
                     '--targetDirectory',
                     'targetDirectory',
                     '--tagName',
-                    'tagName',
+                    'milestone',
                     '--assets',
                     `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
                 ])
