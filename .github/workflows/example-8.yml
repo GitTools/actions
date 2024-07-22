@@ -7,8 +7,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  GitVersion_v5_same_job:
-    name: GitVersion v5 (same job)
+  GitVersion_v6_same_job:
+    name: GitVersion v6 (same job)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +19,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v2.0.0
         with:
-          versionSpec: '5.x'
+          versionSpec: '6.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values

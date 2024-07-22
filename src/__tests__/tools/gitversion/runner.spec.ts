@@ -13,7 +13,7 @@ import { keysFn, type SetupSettings } from '@tools/common'
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
     const envName = process.platform === 'win32' ? 'Path' : 'PATH'
-    const version = '5.12.0'
+    const version = '6.0.0'
     const toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
@@ -59,7 +59,7 @@ describe('GitVersion Runner', () => {
 
         it.sequential('should run setup GitVersion', async () => {
             setInputs({
-                versionSpec: '5.12.x',
+                versionSpec: '6.x',
                 includePrerelease: false,
                 ignoreFailedSources: false,
                 preferLatestVersion: false

@@ -10,7 +10,7 @@ runs:
 
 inputs:
   versionSpec:
-    description: Required version in the form of 5.x or exact version like 5.12.0
+    description: Required version in the form of 6.x or exact version like 6.0.0
     required: true
     default: ''
   includePrerelease:

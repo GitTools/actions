@@ -46,7 +46,7 @@ jobs:
     - name: gitversion/setup
       uses: ./gitversion/setup
       with:
-        versionSpec: '5.x'
+        versionSpec: '6.x'
     - name: gitversion/execute
       id: gitversion # step id used as reference for output values
       uses: ./gitversion/execute

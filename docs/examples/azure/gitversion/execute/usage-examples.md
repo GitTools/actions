@@ -13,7 +13,7 @@ steps:
   - task: gitversion/setup@2.0.0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '5.x'
+      versionSpec: '6.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -250,8 +250,8 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
 ```yaml
 jobs:
-  - job: GitVersion_v5_same_job
-    displayName: GitVersion v5 (same job)
+  - job: GitVersion_v6_same_job
+    displayName: GitVersion v6 (same job)
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -261,7 +261,7 @@ jobs:
       - task: gitversion/setup@2.0.0
         displayName: Install GitVersion
         inputs:
-          versionSpec: '5.x'
+          versionSpec: '6.x'
 
       - task: gitversion/execute@2.0.0
         displayName: Determine Version
@@ -318,8 +318,8 @@ jobs:
 
 ```yaml
 jobs:
-  - job: GitVersion_v5_cross_job
-    displayName: GitVersion v5 (cross job)
+  - job: GitVersion_v6_cross_job
+    displayName: GitVersion v6 (cross job)
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -329,7 +329,7 @@ jobs:
       - task: gitversion/setup@2.0.0
         displayName: Install GitVersion
         inputs:
-          versionSpec: '5.x'
+          versionSpec: '6.x'
 
       - task: gitversion/execute@2.0.0
         displayName: Determine Version
@@ -338,12 +338,12 @@ jobs:
           overrideConfig: |
             update-build-number=false
 
-  - job: GitVersion_v5_cross_job_consumer_without_prefix
-    displayName: GitVersion v5 (cross job consumer) - without prefix
-    dependsOn: GitVersion_v5_cross_job
-    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
+  - job: GitVersion_v6_cross_job_consumer_without_prefix
+    displayName: GitVersion v6 (cross job consumer) - without prefix
+    dependsOn: GitVersion_v6_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
     variables:
-      myvar_fullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.fullSemVer'] ]
+      myvar_fullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.fullSemVer'] ]
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -367,12 +367,12 @@ jobs:
         env:
           localvar_fullSemVer: $(myvar_fullSemVer)
 
-  - job: GitVersion_v5_cross_job_consumer_with_prefix
-    displayName: GitVersion v5 (cross job consumer) - with prefix
-    dependsOn: GitVersion_v5_cross_job
-    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
+  - job: GitVersion_v6_cross_job_consumer_with_prefix
+    displayName: GitVersion v6 (cross job consumer) - with prefix
+    dependsOn: GitVersion_v6_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
     variables:
-      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v5_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
+      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -404,11 +404,11 @@ jobs:
 
 ```yaml
 stages:
-  - stage: GitVersion_v5_cross_stage
-    displayName: GitVersion v5 (cross stage)
+  - stage: GitVersion_v6_cross_stage
+    displayName: GitVersion v6 (cross stage)
     jobs:
-      - job: GitVersion_v5_cross_stage_producer
-        displayName: GitVersion v5 (cross stage producer)
+      - job: GitVersion_v6_cross_stage_producer
+        displayName: GitVersion v6 (cross stage producer)
         pool:
           vmImage: ubuntu-latest
         steps:
@@ -418,7 +418,7 @@ stages:
           - task: gitversion/setup@2.0.0
             displayName: Install GitVersion
             inputs:
-              versionSpec: '5.x'
+              versionSpec: '6.x'
 
           - task: gitversion/execute@2.0.0
             displayName: Determine Version
@@ -426,15 +426,15 @@ stages:
             inputs:
               overrideConfig: |
                 update-build-number=false
-  - stage: GitVersion_v5_cross_stage_consumer_without_prefix
-    displayName: GitVersion v5 (cross stage consumer) - without prefix
-    dependsOn: GitVersion_v5_cross_stage
-    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
+  - stage: GitVersion_v6_cross_stage_consumer_without_prefix
+    displayName: GitVersion v6 (cross stage consumer) - without prefix
+    dependsOn: GitVersion_v6_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_stage.outputs['GitVersion_v6_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
     jobs:
-      - job: GitVersion_v5_cross_stage_consumer_without_prefix
-        displayName: GitVersion v5 (cross stage consumer) - without prefix
+      - job: GitVersion_v6_cross_stage_consumer_without_prefix
+        displayName: GitVersion v6 (cross stage consumer) - without prefix
         variables:
-          myvar_fullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.fullSemVer'] ]
+          myvar_fullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.fullSemVer'] ]
         pool:
           vmImage: ubuntu-latest
         steps:
@@ -457,15 +457,15 @@ stages:
             displayName: Use mapped local env from job variables (bash - outputs without prefix)
             env:
               localvar_fullSemVer: $(myvar_fullSemVer)
-  - stage: GitVersion_v5_cross_stage_consumer_with_prefix
-    displayName: GitVersion v5 (cross stage consumer) - with prefix
-    dependsOn: GitVersion_v5_cross_stage
-    condition: and(succeeded(), eq(dependencies.GitVersion_v5_cross_stage.outputs['GitVersion_v5_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
+  - stage: GitVersion_v6_cross_stage_consumer_with_prefix
+    displayName: GitVersion v6 (cross stage consumer) - with prefix
+    dependsOn: GitVersion_v6_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_stage.outputs['GitVersion_v6_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
     jobs:
-      - job: GitVersion_v5_cross_stage_consumer_with_prefix
-        displayName: GitVersion v5 (cross stage consumer) - with prefix
+      - job: GitVersion_v6_cross_stage_consumer_with_prefix
+        displayName: GitVersion v6 (cross stage consumer) - with prefix
         variables:
-          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v5_cross_stage.GitVersion_v5_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
+          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
         pool:
           vmImage: ubuntu-latest
         steps:

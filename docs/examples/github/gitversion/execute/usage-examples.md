@@ -15,7 +15,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v2.0.0
     with:
-      versionSpec: '5.x'
+      versionSpec: '6.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -249,8 +249,8 @@ The action also creates environment variables of the form `${{ env.<outputName> 
 
 ```yaml
 jobs:
-  GitVersion_v5_same_job:
-    name: GitVersion v5 (same job)
+  GitVersion_v6_same_job:
+    name: GitVersion v6 (same job)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -261,7 +261,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v2.0.0
         with:
-          versionSpec: '5.x'
+          versionSpec: '6.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values
@@ -332,8 +332,8 @@ jobs:
 
 ```yaml
 jobs:
-  GitVersion_v5_cross_job:
-    name: GitVersion v5 (cross job)
+  GitVersion_v6_cross_job:
+    name: GitVersion v6 (cross job)
     runs-on: ubuntu-latest
     outputs:
       branchName: ${{ steps.version_step.outputs.branchName }}
@@ -350,19 +350,19 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v2.0.0
         with:
-          versionSpec: '5.x'
+          versionSpec: '6.x'
 
       - name: Determine Version
         id: version_step # step id used as reference for output values
         uses: gittools/actions/gitversion/execute@v2.0.0
 
-  GitVersion_v5_cross_job_consumer_without_prefix:
-    name: GitVersion v5 (cross job consumer) - without prefix
-    needs: GitVersion_v5_cross_job
+  GitVersion_v6_cross_job_consumer_without_prefix:
+    name: GitVersion v6 (cross job consumer) - without prefix
+    needs: GitVersion_v6_cross_job
     runs-on: ubuntu-latest
-    if: contains(needs.GitVersion_v5_cross_job.outputs['branchName'], 'main')
+    if: contains(needs.GitVersion_v6_cross_job.outputs['branchName'], 'main')
     env:
-      myvar_fullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.fullSemVer }}
+      myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
     steps:
       - run: |
           echo "FullSemVer (env:myvar_fullSemVer)   : $env:myvar_fullSemVer"
@@ -374,7 +374,7 @@ jobs:
         name: Use local env mapped from output (pwsh - outputs without prefix)
         shell: pwsh
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.fullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
 
       - run: |
           echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
@@ -384,7 +384,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_fullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v5_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v5_cross_job.outputs.fullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}"
         name: Use direct output from previous job (pwsh - outputs without prefix)
         shell: pwsh
 
@@ -398,7 +398,7 @@ jobs:
         name: Use local env mapped from output (bash - outputs without prefix)
         shell: bash
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.fullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
 
       - run: |
           echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
@@ -408,17 +408,17 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_fullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v5_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v5_cross_job.outputs.fullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 
-  GitVersion_v5_cross_job_consumer_with_prefix:
-    name: GitVersion v5 (cross job consumer) - with prefix
-    needs: GitVersion_v5_cross_job
+  GitVersion_v6_cross_job_consumer_with_prefix:
+    name: GitVersion v6 (cross job consumer) - with prefix
+    needs: GitVersion_v6_cross_job
     runs-on: ubuntu-latest
-    if: contains(needs.GitVersion_v5_cross_job.outputs['GitVersion_BranchName'], 'main')
+    if: contains(needs.GitVersion_v6_cross_job.outputs['GitVersion_BranchName'], 'main')
     env:
-      myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer }}
+      myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
     steps:
       - run: |
           echo "FullSemVer (env:myvar_GitVersion_FullSemVer)   : $env:myvar_GitVersion_FullSemVer"
@@ -430,7 +430,7 @@ jobs:
         name: Use local env mapped from output (pwsh - outputs without prefix)
         shell: pwsh
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
 
       - run: |
           echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
@@ -440,7 +440,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_GitVersion_FullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (pwsh - outputs without prefix)
         shell: pwsh
 
@@ -454,7 +454,7 @@ jobs:
         name: Use local env mapped from output (bash - outputs without prefix)
         shell: bash
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
 
       - run: |
           echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
@@ -464,7 +464,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_GitVersion_FullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v5_cross_job.outputs.GitVersion_FullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 ```

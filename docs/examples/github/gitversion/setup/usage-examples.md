@@ -10,7 +10,7 @@ The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 5.x or exact version like 5.12.0.
+  description: Required version in the form of 6.x or exact version like 6.0.0.
   required: true
   default: ''
 includePrerelease:
@@ -40,26 +40,26 @@ steps:
 
 ### Example 1
 
-Install the latest GitVersion 5 version.
+Install the latest GitVersion 6 version.
 
 ```yaml
 steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v2.0.0
     with:
-      versionSpec: '5.x'
+      versionSpec: '6.x'
 ```
 
 ### Example 2
 
-Install GitVersion 5.12.0.
+Install GitVersion 6.0.0.
 
 ```yaml
 steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v2.0.0
     with:
-      versionSpec: '5.12.0'
+      versionSpec: '6.0.0'
 ```
 
 ### Example 3
@@ -77,13 +77,13 @@ steps:
 
 ### Example 4
 
-Install the latest GitVersion 5 version even it there is a cached version matching the versionSpec.
+Install the latest GitVersion 6 version even it there is a cached version matching the versionSpec.
 
 ```yaml
 steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v2.0.0
     with:
-      versionSpec: '5.x'
+      versionSpec: '6.x'
       preferLatestVersion: true
 ```

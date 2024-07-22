@@ -4,7 +4,7 @@ The Setup GitReleaseManager action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 0.17.x or exact version like 0.17.0.
+  description: Required version in the form of 0.18.x or exact version like 0.18.0.
   required: true
   default: ''
 includePrerelease:
@@ -19,37 +19,37 @@ ignoreFailedSources:
 
 ### Example 1
 
-Install the latest GitReleaseManager 0.17.x version.
+Install the latest GitReleaseManager 0.18.x version.
 
 ```yaml
 steps:
   - name: Install GitReleaseManager
     uses: gittools/actions/gitreleasemanager/setup@v2.0.0
     with:
-      versionSpec: '0.17.x'
+      versionSpec: '0.18.x'
 ```
 
 ### Example 2
 
-Install specific GitReleaseManager version 0.17.0.
+Install specific GitReleaseManager version 0.18.0.
 
 ```yaml
 steps:
   - name: Install GitReleaseManager
     uses: gittools/actions/gitreleasemanager/setup@v2.0.0
     with:
-      versionSpec: '0.17.0'
+      versionSpec: '0.18.0'
 ```
 
 ### Example 3
 
-Install the latest GitReleaseManager 0.17.x version even it there is a cached version matching the versionSpec.~~~~
+Install the latest GitReleaseManager 0.18.x version even it there is a cached version matching the versionSpec.~~~~
 
 ```yaml
 steps:
   - name: Install GitReleaseManager
     uses: gittools/actions/gitreleasemanager/setup@v2.0.0
     with:
-      versionSpec: '0.17.x'
+      versionSpec: '0.18.x'
       preferLatestVersion: true
 ```

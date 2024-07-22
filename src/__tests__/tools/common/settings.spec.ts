@@ -5,7 +5,7 @@ import { SettingsProvider, type SetupSettings } from '@tools/common'
 describe('SettingsProvider', () => {
     it('should return SetupSettings', () => {
         const settings = {
-            versionSpec: '5.x',
+            versionSpec: '6.x',
             includePrerelease: false,
             ignoreFailedSources: true,
             preferLatestVersion: false
