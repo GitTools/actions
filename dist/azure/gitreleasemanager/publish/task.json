@@ -47,12 +47,12 @@
       "helpMarkDown": "The access token to access GitHub with"
     },
     {
-      "name": "tagName",
+      "name": "milestone",
       "type": "string",
-      "label": "The name of the release",
+      "label": "The milestone to use",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "The name of the release"
+      "helpMarkDown": "The milestone to use"
     },
     {
       "name": "targetDirectory",
