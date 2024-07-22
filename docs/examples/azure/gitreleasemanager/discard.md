@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - task: gitreleasemanager/discard@1.2.0
+  - task: gitreleasemanager/discard@2.0.0
     inputs:
       token: '$(GITHUB_TOKEN)'
       owner: 'someOwner'

@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - task: gitreleasemanager/open@1.2.0
+  - task: gitreleasemanager/open@2.0.0
     inputs:
       token: '$(GITHUB_TOKEN)'
       owner: 'someOwner'
