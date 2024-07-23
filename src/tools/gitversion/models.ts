@@ -36,12 +36,9 @@ export type GitVersionOutput = {
     PreReleaseNumber: number
     WeightedPreReleaseNumber: number
     BuildMetaData: number
-    BuildMetaDataPadded: string
     FullBuildMetaData: string
     MajorMinorPatch: string
     SemVer: string
-    LegacySemVer: string
-    LegacySemVerPadded: string
     AssemblySemVer: string
     AssemblySemFileVer: string
     FullSemVer: string
@@ -50,13 +47,8 @@ export type GitVersionOutput = {
     EscapedBranchName: string
     Sha: string
     ShortSha: string
-    NuGetVersionV2: string
-    NuGetVersion: string
-    NuGetPreReleaseTagV2: string
-    NuGetPreReleaseTag: string
     VersionSourceSha: string
     CommitsSinceVersionSource: number
-    CommitsSinceVersionSourcePadded: string
     UncommittedChanges: number
     CommitDate: string
 }
