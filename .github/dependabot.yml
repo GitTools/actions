@@ -2,13 +2,17 @@ version: 2
 updates:
 - package-ecosystem: github-actions
   labels:
-    - "dependencies"
+    - "dependencies (github-actions)"
   commit-message:
-    prefix: "(build deps)"
+    prefix: "(github-actions)"
   directory: "/"
   schedule:
     interval: daily
 - package-ecosystem: npm
+  labels:
+    - "dependencies (npm)"
+  commit-message:
+    prefix: "(npm)"
   groups:
     vite:
       patterns:
