@@ -7,7 +7,7 @@
     ],
     "extends": [
         "plugin:github/recommended",
-        "plugin:vitest/recommended",
+        "plugin:vitest/legacy-recommended",
         "plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
