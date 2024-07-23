@@ -61,9 +61,9 @@
     "tfx-cli": "^0.17.0",
     "typescript": "^5.5.4",
     "vite": "^5.3.4",
-    "vite-node": "^2.0.1",
+    "vite-node": "^2.0.4",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^2.0.3"
+    "vitest": "^2.0.4"
   },
   "dependencies": {
     "semver": "^7.6.3"
