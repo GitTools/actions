@@ -15,6 +15,11 @@ updates:
         - "vite"
         - "vite-node"
         - "vitest"
+    eslint:
+      patterns:
+        - "eslint"
+        - "eslint-plugin-*"
+        - "eslint-config-*"
   directory: "/"
   schedule:
     interval: daily
