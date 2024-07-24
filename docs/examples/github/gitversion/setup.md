@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** action using the examples below.
 
-> The examples use version _2.0.1_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _2.0.1_ of the GitVersion Setup action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 

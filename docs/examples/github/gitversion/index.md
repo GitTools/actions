@@ -6,8 +6,8 @@ Note: You need to run the Setup step before the Execute step, otherwise the Exec
 
 ## Setup GitVersion (gitversion/setup)
 
-- [Usage examples](setup/usage-examples.md)
+- [Usage examples](setup.md)
 
 ## Execute GitVersion (gitversion/execute)
 
-- [Usage examples](execute/usage-examples.md)
+- [Usage examples](execute.md)

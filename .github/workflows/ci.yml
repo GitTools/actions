@@ -36,7 +36,7 @@ jobs:
         npm install
       name: Install dependencies
     - run: |
-        npm run lint:check && npm run format:check
+        npm run lint:check && npm run format:check && npm run mdlint:check
       name: Check code formatting
     - run: |
         npm run build:tools

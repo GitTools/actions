@@ -1,3 +1,9 @@
+# Setup GitReleaseManager Task (gitreleasemanager/setup) Usage Examples
+
+Find out how to use the **gitreleasemanager/setup** task using the examples below.
+
+> The examples use version _2.0.1_ of the GitReleaseManager Setup task.  It is recommended to use the latest released version in your own workflows.
+
 ## Inputs
 
 The Setup GitReleaseManager action accepts the following inputs:

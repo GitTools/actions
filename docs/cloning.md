@@ -1,4 +1,6 @@
-In order for the gitversion to properly work you need to clone the repository with the entire history:
+# Cloning
+
+In order for the GitVersion to properly work you need to clone the repository with the entire history:
 
 ```yaml
 # GitHub Actions syntax
