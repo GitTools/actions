@@ -130,12 +130,12 @@ steps:
 
 <details>
   <summary>Calculate the version for the build using a config file with the default name <b>GitVersion.yml</b>.</summary>
-  
+
 ```yaml
 steps:
   # gitversion/setup@2.0.1 task omitted for brevity.
 
-- task: gitversion/execute@2.0.1
+  - task: gitversion/execute@2.0.1
     displayName: Determine Version
     inputs:
       useConfigFile: true

@@ -13,7 +13,7 @@ import { keysFn, type SetupSettings } from '@tools/common'
 describe('GitReleaseManager Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
     const envName = process.platform === 'win32' ? 'Path' : 'PATH'
-    const version = '0.17.0'
+    const version = '0.18.0'
     const toolPath = path.resolve(baseDir, 'tools', 'GitReleaseManager.Tool', version)
     const toolPathVariable = 'GITRELEASEMANAGER_PATH'
     const toolName = 'dotnet-gitreleasemanager'
@@ -59,7 +59,7 @@ describe('GitReleaseManager Runner', () => {
 
         it.sequential('should run setup GitReleaseManager', async () => {
             setInputs({
-                versionSpec: '0.17.x',
+                versionSpec: '0.18.x',
                 includePrerelease: false,
                 ignoreFailedSources: false,
                 preferLatestVersion: false
