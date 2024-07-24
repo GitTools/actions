@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { describe, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
 import { type GitVersionExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
+import { expectValidSettings } from '../common/utils'
 
 describe('GitVersion settings', () => {
     it('should return GitVersionExecuteSettings', () => {
-        const settings = {
+        const settings: GitVersionExecuteSettings = {
             targetPath: 'path',
             disableCache: true,
             disableNormalization: true,
@@ -15,7 +16,7 @@ describe('GitVersion settings', () => {
             updateAssemblyInfo: true,
             updateAssemblyInfoFilename: 'path',
             additionalArguments: 'args'
-        } as GitVersionExecuteSettings
+        }
 
         const buildAgent = {
             getInput: (input: keyof GitVersionExecuteSettings) => settings[input] as string,
@@ -25,17 +26,8 @@ describe('GitVersion settings', () => {
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const gitVersionSettings = settingsProvider.getGitVersionExecuteSettings()
+        const gitVersionExecuteSettings = settingsProvider.getGitVersionExecuteSettings()
 
-        expect(gitVersionSettings.targetPath).toBe(settings.targetPath)
-        expect(gitVersionSettings.disableCache).toBe(settings.disableCache)
-        expect(gitVersionSettings.disableNormalization).toBe(settings.disableNormalization)
-        expect(gitVersionSettings.disableShallowCloneCheck).toBe(settings.disableShallowCloneCheck)
-        expect(gitVersionSettings.useConfigFile).toBe(settings.useConfigFile)
-        expect(gitVersionSettings.configFilePath).toBe(settings.configFilePath)
-        expect(gitVersionSettings.overrideConfig).toBe(settings.overrideConfig)
-        expect(gitVersionSettings.updateAssemblyInfo).toBe(settings.updateAssemblyInfo)
-        expect(gitVersionSettings.updateAssemblyInfoFilename).toBe(settings.updateAssemblyInfoFilename)
-        expect(gitVersionSettings.additionalArguments).toBe(settings.additionalArguments)
+        expectValidSettings(settings, gitVersionExecuteSettings)
     })
 })

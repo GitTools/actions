@@ -1,5 +1,5 @@
 import { type ExecResult } from '@agents/common'
-import { DotnetTool, keysFn } from '@tools/common'
+import { DotnetTool, keysOf } from '@tools/common'
 import { type GitVersionExecuteSettings, type GitVersionOutput } from './models'
 import { GitVersionSettingsProvider, type IGitVersionSettingsProvider } from './settings'
 
@@ -37,8 +37,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     writeGitVersionToAgent(output: GitVersionOutput): void {
-        const keys = keysFn<GitVersionOutput>(output)
-        for (const property of keys) {
+        for (const property of keysOf(output)) {
             const name = this.toCamelCase(property)
             try {
                 let value = output[property]?.toString()
