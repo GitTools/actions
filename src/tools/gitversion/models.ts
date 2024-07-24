@@ -1,4 +1,4 @@
-export type Commands = 'setup' | 'execute'
+export type Commands = 'setup' | 'execute' | 'command'
 
 export enum ExecuteFields {
     targetPath = 'targetPath',
@@ -12,6 +12,12 @@ export enum ExecuteFields {
     updateAssemblyInfoFilename = 'updateAssemblyInfoFilename'
 }
 
+export enum CommandFields {
+    targetPath = 'targetPath',
+    disableShallowCloneCheck = 'disableShallowCloneCheck',
+    arguments = 'arguments'
+}
+
 export type GitVersionExecuteSettings = {
     [ExecuteFields.targetPath]: string
     [ExecuteFields.disableCache]: boolean
@@ -22,6 +28,12 @@ export type GitVersionExecuteSettings = {
     [ExecuteFields.overrideConfig]: string[]
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
+}
+
+export type GitVersionCommandSettings = {
+    [CommandFields.targetPath]: string
+    [ExecuteFields.disableShallowCloneCheck]: boolean
+    [CommandFields.arguments]: string
 }
 
 export type GitVersionOutput = {

@@ -5,7 +5,8 @@ module.exports = (env) => {
 
     const gitversion = [
         { id: 'setup', path: 'gitversion/setup' },
-        { id: 'execute', path: 'gitversion/execute' }
+        { id: 'execute', path: 'gitversion/execute' },
+        { id: 'command', path: 'gitversion/command' }
     ]
 
     const gitreleasemanager = [

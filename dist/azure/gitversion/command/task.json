@@ -1,0 +1,51 @@
+{
+  "id": "41dc3dd2-6a51-4ba5-a889-824274acca8b",
+  "name": "gitversion/command",
+  "friendlyName": "Command GitVersion Task",
+  "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
+  "author": "GitTools Contributors",
+  "helpMarkDown": "See the [documentation](https://gitversion.net/docs/) for help",
+  "category": "Build",
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "minimumAgentVersion": "3.224.0",
+  "execution": {
+    "Node20_1": {
+      "target": "main.mjs",
+      "argumentFormat": "",
+      "workingDirectory": "."
+    }
+  },
+  "instanceNameFormat": "gitversion/command",
+  "inputs": [
+    {
+      "name": "targetPath",
+      "type": "string",
+      "label": "Working directory path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optionally supply the path to the working directory",
+      "groupName": "gitversionDetails"
+    },
+    {
+      "name": "disableShallowCloneCheck",
+      "type": "boolean",
+      "label": "Disable Shallow Clone Check",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to disable GitVersion shallow clone check"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "GitVersion arguments",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Arguments to send to GitVersion"
+    }
+  ]
+}

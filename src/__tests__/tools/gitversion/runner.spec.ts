@@ -73,6 +73,32 @@ describe('GitVersion Runner', () => {
             expect(result.stdout).toContain('Executing GenerateSetVersionMessage')
             expect(result.stdout).toContain('Executing GenerateBuildLogOutput')
         })
+
+        it.sequential('should output Major variable', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            setInputs({
+                arguments: '/showvariable major'
+            })
+
+            const result = await runner.run('command')
+
+            expect(result.code).toBe(0)
+            expect(result.stdout).toContain('2')
+        })
+
+        it.sequential('should output formatted version', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            setInputs({
+                arguments: '/format {Major}.{Minor}'
+            })
+
+            const result = await runner.run('command')
+
+            expect(result.code).toBe(0)
+            expect(result.stdout).toContain('2.0')
+        })
     }
 
     describe('Local Agent', () => {
