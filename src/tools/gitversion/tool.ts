@@ -1,6 +1,6 @@
 import { type ExecResult } from '@agents/common'
 import { DotnetTool, keysFn } from '@tools/common'
-import { type GitVersionOutput, type GitVersionSettings } from './models'
+import { type GitVersionExecuteSettings, type GitVersionOutput } from './models'
 import { GitVersionSettingsProvider, type IGitVersionSettingsProvider } from './settings'
 
 export class GitVersionTool extends DotnetTool {
@@ -24,13 +24,13 @@ export class GitVersionTool extends DotnetTool {
         return new GitVersionSettingsProvider(this.buildAgent)
     }
 
-    async run(): Promise<ExecResult> {
-        const settings = this.settingsProvider.getGitVersionSettings()
+    async executeJson(): Promise<ExecResult> {
+        const settings = this.settingsProvider.getGitVersionExecuteSettings()
         const workDir = await this.getRepoDir(settings)
 
         await this.checkShallowClone(settings, workDir)
 
-        const args = await this.getArguments(workDir, settings)
+        const args = await this.getExecuteArguments(workDir, settings)
 
         await this.setDotnetRoot()
         return await this.executeTool(args)
@@ -55,11 +55,11 @@ export class GitVersionTool extends DotnetTool {
         }
     }
 
-    protected async getRepoDir(settings: GitVersionSettings): Promise<string> {
+    protected async getRepoDir(settings: GitVersionExecuteSettings): Promise<string> {
         return await super.getRepoPath(settings.targetPath)
     }
 
-    protected async getArguments(workDir: string, options: GitVersionSettings): Promise<string[]> {
+    protected async getExecuteArguments(workDir: string, options: GitVersionExecuteSettings): Promise<string[]> {
         let args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
@@ -180,7 +180,7 @@ export class GitVersionTool extends DotnetTool {
         return args
     }
 
-    private async checkShallowClone(settings: GitVersionSettings, workDir: string): Promise<void> {
+    private async checkShallowClone(settings: GitVersionExecuteSettings, workDir: string): Promise<void> {
         if (!settings.disableShallowCloneCheck) {
             const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
             if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {

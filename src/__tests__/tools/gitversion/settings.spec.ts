@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
-import { type GitVersionSettings, GitVersionSettingsProvider } from '@tools/gitversion'
+import { type GitVersionExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
 
 describe('GitVersion settings', () => {
-    it('should return GitVersionSettings', () => {
+    it('should return GitVersionExecuteSettings', () => {
         const settings = {
             targetPath: 'path',
             disableCache: true,
@@ -14,19 +14,18 @@ describe('GitVersion settings', () => {
             overrideConfig: ['update-build-number=false'],
             updateAssemblyInfo: true,
             updateAssemblyInfoFilename: 'path',
-            additionalArguments: 'args',
-            srcDir: 'path'
-        } as GitVersionSettings
+            additionalArguments: 'args'
+        } as GitVersionExecuteSettings
 
         const buildAgent = {
-            getInput: (input: keyof GitVersionSettings) => settings[input] as string,
-            getBooleanInput: (input: keyof GitVersionSettings) => settings[input] as boolean,
-            getListInput: (input: keyof GitVersionSettings) => settings[input] as string[]
+            getInput: (input: keyof GitVersionExecuteSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof GitVersionExecuteSettings) => settings[input] as boolean,
+            getListInput: (input: keyof GitVersionExecuteSettings) => settings[input] as string[]
         } as IBuildAgent
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const gitVersionSettings = settingsProvider.getGitVersionSettings()
+        const gitVersionSettings = settingsProvider.getGitVersionExecuteSettings()
 
         expect(gitVersionSettings.targetPath).toBe(settings.targetPath)
         expect(gitVersionSettings.disableCache).toBe(settings.disableCache)

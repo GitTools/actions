@@ -46,7 +46,7 @@ export class Runner implements IRunner {
 
             this.buildAgent.info('Executing GitVersion')
 
-            const result = await this.gitVersionTool.run()
+            const result = await this.gitVersionTool.executeJson()
 
             if (result.code === 0) {
                 this.buildAgent.info('GitVersion executed successfully')
