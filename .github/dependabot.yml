@@ -24,6 +24,8 @@ updates:
         - "eslint"
         - "eslint-plugin-*"
         - "eslint-config-*"
+      exclude-patterns:
+        - "eslint-plugin-vitest"
   directory: "/"
   schedule:
     interval: daily
