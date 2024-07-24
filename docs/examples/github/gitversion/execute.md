@@ -108,6 +108,7 @@ The Execute GitVersion action creates the following outputs:
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
+
 ---
 
 ## Execution Examples
@@ -124,12 +125,13 @@ steps:
   - name: Determine Version
     uses: gittools/actions/gitversion/execute@v2.0.1
 ```
+
 </details>
 
 ### Example 2
 
 <details>
-  <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
+  <summary>Calculate the version for the build using a config file with the default name <b>GitVersion.yml</b>.</summary>
 
 ```yaml
 steps:
@@ -149,12 +151,13 @@ branches:
   pull-request:
     tag: pr
 ```
+
 </details>
 
 ### Example 3
 
 <details>
-  <summary>Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.</summary>
+  <summary>Calculate the version for the build using a config file named <b>VersionConfig.yml</b> in the root of the working folder.</summary>
 
 ```yaml
 steps:
@@ -166,12 +169,13 @@ steps:
       useConfigFile: true
       configFilePath: VersionConfig.yml
 ```
+
 </details>
 
 ### Example 4
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).</summary>
+  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command (passed as an additional argument).</summary>
 
 ```yaml
 steps:
@@ -183,6 +187,7 @@ steps:
       useConfigFile: true
       additionalArguments: '/showConfig'
 ```
+
 </details>
 
 ### Example 5
@@ -200,6 +205,7 @@ steps:
       disableCache: true
       disableNormalization: true
 ```
+
 </details>
 
 ### Example 6
@@ -216,6 +222,7 @@ steps:
     with:
       updateAssemblyInfo: true
 ```
+
 </details>
 
 ### Example 7
@@ -234,11 +241,13 @@ steps:
         update-build-number=false
         next-version=2.0.1
 ```
+
 </details>
 
 ## Output usage
 
-The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
+The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`,
+where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
 
 The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
@@ -323,6 +332,7 @@ jobs:
         env:
           myvar_GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
 ```
+
 </details>
 
 ### Example 9
@@ -468,4 +478,5 @@ jobs:
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 ```
+
 </details>

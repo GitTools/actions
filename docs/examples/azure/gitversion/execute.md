@@ -106,11 +106,13 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
+
 ---
 
 ## Execution Examples
 
 ### Example 1
+
 <details>
   <summary>Calculate the version for the build.</summary>
 
@@ -121,20 +123,23 @@ steps:
   - task: gitversion/execute@2.0.1
     displayName: Determine Version
 ```
+
 </details>
 
 ### Example 2
 
 <details>
-  <summary>Calculate the version for the build using a config file with the default name **GitVersion.yml**.</summary>
+  <summary>Calculate the version for the build using a config file with the default name <b>GitVersion.yml</b>.</summary>
+  
 ```yaml
 steps:
   # gitversion/setup@2.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@2.0.1
+- task: gitversion/execute@2.0.1
     displayName: Determine Version
     inputs:
       useConfigFile: true
+
 ```
 
 Example contents of **GitVersion.yml**:
@@ -147,12 +152,13 @@ branches:
   pull-request:
     tag: pr
 ```
+
 </details>
 
 ### Example 3
 
 <details>
-  <summary>Calculate the version for the build using a config file named **VersionConfig.yml** in the root of the working folder.</summary>
+  <summary>Calculate the version for the build using a config file named <b>VersionConfig.yml</b> in the root of the working folder.</summary>
 
 ```yaml
 steps:
@@ -164,12 +170,13 @@ steps:
       useConfigFile: true
       configFilePath: 'VersionConfig.yml'
 ```
+
 </details>
 
 ### Example 4
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the **/showConfig** command (passed as an additional argument).</summary>
+  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command (passed as an additional argument).</summary>
 
 ```yaml
 steps:
@@ -180,6 +187,7 @@ steps:
     inputs:
       additionalArguments: '/showConfig'
 ```
+
 </details>
 
 ### Example 5
@@ -197,6 +205,7 @@ steps:
       disableCache: true
       disableNormalization: true
 ```
+
 </details>
 
 ### Example 6
@@ -213,6 +222,7 @@ steps:
     inputs:
       updateAssemblyInfo: true
 ```
+
 </details>
 
 ### Example 7
@@ -231,17 +241,20 @@ steps:
         update-build-number=false
         next-version=2.0.1
 ```
+
 </details>
 
 ## Output usage
 
-The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`, where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
+The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`,
+where `<id>` is the ID assigned to the step that calls the action, by subsequent steps later in the same job.
 
 The action also creates environment variables of the form `$(<outputName>)` or `$(GitVersion_<OutputName>)` for use by other steps in the same job.
 
 The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
 
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.** You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
+**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
+You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
 
 ### Example 8
 
@@ -310,9 +323,11 @@ jobs:
         env:
           myvar_GitVersion_FullSemVer: $(version_step.GitVersion_FullSemVer)
 ```
+
 </details>
 
 ### Example 9
+
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
 
@@ -396,9 +411,11 @@ jobs:
         env:
           localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
 ```
+
 </details>
 
 ### Example 10
+
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>
 
@@ -489,4 +506,5 @@ stages:
             env:
               localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
 ```
+
 </details>

@@ -18,6 +18,8 @@
     "lint:fix": "eslint --ext .ts src --fix",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\"",
+    "mdlint:check": "markdownlint docs dist",
+    "mdlint:fix": "markdownlint --fix docs dist",
 
     "build:tools": "vite build --config src/tools/vite.config.mts",
     "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
@@ -56,6 +58,7 @@
     "eslint-plugin-promise": "^7.0.0",
     "eslint-plugin-vitest": "^0.5.4",
     "glob": "^11.0.0",
+    "markdownlint-cli": "^0.41.0",
     "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.3",
     "tfx-cli": "^0.17.0",

@@ -1,0 +1,10 @@
+MD033:
+  allowed_elements:
+  - details
+  - summary
+  - b
+  - i
+MD013: false
+
+MD041:
+  level: 1
