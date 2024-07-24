@@ -20,8 +20,6 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
         const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
 
-        const additionalArguments = this.buildAgent.getInput(ExecuteFields.additionalArguments)
-
         return {
             targetPath,
             disableCache,
@@ -31,8 +29,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             configFilePath,
             overrideConfig,
             updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments
+            updateAssemblyInfoFilename
         }
     }
 }

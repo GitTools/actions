@@ -59,7 +59,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     protected async getExecuteArguments(workDir: string, options: GitVersionExecuteSettings): Promise<string[]> {
-        let args = [workDir, '/output', 'json', '/output', 'buildserver']
+        const args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
             useConfigFile,
@@ -68,8 +68,7 @@ export class GitVersionTool extends DotnetTool {
             configFilePath,
             overrideConfig,
             updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments
+            updateAssemblyInfoFilename
             //
         } = options
 
@@ -111,9 +110,6 @@ export class GitVersionTool extends DotnetTool {
             }
         }
 
-        if (additionalArguments) {
-            args = args.concat(this.argStringToArray(additionalArguments))
-        }
         return args
     }
 

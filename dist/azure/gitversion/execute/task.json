@@ -108,15 +108,6 @@
       "required": false,
       "helpMarkDown": "Update versions in specified file",
       "visibleRule": "updateAssemblyInfo = true"
-    },
-    {
-      "name": "additionalArguments",
-      "type": "string",
-      "label": "Additional GitVersion arguments",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Additional arguments to send to GitVersion",
-      "groupName": "additional"
     }
   ]
 }

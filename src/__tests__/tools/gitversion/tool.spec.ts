@@ -242,12 +242,5 @@ describe('GitVersionTool', () => {
                 'AssemblyInfo.cs'
             ])
         })
-
-        it('should return correct arguments for settings with additional arguments', async () => {
-            const args = await tool.getExecuteArguments('workdir', {
-                additionalArguments: '--some-arg --another-arg'
-            } as GitVersionExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver', '--some-arg', '--another-arg'])
-        })
     })
 })

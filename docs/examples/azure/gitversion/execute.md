@@ -64,10 +64,6 @@ updateAssemblyInfoFilename:
   description: Update versions in specified file
   required: false
   default: ''
-additionalArguments:
-  description: Additional arguments to send to GitVersion
-  required: false
-  default: ''
 ```
 
 ## Outputs
@@ -176,23 +172,6 @@ steps:
 ### Example 4
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command (passed as an additional argument).</summary>
-
-```yaml
-steps:
-  # gitversion/setup@2.0.1 task omitted for brevity.
-
-  - task: gitversion/execute@2.0.1
-    displayName: Display GitVersion config
-    inputs:
-      additionalArguments: '/showConfig'
-```
-
-</details>
-
-### Example 5
-
-<details>
   <summary>Calculate the version for the build. Disabling the cache and normalization.</summary>
 
 ```yaml
@@ -208,7 +187,7 @@ steps:
 
 </details>
 
-### Example 6
+### Example 5
 
 <details>
   <summary>Calculate the version for the build. Update the version in the AssemblyInfo files.</summary>
@@ -225,7 +204,7 @@ steps:
 
 </details>
 
-### Example 7
+### Example 6
 
 <details>
   <summary>Calculate the version for the build. Override the configuration file with the specified values.</summary>
@@ -256,7 +235,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 **GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
 You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
 
-### Example 8
+### Example 7
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -326,7 +305,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Example 8
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -414,7 +393,7 @@ jobs:
 
 </details>
 
-### Example 10
+### Example 9
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>

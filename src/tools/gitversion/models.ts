@@ -9,8 +9,7 @@ export enum ExecuteFields {
     configFilePath = 'configFilePath',
     overrideConfig = 'overrideConfig',
     updateAssemblyInfo = 'updateAssemblyInfo',
-    updateAssemblyInfoFilename = 'updateAssemblyInfoFilename',
-    additionalArguments = 'additionalArguments'
+    updateAssemblyInfoFilename = 'updateAssemblyInfoFilename'
 }
 
 export type GitVersionExecuteSettings = {
@@ -23,7 +22,6 @@ export type GitVersionExecuteSettings = {
     [ExecuteFields.overrideConfig]: string[]
     [ExecuteFields.updateAssemblyInfo]: boolean
     [ExecuteFields.updateAssemblyInfoFilename]: string
-    [ExecuteFields.additionalArguments]: string
 }
 
 export type GitVersionOutput = {
