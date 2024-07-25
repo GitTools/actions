@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="code:check" type="CompoundRunConfigurationType">
+    <toRun name="format:check" type="js.build_tools.npm" />
+    <toRun name="lint:check" type="js.build_tools.npm" />
+    <toRun name="mdlint:check" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>
