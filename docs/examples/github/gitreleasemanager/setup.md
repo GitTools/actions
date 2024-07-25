@@ -2,7 +2,7 @@
 
 Find out how to use the **gitreleasemanager/setup** action using the examples below.
 
-> The examples use version _2.0.1_ of the GitReleaseManager Setup action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _3.0.0_ of the GitReleaseManager Setup action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -30,7 +30,7 @@ Install the latest GitReleaseManager 0.18.x version.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
+    uses: gittools/actions/gitreleasemanager/setup@v3.0.0
     with:
       versionSpec: '0.18.x'
 ```
@@ -42,7 +42,7 @@ Install specific GitReleaseManager version 0.18.0.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
+    uses: gittools/actions/gitreleasemanager/setup@v3.0.0
     with:
       versionSpec: '0.18.0'
 ```
@@ -54,7 +54,7 @@ Install the latest GitReleaseManager 0.18.x version even it there is a cached ve
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v2.0.1
+    uses: gittools/actions/gitreleasemanager/setup@v3.0.0
     with:
       versionSpec: '0.18.x'
       preferLatestVersion: true
