@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="run:azure:gitversion (command)" type="js.build_tools.npm" folderName="run" activateToolWindowBeforeRun="false">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="run:azure:gitversion" />
+    </scripts>
+    <arguments value="-- --command command" />
+    <node-interpreter value="project" />
+    <node-options value="-r dotenv/config" />
+    <envs>
+      <env name="DOTENV_CONFIG_PATH" value="./envs/gitversion/command/azure.env" />
+    </envs>
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="build:tools" run_configuration_type="js.build_tools.npm" />
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="build:agent:azure" run_configuration_type="js.build_tools.npm" />
+    </method>
+  </configuration>
+</component>
