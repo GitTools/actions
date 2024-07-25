@@ -1,12 +1,12 @@
 import { type ISettingsProvider, SettingsProvider } from '@tools/common'
-import { ExecuteFields, type GitVersionSettings } from './models'
+import { ExecuteFields, type GitVersionExecuteSettings } from './models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {
-    getGitVersionSettings(): GitVersionSettings
+    getGitVersionExecuteSettings(): GitVersionExecuteSettings
 }
 
 export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {
-    getGitVersionSettings(): GitVersionSettings {
+    getGitVersionExecuteSettings(): GitVersionExecuteSettings {
         const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
 
         const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache)

@@ -1,15 +1,16 @@
-import { describe, expect, it } from 'vitest'
+import { describe, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
 import { SettingsProvider, type SetupSettings } from '@tools/common'
+import { expectValidSettings } from './utils'
 
 describe('SettingsProvider', () => {
     it('should return SetupSettings', () => {
-        const settings = {
+        const settings: SetupSettings = {
             versionSpec: '6.x',
             includePrerelease: false,
             ignoreFailedSources: true,
             preferLatestVersion: false
-        } as SetupSettings
+        }
 
         const buildAgent = {
             getInput: (input: keyof SetupSettings) => settings[input] as string,
@@ -20,9 +21,6 @@ describe('SettingsProvider', () => {
 
         const setupSettings = settingsProvider.getSetupSettings()
 
-        expect(setupSettings.versionSpec).toBe(settings.versionSpec)
-        expect(setupSettings.includePrerelease).toBe(settings.includePrerelease)
-        expect(setupSettings.ignoreFailedSources).toBe(settings.ignoreFailedSources)
-        expect(setupSettings.preferLatestVersion).toBe(settings.preferLatestVersion)
+        expectValidSettings(settings, setupSettings)
     })
 })

@@ -116,7 +116,13 @@
             "never"
         ],
         "@typescript-eslint/type-annotation-spacing": "error",
-        "@typescript-eslint/unbound-method": "error"
+        "@typescript-eslint/unbound-method": "error",
+        "vitest/expect-expect": [
+          "error",
+          {
+            "assertFunctionNames": ["expect", "expectValidSettings"]
+          }
+        ]
     },
     "ignorePatterns": [
         "packages/glob/__tests__/_temp/**/",

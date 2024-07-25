@@ -198,7 +198,7 @@ class SettingsProvider {
   }
 }
 
-const keysFn = Object.keys;
+const keysOf = Object.keys;
 
-export { DotnetTool as D, SettingsProvider as S, keysFn as k };
+export { DotnetTool as D, SettingsProvider as S, keysOf as k };
 //# sourceMappingURL=tools.mjs.map

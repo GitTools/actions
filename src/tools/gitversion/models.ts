@@ -13,7 +13,7 @@ export enum ExecuteFields {
     additionalArguments = 'additionalArguments'
 }
 
-export type GitVersionSettings = {
+export type GitVersionExecuteSettings = {
     [ExecuteFields.targetPath]: string
     [ExecuteFields.disableCache]: boolean
     [ExecuteFields.disableNormalization]: boolean

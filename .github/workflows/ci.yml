@@ -43,6 +43,13 @@ jobs:
         npm run build:agent:github
         npm run build:agent:azure
       name: Build code
+    - run: |
+        npm run test:ci
+      name: Run tests
+    - name: Test Summary
+      uses: test-summary/action@v2.4
+      with:
+        paths: junit-report.xml
     - name: gitversion/setup
       uses: ./gitversion/setup
       with:
@@ -56,13 +63,6 @@ jobs:
         disableNormalization: false
         overrideConfig: |
           update-build-number=false
-    - run: |
-        npm run test:ci
-      name: Run tests
-    - name: Test Summary
-      uses: test-summary/action@v2.4
-      with:
-        paths: junit-report.xml
     - run: |
         echo "Major      (env.major)                                      : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"

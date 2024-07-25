@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { IBuildAgent } from '@agents/common'
 import {
-    GitReleaseManagerAddAssetSettings,
-    GitReleaseManagerCloseSettings,
-    GitReleaseManagerCreateSettings,
-    GitReleaseManagerDiscardSettings,
-    GitReleaseManagerOpenSettings,
-    GitReleaseManagerPublishSettings,
-    GitReleaseManagerSettings,
+    type GitReleaseManagerAddAssetSettings,
+    type GitReleaseManagerCloseSettings,
+    type GitReleaseManagerCreateSettings,
+    type GitReleaseManagerDiscardSettings,
+    type GitReleaseManagerOpenSettings,
+    type GitReleaseManagerPublishSettings,
+    type GitReleaseManagerSettings,
     GitReleaseManagerTool
 } from '@tools/gitreleasemanager'
 import * as path from 'node:path'
