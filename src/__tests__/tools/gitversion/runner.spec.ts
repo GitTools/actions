@@ -2,6 +2,8 @@ import * as path from 'node:path'
 import * as fs from 'node:fs'
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { simpleGit } from 'simple-git'
+
 import { IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
@@ -78,26 +80,28 @@ describe('GitVersion Runner', () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
-                arguments: '/showvariable major'
+                arguments: '/showvariable Sha'
             })
 
+            const sha = await simpleGit().revparse(['HEAD'])
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
-            expect(result.stdout).toContain('2')
+            expect(result.stdout).toContain(sha)
         })
 
         it.sequential('should output formatted version', async () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
-                arguments: '/format {Major}.{Minor}'
+                arguments: '/format {Sha}'
             })
 
+            const sha = await simpleGit().revparse(['HEAD'])
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
-            expect(result.stdout).toContain('2.0')
+            expect(result.stdout).toContain(sha)
         })
     }
 

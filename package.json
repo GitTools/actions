@@ -61,6 +61,7 @@
     "markdownlint-cli": "^0.41.0",
     "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.3",
+    "simple-git": "^3.25.0",
     "tfx-cli": "^0.17.0",
     "typescript": "^5.5.4",
     "vite": "^5.3.4",
