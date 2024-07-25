@@ -1,4 +1,4 @@
-import { S as SettingsProvider, D as DotnetTool, k as keysFn } from './tools.mjs';
+import { S as SettingsProvider, D as DotnetTool, k as keysOf } from './tools.mjs';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
@@ -20,7 +20,7 @@ var ExecuteFields = /* @__PURE__ */ ((ExecuteFields2) => {
 })(ExecuteFields || {});
 
 class GitVersionSettingsProvider extends SettingsProvider {
-  getGitVersionSettings() {
+  getGitVersionExecuteSettings() {
     const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath);
     const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache);
     const disableNormalization = this.buildAgent.getBooleanInput(ExecuteFields.disableNormalization);
@@ -62,17 +62,16 @@ class GitVersionTool extends DotnetTool {
   get settingsProvider() {
     return new GitVersionSettingsProvider(this.buildAgent);
   }
-  async run() {
-    const settings = this.settingsProvider.getGitVersionSettings();
+  async executeJson() {
+    const settings = this.settingsProvider.getGitVersionExecuteSettings();
     const workDir = await this.getRepoDir(settings);
     await this.checkShallowClone(settings, workDir);
-    const args = await this.getArguments(workDir, settings);
+    const args = await this.getExecuteArguments(workDir, settings);
     await this.setDotnetRoot();
     return await this.executeTool(args);
   }
   writeGitVersionToAgent(output) {
-    const keys = keysFn(output);
-    for (const property of keys) {
+    for (const property of keysOf(output)) {
       const name = this.toCamelCase(property);
       try {
         let value = output[property]?.toString();
@@ -91,7 +90,7 @@ class GitVersionTool extends DotnetTool {
   async getRepoDir(settings) {
     return await super.getRepoPath(settings.targetPath);
   }
-  async getArguments(workDir, options) {
+  async getExecuteArguments(workDir, options) {
     let args = [workDir, "/output", "json", "/output", "buildserver"];
     const {
       useConfigFile,
@@ -230,22 +229,27 @@ class Runner {
       this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`);
       this.buildAgent.setVariable(pathVariable, toolPath);
       this.buildAgent.setSucceeded("GitVersion installed successfully", true);
-      return 0;
+      return {
+        code: 0
+      };
     } catch (error) {
       if (error instanceof Error) {
         this.buildAgent.setFailed(error.message, true);
       }
-      return -1;
+      return {
+        code: -1,
+        error
+      };
     }
   }
   async execute() {
     try {
       this.disableTelemetry();
       this.buildAgent.info("Executing GitVersion");
-      const result = await this.gitVersionTool.run();
+      const result = await this.gitVersionTool.executeJson();
       if (result.code === 0) {
         this.buildAgent.info("GitVersion executed successfully");
-        const { stdout } = result;
+        const stdout = result.stdout;
         this.buildAgent.info("GitVersion output:");
         this.buildAgent.info("-------------------");
         this.buildAgent.info(stdout);
@@ -254,13 +258,16 @@ class Runner {
         if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
           this.buildAgent.debug("GitVersion output is not valid JSON");
           this.buildAgent.setFailed("GitVersion output is not valid JSON", true);
-          return -1;
+          return {
+            code: -1,
+            error: new Error("GitVersion output is not valid JSON")
+          };
         } else {
           const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
           const gitVersionOutput = JSON.parse(jsonOutput);
           this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput);
           this.buildAgent.setSucceeded("GitVersion executed successfully", true);
-          return 0;
+          return result;
         }
       } else {
         this.buildAgent.debug("GitVersion failed");
@@ -268,13 +275,16 @@ class Runner {
         if (error instanceof Error) {
           this.buildAgent.setFailed(error.message, true);
         }
-        return -1;
+        return result;
       }
     } catch (error) {
       if (error instanceof Error) {
         this.buildAgent.setFailed(error.message, true);
       }
-      return -1;
+      return {
+        code: -1,
+        error
+      };
     }
   }
   disableTelemetry() {
