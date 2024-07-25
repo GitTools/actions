@@ -66,10 +66,6 @@ updateAssemblyInfoFilename:
   description: Update versions in specified file
   required: false
   default: ''
-additionalArguments:
-  description: Additional arguments to send to GitVersion
-  required: false
-  default: ''
 ```
 
 ## Outputs
@@ -175,24 +171,6 @@ steps:
 ### Example 4
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command (passed as an additional argument).</summary>
-
-```yaml
-steps:
-  # gittools/actions/gitversion/setup@v2.0.1 action omitted for brevity.
-
-  - name: Display GitVersion config
-    uses: gittools/actions/gitversion/execute@v2.0.1
-    with:
-      useConfigFile: true
-      additionalArguments: '/showConfig'
-```
-
-</details>
-
-### Example 5
-
-<details>
   <summary>Calculate the version for the build. Disabling the cache and normalization.</summary>
 
 ```yaml
@@ -208,7 +186,7 @@ steps:
 
 </details>
 
-### Example 6
+### Example 5
 
 <details>
   <summary>Calculate the version for the build. Update the version in the AssemblyInfo files.</summary>
@@ -225,7 +203,7 @@ steps:
 
 </details>
 
-### Example 7
+### Example 6
 
 <details>
   <summary>Calculate the version for the build. Override the configuration file with the specified values.</summary>
@@ -251,7 +229,7 @@ where `<id>` is the ID assigned to the step that calls the action, by subsequent
 
 The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
-### Example 8
+### Example 7
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -335,7 +313,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Example 8
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>

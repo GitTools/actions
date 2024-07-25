@@ -11,3 +11,7 @@ Note: You need to run the Setup step before the Execute step, otherwise the Exec
 ## Execute GitVersion (gitversion/execute)
 
 - [Execute](execute.md)
+
+## Execute GitVersion (gitversion/command)
+
+- [Command](command.md)

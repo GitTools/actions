@@ -47,10 +47,6 @@ inputs:
     description: Update versions in specified file
     required: false
     default: ''
-  additionalArguments:
-    description: Additional arguments to send to GitVersion
-    required: false
-    default: ''
 outputs:
   major: # id of output
     description: 'The Major value'

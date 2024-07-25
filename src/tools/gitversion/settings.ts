@@ -1,8 +1,10 @@
 import { type ISettingsProvider, SettingsProvider } from '@tools/common'
-import { ExecuteFields, type GitVersionExecuteSettings } from './models'
+import { CommandFields, ExecuteFields, type GitVersionCommandSettings, type GitVersionExecuteSettings } from './models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {
     getGitVersionExecuteSettings(): GitVersionExecuteSettings
+
+    getGitVersionCommandSettings(): GitVersionCommandSettings
 }
 
 export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {
@@ -20,8 +22,6 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
         const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
 
-        const additionalArguments = this.buildAgent.getInput(ExecuteFields.additionalArguments)
-
         return {
             targetPath,
             disableCache,
@@ -31,8 +31,19 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             configFilePath,
             overrideConfig,
             updateAssemblyInfo,
-            updateAssemblyInfoFilename,
-            additionalArguments
+            updateAssemblyInfoFilename
+        }
+    }
+
+    getGitVersionCommandSettings(): GitVersionCommandSettings {
+        const targetPath = this.buildAgent.getInput(CommandFields.targetPath)
+        const disableShallowCloneCheck = this.buildAgent.getBooleanInput(CommandFields.disableShallowCloneCheck)
+        const args = this.buildAgent.getInput(CommandFields.arguments)
+
+        return {
+            targetPath,
+            disableShallowCloneCheck,
+            arguments: args
         }
     }
 }

@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
-import { type GitVersionExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
+import { type GitVersionCommandSettings, type GitVersionExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
 import { expectValidSettings } from '../common/utils'
 
 describe('GitVersion settings', () => {
@@ -14,8 +14,7 @@ describe('GitVersion settings', () => {
             configFilePath: 'path',
             overrideConfig: ['update-build-number=false'],
             updateAssemblyInfo: true,
-            updateAssemblyInfoFilename: 'path',
-            additionalArguments: 'args'
+            updateAssemblyInfoFilename: 'path'
         }
 
         const buildAgent = {
@@ -29,5 +28,24 @@ describe('GitVersion settings', () => {
         const gitVersionExecuteSettings = settingsProvider.getGitVersionExecuteSettings()
 
         expectValidSettings(settings, gitVersionExecuteSettings)
+    })
+
+    it('should return GitVersionCommandSettings', () => {
+        const settings: GitVersionCommandSettings = {
+            targetPath: 'path',
+            disableShallowCloneCheck: true,
+            arguments: 'args'
+        }
+
+        const buildAgent = {
+            getInput: (input: keyof GitVersionCommandSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof GitVersionCommandSettings) => settings[input] as boolean
+        } as IBuildAgent
+
+        const settingsProvider = new GitVersionSettingsProvider(buildAgent)
+
+        const gitVersionCommandSettings = settingsProvider.getGitVersionCommandSettings()
+
+        expectValidSettings(settings, gitVersionCommandSettings)
     })
 })

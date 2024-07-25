@@ -7,6 +7,10 @@
     "execute": {
       "test": "9b58ed30-0deb-4083-b007-5f6ce7787544",
       "prod": "9013cf7f-ee8d-49f4-a39b-db244928d391"
+    },
+    "command": {
+      "test": "b5559270-0af3-49c8-bde3-c44847a8503b",
+      "prod": "41dc3dd2-6a51-4ba5-a889-824274acca8b"
     }
   },
   "gitreleasemanager": {

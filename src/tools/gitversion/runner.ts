@@ -16,6 +16,8 @@ export class Runner implements IRunner {
                 return await this.setup()
             case 'execute':
                 return await this.execute()
+            case 'command':
+                return await this.command()
         }
     }
 
@@ -78,6 +80,44 @@ export class Runner implements IRunner {
                     this.buildAgent.setSucceeded('GitVersion executed successfully', true)
                     return result
                 }
+            } else {
+                this.buildAgent.debug('GitVersion failed')
+                const error = result.error
+                if (error instanceof Error) {
+                    this.buildAgent.setFailed(error.message, true)
+                }
+                return result
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                this.buildAgent.setFailed(error.message, true)
+            }
+            return {
+                code: -1,
+                error
+            }
+        }
+    }
+
+    private async command(): Promise<ExecResult> {
+        try {
+            this.disableTelemetry()
+
+            this.buildAgent.info('Executing GitVersion')
+
+            const result = await this.gitVersionTool.executeCommand()
+
+            if (result.code === 0) {
+                this.buildAgent.info('GitVersion executed successfully')
+                const stdout = result.stdout as string
+
+                this.buildAgent.info('GitVersion output:')
+                this.buildAgent.info('-------------------')
+                this.buildAgent.info(stdout)
+                this.buildAgent.info('-------------------')
+
+                this.buildAgent.setSucceeded('GitVersion executed successfully', true)
+                return result
             } else {
                 this.buildAgent.debug('GitVersion failed')
                 const error = result.error
