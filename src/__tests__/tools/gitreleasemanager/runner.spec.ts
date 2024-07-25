@@ -17,7 +17,6 @@ describe('GitReleaseManager Runner', () => {
     const toolName = 'dotnet-gitreleasemanager'
 
     function testOnAgent(agent: IBuildAgent): void {
-
         let runner!: Runner
         beforeEach(() => {
             runner = new Runner(agent)
@@ -39,9 +38,13 @@ describe('GitReleaseManager Runner', () => {
                 preferLatestVersion: false
             })
 
-            const exitCode = await runner.run('setup')
+            const result = await runner.run('setup')
 
-            expect(exitCode).toBe(0)
+            expect(result.code).toBe(0)
+            expect(result.error).toBeUndefined()
+            expect(result.stdout).toBeUndefined()
+            expect(result.stderr).toBeUndefined()
+
             expect(fs.existsSync(path.resolve(baseDir))).toBe(true)
             expect(fs.existsSync(path.resolve(baseDir, 'tools'))).toBe(true)
             expect(fs.existsSync(toolPath)).toBe(true)

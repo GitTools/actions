@@ -17,7 +17,6 @@ describe('GitVersion Runner', () => {
     const toolName = 'dotnet-gitversion'
 
     function testOnAgent(agent: IBuildAgent): void {
-
         let runner!: Runner
         beforeEach(() => {
             runner = new Runner(agent)
@@ -39,9 +38,13 @@ describe('GitVersion Runner', () => {
                 preferLatestVersion: false
             })
 
-            const exitCode = await runner.run('setup')
+            const result = await runner.run('setup')
 
-            expect(exitCode).toBe(0)
+            expect(result.code).toBe(0)
+            expect(result.error).toBeUndefined()
+            expect(result.stdout).toBeUndefined()
+            expect(result.stderr).toBeUndefined()
+
             expect(fs.existsSync(path.resolve(baseDir))).toBe(true)
             expect(fs.existsSync(path.resolve(baseDir, 'tools'))).toBe(true)
             expect(fs.existsSync(toolPath)).toBe(true)
@@ -55,9 +58,9 @@ describe('GitVersion Runner', () => {
         it.sequential('should execute GitVersion', async () => {
             setEnv(toolPathVariable, toolPath)
 
-            const exitCode = await runner.run('execute')
+            const result = await runner.run('execute')
 
-            expect(exitCode).toBe(0)
+            expect(result.code).toBe(0)
 
             expect(getEnv('GitVersion_Major')).toBeDefined()
             expect(getEnv('GitVersion_Minor')).toBeDefined()
@@ -66,6 +69,9 @@ describe('GitVersion Runner', () => {
             expect(getEnv('major')).toBeDefined()
             expect(getEnv('minor')).toBeDefined()
             expect(getEnv('patch')).toBeDefined()
+
+            expect(result.stdout).toContain('Executing GenerateSetVersionMessage')
+            expect(result.stdout).toContain('Executing GenerateBuildLogOutput')
         })
     }
 

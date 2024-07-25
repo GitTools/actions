@@ -1,4 +1,4 @@
-import { type IBuildAgent } from '@agents/common'
+import { type ExecResult, type IBuildAgent } from '@agents/common'
 import { type IRunner } from '@tools/common'
 import { type Commands, type GitVersionOutput } from './models'
 import { GitVersionTool } from './tool'
@@ -10,7 +10,7 @@ export class Runner implements IRunner {
         this.gitVersionTool = new GitVersionTool(this.buildAgent)
     }
 
-    async run(command: Commands): Promise<number> {
+    async run(command: Commands): Promise<ExecResult> {
         switch (command) {
             case 'setup':
                 return await this.setup()
@@ -19,7 +19,7 @@ export class Runner implements IRunner {
         }
     }
 
-    private async setup(): Promise<number> {
+    private async setup(): Promise<ExecResult> {
         try {
             this.disableTelemetry()
 
@@ -31,16 +31,21 @@ export class Runner implements IRunner {
             this.buildAgent.setVariable(pathVariable, toolPath)
 
             this.buildAgent.setSucceeded('GitVersion installed successfully', true)
-            return 0
+            return {
+                code: 0
+            }
         } catch (error) {
             if (error instanceof Error) {
                 this.buildAgent.setFailed(error.message, true)
             }
-            return -1
+            return {
+                code: -1,
+                error
+            }
         }
     }
 
-    private async execute(): Promise<number> {
+    private async execute(): Promise<ExecResult> {
         try {
             this.disableTelemetry()
 
@@ -50,7 +55,7 @@ export class Runner implements IRunner {
 
             if (result.code === 0) {
                 this.buildAgent.info('GitVersion executed successfully')
-                const { stdout } = result
+                const stdout: string = result.stdout as string
 
                 this.buildAgent.info('GitVersion output:')
                 this.buildAgent.info('-------------------')
@@ -61,14 +66,17 @@ export class Runner implements IRunner {
                 if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
                     this.buildAgent.debug('GitVersion output is not valid JSON')
                     this.buildAgent.setFailed('GitVersion output is not valid JSON', true)
-                    return -1
+                    return {
+                        code: -1,
+                        error: new Error('GitVersion output is not valid JSON')
+                    }
                 } else {
                     const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
 
                     const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
                     this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
                     this.buildAgent.setSucceeded('GitVersion executed successfully', true)
-                    return 0
+                    return result
                 }
             } else {
                 this.buildAgent.debug('GitVersion failed')
@@ -76,13 +84,16 @@ export class Runner implements IRunner {
                 if (error instanceof Error) {
                     this.buildAgent.setFailed(error.message, true)
                 }
-                return -1
+                return result
             }
         } catch (error) {
             if (error instanceof Error) {
                 this.buildAgent.setFailed(error.message, true)
             }
-            return -1
+            return {
+                code: -1,
+                error
+            }
         }
     }
 

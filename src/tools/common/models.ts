@@ -1,3 +1,5 @@
+import { type ExecResult } from '@agents/common'
+
 export enum SetupFields {
     includePrerelease = 'includePrerelease',
     versionSpec = 'versionSpec',
@@ -13,7 +15,7 @@ export type SetupSettings = {
 }
 
 export type IRunner = {
-    run(command: string): Promise<number>
+    run(command: string): Promise<ExecResult>
 }
 
 export type NugetVersions = { data: { versions: { version: string }[] }[] }
