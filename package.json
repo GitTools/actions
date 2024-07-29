@@ -44,7 +44,7 @@
     "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --no-wait-validation --auth-type pat"
   },
   "devDependencies": {
-    "@types/node": "^20.14.12",
+    "@types/node": "^22.0.0",
     "@types/semver": "^7.5.8",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "dotenv": "^16.4.5",
