@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { IBuildAgent } from '@agents/common'
-import { type GitVersionOutput, type GitVersionCommandSettings, type GitVersionExecuteSettings, GitVersionTool } from '@tools/gitversion'
+import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool } from '@tools/gitversion'
 
 class TestGitVersionTool extends GitVersionTool {
     private _isValidInputFile = false
@@ -13,15 +13,15 @@ class TestGitVersionTool extends GitVersionTool {
         return Promise.resolve(this._isValidInputFile)
     }
 
-    async getRepoDir(settings: GitVersionExecuteSettings | GitVersionCommandSettings): Promise<string> {
+    async getRepoDir(settings: ExecuteSettings | CommandSettings): Promise<string> {
         return super.getRepoDir(settings)
     }
 
-    async getExecuteArguments(workDir: string, options: GitVersionExecuteSettings): Promise<string[]> {
+    async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
         return super.getExecuteArguments(workDir, options)
     }
 
-    async getCommandArguments(workDir: string, options: GitVersionCommandSettings): Promise<string[]> {
+    async getCommandArguments(workDir: string, options: CommandSettings): Promise<string[]> {
         return super.getCommandArguments(workDir, options)
     }
 }
@@ -105,7 +105,7 @@ describe('GitVersionTool', () => {
             tool = new TestGitVersionTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetPath: ''
-            } as GitVersionExecuteSettings | GitVersionCommandSettings)
+            } as ExecuteSettings | CommandSettings)
             expect(repoDir).toBe('workdir')
         })
 
@@ -116,7 +116,7 @@ describe('GitVersionTool', () => {
             tool = new TestGitVersionTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetPath: ''
-            } as GitVersionExecuteSettings | GitVersionCommandSettings)
+            } as ExecuteSettings | CommandSettings)
             expect(repoDir).toBe('.')
         })
 
@@ -129,7 +129,7 @@ describe('GitVersionTool', () => {
             tool = new TestGitVersionTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetPath: 'targetDir'
-            } as GitVersionExecuteSettings | GitVersionCommandSettings)
+            } as ExecuteSettings | CommandSettings)
             expect(repoDir).toBe('targetDir')
         })
 
@@ -144,28 +144,28 @@ describe('GitVersionTool', () => {
             await expect(
                 tool.getRepoDir({
                     targetPath: wrongDir
-                } as GitVersionExecuteSettings | GitVersionCommandSettings)
+                } as ExecuteSettings | CommandSettings)
             ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
         })
     })
 
     describe('getExecuteArguments', () => {
         it('should return correct arguments for empty settings', async () => {
-            const args = await tool.getExecuteArguments('workdir', {} as GitVersionExecuteSettings)
+            const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver'])
         })
 
         it('should return correct arguments for settings with cache', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableCache: true
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver', '/nocache'])
         })
 
         it('should return correct arguments for settings with normalization', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableNormalization: true
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver', '/nonormalize'])
         })
 
@@ -174,7 +174,7 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml'
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver', '/config', 'workdir/GitVersion.yml'])
         })
 
@@ -185,14 +185,14 @@ describe('GitVersionTool', () => {
                 tool.getExecuteArguments('workdir', {
                     useConfigFile: true,
                     configFilePath: configFile
-                } as GitVersionExecuteSettings)
+                } as ExecuteSettings)
             ).rejects.toThrowError(`GitVersion configuration file not found at ${configFile}`)
         })
 
         it('should return correct arguments for settings with override config', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 overrideConfig: ['tag-prefix=release-', 'next-version=1.0.0']
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual([
                 'workdir',
                 '/output',
@@ -211,7 +211,7 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/output', 'buildserver', '/updateassemblyinfo', 'AssemblyInfo.cs'])
         })
 
@@ -222,7 +222,7 @@ describe('GitVersionTool', () => {
                 tool.getExecuteArguments('workdir', {
                     updateAssemblyInfo: true,
                     updateAssemblyInfoFilename: assemblyInfoFile
-                } as GitVersionExecuteSettings)
+                } as ExecuteSettings)
             ).rejects.toThrowError(`AssemblyInfoFilename file not found at ${assemblyInfoFile}`)
         })
 
@@ -233,7 +233,7 @@ describe('GitVersionTool', () => {
                 configFilePath: 'workdir/GitVersion.yml',
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
-            } as GitVersionExecuteSettings)
+            } as ExecuteSettings)
             expect(args).toEqual([
                 'workdir',
                 '/output',
@@ -250,14 +250,14 @@ describe('GitVersionTool', () => {
 
     describe('getCommandArguments', () => {
         it('should return correct arguments for empty settings', async () => {
-            const args = await tool.getCommandArguments('workdir', {} as GitVersionCommandSettings)
+            const args = await tool.getCommandArguments('workdir', {} as CommandSettings)
             expect(args).toEqual(['workdir'])
         })
 
         it('should return correct arguments for settings with additional arguments', async () => {
             const args = await tool.getCommandArguments('workdir', {
                 arguments: '--some-arg --another-arg'
-            } as GitVersionCommandSettings)
+            } as CommandSettings)
             expect(args).toEqual(['workdir', '--some-arg', '--another-arg'])
         })
     })

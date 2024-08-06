@@ -40,12 +40,13 @@ export interface IBuildAgent {
     findLocalTool(toolName: string, versionSpec: string): Promise<string | null>
 
     getInput(input: string, required?: boolean): string
+    getInput<T>(input: Extract<keyof T, string>, required?: boolean): string
 
-    getBooleanInput(input: string, required?: boolean): boolean
+    getBooleanInput<T>(input: Extract<keyof T, string>, required?: boolean): boolean
 
-    getDelimitedInput(input: string, delimiter: string, required?: boolean): string[]
+    getDelimitedInput<T>(input: Extract<keyof T, string>, delimiter: string, required?: boolean): string[]
 
-    getListInput(input: string, required?: boolean): string[]
+    getListInput<T>(input: Extract<keyof T, string>, required?: boolean): string[]
 
     setSucceeded(message: string, done?: boolean): void
 
@@ -105,21 +106,21 @@ export abstract class BuildAgentBase implements IBuildAgent {
         this.info(`Updated PATH: ${process.env[envName]}`)
     }
 
-    getInput(input: string, required?: boolean): string {
-        input = input.replace(/ /g, '_').toUpperCase()
-        const val = this.getVariable(`INPUT_${input}`)
+    getInput<T>(input: Extract<keyof T, string>, required?: boolean): string {
+        const inputProp = input.replace(/ /g, '_').toUpperCase()
+        const val = this.getVariable(`INPUT_${inputProp}`)
         if (required && !val) {
-            throw new Error(`Input required and not supplied: ${input}`)
+            throw new Error(`Input required and not supplied: ${inputProp}`)
         }
         return val.trim()
     }
 
-    getBooleanInput(input: string, required?: boolean): boolean {
+    getBooleanInput<T>(input: Extract<keyof T, string>, required?: boolean): boolean {
         const inputValue = this.getInput(input, required)
         return (inputValue || 'false').toLowerCase() === 'true'
     }
 
-    getDelimitedInput(input: string, delimiter: string, required?: boolean): string[] {
+    getDelimitedInput<T>(input: Extract<keyof T, string>, delimiter: string, required?: boolean): string[] {
         return this.getInput(input, required)
             .split(delimiter)
             .filter(x => {
@@ -129,7 +130,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
             })
     }
 
-    getListInput(input: string, required?: boolean): string[] {
+    getListInput<T>(input: Extract<keyof T, string>, required?: boolean): string[] {
         return this.getDelimitedInput(input, '\n', required)
     }
 

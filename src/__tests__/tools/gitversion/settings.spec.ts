@@ -1,11 +1,11 @@
 import { describe, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
-import { type GitVersionCommandSettings, type GitVersionExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
+import { type CommandSettings, type ExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
 import { expectValidSettings } from '../common/utils'
 
 describe('GitVersion settings', () => {
-    it('should return GitVersionExecuteSettings', () => {
-        const settings: GitVersionExecuteSettings = {
+    it('should return ExecuteSettings', () => {
+        const settings: ExecuteSettings = {
             targetPath: 'path',
             disableCache: true,
             disableNormalization: true,
@@ -18,34 +18,34 @@ describe('GitVersion settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitVersionExecuteSettings) => settings[input] as string,
-            getBooleanInput: (input: keyof GitVersionExecuteSettings) => settings[input] as boolean,
-            getListInput: (input: keyof GitVersionExecuteSettings) => settings[input] as string[]
+            getInput: (input: keyof ExecuteSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof ExecuteSettings) => settings[input] as boolean,
+            getListInput: (input: keyof ExecuteSettings) => settings[input] as string[]
         } as IBuildAgent
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const gitVersionExecuteSettings = settingsProvider.getGitVersionExecuteSettings()
+        const ExecuteSettings = settingsProvider.getExecuteSettings()
 
-        expectValidSettings(settings, gitVersionExecuteSettings)
+        expectValidSettings(settings, ExecuteSettings)
     })
 
-    it('should return GitVersionCommandSettings', () => {
-        const settings: GitVersionCommandSettings = {
+    it('should return CommandSettings', () => {
+        const settings: CommandSettings = {
             targetPath: 'path',
             disableShallowCloneCheck: true,
             arguments: 'args'
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitVersionCommandSettings) => settings[input] as string,
-            getBooleanInput: (input: keyof GitVersionCommandSettings) => settings[input] as boolean
+            getInput: (input: keyof CommandSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof CommandSettings) => settings[input] as boolean
         } as IBuildAgent
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const gitVersionCommandSettings = settingsProvider.getGitVersionCommandSettings()
+        const CommandSettings = settingsProvider.getCommandSettings()
 
-        expectValidSettings(settings, gitVersionCommandSettings)
+        expectValidSettings(settings, CommandSettings)
     })
 })
