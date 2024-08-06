@@ -7,7 +7,7 @@ import {
     type GitReleaseManagerDiscardSettings,
     type GitReleaseManagerOpenSettings,
     type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings,
+    type GitReleaseManagerCommonSettings,
     GitReleaseManagerTool
 } from '@tools/gitreleasemanager'
 import * as path from 'node:path'
@@ -23,11 +23,11 @@ class TestGitReleaseManagerTool extends GitReleaseManagerTool {
         return Promise.resolve(this._isValidInputFile)
     }
 
-    async getRepoDir(settings: GitReleaseManagerSettings): Promise<string> {
+    async getRepoDir(settings: GitReleaseManagerCommonSettings): Promise<string> {
         return super.getRepoDir(settings)
     }
 
-    async getCommonArguments(settings: GitReleaseManagerSettings): Promise<string[]> {
+    async getCommonArguments(settings: GitReleaseManagerCommonSettings): Promise<string[]> {
         return super.getCommonArguments(settings)
     }
 
@@ -87,7 +87,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: ''
-            } as GitReleaseManagerSettings)
+            } as GitReleaseManagerCommonSettings)
             expect(repoDir).toBe('workdir')
         })
 
@@ -98,7 +98,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: ''
-            } as GitReleaseManagerSettings)
+            } as GitReleaseManagerCommonSettings)
             expect(repoDir).toBe('.')
         })
 
@@ -111,7 +111,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: 'targetDir'
-            } as GitReleaseManagerSettings)
+            } as GitReleaseManagerCommonSettings)
             expect(repoDir).toBe('targetDir')
         })
 
@@ -126,7 +126,7 @@ describe('GitReleaseManagerTool', () => {
             await expect(
                 tool.getRepoDir({
                     targetDirectory: wrongDir
-                } as GitReleaseManagerSettings)
+                } as GitReleaseManagerCommonSettings)
             ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
         })
     })
@@ -137,7 +137,7 @@ describe('GitReleaseManagerTool', () => {
             repository: 'repo',
             token: 'token',
             targetDirectory: 'targetDirectory'
-        } as GitReleaseManagerSettings
+        } as GitReleaseManagerCommonSettings
 
         beforeEach(() => {
             tool = new TestGitReleaseManagerTool({
@@ -160,7 +160,7 @@ describe('GitReleaseManagerTool', () => {
 
                 const args = await tool.getCommonArguments({
                     ...commonSettings
-                } as GitReleaseManagerSettings)
+                } as GitReleaseManagerCommonSettings)
 
                 expect(args).toEqual(['--owner', 'owner', '--repository', 'repo', '--token', 'token', '--targetDirectory', 'targetDirectory'])
             })
@@ -178,7 +178,7 @@ describe('GitReleaseManagerTool', () => {
                     tool.getCommonArguments({
                         ...commonSettings,
                         targetDirectory: wrongDir
-                    } as GitReleaseManagerSettings)
+                    } as GitReleaseManagerCommonSettings)
                 ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
             })
         })

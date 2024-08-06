@@ -1,39 +1,41 @@
+import { Fields } from '@tools/common'
+
 export type Commands = 'setup' | 'execute' | 'command'
 
-export enum ExecuteFields {
-    targetPath = 'targetPath',
-    disableCache = 'disableCache',
-    disableNormalization = 'disableNormalization',
-    disableShallowCloneCheck = 'disableShallowCloneCheck',
-    useConfigFile = 'useConfigFile',
-    configFilePath = 'configFilePath',
-    overrideConfig = 'overrideConfig',
-    updateAssemblyInfo = 'updateAssemblyInfo',
-    updateAssemblyInfoFilename = 'updateAssemblyInfoFilename'
-}
-
-export enum CommandFields {
-    targetPath = 'targetPath',
-    disableShallowCloneCheck = 'disableShallowCloneCheck',
-    arguments = 'arguments'
-}
-
 export type GitVersionExecuteSettings = {
-    [ExecuteFields.targetPath]: string
-    [ExecuteFields.disableCache]: boolean
-    [ExecuteFields.disableNormalization]: boolean
-    [ExecuteFields.disableShallowCloneCheck]: boolean
-    [ExecuteFields.useConfigFile]: boolean
-    [ExecuteFields.configFilePath]: string
-    [ExecuteFields.overrideConfig]: string[]
-    [ExecuteFields.updateAssemblyInfo]: boolean
-    [ExecuteFields.updateAssemblyInfoFilename]: string
+    targetPath: string
+    disableCache: boolean
+    disableNormalization: boolean
+    disableShallowCloneCheck: boolean
+    useConfigFile: boolean
+    configFilePath: string
+    overrideConfig: string[]
+    updateAssemblyInfo: boolean
+    updateAssemblyInfoFilename: string
+}
+
+export const ExecuteFields: Fields<GitVersionExecuteSettings> = {
+    targetPath: 'targetPath',
+    disableCache: 'disableCache',
+    disableNormalization: 'disableNormalization',
+    disableShallowCloneCheck: 'disableShallowCloneCheck',
+    useConfigFile: 'useConfigFile',
+    configFilePath: 'configFilePath',
+    overrideConfig: 'overrideConfig',
+    updateAssemblyInfo: 'updateAssemblyInfo',
+    updateAssemblyInfoFilename: 'updateAssemblyInfoFilename'
 }
 
 export type GitVersionCommandSettings = {
-    [CommandFields.targetPath]: string
-    [ExecuteFields.disableShallowCloneCheck]: boolean
-    [CommandFields.arguments]: string
+    targetPath: string
+    disableShallowCloneCheck: boolean
+    arguments: string
+}
+
+export const CommandFields: Fields<GitVersionCommandSettings> = {
+    targetPath: 'targetPath',
+    disableShallowCloneCheck: 'disableShallowCloneCheck',
+    arguments: 'arguments'
 }
 
 export type GitVersionOutput = {

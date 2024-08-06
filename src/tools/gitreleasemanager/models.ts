@@ -1,75 +1,69 @@
+import { Fields } from '@tools/common'
+
 export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | 'open' | 'publish'
 
-export enum CommonFields {
-    repository = 'repository',
-    owner = 'owner',
-    token = 'token',
-    targetDirectory = 'targetDirectory'
+export type GitReleaseManagerCommonSettings = {
+    repository: string
+    owner: string
+    token: string
+    targetDirectory: string
+    milestone: string
 }
 
-export enum CreateFields {
-    milestone = 'milestone',
-    name = 'name',
-    inputFileName = 'inputFileName',
-    isPreRelease = 'isPreRelease',
-    commit = 'commit',
-    assets = 'assets'
+export type GitReleaseManagerCreateSettings = GitReleaseManagerCommonSettings & {
+    name: string
+    inputFileName: string
+    isPreRelease: boolean
+    commit: string
+    assets?: string[]
 }
 
-export enum DiscardFields {
-    milestone = 'milestone'
+export type GitReleaseManagerDiscardSettings = GitReleaseManagerCommonSettings & {}
+
+export type GitReleaseManagerCloseSettings = GitReleaseManagerCommonSettings & {}
+
+export type GitReleaseManagerOpenSettings = GitReleaseManagerCommonSettings & {}
+
+export type GitReleaseManagerPublishSettings = GitReleaseManagerCommonSettings & {}
+
+export type GitReleaseManagerAddAssetSettings = GitReleaseManagerCommonSettings & {
+    assets: string[]
 }
 
-export enum CloseFields {
-    milestone = 'milestone'
+export const CommonFields: Fields<GitReleaseManagerCommonSettings> = {
+    repository: 'repository',
+    owner: 'owner',
+    token: 'token',
+    targetDirectory: 'targetDirectory',
+    milestone: 'milestone'
 }
 
-export enum OpenFields {
-    milestone = 'milestone'
+export const CreateFields: Fields<GitReleaseManagerCreateSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields,
+    name: 'name',
+    inputFileName: 'inputFileName',
+    isPreRelease: 'isPreRelease',
+    commit: 'commit',
+    assets: 'assets'
 }
 
-export enum PublishFields {
-    milestone = 'milestone'
+export const DiscardFields: Fields<GitReleaseManagerDiscardSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields
 }
 
-export enum AddAssetFields {
-    milestone = 'milestone',
-    assets = 'assets'
+export const CloseFields: Fields<GitReleaseManagerCloseSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields
 }
 
-export type GitReleaseManagerSettings = {
-    [CommonFields.repository]: string
-    [CommonFields.owner]: string
-    [CommonFields.token]: string
-    [CommonFields.targetDirectory]: string
+export const OpenFields: Fields<GitReleaseManagerOpenSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields
 }
 
-export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettings {
-    [CreateFields.milestone]: string
-    [CreateFields.name]: string
-    [CreateFields.inputFileName]: string
-    [CreateFields.isPreRelease]: boolean
-    [CreateFields.commit]: string
-    [CreateFields.assets]?: string[]
+export const PublishFields: Fields<GitReleaseManagerPublishSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields
 }
 
-export interface GitReleaseManagerDiscardSettings extends GitReleaseManagerSettings {
-    [DiscardFields.milestone]: string
-}
-
-export interface GitReleaseManagerCloseSettings extends GitReleaseManagerSettings {
-    [CloseFields.milestone]: string
-}
-
-export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings {
-    [OpenFields.milestone]: string
-}
-
-export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
-    [PublishFields.milestone]: string
-}
-
-export interface GitReleaseManagerAddAssetSettings extends GitReleaseManagerSettings {
-    [AddAssetFields.milestone]: string
-    [AddAssetFields.assets]: string[]
+export const AddAssetFields: Fields<GitReleaseManagerAddAssetSettings & GitReleaseManagerCommonSettings> = {
+    ...CommonFields,
+    assets: 'assets'
 }

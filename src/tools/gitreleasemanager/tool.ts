@@ -10,7 +10,7 @@ import {
     type GitReleaseManagerDiscardSettings,
     type GitReleaseManagerOpenSettings,
     type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings
+    type GitReleaseManagerCommonSettings
 } from './models'
 import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
@@ -77,7 +77,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return await this.executeTool(args)
     }
 
-    protected async getCommonArguments(settings: GitReleaseManagerSettings): Promise<string[]> {
+    protected async getCommonArguments(settings: GitReleaseManagerCommonSettings): Promise<string[]> {
         const args: string[] = []
 
         args.push('--owner', settings.owner)
@@ -182,7 +182,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getRepoDir(settings: GitReleaseManagerSettings): Promise<string> {
+    protected async getRepoDir(settings: GitReleaseManagerCommonSettings): Promise<string> {
         return await this.getRepoPath(settings.targetDirectory)
     }
 }
