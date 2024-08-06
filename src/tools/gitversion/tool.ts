@@ -1,6 +1,6 @@
 import { type ExecResult } from '@agents/common'
 import { DotnetTool, keysOf } from '@tools/common'
-import { type GitVersionCommandSettings, type GitVersionExecuteSettings, type GitVersionOutput } from './models'
+import { type CommandSettings, type ExecuteSettings, type GitVersionOutput } from './models'
 import { GitVersionSettingsProvider, type IGitVersionSettingsProvider } from './settings'
 
 export class GitVersionTool extends DotnetTool {
@@ -66,11 +66,11 @@ export class GitVersionTool extends DotnetTool {
         }
     }
 
-    protected async getRepoDir(settings: GitVersionExecuteSettings | GitVersionCommandSettings): Promise<string> {
+    protected async getRepoDir(settings: ExecuteSettings | CommandSettings): Promise<string> {
         return await super.getRepoPath(settings.targetPath)
     }
 
-    protected async getExecuteArguments(workDir: string, options: GitVersionExecuteSettings): Promise<string[]> {
+    protected async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
         const args = [workDir, '/output', 'json', '/output', 'buildserver']
 
         const {
@@ -125,7 +125,7 @@ export class GitVersionTool extends DotnetTool {
         return args
     }
 
-    protected async getCommandArguments(workDir: string, options: GitVersionCommandSettings): Promise<string[]> {
+    protected async getCommandArguments(workDir: string, options: CommandSettings): Promise<string[]> {
         let args = [workDir]
 
         if (options.arguments) {
@@ -196,7 +196,7 @@ export class GitVersionTool extends DotnetTool {
         return args
     }
 
-    private async checkShallowClone(settings: GitVersionExecuteSettings | GitVersionCommandSettings, workDir: string): Promise<void> {
+    private async checkShallowClone(settings: ExecuteSettings | CommandSettings, workDir: string): Promise<void> {
         if (!settings.disableShallowCloneCheck) {
             const isShallowResult = await this.execute('git', ['-C', workDir, 'rev-parse', '--is-shallow-repository'])
             if (isShallowResult.code === 0 && isShallowResult.stdout.trim() === 'true') {

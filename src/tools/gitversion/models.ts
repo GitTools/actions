@@ -1,8 +1,6 @@
-import { Fields } from '@tools/common'
-
 export type Commands = 'setup' | 'execute' | 'command'
 
-export type GitVersionExecuteSettings = {
+export type ExecuteSettings = {
     targetPath: string
     disableCache: boolean
     disableNormalization: boolean
@@ -14,28 +12,10 @@ export type GitVersionExecuteSettings = {
     updateAssemblyInfoFilename: string
 }
 
-export const ExecuteFields: Fields<GitVersionExecuteSettings> = {
-    targetPath: 'targetPath',
-    disableCache: 'disableCache',
-    disableNormalization: 'disableNormalization',
-    disableShallowCloneCheck: 'disableShallowCloneCheck',
-    useConfigFile: 'useConfigFile',
-    configFilePath: 'configFilePath',
-    overrideConfig: 'overrideConfig',
-    updateAssemblyInfo: 'updateAssemblyInfo',
-    updateAssemblyInfoFilename: 'updateAssemblyInfoFilename'
-}
-
-export type GitVersionCommandSettings = {
+export type CommandSettings = {
     targetPath: string
     disableShallowCloneCheck: boolean
     arguments: string
-}
-
-export const CommandFields: Fields<GitVersionCommandSettings> = {
-    targetPath: 'targetPath',
-    disableShallowCloneCheck: 'disableShallowCloneCheck',
-    arguments: 'arguments'
 }
 
 export type GitVersionOutput = {

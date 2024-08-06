@@ -1,8 +1,6 @@
-import { Fields } from '@tools/common'
-
 export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | 'open' | 'publish'
 
-export type GitReleaseManagerCommonSettings = {
+export type CommonSettings = {
     repository: string
     owner: string
     token: string
@@ -10,7 +8,7 @@ export type GitReleaseManagerCommonSettings = {
     milestone: string
 }
 
-export type GitReleaseManagerCreateSettings = GitReleaseManagerCommonSettings & {
+export type CreateSettings = CommonSettings & {
     name: string
     inputFileName: string
     isPreRelease: boolean
@@ -18,52 +16,14 @@ export type GitReleaseManagerCreateSettings = GitReleaseManagerCommonSettings & 
     assets?: string[]
 }
 
-export type GitReleaseManagerDiscardSettings = GitReleaseManagerCommonSettings & {}
+export type DiscardSettings = CommonSettings & {}
 
-export type GitReleaseManagerCloseSettings = GitReleaseManagerCommonSettings & {}
+export type CloseSettings = CommonSettings & {}
 
-export type GitReleaseManagerOpenSettings = GitReleaseManagerCommonSettings & {}
+export type OpenSettings = CommonSettings & {}
 
-export type GitReleaseManagerPublishSettings = GitReleaseManagerCommonSettings & {}
+export type PublishSettings = CommonSettings & {}
 
-export type GitReleaseManagerAddAssetSettings = GitReleaseManagerCommonSettings & {
+export type AddAssetSettings = CommonSettings & {
     assets: string[]
-}
-
-export const CommonFields: Fields<GitReleaseManagerCommonSettings> = {
-    repository: 'repository',
-    owner: 'owner',
-    token: 'token',
-    targetDirectory: 'targetDirectory',
-    milestone: 'milestone'
-}
-
-export const CreateFields: Fields<GitReleaseManagerCreateSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields,
-    name: 'name',
-    inputFileName: 'inputFileName',
-    isPreRelease: 'isPreRelease',
-    commit: 'commit',
-    assets: 'assets'
-}
-
-export const DiscardFields: Fields<GitReleaseManagerDiscardSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields
-}
-
-export const CloseFields: Fields<GitReleaseManagerCloseSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields
-}
-
-export const OpenFields: Fields<GitReleaseManagerOpenSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields
-}
-
-export const PublishFields: Fields<GitReleaseManagerPublishSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields
-}
-
-export const AddAssetFields: Fields<GitReleaseManagerAddAssetSettings & GitReleaseManagerCommonSettings> = {
-    ...CommonFields,
-    assets: 'assets'
 }

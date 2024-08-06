@@ -1,26 +1,26 @@
 import { type ISettingsProvider, SettingsProvider } from '@tools/common'
-import { CommandFields, ExecuteFields, type GitVersionCommandSettings, type GitVersionExecuteSettings } from './models'
+import { type CommandSettings, type ExecuteSettings } from './models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {
-    getGitVersionExecuteSettings(): GitVersionExecuteSettings
+    getGitVersionExecuteSettings(): ExecuteSettings
 
-    getGitVersionCommandSettings(): GitVersionCommandSettings
+    getGitVersionCommandSettings(): CommandSettings
 }
 
 export class GitVersionSettingsProvider extends SettingsProvider implements IGitVersionSettingsProvider {
-    getGitVersionExecuteSettings(): GitVersionExecuteSettings {
-        const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath)
+    getGitVersionExecuteSettings(): ExecuteSettings {
+        const targetPath = this.buildAgent.getInput<ExecuteSettings>('targetPath')
 
-        const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache)
-        const disableNormalization = this.buildAgent.getBooleanInput(ExecuteFields.disableNormalization)
-        const disableShallowCloneCheck = this.buildAgent.getBooleanInput(ExecuteFields.disableShallowCloneCheck)
+        const disableCache = this.buildAgent.getBooleanInput<ExecuteSettings>('disableCache')
+        const disableNormalization = this.buildAgent.getBooleanInput<ExecuteSettings>('disableNormalization')
+        const disableShallowCloneCheck = this.buildAgent.getBooleanInput<ExecuteSettings>('disableShallowCloneCheck')
 
-        const useConfigFile = this.buildAgent.getBooleanInput(ExecuteFields.useConfigFile)
-        const configFilePath = this.buildAgent.getInput(ExecuteFields.configFilePath)
-        const overrideConfig = this.buildAgent.getListInput(ExecuteFields.overrideConfig)
+        const useConfigFile = this.buildAgent.getBooleanInput<ExecuteSettings>('useConfigFile')
+        const configFilePath = this.buildAgent.getInput<ExecuteSettings>('configFilePath')
+        const overrideConfig = this.buildAgent.getListInput<ExecuteSettings>('overrideConfig')
 
-        const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo)
-        const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename)
+        const updateAssemblyInfo = this.buildAgent.getBooleanInput<ExecuteSettings>('updateAssemblyInfo')
+        const updateAssemblyInfoFilename = this.buildAgent.getInput<ExecuteSettings>('updateAssemblyInfoFilename')
 
         return {
             targetPath,
@@ -35,10 +35,10 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         }
     }
 
-    getGitVersionCommandSettings(): GitVersionCommandSettings {
-        const targetPath = this.buildAgent.getInput(CommandFields.targetPath)
-        const disableShallowCloneCheck = this.buildAgent.getBooleanInput(CommandFields.disableShallowCloneCheck)
-        const args = this.buildAgent.getInput(CommandFields.arguments)
+    getGitVersionCommandSettings(): CommandSettings {
+        const targetPath = this.buildAgent.getInput<CommandSettings>('targetPath')
+        const disableShallowCloneCheck = this.buildAgent.getBooleanInput<CommandSettings>('disableShallowCloneCheck')
+        const args = this.buildAgent.getInput<CommandSettings>('arguments')
 
         return {
             targetPath,
