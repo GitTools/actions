@@ -55,10 +55,10 @@ class BuildAgentBase {
     this.info(`Updated PATH: ${process.env[envName]}`);
   }
   getInput(input, required) {
-    input = input.replace(/ /g, "_").toUpperCase();
-    const val = this.getVariable(`INPUT_${input}`);
+    const inputProp = input.replace(/ /g, "_").toUpperCase();
+    const val = this.getVariable(`INPUT_${inputProp}`);
     if (required && !val) {
-      throw new Error(`Input required and not supplied: ${input}`);
+      throw new Error(`Input required and not supplied: ${inputProp}`);
     }
     return val.trim();
   }
