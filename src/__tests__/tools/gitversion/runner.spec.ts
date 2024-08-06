@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { simpleGit } from 'simple-git'
 
 import { IBuildAgent } from '@agents/common'
@@ -9,19 +9,26 @@ import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, getLatestVersion, resetEnv, setEnv, setInputs } from '../common/utils'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
-    const version = '6.0.0'
-    const toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
+
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
 
-    function testOnAgent(agent: IBuildAgent): void {
-        let runner!: Runner
-        beforeEach(() => {
+    async function testOnAgent(agent: IBuildAgent): Promise<void> {
+        let version: string
+        let toolPath: string
+        let runner: Runner
+
+        beforeAll(async () => {
+            version = await getLatestVersion('GitVersion.Tool')
+            toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
+        })
+
+        beforeEach(() => {
             resetEnv(agent, toolPathVariable)
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
@@ -37,7 +44,7 @@ describe('GitVersion Runner', () => {
                 versionSpec: '6.x',
                 includePrerelease: false,
                 ignoreFailedSources: false,
-                preferLatestVersion: false
+                preferLatestVersion: true
             })
 
             const result = await runner.run('setup')

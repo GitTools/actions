@@ -33,3 +33,9 @@ export const expectValidSettings = <T extends object>(expectedSettings: T, actua
         expect(actualSettings[key]).toBe(expectedSettings[key])
     }
 }
+
+export async function getLatestVersion(toolName: string): Promise<string> {
+    const response = await fetch(`https://api.nuget.org/v3-flatcontainer/${toolName.toLowerCase()}/index.json`)
+    const json = (await response.json()) as { versions: string[] }
+    return json.versions.reverse()[0]
+}
