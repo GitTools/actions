@@ -1,17 +1,10 @@
 import { type ExecResult } from '@agents/common'
 
-export enum SetupFields {
-    includePrerelease = 'includePrerelease',
-    versionSpec = 'versionSpec',
-    ignoreFailedSources = 'ignoreFailedSources',
-    preferLatestVersion = 'preferLatestVersion'
-}
-
 export type SetupSettings = {
-    [SetupFields.versionSpec]: string
-    [SetupFields.includePrerelease]: boolean
-    [SetupFields.ignoreFailedSources]: boolean
-    [SetupFields.preferLatestVersion]: boolean
+    versionSpec: string
+    includePrerelease: boolean
+    ignoreFailedSources: boolean
+    preferLatestVersion: boolean
 }
 
 export type IRunner = {

@@ -1,39 +1,21 @@
 export type Commands = 'setup' | 'execute' | 'command'
 
-export enum ExecuteFields {
-    targetPath = 'targetPath',
-    disableCache = 'disableCache',
-    disableNormalization = 'disableNormalization',
-    disableShallowCloneCheck = 'disableShallowCloneCheck',
-    useConfigFile = 'useConfigFile',
-    configFilePath = 'configFilePath',
-    overrideConfig = 'overrideConfig',
-    updateAssemblyInfo = 'updateAssemblyInfo',
-    updateAssemblyInfoFilename = 'updateAssemblyInfoFilename'
+export type ExecuteSettings = {
+    targetPath: string
+    disableCache: boolean
+    disableNormalization: boolean
+    disableShallowCloneCheck: boolean
+    useConfigFile: boolean
+    configFilePath: string
+    overrideConfig: string[]
+    updateAssemblyInfo: boolean
+    updateAssemblyInfoFilename: string
 }
 
-export enum CommandFields {
-    targetPath = 'targetPath',
-    disableShallowCloneCheck = 'disableShallowCloneCheck',
-    arguments = 'arguments'
-}
-
-export type GitVersionExecuteSettings = {
-    [ExecuteFields.targetPath]: string
-    [ExecuteFields.disableCache]: boolean
-    [ExecuteFields.disableNormalization]: boolean
-    [ExecuteFields.disableShallowCloneCheck]: boolean
-    [ExecuteFields.useConfigFile]: boolean
-    [ExecuteFields.configFilePath]: string
-    [ExecuteFields.overrideConfig]: string[]
-    [ExecuteFields.updateAssemblyInfo]: boolean
-    [ExecuteFields.updateAssemblyInfoFilename]: string
-}
-
-export type GitVersionCommandSettings = {
-    [CommandFields.targetPath]: string
-    [ExecuteFields.disableShallowCloneCheck]: boolean
-    [CommandFields.arguments]: string
+export type CommandSettings = {
+    targetPath: string
+    disableShallowCloneCheck: boolean
+    arguments: string
 }
 
 export type GitVersionOutput = {

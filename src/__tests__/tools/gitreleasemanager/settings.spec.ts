@@ -1,19 +1,19 @@
 import { describe, it } from 'vitest'
 import { IBuildAgent } from '@agents/common'
 import {
-    type GitReleaseManagerCloseSettings,
-    type GitReleaseManagerCreateSettings,
-    type GitReleaseManagerDiscardSettings,
-    type GitReleaseManagerOpenSettings,
-    type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerAddAssetSettings,
+    type CreateSettings,
+    type DiscardSettings,
+    type OpenSettings,
+    type CloseSettings,
+    type PublishSettings,
+    type AddAssetSettings,
     GitReleaseManagerSettingsProvider
 } from '@tools/gitreleasemanager'
 import { expectValidSettings } from '../common/utils'
 
 describe('GitReleaseManager settings', () => {
     it('should return GitReleaseManagerCreateSettings', () => {
-        const settings: GitReleaseManagerCreateSettings = {
+        const settings: CreateSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -27,9 +27,9 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerCreateSettings) => settings[input] as string,
-            getBooleanInput: (input: keyof GitReleaseManagerCreateSettings) => settings[input] as boolean,
-            getListInput: (input: keyof GitReleaseManagerCreateSettings) => settings[input] as string[]
+            getInput: (input: keyof CreateSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof CreateSettings) => settings[input] as boolean,
+            getListInput: (input: keyof CreateSettings) => settings[input] as string[]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)
@@ -39,8 +39,8 @@ describe('GitReleaseManager settings', () => {
         expectValidSettings(settings, createSettings)
     })
 
-    it('should return GitReleaseManagerOpenSettings', () => {
-        const settings: GitReleaseManagerOpenSettings = {
+    it('should return OpenSettings', () => {
+        const settings: OpenSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -49,7 +49,7 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerOpenSettings) => settings[input]
+            getInput: (input: keyof OpenSettings) => settings[input]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)
@@ -60,7 +60,7 @@ describe('GitReleaseManager settings', () => {
     })
 
     it('should return GitReleaseManagerCloseSettings', () => {
-        const settings: GitReleaseManagerCloseSettings = {
+        const settings: CloseSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -69,7 +69,7 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerCloseSettings) => settings[input]
+            getInput: (input: keyof CloseSettings) => settings[input]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)
@@ -79,8 +79,8 @@ describe('GitReleaseManager settings', () => {
         expectValidSettings(settings, closeSettings)
     })
 
-    it('should return GitReleaseManagerDiscardSettings', () => {
-        const settings: GitReleaseManagerDiscardSettings = {
+    it('should return DiscardSettings', () => {
+        const settings: DiscardSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -89,7 +89,7 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerDiscardSettings) => settings[input]
+            getInput: (input: keyof DiscardSettings) => settings[input]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)
@@ -99,8 +99,8 @@ describe('GitReleaseManager settings', () => {
         expectValidSettings(settings, discardSettings)
     })
 
-    it('should return GitReleaseManagerPublishSettings', () => {
-        const settings: GitReleaseManagerPublishSettings = {
+    it('should return PublishSettings', () => {
+        const settings: PublishSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -109,7 +109,7 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerPublishSettings) => settings[input]
+            getInput: (input: keyof PublishSettings) => settings[input]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)
@@ -119,8 +119,8 @@ describe('GitReleaseManager settings', () => {
         expectValidSettings(settings, publishSettings)
     })
 
-    it('should return GitReleaseManagerAddAssetSettings', () => {
-        const settings: GitReleaseManagerAddAssetSettings = {
+    it('should return AddAssetSettings', () => {
+        const settings: AddAssetSettings = {
             repository: 'repo',
             owner: 'owner',
             token: 'token',
@@ -130,8 +130,8 @@ describe('GitReleaseManager settings', () => {
         }
 
         const buildAgent = {
-            getInput: (input: keyof GitReleaseManagerAddAssetSettings) => settings[input] as string,
-            getListInput: (input: keyof GitReleaseManagerAddAssetSettings) => settings[input] as string[]
+            getInput: (input: keyof AddAssetSettings) => settings[input] as string,
+            getListInput: (input: keyof AddAssetSettings) => settings[input] as string[]
         } as IBuildAgent
 
         const settingsProvider = new GitReleaseManagerSettingsProvider(buildAgent)

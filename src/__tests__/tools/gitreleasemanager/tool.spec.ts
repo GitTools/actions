@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { IBuildAgent } from '@agents/common'
 import {
-    type GitReleaseManagerAddAssetSettings,
-    type GitReleaseManagerCloseSettings,
-    type GitReleaseManagerCreateSettings,
-    type GitReleaseManagerDiscardSettings,
-    type GitReleaseManagerOpenSettings,
-    type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings,
+    type AddAssetSettings,
+    type CloseSettings,
+    type CreateSettings,
+    type DiscardSettings,
+    type OpenSettings,
+    type PublishSettings,
+    type CommonSettings,
     GitReleaseManagerTool
 } from '@tools/gitreleasemanager'
 import * as path from 'node:path'
@@ -23,35 +23,35 @@ class TestGitReleaseManagerTool extends GitReleaseManagerTool {
         return Promise.resolve(this._isValidInputFile)
     }
 
-    async getRepoDir(settings: GitReleaseManagerSettings): Promise<string> {
+    async getRepoDir(settings: CommonSettings): Promise<string> {
         return super.getRepoDir(settings)
     }
 
-    async getCommonArguments(settings: GitReleaseManagerSettings): Promise<string[]> {
+    async getCommonArguments(settings: CommonSettings): Promise<string[]> {
         return super.getCommonArguments(settings)
     }
 
-    async getCreateArguments(settings: GitReleaseManagerCreateSettings): Promise<string[]> {
+    async getCreateArguments(settings: CreateSettings): Promise<string[]> {
         return super.getCreateArguments(settings)
     }
 
-    async getDiscardArguments(settings: GitReleaseManagerDiscardSettings): Promise<string[]> {
+    async getDiscardArguments(settings: DiscardSettings): Promise<string[]> {
         return super.getDiscardArguments(settings)
     }
 
-    async getCloseArguments(settings: GitReleaseManagerCloseSettings): Promise<string[]> {
+    async getCloseArguments(settings: CloseSettings): Promise<string[]> {
         return super.getCloseArguments(settings)
     }
 
-    async getOpenArguments(settings: GitReleaseManagerOpenSettings): Promise<string[]> {
+    async getOpenArguments(settings: OpenSettings): Promise<string[]> {
         return super.getOpenArguments(settings)
     }
 
-    async getPublishArguments(settings: GitReleaseManagerPublishSettings): Promise<string[]> {
+    async getPublishArguments(settings: PublishSettings): Promise<string[]> {
         return super.getPublishArguments(settings)
     }
 
-    async getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): Promise<string[]> {
+    async getAddAssetArguments(settings: AddAssetSettings): Promise<string[]> {
         return super.getAddAssetArguments(settings)
     }
 }
@@ -87,7 +87,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: ''
-            } as GitReleaseManagerSettings)
+            } as CommonSettings)
             expect(repoDir).toBe('workdir')
         })
 
@@ -98,7 +98,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: ''
-            } as GitReleaseManagerSettings)
+            } as CommonSettings)
             expect(repoDir).toBe('.')
         })
 
@@ -111,7 +111,7 @@ describe('GitReleaseManagerTool', () => {
             tool = new TestGitReleaseManagerTool(buildAgent)
             const repoDir = await tool.getRepoDir({
                 targetDirectory: 'targetDir'
-            } as GitReleaseManagerSettings)
+            } as CommonSettings)
             expect(repoDir).toBe('targetDir')
         })
 
@@ -126,7 +126,7 @@ describe('GitReleaseManagerTool', () => {
             await expect(
                 tool.getRepoDir({
                     targetDirectory: wrongDir
-                } as GitReleaseManagerSettings)
+                } as CommonSettings)
             ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
         })
     })
@@ -137,7 +137,7 @@ describe('GitReleaseManagerTool', () => {
             repository: 'repo',
             token: 'token',
             targetDirectory: 'targetDirectory'
-        } as GitReleaseManagerSettings
+        } as CommonSettings
 
         beforeEach(() => {
             tool = new TestGitReleaseManagerTool({
@@ -160,7 +160,7 @@ describe('GitReleaseManagerTool', () => {
 
                 const args = await tool.getCommonArguments({
                     ...commonSettings
-                } as GitReleaseManagerSettings)
+                } as CommonSettings)
 
                 expect(args).toEqual(['--owner', 'owner', '--repository', 'repo', '--token', 'token', '--targetDirectory', 'targetDirectory'])
             })
@@ -178,7 +178,7 @@ describe('GitReleaseManagerTool', () => {
                     tool.getCommonArguments({
                         ...commonSettings,
                         targetDirectory: wrongDir
-                    } as GitReleaseManagerSettings)
+                    } as CommonSettings)
                 ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
             })
         })
@@ -193,7 +193,7 @@ describe('GitReleaseManagerTool', () => {
                     inputFileName: 'inputFileName',
                     isPreRelease: true,
                     assets: ['asset1', 'asset2']
-                } as GitReleaseManagerCreateSettings)
+                } as CreateSettings)
 
                 expect(args).toEqual([
                     'create',
@@ -225,7 +225,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getDiscardArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as GitReleaseManagerDiscardSettings)
+                } as DiscardSettings)
 
                 expect(args).toEqual([
                     'discard',
@@ -248,7 +248,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getOpenArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as GitReleaseManagerOpenSettings)
+                } as OpenSettings)
 
                 expect(args).toEqual([
                     'open',
@@ -271,7 +271,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getCloseArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as GitReleaseManagerCloseSettings)
+                } as CloseSettings)
 
                 expect(args).toEqual([
                     'close',
@@ -294,7 +294,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getPublishArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as GitReleaseManagerPublishSettings)
+                } as PublishSettings)
 
                 expect(args).toEqual([
                     'publish',
@@ -318,7 +318,7 @@ describe('GitReleaseManagerTool', () => {
                     ...commonSettings,
                     milestone: 'milestone',
                     assets: ['asset1', 'asset2']
-                } as GitReleaseManagerAddAssetSettings)
+                } as AddAssetSettings)
 
                 expect(args).toEqual([
                     'addasset',

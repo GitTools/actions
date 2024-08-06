@@ -1,75 +1,29 @@
 export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | 'open' | 'publish'
 
-export enum CommonFields {
-    repository = 'repository',
-    owner = 'owner',
-    token = 'token',
-    targetDirectory = 'targetDirectory'
+export type CommonSettings = {
+    repository: string
+    owner: string
+    token: string
+    targetDirectory: string
+    milestone: string
 }
 
-export enum CreateFields {
-    milestone = 'milestone',
-    name = 'name',
-    inputFileName = 'inputFileName',
-    isPreRelease = 'isPreRelease',
-    commit = 'commit',
-    assets = 'assets'
+export type CreateSettings = CommonSettings & {
+    name: string
+    inputFileName: string
+    isPreRelease: boolean
+    commit: string
+    assets?: string[]
 }
 
-export enum DiscardFields {
-    milestone = 'milestone'
-}
+export type DiscardSettings = CommonSettings & {}
 
-export enum CloseFields {
-    milestone = 'milestone'
-}
+export type CloseSettings = CommonSettings & {}
 
-export enum OpenFields {
-    milestone = 'milestone'
-}
+export type OpenSettings = CommonSettings & {}
 
-export enum PublishFields {
-    milestone = 'milestone'
-}
+export type PublishSettings = CommonSettings & {}
 
-export enum AddAssetFields {
-    milestone = 'milestone',
-    assets = 'assets'
-}
-
-export type GitReleaseManagerSettings = {
-    [CommonFields.repository]: string
-    [CommonFields.owner]: string
-    [CommonFields.token]: string
-    [CommonFields.targetDirectory]: string
-}
-
-export interface GitReleaseManagerCreateSettings extends GitReleaseManagerSettings {
-    [CreateFields.milestone]: string
-    [CreateFields.name]: string
-    [CreateFields.inputFileName]: string
-    [CreateFields.isPreRelease]: boolean
-    [CreateFields.commit]: string
-    [CreateFields.assets]?: string[]
-}
-
-export interface GitReleaseManagerDiscardSettings extends GitReleaseManagerSettings {
-    [DiscardFields.milestone]: string
-}
-
-export interface GitReleaseManagerCloseSettings extends GitReleaseManagerSettings {
-    [CloseFields.milestone]: string
-}
-
-export interface GitReleaseManagerOpenSettings extends GitReleaseManagerSettings {
-    [OpenFields.milestone]: string
-}
-
-export interface GitReleaseManagerPublishSettings extends GitReleaseManagerSettings {
-    [PublishFields.milestone]: string
-}
-
-export interface GitReleaseManagerAddAssetSettings extends GitReleaseManagerSettings {
-    [AddAssetFields.milestone]: string
-    [AddAssetFields.assets]: string[]
+export type AddAssetSettings = CommonSettings & {
+    assets: string[]
 }

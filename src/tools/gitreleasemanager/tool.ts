@@ -4,13 +4,13 @@ import { DotnetTool } from '@tools/common'
 import { type ExecResult } from '@agents/common'
 
 import {
-    type GitReleaseManagerAddAssetSettings,
-    type GitReleaseManagerCloseSettings,
-    type GitReleaseManagerCreateSettings,
-    type GitReleaseManagerDiscardSettings,
-    type GitReleaseManagerOpenSettings,
-    type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings
+    type AddAssetSettings,
+    type CloseSettings,
+    type CreateSettings,
+    type DiscardSettings,
+    type OpenSettings,
+    type PublishSettings,
+    type CommonSettings
 } from './models'
 import { GitReleaseManagerSettingsProvider, IGitReleaseManagerSettingsProvider } from './settings'
 
@@ -77,7 +77,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return await this.executeTool(args)
     }
 
-    protected async getCommonArguments(settings: GitReleaseManagerSettings): Promise<string[]> {
+    protected async getCommonArguments(settings: CommonSettings): Promise<string[]> {
         const args: string[] = []
 
         args.push('--owner', settings.owner)
@@ -91,7 +91,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getCreateArguments(settings: GitReleaseManagerCreateSettings): Promise<string[]> {
+    protected async getCreateArguments(settings: CreateSettings): Promise<string[]> {
         const args: string[] = ['create', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -125,7 +125,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getDiscardArguments(settings: GitReleaseManagerDiscardSettings): Promise<string[]> {
+    protected async getDiscardArguments(settings: DiscardSettings): Promise<string[]> {
         const args: string[] = ['discard', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -135,7 +135,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getCloseArguments(settings: GitReleaseManagerCloseSettings): Promise<string[]> {
+    protected async getCloseArguments(settings: CloseSettings): Promise<string[]> {
         const args: string[] = ['close', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -145,7 +145,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getOpenArguments(settings: GitReleaseManagerOpenSettings): Promise<string[]> {
+    protected async getOpenArguments(settings: OpenSettings): Promise<string[]> {
         const args: string[] = ['open', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -155,7 +155,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getPublishArguments(settings: GitReleaseManagerPublishSettings): Promise<string[]> {
+    protected async getPublishArguments(settings: PublishSettings): Promise<string[]> {
         const args: string[] = ['publish', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -165,7 +165,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getAddAssetArguments(settings: GitReleaseManagerAddAssetSettings): Promise<string[]> {
+    protected async getAddAssetArguments(settings: AddAssetSettings): Promise<string[]> {
         const args: string[] = ['addasset', ...(await this.getCommonArguments(settings))]
 
         if (settings.milestone) {
@@ -182,7 +182,7 @@ export class GitReleaseManagerTool extends DotnetTool {
         return args
     }
 
-    protected async getRepoDir(settings: GitReleaseManagerSettings): Promise<string> {
+    protected async getRepoDir(settings: CommonSettings): Promise<string> {
         return await this.getRepoPath(settings.targetDirectory)
     }
 }

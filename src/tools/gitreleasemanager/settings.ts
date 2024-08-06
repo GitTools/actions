@@ -1,49 +1,40 @@
 import { type ISettingsProvider, SettingsProvider } from '@tools/common'
 import {
-    AddAssetFields,
-    CloseFields,
-    CommonFields,
-    CreateFields,
-    DiscardFields,
-    OpenFields,
-    PublishFields,
-    type GitReleaseManagerAddAssetSettings,
-    type GitReleaseManagerCloseSettings,
-    type GitReleaseManagerCreateSettings,
-    type GitReleaseManagerDiscardSettings,
-    type GitReleaseManagerOpenSettings,
-    type GitReleaseManagerPublishSettings,
-    type GitReleaseManagerSettings
+    type AddAssetSettings,
+    type CloseSettings,
+    type CreateSettings,
+    type DiscardSettings,
+    type OpenSettings,
+    type PublishSettings,
+    type CommonSettings
 } from './models'
 export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
-    getCreateSettings(): GitReleaseManagerCreateSettings
+    getCreateSettings(): CreateSettings
 
-    getDiscardSettings(): GitReleaseManagerDiscardSettings
+    getDiscardSettings(): DiscardSettings
 
-    getCloseSettings(): GitReleaseManagerCloseSettings
+    getCloseSettings(): CloseSettings
 
-    getOpenSettings(): GitReleaseManagerOpenSettings
+    getOpenSettings(): OpenSettings
 
-    getPublishSettings(): GitReleaseManagerPublishSettings
+    getPublishSettings(): PublishSettings
 
-    getAddAssetSettings(): GitReleaseManagerAddAssetSettings
+    getAddAssetSettings(): AddAssetSettings
 
-    getCommonSettings(): GitReleaseManagerSettings
+    getCommonSettings(): CommonSettings
 }
 
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {
-    getCreateSettings(): GitReleaseManagerCreateSettings {
-        const milestone = this.buildAgent.getInput(CreateFields.milestone)
-        const name = this.buildAgent.getInput(CreateFields.name)
-        const inputFileName = this.buildAgent.getInput(CreateFields.inputFileName)
-        const isPreRelease = this.buildAgent.getBooleanInput(CreateFields.isPreRelease)
-        const commit = this.buildAgent.getInput(CreateFields.commit)
-        const assets = this.buildAgent.getListInput(CreateFields.assets)
+    getCreateSettings(): CreateSettings {
+        const name = this.buildAgent.getInput<CreateSettings>('name')
+        const inputFileName = this.buildAgent.getInput<CreateSettings>('inputFileName')
+        const isPreRelease = this.buildAgent.getBooleanInput<CreateSettings>('isPreRelease')
+        const commit = this.buildAgent.getInput<CreateSettings>('commit')
+        const assets = this.buildAgent.getListInput<CreateSettings>('assets')
 
         const commonSettings = this.getCommonSettings()
         return {
             ...commonSettings,
-            milestone,
             name,
             inputFileName,
             isPreRelease,
@@ -52,68 +43,56 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
         }
     }
 
-    getDiscardSettings(): GitReleaseManagerDiscardSettings {
-        const milestone = this.buildAgent.getInput(DiscardFields.milestone)
-
+    getDiscardSettings(): DiscardSettings {
         const commonSettings = this.getCommonSettings()
         return {
-            ...commonSettings,
-            milestone
+            ...commonSettings
         }
     }
 
-    getCloseSettings(): GitReleaseManagerCloseSettings {
-        const milestone = this.buildAgent.getInput(CloseFields.milestone)
-
+    getCloseSettings(): CloseSettings {
         const commonSettings = this.getCommonSettings()
         return {
-            ...commonSettings,
-            milestone
+            ...commonSettings
         }
     }
 
-    getOpenSettings(): GitReleaseManagerOpenSettings {
-        const milestone = this.buildAgent.getInput(OpenFields.milestone)
-
+    getOpenSettings(): OpenSettings {
         const commonSettings = this.getCommonSettings()
         return {
-            ...commonSettings,
-            milestone
+            ...commonSettings
         }
     }
-    getPublishSettings(): GitReleaseManagerPublishSettings {
-        const milestone = this.buildAgent.getInput(PublishFields.milestone)
-
+    getPublishSettings(): PublishSettings {
         const commonSettings = this.getCommonSettings()
         return {
-            ...commonSettings,
-            milestone
+            ...commonSettings
         }
     }
 
-    getAddAssetSettings(): GitReleaseManagerAddAssetSettings {
-        const milestone = this.buildAgent.getInput(AddAssetFields.milestone)
-        const assets = this.buildAgent.getListInput(AddAssetFields.assets)
+    getAddAssetSettings(): AddAssetSettings {
+        const assets = this.buildAgent.getListInput<AddAssetSettings>('assets')
 
         const commonSettings = this.getCommonSettings()
         return {
             ...commonSettings,
-            milestone,
             assets
         }
     }
 
-    getCommonSettings(): GitReleaseManagerSettings {
-        const owner = this.buildAgent.getInput(CommonFields.owner, true)
-        const repository = this.buildAgent.getInput(CommonFields.repository, true)
-        const token = this.buildAgent.getInput(CommonFields.token, true)
-        const targetDirectory = this.buildAgent.getInput(CommonFields.targetDirectory)
+    getCommonSettings(): CommonSettings {
+        const milestone = this.buildAgent.getInput<CommonSettings>('milestone')
+        const owner = this.buildAgent.getInput<CommonSettings>('owner')
+        const repository = this.buildAgent.getInput<CommonSettings>('repository')
+        const token = this.buildAgent.getInput<CommonSettings>('token')
+        const targetDirectory = this.buildAgent.getInput<CommonSettings>('targetDirectory')
 
         return {
             owner,
             repository,
             token,
-            targetDirectory
+            targetDirectory,
+            milestone
         }
     }
 }
