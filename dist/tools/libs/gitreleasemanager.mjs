@@ -6,56 +6,16 @@ import 'node:os';
 import 'node:path';
 import './semver.mjs';
 
-var CommonFields = /* @__PURE__ */ ((CommonFields2) => {
-  CommonFields2["repository"] = "repository";
-  CommonFields2["owner"] = "owner";
-  CommonFields2["token"] = "token";
-  CommonFields2["targetDirectory"] = "targetDirectory";
-  return CommonFields2;
-})(CommonFields || {});
-var CreateFields = /* @__PURE__ */ ((CreateFields2) => {
-  CreateFields2["milestone"] = "milestone";
-  CreateFields2["name"] = "name";
-  CreateFields2["inputFileName"] = "inputFileName";
-  CreateFields2["isPreRelease"] = "isPreRelease";
-  CreateFields2["commit"] = "commit";
-  CreateFields2["assets"] = "assets";
-  return CreateFields2;
-})(CreateFields || {});
-var DiscardFields = /* @__PURE__ */ ((DiscardFields2) => {
-  DiscardFields2["milestone"] = "milestone";
-  return DiscardFields2;
-})(DiscardFields || {});
-var CloseFields = /* @__PURE__ */ ((CloseFields2) => {
-  CloseFields2["milestone"] = "milestone";
-  return CloseFields2;
-})(CloseFields || {});
-var OpenFields = /* @__PURE__ */ ((OpenFields2) => {
-  OpenFields2["milestone"] = "milestone";
-  return OpenFields2;
-})(OpenFields || {});
-var PublishFields = /* @__PURE__ */ ((PublishFields2) => {
-  PublishFields2["milestone"] = "milestone";
-  return PublishFields2;
-})(PublishFields || {});
-var AddAssetFields = /* @__PURE__ */ ((AddAssetFields2) => {
-  AddAssetFields2["milestone"] = "milestone";
-  AddAssetFields2["assets"] = "assets";
-  return AddAssetFields2;
-})(AddAssetFields || {});
-
 class GitReleaseManagerSettingsProvider extends SettingsProvider {
   getCreateSettings() {
-    const milestone = this.buildAgent.getInput(CreateFields.milestone);
-    const name = this.buildAgent.getInput(CreateFields.name);
-    const inputFileName = this.buildAgent.getInput(CreateFields.inputFileName);
-    const isPreRelease = this.buildAgent.getBooleanInput(CreateFields.isPreRelease);
-    const commit = this.buildAgent.getInput(CreateFields.commit);
-    const assets = this.buildAgent.getListInput(CreateFields.assets);
+    const name = this.buildAgent.getInput("name");
+    const inputFileName = this.buildAgent.getInput("inputFileName");
+    const isPreRelease = this.buildAgent.getBooleanInput("isPreRelease");
+    const commit = this.buildAgent.getInput("commit");
+    const assets = this.buildAgent.getListInput("assets");
     const commonSettings = this.getCommonSettings();
     return {
       ...commonSettings,
-      milestone,
       name,
       inputFileName,
       isPreRelease,
@@ -64,57 +24,49 @@ class GitReleaseManagerSettingsProvider extends SettingsProvider {
     };
   }
   getDiscardSettings() {
-    const milestone = this.buildAgent.getInput(DiscardFields.milestone);
     const commonSettings = this.getCommonSettings();
     return {
-      ...commonSettings,
-      milestone
+      ...commonSettings
     };
   }
   getCloseSettings() {
-    const milestone = this.buildAgent.getInput(CloseFields.milestone);
     const commonSettings = this.getCommonSettings();
     return {
-      ...commonSettings,
-      milestone
+      ...commonSettings
     };
   }
   getOpenSettings() {
-    const milestone = this.buildAgent.getInput(OpenFields.milestone);
     const commonSettings = this.getCommonSettings();
     return {
-      ...commonSettings,
-      milestone
+      ...commonSettings
     };
   }
   getPublishSettings() {
-    const milestone = this.buildAgent.getInput(PublishFields.milestone);
     const commonSettings = this.getCommonSettings();
     return {
-      ...commonSettings,
-      milestone
+      ...commonSettings
     };
   }
   getAddAssetSettings() {
-    const milestone = this.buildAgent.getInput(AddAssetFields.milestone);
-    const assets = this.buildAgent.getListInput(AddAssetFields.assets);
+    const assets = this.buildAgent.getListInput("assets");
     const commonSettings = this.getCommonSettings();
     return {
       ...commonSettings,
-      milestone,
       assets
     };
   }
   getCommonSettings() {
-    const owner = this.buildAgent.getInput(CommonFields.owner, true);
-    const repository = this.buildAgent.getInput(CommonFields.repository, true);
-    const token = this.buildAgent.getInput(CommonFields.token, true);
-    const targetDirectory = this.buildAgent.getInput(CommonFields.targetDirectory);
+    const milestone = this.buildAgent.getInput("milestone");
+    const owner = this.buildAgent.getInput("owner");
+    const repository = this.buildAgent.getInput("repository");
+    const token = this.buildAgent.getInput("token");
+    const targetDirectory = this.buildAgent.getInput("targetDirectory");
     return {
       owner,
       repository,
       token,
-      targetDirectory
+      targetDirectory,
+      milestone
     };
   }
 }

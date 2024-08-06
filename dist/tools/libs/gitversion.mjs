@@ -5,36 +5,17 @@ import 'node:os';
 import 'node:path';
 import './semver.mjs';
 
-var ExecuteFields = /* @__PURE__ */ ((ExecuteFields2) => {
-  ExecuteFields2["targetPath"] = "targetPath";
-  ExecuteFields2["disableCache"] = "disableCache";
-  ExecuteFields2["disableNormalization"] = "disableNormalization";
-  ExecuteFields2["disableShallowCloneCheck"] = "disableShallowCloneCheck";
-  ExecuteFields2["useConfigFile"] = "useConfigFile";
-  ExecuteFields2["configFilePath"] = "configFilePath";
-  ExecuteFields2["overrideConfig"] = "overrideConfig";
-  ExecuteFields2["updateAssemblyInfo"] = "updateAssemblyInfo";
-  ExecuteFields2["updateAssemblyInfoFilename"] = "updateAssemblyInfoFilename";
-  return ExecuteFields2;
-})(ExecuteFields || {});
-var CommandFields = /* @__PURE__ */ ((CommandFields2) => {
-  CommandFields2["targetPath"] = "targetPath";
-  CommandFields2["disableShallowCloneCheck"] = "disableShallowCloneCheck";
-  CommandFields2["arguments"] = "arguments";
-  return CommandFields2;
-})(CommandFields || {});
-
 class GitVersionSettingsProvider extends SettingsProvider {
   getGitVersionExecuteSettings() {
-    const targetPath = this.buildAgent.getInput(ExecuteFields.targetPath);
-    const disableCache = this.buildAgent.getBooleanInput(ExecuteFields.disableCache);
-    const disableNormalization = this.buildAgent.getBooleanInput(ExecuteFields.disableNormalization);
-    const disableShallowCloneCheck = this.buildAgent.getBooleanInput(ExecuteFields.disableShallowCloneCheck);
-    const useConfigFile = this.buildAgent.getBooleanInput(ExecuteFields.useConfigFile);
-    const configFilePath = this.buildAgent.getInput(ExecuteFields.configFilePath);
-    const overrideConfig = this.buildAgent.getListInput(ExecuteFields.overrideConfig);
-    const updateAssemblyInfo = this.buildAgent.getBooleanInput(ExecuteFields.updateAssemblyInfo);
-    const updateAssemblyInfoFilename = this.buildAgent.getInput(ExecuteFields.updateAssemblyInfoFilename);
+    const targetPath = this.buildAgent.getInput("targetPath");
+    const disableCache = this.buildAgent.getBooleanInput("disableCache");
+    const disableNormalization = this.buildAgent.getBooleanInput("disableNormalization");
+    const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
+    const useConfigFile = this.buildAgent.getBooleanInput("useConfigFile");
+    const configFilePath = this.buildAgent.getInput("configFilePath");
+    const overrideConfig = this.buildAgent.getListInput("overrideConfig");
+    const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
+    const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
     return {
       targetPath,
       disableCache,
@@ -48,9 +29,9 @@ class GitVersionSettingsProvider extends SettingsProvider {
     };
   }
   getGitVersionCommandSettings() {
-    const targetPath = this.buildAgent.getInput(CommandFields.targetPath);
-    const disableShallowCloneCheck = this.buildAgent.getBooleanInput(CommandFields.disableShallowCloneCheck);
-    const args = this.buildAgent.getInput(CommandFields.arguments);
+    const targetPath = this.buildAgent.getInput("targetPath");
+    const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
+    const args = this.buildAgent.getInput("arguments");
     return {
       targetPath,
       disableShallowCloneCheck,

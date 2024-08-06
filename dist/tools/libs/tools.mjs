@@ -4,14 +4,6 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { s as semver } from './semver.mjs';
 
-var SetupFields = /* @__PURE__ */ ((SetupFields2) => {
-  SetupFields2["includePrerelease"] = "includePrerelease";
-  SetupFields2["versionSpec"] = "versionSpec";
-  SetupFields2["ignoreFailedSources"] = "ignoreFailedSources";
-  SetupFields2["preferLatestVersion"] = "preferLatestVersion";
-  return SetupFields2;
-})(SetupFields || {});
-
 class DotnetTool {
   constructor(buildAgent) {
     this.buildAgent = buildAgent;
@@ -185,10 +177,10 @@ class SettingsProvider {
     this.buildAgent = buildAgent;
   }
   getSetupSettings() {
-    const versionSpec = this.buildAgent.getInput(SetupFields.versionSpec);
-    const includePrerelease = this.buildAgent.getBooleanInput(SetupFields.includePrerelease);
-    const ignoreFailedSources = this.buildAgent.getBooleanInput(SetupFields.ignoreFailedSources);
-    const preferLatestVersion = this.buildAgent.getBooleanInput(SetupFields.preferLatestVersion);
+    const versionSpec = this.buildAgent.getInput("versionSpec");
+    const includePrerelease = this.buildAgent.getBooleanInput("includePrerelease");
+    const ignoreFailedSources = this.buildAgent.getBooleanInput("ignoreFailedSources");
+    const preferLatestVersion = this.buildAgent.getBooleanInput("preferLatestVersion");
     return {
       versionSpec,
       includePrerelease,
