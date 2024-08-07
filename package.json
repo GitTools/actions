@@ -55,7 +55,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^17.10.2",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-promise": "^7.0.0",
+    "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-vitest": "^0.5.4",
     "glob": "^11.0.0",
     "markdownlint-cli": "^0.41.0",
