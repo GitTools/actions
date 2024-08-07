@@ -41,7 +41,9 @@
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
 
     "publish:prepare": "./dist/azure/updateTasks.mjs",
-    "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --no-wait-validation --auth-type pat"
+    "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --no-wait-validation --auth-type pat",
+
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^22.1.0",
@@ -58,6 +60,8 @@
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-vitest": "^0.5.4",
     "glob": "^11.0.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
     "markdownlint-cli": "^0.41.0",
     "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.3",
@@ -71,5 +75,9 @@
   },
   "dependencies": {
     "semver": "^7.6.3"
+  },
+  "lint-staged": {
+    "*.ts": ["npm run lint:fix", "npm run format:fix"],
+    "*.md": ["npm run mdlint:fix"]
   }
 }
