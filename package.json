@@ -68,7 +68,7 @@
     "simple-git": "^3.25.0",
     "tfx-cli": "^0.17.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.1",
+    "vite": "^5.4.2",
     "vite-node": "^2.0.5",
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.0.5"
