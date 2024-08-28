@@ -77,7 +77,7 @@
     "semver": "^7.6.3"
   },
   "lint-staged": {
-    "*.ts": ["npm run lint:fix", "npm run format:fix"],
-    "*.md": ["npm run mdlint:fix"]
+    "*.ts": ["eslint --fix", "prettier --write"],
+    "*.md": ["markdownlint --fix"]
   }
 }
