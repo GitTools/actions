@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { SettingsProvider, type SetupSettings } from '@tools/common'
 import { expectValidSettings } from './utils'
 

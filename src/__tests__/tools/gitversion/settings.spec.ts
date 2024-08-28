@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { type CommandSettings, type ExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
 import { expectValidSettings } from '../common/utils'
 

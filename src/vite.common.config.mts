@@ -3,7 +3,7 @@ import { builtinModules } from 'node:module'
 import { defineConfig, UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-export function viteConfig(entry: { [p: string]: string }, manualChunks: (id: string) => string | undefined): UserConfig {
+export function viteConfig(entry: Record<string, string>, manualChunks: (id: string) => string | undefined): UserConfig {
     return defineConfig({
         root: resolve(__dirname, '..'),
         esbuild: {

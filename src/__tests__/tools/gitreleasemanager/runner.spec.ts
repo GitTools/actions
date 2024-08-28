@@ -2,7 +2,7 @@ import * as path from 'node:path'
 import * as fs from 'node:fs'
 
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitreleasemanager'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
@@ -15,7 +15,7 @@ describe('GitReleaseManager Runner', () => {
     const toolPathVariable = 'GITRELEASEMANAGER_PATH'
     const toolName = 'dotnet-gitreleasemanager'
 
-    async function testOnAgent(agent: IBuildAgent): Promise<void> {
+    function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
         let runner: Runner

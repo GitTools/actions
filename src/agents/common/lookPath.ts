@@ -23,7 +23,7 @@ const access = async (filePath: string): Promise<string | undefined> => {
     try {
         await fs.access(filePath)
         return filePath
-    } catch (e) {
+    } catch (_error) {
         return undefined
     }
 }

@@ -1,6 +1,6 @@
 import { parseArgs } from 'node:util'
 
-import { ExecResult, type IBuildAgent } from '@agents/common'
+import { type ExecResult, type IBuildAgent } from '@agents/common'
 import { type IRunner } from '@tools/common'
 
 type CliArgs = {
@@ -11,14 +11,14 @@ type CliArgs = {
 
 export async function getAgent(buildAgent: string | undefined): Promise<IBuildAgent> {
     const agent = `./${buildAgent}/agent.mjs`
-    const module: { BuildAgent: new () => IBuildAgent } = await import(agent)
+    const module = (await import(agent)) as { BuildAgent: new () => IBuildAgent }
     return new module.BuildAgent()
 }
 
 export async function getToolRunner(buildAgent: string | undefined, tool: string | undefined): Promise<IRunner> {
     const agent = await getAgent(buildAgent)
     const toolRunner = `./libs/${tool}.mjs`
-    const module: { Runner: new (buildAgent: IBuildAgent) => IRunner } = await import(toolRunner)
+    const module = (await import(toolRunner)) as { Runner: new (buildAgent: IBuildAgent) => IRunner }
     return new module.Runner(agent)
 }
 

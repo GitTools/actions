@@ -42,7 +42,7 @@ export class GitVersionTool extends DotnetTool {
 
         await this.checkShallowClone(settings, workDir)
 
-        const args = await this.getCommandArguments(workDir, settings)
+        const args = this.getCommandArguments(workDir, settings)
 
         await this.setDotnetRoot()
         return await this.executeTool(args)
@@ -60,7 +60,7 @@ export class GitVersionTool extends DotnetTool {
                 this.buildAgent.setOutput(`GitVersion_${property}`, value)
                 this.buildAgent.setVariable(name, value)
                 this.buildAgent.setVariable(`GitVersion_${property}`, value)
-            } catch (error) {
+            } catch (_error) {
                 this.buildAgent.error(`Unable to set output/variable for ${property}`)
             }
         }
@@ -125,7 +125,7 @@ export class GitVersionTool extends DotnetTool {
         return args
     }
 
-    protected async getCommandArguments(workDir: string, options: CommandSettings): Promise<string[]> {
+    protected getCommandArguments(workDir: string, options: CommandSettings): string[] {
         let args = [workDir]
 
         if (options.arguments) {

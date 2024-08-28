@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool } from '@tools/gitversion'
 
 class TestGitVersionTool extends GitVersionTool {
@@ -21,7 +21,7 @@ class TestGitVersionTool extends GitVersionTool {
         return super.getExecuteArguments(workDir, options)
     }
 
-    async getCommandArguments(workDir: string, options: CommandSettings): Promise<string[]> {
+    getCommandArguments(workDir: string, options: CommandSettings): string[] {
         return super.getCommandArguments(workDir, options)
     }
 }
@@ -50,8 +50,8 @@ describe('GitVersionTool', () => {
 
     describe('writeGitVersionToAgent', () => {
         it('should write correct output and variables to agent', () => {
-            const outputs: Map<string, string> = new Map()
-            const variables: Map<string, string> = new Map()
+            const outputs = new Map<string, string>()
+            const variables = new Map<string, string>()
             const buildAgent = {
                 setOutput(name: string, value: string) {
                     outputs.set(name, value)
@@ -249,13 +249,13 @@ describe('GitVersionTool', () => {
     })
 
     describe('getCommandArguments', () => {
-        it('should return correct arguments for empty settings', async () => {
-            const args = await tool.getCommandArguments('workdir', {} as CommandSettings)
+        it('should return correct arguments for empty settings', () => {
+            const args = tool.getCommandArguments('workdir', {} as CommandSettings)
             expect(args).toEqual(['workdir'])
         })
 
-        it('should return correct arguments for settings with additional arguments', async () => {
-            const args = await tool.getCommandArguments('workdir', {
+        it('should return correct arguments for settings with additional arguments', () => {
+            const args = tool.getCommandArguments('workdir', {
                 arguments: '--some-arg --another-arg'
             } as CommandSettings)
             expect(args).toEqual(['workdir', '--some-arg', '--another-arg'])

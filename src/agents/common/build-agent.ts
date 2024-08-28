@@ -148,7 +148,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         try {
             await fs.access(dir)
             return (await fs.stat(dir)).isDirectory()
-        } catch (e) {
+        } catch (_error) {
             return false
         }
     }
@@ -161,7 +161,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         try {
             await fs.access(file)
             return (await fs.stat(file)).isFile()
-        } catch (e) {
+        } catch (_error) {
             return false
         }
     }
