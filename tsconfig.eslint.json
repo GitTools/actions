@@ -1,6 +1,7 @@
 {
-    "extends": "./tsconfig.json",
-    "exclude": [
-        "node_modules"
-    ]
+  "extends": "./tsconfig.json",
+  "include": ["eslint.config.mjs"],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -42,7 +42,7 @@ export class Runner implements IRunner {
             }
             return {
                 code: -1,
-                error
+                error: error as Error
             }
         }
     }
@@ -94,7 +94,7 @@ export class Runner implements IRunner {
             }
             return {
                 code: -1,
-                error
+                error: error as Error
             }
         }
     }
@@ -132,7 +132,7 @@ export class Runner implements IRunner {
             }
             return {
                 code: -1,
-                error
+                error: error as Error
             }
         }
     }

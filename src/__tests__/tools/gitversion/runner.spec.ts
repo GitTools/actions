@@ -4,7 +4,7 @@ import * as fs from 'node:fs'
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { simpleGit } from 'simple-git'
 
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
@@ -17,7 +17,7 @@ describe('GitVersion Runner', () => {
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
 
-    async function testOnAgent(agent: IBuildAgent): Promise<void> {
+    function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
         let runner: Runner

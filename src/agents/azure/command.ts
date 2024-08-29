@@ -3,9 +3,7 @@ import * as process from 'node:process'
 
 const CMD_PREFIX = '##vso['
 
-export interface CommandProperties {
-    [key: string]: string | object
-}
+export type CommandProperties = Record<string, string | object>
 
 export enum TaskResult {
     Succeeded = 0,
@@ -49,8 +47,8 @@ class Command {
         if (this.properties && Object.keys(this.properties).length > 0) {
             cmdStr += ' '
             for (const key in this.properties) {
-                if (this.properties.hasOwnProperty(key)) {
-                    const val = this.properties[key]
+                if (Object.prototype.hasOwnProperty.call(this.properties, key)) {
+                    const val = this.properties[key] as string
                     if (val) {
                         // safely append the val - avoid blowing up when attempting to
                         // call .replace() if message is not a string for some reason

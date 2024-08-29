@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import {
     type AddAssetSettings,
     type CloseSettings,

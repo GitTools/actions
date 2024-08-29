@@ -39,7 +39,7 @@ const updateJsonFields = async (filePath, versionStr, mode) => {
 
     // Update the fields
     for (let key in updates) {
-        if (data.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
             data[key] = updates[key]
         }
     }

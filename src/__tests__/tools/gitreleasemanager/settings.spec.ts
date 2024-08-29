@@ -1,5 +1,5 @@
 import { describe, it } from 'vitest'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import {
     type CreateSettings,
     type DiscardSettings,

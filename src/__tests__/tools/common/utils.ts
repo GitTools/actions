@@ -1,7 +1,7 @@
 import process from 'node:process'
 import { expect } from 'vitest'
 import { keysOf } from '@tools/common'
-import { IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 
 export function setEnv(key: string, value: string): void {
     process.env[key.toUpperCase()] = value
