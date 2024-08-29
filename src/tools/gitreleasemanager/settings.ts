@@ -63,6 +63,7 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
             ...commonSettings
         }
     }
+
     getPublishSettings(): PublishSettings {
         const commonSettings = this.getCommonSettings()
         return {

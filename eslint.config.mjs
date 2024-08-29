@@ -6,10 +6,9 @@ import stylistic from '@stylistic/eslint-plugin'
 import vitest from '@vitest/eslint-plugin'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended'
+import globals from 'globals'
 
-export default eslintTs.config(
-    eslint.configs.recommended,
-    ...eslintTs.configs.recommendedTypeChecked,
+export default [
     {
         files: ['src/**/*.ts']
     },
@@ -19,7 +18,8 @@ export default eslintTs.config(
             sourceType: 'module',
             parserOptions: {
                 project: ['./tsconfig.json', './tsconfig.eslint.json'],
-                tsconfigRootDir: import.meta.dirname
+                tsconfigRootDir: import.meta.dirname,
+                globals: { ...globals.node }
             }
         },
         plugins: {
@@ -27,6 +27,8 @@ export default eslintTs.config(
             vitest
         }
     },
+    eslint.configs.recommended,
+    ...eslintTs.configs.recommendedTypeChecked,
     {
         rules: {
             ...vitest.configs.recommended.rules,
@@ -114,7 +116,6 @@ export default eslintTs.config(
         }
     },
     eslintPluginPrettier,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     eslintConfigPrettier,
     {
         rules: {
@@ -126,4 +127,4 @@ export default eslintTs.config(
             ]
         }
     }
-)
+]
