@@ -12,7 +12,7 @@ const access = async (filePath) => {
   try {
     await fs.access(filePath);
     return filePath;
-  } catch (e) {
+  } catch (_error) {
     return void 0;
   }
 };
@@ -88,7 +88,7 @@ class BuildAgentBase {
     try {
       await fs.access(dir);
       return (await fs.stat(dir)).isDirectory();
-    } catch (e) {
+    } catch (_error) {
       return false;
     }
   }
@@ -99,7 +99,7 @@ class BuildAgentBase {
     try {
       await fs.access(file);
       return (await fs.stat(file)).isFile();
-    } catch (e) {
+    } catch (_error) {
       return false;
     }
   }

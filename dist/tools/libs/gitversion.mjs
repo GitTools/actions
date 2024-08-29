@@ -68,7 +68,7 @@ class GitVersionTool extends DotnetTool {
     const settings = this.settingsProvider.getCommandSettings();
     const workDir = await this.getRepoDir(settings);
     await this.checkShallowClone(settings, workDir);
-    const args = await this.getCommandArguments(workDir, settings);
+    const args = this.getCommandArguments(workDir, settings);
     await this.setDotnetRoot();
     return await this.executeTool(args);
   }
@@ -84,7 +84,7 @@ class GitVersionTool extends DotnetTool {
         this.buildAgent.setOutput(`GitVersion_${property}`, value);
         this.buildAgent.setVariable(name, value);
         this.buildAgent.setVariable(`GitVersion_${property}`, value);
-      } catch (error) {
+      } catch (_error) {
         this.buildAgent.error(`Unable to set output/variable for ${property}`);
       }
     }
@@ -137,7 +137,7 @@ class GitVersionTool extends DotnetTool {
     }
     return args;
   }
-  async getCommandArguments(workDir, options) {
+  getCommandArguments(workDir, options) {
     let args = [workDir];
     if (options.arguments) {
       args = args.concat(this.argStringToArray(options.arguments));
