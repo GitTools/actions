@@ -136,7 +136,8 @@ describe('GitReleaseManagerTool', () => {
             owner: 'owner',
             repository: 'repo',
             token: 'token',
-            targetDirectory: 'targetDirectory'
+            targetDirectory: 'targetDirectory',
+            logFilePath: './logFilePath'
         } as CommonSettings
 
         beforeEach(() => {
@@ -162,7 +163,18 @@ describe('GitReleaseManagerTool', () => {
                     ...commonSettings
                 } as CommonSettings)
 
-                expect(args).toEqual(['--owner', 'owner', '--repository', 'repo', '--token', 'token', '--targetDirectory', 'targetDirectory'])
+                expect(args).toEqual([
+                    '--owner',
+                    'owner',
+                    '--repository',
+                    'repo',
+                    '--token',
+                    'token',
+                    '--targetDirectory',
+                    'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath'
+                ])
             })
 
             it('should throw error for non-existing target path', async () => {
@@ -192,7 +204,8 @@ describe('GitReleaseManagerTool', () => {
                     milestone: 'milestone',
                     inputFileName: 'inputFileName',
                     isPreRelease: true,
-                    assets: ['asset1', 'asset2']
+                    assets: ['asset1', 'asset2'],
+                    logFilePath: './createLogFilePath'
                 } as CreateSettings)
 
                 expect(args).toEqual([
@@ -205,6 +218,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './createLogFilePath',
                     '--milestone',
                     'milestone',
                     '--name',
@@ -237,6 +252,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath',
                     '--milestone',
                     'milestone'
                 ])
@@ -260,6 +277,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath',
                     '--milestone',
                     'milestone'
                 ])
@@ -283,6 +302,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath',
                     '--milestone',
                     'milestone'
                 ])
@@ -306,6 +327,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath',
                     '--tagName',
                     'milestone'
                 ])
@@ -330,6 +353,8 @@ describe('GitReleaseManagerTool', () => {
                     'token',
                     '--targetDirectory',
                     'targetDirectory',
+                    '--logFilePath',
+                    './logFilePath',
                     '--tagName',
                     'milestone',
                     '--assets',

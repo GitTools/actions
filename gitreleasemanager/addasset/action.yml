@@ -32,3 +32,7 @@ inputs:
     description: The directory on which GitReleaseManager should be executed. Defaults to current directory
     required: false
     default: ''
+  logFilePath:
+    description: Path to where log file should be created. Defaults to logging to console.
+    required: false
+    default: ''
