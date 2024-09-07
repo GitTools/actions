@@ -23,7 +23,8 @@ describe('GitReleaseManager settings', () => {
             inputFileName: 'inputFileName',
             isPreRelease: false,
             commit: 'commit',
-            assets: ['asset']
+            assets: ['asset'],
+            logFilePath: './output.log'
         }
 
         const buildAgent = {

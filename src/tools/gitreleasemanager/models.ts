@@ -6,6 +6,7 @@ export type CommonSettings = {
     token: string
     targetDirectory: string
     milestone: string
+    logFilePath: string;
 }
 
 export type CreateSettings = CommonSettings & {
