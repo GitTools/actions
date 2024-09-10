@@ -77,9 +77,9 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
     abstract error(message: string): void
 
-    abstract setSucceeded(message: string, done?: boolean | undefined): void
+    abstract setSucceeded(message: string, done?: boolean): void
 
-    abstract setFailed(message: string, done?: boolean | undefined): void
+    abstract setFailed(message: string, done?: boolean): void
 
     abstract setOutput(name: string, value: string): void
 
