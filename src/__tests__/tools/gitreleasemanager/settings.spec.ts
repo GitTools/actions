@@ -23,7 +23,8 @@ describe('GitReleaseManager settings', () => {
             inputFileName: 'inputFileName',
             isPreRelease: false,
             commit: 'commit',
-            assets: ['asset']
+            assets: ['asset'],
+            logFilePath: './output.log'
         }
 
         const buildAgent = {
@@ -45,7 +46,8 @@ describe('GitReleaseManager settings', () => {
             owner: 'owner',
             token: 'token',
             targetDirectory: 'path',
-            milestone: 'milestone'
+            milestone: 'milestone',
+            logFilePath: './output.log'
         }
 
         const buildAgent = {
@@ -65,7 +67,8 @@ describe('GitReleaseManager settings', () => {
             owner: 'owner',
             token: 'token',
             targetDirectory: 'path',
-            milestone: 'milestone'
+            milestone: 'milestone',
+            logFilePath: './output.log'
         }
 
         const buildAgent = {
@@ -85,7 +88,8 @@ describe('GitReleaseManager settings', () => {
             owner: 'owner',
             token: 'token',
             targetDirectory: 'path',
-            milestone: 'milestone'
+            milestone: 'milestone',
+            logFilePath: './output.log'
         }
 
         const buildAgent = {
@@ -105,7 +109,8 @@ describe('GitReleaseManager settings', () => {
             owner: 'owner',
             token: 'token',
             targetDirectory: 'path',
-            milestone: 'milestone'
+            milestone: 'milestone',
+            logFilePath: './output.log'
         }
 
         const buildAgent = {
@@ -126,7 +131,8 @@ describe('GitReleaseManager settings', () => {
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
-            assets: ['asset']
+            assets: ['asset'],
+            logFilePath: './output.log'
         }
 
         const buildAgent = {

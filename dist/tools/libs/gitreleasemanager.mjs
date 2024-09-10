@@ -61,12 +61,14 @@ class GitReleaseManagerSettingsProvider extends SettingsProvider {
     const repository = this.buildAgent.getInput("repository");
     const token = this.buildAgent.getInput("token");
     const targetDirectory = this.buildAgent.getInput("targetDirectory");
+    const logFilePath = this.buildAgent.getInput("logFilePath");
     return {
       owner,
       repository,
       token,
       targetDirectory,
-      milestone
+      milestone,
+      logFilePath
     };
   }
 }
@@ -124,6 +126,7 @@ class GitReleaseManagerTool extends DotnetTool {
     args.push("--token", settings.token);
     settings.targetDirectory = await this.getRepoDir(settings);
     args.push("--targetDirectory", settings.targetDirectory);
+    args.push("--logFilePath", settings.logFilePath);
     return args;
   }
   async getCreateArguments(settings) {
