@@ -18,14 +18,20 @@ updates:
       patterns:
         - "vite"
         - "vite-node"
+        - "vite-tsconfig-paths"
         - "vitest"
     eslint:
       patterns:
         - "eslint"
         - "eslint-plugin-*"
         - "eslint-config-*"
-      exclude-patterns:
-        - "eslint-plugin-vitest"
+        - "typescript-eslint"
+        - "@eslint/js"
+        - "@stylistic/eslint-plugin"
+        - "@vitest/eslint-plugin"
+    types:
+      patterns:
+        - "@types/*"
   directory: "/"
   schedule:
     interval: daily
