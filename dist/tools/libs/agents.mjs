@@ -122,7 +122,7 @@ class BuildAgentBase {
     const destPath = path.join(cacheRoot, tool, version);
     if (await this.directoryExists(destPath)) {
       this.debug(`Destination directory ${destPath} already exists, removing`);
-      await fs.rm(destPath, { recursive: true, force: true, maxRetries: 3, retryDelay: 1e3 });
+      await this.removeDirectory(destPath);
     }
     this.debug(`Copying ${sourceDir} to ${destPath}`);
     await fs.mkdir(destPath, { recursive: true });
@@ -156,7 +156,8 @@ class BuildAgentBase {
   async exec(cmd, args) {
     const exec$1 = util.promisify(exec);
     try {
-      const { stdout, stderr } = await exec$1(`${cmd} ${args.join(" ")}`);
+      const commandOptions = { maxBuffer: 1024 * 1024 * 10 };
+      const { stdout, stderr } = await exec$1(`${cmd} ${args.join(" ")}`, commandOptions);
       return {
         code: 0,
         error: null,
