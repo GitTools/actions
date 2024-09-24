@@ -1,4 +1,4 @@
-import { exec as execNonPromise } from 'node:child_process'
+import { exec as execNonPromise, ExecOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
 import * as path from 'node:path'
@@ -40,6 +40,7 @@ export interface IBuildAgent {
     findLocalTool(toolName: string, versionSpec: string): Promise<string | null>
 
     getInput(input: string, required?: boolean): string
+
     getInput<T>(input: Extract<keyof T, string>, required?: boolean): string
 
     getBooleanInput<T>(input: Extract<keyof T, string>, required?: boolean): boolean
@@ -187,7 +188,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         const destPath = path.join(cacheRoot, tool, version)
         if (await this.directoryExists(destPath)) {
             this.debug(`Destination directory ${destPath} already exists, removing`)
-            await fs.rm(destPath, { recursive: true, force: true, maxRetries: 3, retryDelay: 1000 })
+            await this.removeDirectory(destPath)
         }
 
         this.debug(`Copying ${sourceDir} to ${destPath}`)
@@ -229,7 +230,8 @@ export abstract class BuildAgentBase implements IBuildAgent {
         const exec = util.promisify(execNonPromise)
 
         try {
-            const { stdout, stderr } = await exec(`${cmd} ${args.join(' ')}`)
+            const commandOptions: ExecOptions = { maxBuffer: 1024 * 1024 * 10 } // 10MB
+            const { stdout, stderr } = await exec(`${cmd} ${args.join(' ')}`, commandOptions)
             return {
                 code: 0,
                 error: null,
