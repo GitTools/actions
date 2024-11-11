@@ -51,7 +51,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.9.0",
     "@types/semver": "^7.5.8",
-    "@vitest/eslint-plugin": "^1.1.7",
+    "@vitest/eslint-plugin": "^1.1.8",
     "dotenv": "^16.4.5",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",
