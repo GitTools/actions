@@ -21,7 +21,7 @@ jobs:
           $newTag = "${{ github.event.client_payload.newTag }}"
 
           . .\update-version.ps1 # Import the functions
-          dir -r .\package*.json | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .\package.json | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
           dir -r .\docs\**\*.md | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
           dir -r .github\**\*.yml | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
           dir -r .azure\**\*.yml | % { update-md-files $_ -OldVersion $oldTag -NewVersion $newTag }
