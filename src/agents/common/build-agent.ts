@@ -230,7 +230,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         const exec = util.promisify(execNonPromise)
 
         try {
-            const commandOptions: ExecOptions = { maxBuffer: 1024 * 1024 * 10 } // 10MB
+            const commandOptions: ExecOptions = { maxBuffer: 1024 * 1024 * 100 } // 100MB
             const { stdout, stderr } = await exec(`${cmd} ${args.join(' ')}`, commandOptions)
             return {
                 code: 0,
