@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util';
-import * as process from 'node:process';
+import process from 'node:process';
 
 async function getAgent(buildAgent) {
   const agent = `./${buildAgent}/agent.mjs`;
@@ -30,7 +30,7 @@ async function run(agent, tool, command) {
   if (stderr) {
     process.stderr.write(stderr);
   }
-  process.exit(code);
+  process.exitCode = code;
 }
 
 export { getAgent, getToolRunner, parseCliArgs, run };

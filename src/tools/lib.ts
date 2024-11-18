@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util'
-import * as process from 'node:process'
+import process from 'node:process'
 
 import { type IBuildAgent } from '@agents/common'
 import { type IRunner } from '@tools/common'
@@ -42,5 +42,5 @@ export async function run(agent: string, tool: string, command: string): Promise
     if (stderr) {
         process.stderr.write(stderr)
     }
-    process.exit(code)
+    process.exitCode = code
 }
