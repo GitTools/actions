@@ -1,6 +1,7 @@
 import { parseArgs } from 'node:util'
+import * as process from 'node:process'
 
-import { type ExecResult, type IBuildAgent } from '@agents/common'
+import { type IBuildAgent } from '@agents/common'
 import { type IRunner } from '@tools/common'
 
 type CliArgs = {
@@ -32,7 +33,14 @@ export function parseCliArgs(): CliArgs {
     }).values as CliArgs
 }
 
-export async function run(agent: string, tool: string, command: string): Promise<ExecResult> {
+export async function run(agent: string, tool: string, command: string): Promise<void> {
     const runner = await getToolRunner(agent, tool)
-    return await runner.run(command)
+    const { code, stdout, stderr } = await runner.run(command)
+    if (stdout) {
+        process.stdout.write(stdout)
+    }
+    if (stderr) {
+        process.stderr.write(stderr)
+    }
+    process.exit(code)
 }
