@@ -1,5 +1,5 @@
 import * as os from 'node:os'
-import process from 'node:process'
+import * as process from 'node:process'
 import { BuildAgentBase, type IBuildAgent } from '@agents/common'
 import { ExitCode, issueCommand, issueFileCommand, prepareKeyValueMessage, toCommandValue } from './command'
 

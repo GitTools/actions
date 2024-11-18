@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { BuildAgent } from '@agents/local'
-import process from 'node:process'
+import * as process from 'node:process'
 
 describe('build-agent/local', () => {
     let agent: BuildAgent

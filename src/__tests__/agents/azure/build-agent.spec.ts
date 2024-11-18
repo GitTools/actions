@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BuildAgent } from '@agents/azure'
-import process from 'node:process'
+import * as process from 'node:process'
 import * as os from 'node:os'
 
 // Check if running in Azure Pipelines

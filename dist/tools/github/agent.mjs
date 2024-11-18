@@ -1,5 +1,5 @@
 import * as os from 'node:os';
-import process__default from 'node:process';
+import * as process$1 from 'node:process';
 import { B as BuildAgentBase } from '../libs/agents.mjs';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
@@ -95,7 +95,7 @@ class BuildAgent extends BuildAgentBase {
   cacheDirVariable = "RUNNER_TOOL_CACHE";
   addPath(inputPath) {
     super.addPath(inputPath);
-    const filePath = process__default.env["GITHUB_PATH"] || "";
+    const filePath = process$1.env["GITHUB_PATH"] || "";
     if (filePath) {
       issueFileCommand("PATH", inputPath);
     } else {
@@ -104,29 +104,29 @@ class BuildAgent extends BuildAgentBase {
   }
   debug = (message) => issueCommand("debug", {}, message);
   info = (message) => {
-    process__default.stdout.write(message + os.EOL);
+    process$1.stdout.write(message + os.EOL);
   };
   warn = (message) => issueCommand("warning", {}, message);
   error = (message) => issueCommand("error", {}, message);
   setSucceeded(_message, _done) {
-    process__default.exitCode = ExitCode.Success;
+    process$1.exitCode = ExitCode.Success;
   }
   setFailed = (message, _done) => {
-    process__default.exitCode = ExitCode.Failure;
+    process$1.exitCode = ExitCode.Failure;
     this.error(message);
   };
   setOutput = (name, value) => {
-    const filePath = process__default.env["GITHUB_OUTPUT"] || "";
+    const filePath = process$1.env["GITHUB_OUTPUT"] || "";
     if (filePath) {
       return issueFileCommand("OUTPUT", prepareKeyValueMessage(name, value));
     }
-    process__default.stdout.write(os.EOL);
+    process$1.stdout.write(os.EOL);
     issueCommand("set-output", { name }, toCommandValue(value));
   };
   setVariable = (name, value) => {
     const convertedVal = toCommandValue(value);
-    process__default.env[name] = convertedVal;
-    const filePath = process__default.env["GITHUB_ENV"] || "";
+    process$1.env[name] = convertedVal;
+    const filePath = process$1.env["GITHUB_ENV"] || "";
     if (filePath) {
       return issueFileCommand("ENV", prepareKeyValueMessage(name, value));
     }

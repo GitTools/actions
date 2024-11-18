@@ -1,4 +1,4 @@
-import process from 'node:process'
+import * as process from 'node:process'
 import { expect } from 'vitest'
 import { keysOf } from '@tools/common'
 import { type IBuildAgent } from '@agents/common'
