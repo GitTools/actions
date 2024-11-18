@@ -1,6 +1,5 @@
-import { parseCliArgs, getToolRunner } from './lib.mjs';
+import { parseCliArgs, run } from './lib.mjs';
 
 const { agent, tool, command } = parseCliArgs();
-const runner = await getToolRunner(agent, tool);
-await runner.run(command);
+await run(agent, tool, command);
 //# sourceMappingURL=cli.mjs.map

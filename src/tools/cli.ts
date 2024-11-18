@@ -1,5 +1,5 @@
-import { getToolRunner, parseCliArgs } from '@lib'
+import { parseCliArgs, run } from '@lib'
+import { type Commands } from '@tools/gitversion'
 
 const { agent, tool, command } = parseCliArgs()
-const runner = await getToolRunner(agent, tool)
-await runner.run(command)
+await run(agent, tool, command as Commands)
