@@ -16,6 +16,7 @@ describe('GitVersion Runner', () => {
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
+    const versionSpec = '6.x'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -23,7 +24,7 @@ describe('GitVersion Runner', () => {
         let runner: Runner
 
         beforeAll(async () => {
-            version = await getLatestVersion('GitVersion.Tool')
+            version = await getLatestVersion('GitVersion.Tool', versionSpec)
             toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
         })
@@ -41,7 +42,7 @@ describe('GitVersion Runner', () => {
 
         it.sequential('should run setup GitVersion', async () => {
             setInputs({
-                versionSpec: '6.x',
+                versionSpec: versionSpec,
                 includePrerelease: false,
                 ignoreFailedSources: false,
                 preferLatestVersion: true

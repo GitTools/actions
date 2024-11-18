@@ -2,6 +2,7 @@ import process from 'node:process'
 import { expect } from 'vitest'
 import { keysOf } from '@tools/common'
 import { type IBuildAgent } from '@agents/common'
+import * as semver from 'semver'
 
 export function setEnv(key: string, value: string): void {
     process.env[key.toUpperCase()] = value
@@ -34,8 +35,9 @@ export const expectValidSettings = <T extends object>(expectedSettings: T, actua
     }
 }
 
-export async function getLatestVersion(toolName: string): Promise<string> {
+export async function getLatestVersion(toolName: string, versionSpec: string): Promise<string> {
     const response = await fetch(`https://api.nuget.org/v3-flatcontainer/${toolName.toLowerCase()}/index.json`)
     const json = (await response.json()) as { versions: string[] }
-    return json.versions.reverse()[0]
+    const filteredVersions = json.versions.filter(v => semver.satisfies(v, versionSpec))
+    return filteredVersions.reverse()[0]
 }

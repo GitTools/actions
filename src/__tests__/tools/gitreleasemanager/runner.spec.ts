@@ -14,6 +14,7 @@ describe('GitReleaseManager Runner', () => {
 
     const toolPathVariable = 'GITRELEASEMANAGER_PATH'
     const toolName = 'dotnet-gitreleasemanager'
+    const versionSpec = '0.x'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -21,7 +22,7 @@ describe('GitReleaseManager Runner', () => {
         let runner: Runner
 
         beforeAll(async () => {
-            version = await getLatestVersion('GitReleaseManager.Tool')
+            version = await getLatestVersion('GitReleaseManager.Tool', versionSpec)
             toolPath = path.resolve(baseDir, 'tools', 'GitReleaseManager.Tool', version)
             runner = new Runner(agent)
         })
@@ -39,7 +40,7 @@ describe('GitReleaseManager Runner', () => {
 
         it.sequential('should run setup GitReleaseManager', async () => {
             setInputs({
-                versionSpec: '0.x',
+                versionSpec: versionSpec,
                 includePrerelease: false,
                 ignoreFailedSources: false,
                 preferLatestVersion: true
