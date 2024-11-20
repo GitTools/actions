@@ -41,7 +41,7 @@
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
 
     "publish:prepare": "./dist/azure/updateTasks.mjs",
-    "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --no-wait-validation --auth-type pat",
+    "publish:azure": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --auth-type pat",
 
     "prepare": "husky"
   },
