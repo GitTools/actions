@@ -79,9 +79,6 @@ describe('GitVersion Runner', () => {
             expect(getEnv('major')).toBeDefined()
             expect(getEnv('minor')).toBeDefined()
             expect(getEnv('patch')).toBeDefined()
-
-            expect(result.stdout).toContain('Executing GenerateSetVersionMessage')
-            expect(result.stdout).toContain('Executing GenerateBuildLogOutput')
         })
 
         it.sequential('should output Major variable', async () => {

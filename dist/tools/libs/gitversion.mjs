@@ -93,7 +93,7 @@ class GitVersionTool extends DotnetTool {
     return await super.getRepoPath(settings.targetPath);
   }
   async getExecuteArguments(workDir, options) {
-    const args = [workDir, "/output", "json", "/output", "buildserver"];
+    const args = [workDir, "/output", "json"];
     const {
       useConfigFile,
       disableCache,
