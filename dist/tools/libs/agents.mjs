@@ -3,7 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as process from 'node:process';
 import * as path from 'node:path';
 import * as util from 'node:util';
-import { s as semver } from './semver.mjs';
+import { s as semverExports } from './semver.mjs';
 
 const isFilePath = (cmd) => {
   return cmd.includes(path.sep) ? path.resolve(cmd) : void 0;
@@ -118,7 +118,7 @@ class BuildAgentBase {
       this.debug("cache root not set");
       return "";
     }
-    version = semver.clean(version) || version;
+    version = semverExports.clean(version) || version;
     const destPath = path.join(cacheRoot, tool, version);
     if (await this.directoryExists(destPath)) {
       this.debug(`Destination directory ${destPath} already exists, removing`);
@@ -142,7 +142,7 @@ class BuildAgentBase {
       this.debug("cache root not set");
       return null;
     }
-    versionSpec = semver.clean(versionSpec) || versionSpec;
+    versionSpec = semverExports.clean(versionSpec) || versionSpec;
     this.info(`Looking for local tool ${toolName}@${versionSpec}`);
     const toolPath = path.join(cacheRoot, toolName, versionSpec);
     if (!await this.directoryExists(toolPath)) {

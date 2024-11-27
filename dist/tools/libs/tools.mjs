@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { s as semver } from './semver.mjs';
+import { s as semverExports } from './semver.mjs';
 
 class DotnetTool {
   constructor(buildAgent) {
@@ -19,7 +19,7 @@ class DotnetTool {
     this.buildAgent.debug(`whichPath: ${dotnetExePath}`);
     await this.setDotnetRoot();
     const setupSettings = this.settingsProvider.getSetupSettings();
-    let version = semver.clean(setupSettings.versionSpec) || setupSettings.versionSpec;
+    let version = semverExports.clean(setupSettings.versionSpec) || setupSettings.versionSpec;
     this.buildAgent.info("--------------------------");
     this.buildAgent.info(`Acquiring ${this.packageName} for version spec: ${version}`);
     this.buildAgent.info("--------------------------");
@@ -29,7 +29,7 @@ class DotnetTool {
         throw new Error(`Unable to find ${this.packageName} version '${version}'.`);
       }
     }
-    if (this.versionRange && !semver.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) {
+    if (this.versionRange && !semverExports.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) {
       throw new Error(
         `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${this.versionRange}'.See https://github.com/GitTools/actions/blob/main/docs/versions.md for more information.`
       );
@@ -119,7 +119,7 @@ class DotnetTool {
       return null;
     }
     this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
-    const version = semver.maxSatisfying(versions, versionSpec, { includePrerelease });
+    const version = semverExports.maxSatisfying(versions, versionSpec, { includePrerelease });
     if (version) {
       this.buildAgent.info(`Found matching version: ${version}`);
     } else {
@@ -128,7 +128,7 @@ class DotnetTool {
     return version;
   }
   async installTool(toolName, version, ignoreFailedSources) {
-    const semverVersion = semver.clean(version);
+    const semverVersion = semverExports.clean(version);
     if (!semverVersion) {
       throw new Error(`Invalid version spec: ${version}`);
     }
@@ -165,8 +165,8 @@ class DotnetTool {
     return tempPath;
   }
   isExplicitVersion(versionSpec) {
-    const cleanedVersionSpec = semver.clean(versionSpec);
-    const valid = semver.valid(cleanedVersionSpec) != null;
+    const cleanedVersionSpec = semverExports.clean(versionSpec);
+    const valid = semverExports.valid(cleanedVersionSpec) != null;
     this.buildAgent.debug(`Is version explicit? ${valid}`);
     return valid;
   }
