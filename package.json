@@ -52,7 +52,7 @@
     "@types/node": "^22.10.1",
     "@types/semver": "^7.5.8",
     "@vitest/eslint-plugin": "^1.1.14",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.6",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
