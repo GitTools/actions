@@ -55,7 +55,7 @@ jobs:
     - name: gitversion/setup
       uses: ./gitversion/setup
       with:
-        versionSpec: '6.x'
+        versionSpec: '6.0.x'
     - name: gitversion/command (showvariable)
       uses: ./gitversion/command
       with:
