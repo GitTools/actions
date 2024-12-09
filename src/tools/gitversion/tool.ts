@@ -71,7 +71,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     protected async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
-        const args = [workDir, '/output', 'json', '/output', 'buildserver']
+        const args = [workDir, '/output', 'json']
 
         const {
             useConfigFile,
