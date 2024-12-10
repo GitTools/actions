@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { S as SettingsProvider, D as DotnetTool } from './tools.mjs';
+import { S as SettingsProvider, D as DotnetTool, R as RunnerBase } from './tools.mjs';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
@@ -204,12 +204,13 @@ class GitReleaseManagerTool extends DotnetTool {
   }
 }
 
-class Runner {
+class Runner extends RunnerBase {
   constructor(buildAgent) {
+    super(buildAgent);
     this.buildAgent = buildAgent;
-    this.gitReleaseManagerTool = new GitReleaseManagerTool(this.buildAgent);
+    this.tool = new GitReleaseManagerTool(this.buildAgent);
   }
-  gitReleaseManagerTool;
+  tool;
   async run(command) {
     switch (command) {
       case "setup":
@@ -229,133 +230,28 @@ class Runner {
     }
   }
   async setup() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Installing GitReleaseManager");
-      const toolPath = await this.gitReleaseManagerTool.install();
-      const pathVariable = this.gitReleaseManagerTool.toolPathVariable;
-      this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`);
-      this.buildAgent.setVariable(pathVariable, toolPath);
-      this.buildAgent.setSucceeded("GitReleaseManager installed successfully", true);
-      return {
-        code: 0
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => {
+      await this.tool.install();
+      return { code: 0 };
+    }, "GitReleaseManager setup successfully");
   }
   async create() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Creating release");
-      const result = await this.gitReleaseManagerTool.create();
-      this.buildAgent.setSucceeded("GitReleaseManager created release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => await this.tool.create(), "GitReleaseManager created release successfully");
   }
   async discard() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Discarding release");
-      const result = await this.gitReleaseManagerTool.discard();
-      this.buildAgent.setSucceeded("GitReleaseManager discarded release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => await this.tool.discard(), "GitReleaseManager discarded release successfully");
   }
   async close() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Closing release");
-      const result = await this.gitReleaseManagerTool.close();
-      this.buildAgent.setSucceeded("GitReleaseManager closed release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => await this.tool.close(), "GitReleaseManager closed release successfully");
   }
   async open() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Opening release");
-      const result = await this.gitReleaseManagerTool.open();
-      this.buildAgent.setSucceeded("GitReleaseManager opened release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => await this.tool.open(), "GitReleaseManager opened release successfully");
   }
   async publish() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Publishing release");
-      const result = await this.gitReleaseManagerTool.publish();
-      this.buildAgent.setSucceeded("GitReleaseManager published release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => await this.tool.publish(), "GitReleaseManager published release successfully");
   }
   async addAsset() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Adding asset to release");
-      const result = await this.gitReleaseManagerTool.addAsset();
-      this.buildAgent.setSucceeded("GitReleaseManager added assets to release successfully", true);
-      return result;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
-  }
-  disableTelemetry() {
-    this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`);
-    this.buildAgent.debug("Disabling telemetry");
-    this.gitReleaseManagerTool.disableTelemetry();
+    return this.safeExecute(async () => await this.tool.addAsset(), "GitReleaseManager added assets to release successfully");
   }
 }
 

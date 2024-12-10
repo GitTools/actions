@@ -1,4 +1,4 @@
-import { S as SettingsProvider, D as DotnetTool, k as keysOf } from './tools.mjs';
+import { S as SettingsProvider, D as DotnetTool, k as keysOf, R as RunnerBase } from './tools.mjs';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
@@ -93,7 +93,7 @@ class GitVersionTool extends DotnetTool {
     return await super.getRepoPath(settings.targetPath);
   }
   async getExecuteArguments(workDir, options) {
-    const args = [workDir, "/output", "json"];
+    const args = [workDir, "/output", "json", "/l", "console"];
     const {
       useConfigFile,
       disableCache,
@@ -211,12 +211,13 @@ class GitVersionTool extends DotnetTool {
   }
 }
 
-class Runner {
+class Runner extends RunnerBase {
   constructor(buildAgent) {
+    super(buildAgent);
     this.buildAgent = buildAgent;
-    this.gitVersionTool = new GitVersionTool(this.buildAgent);
+    this.tool = new GitVersionTool(this.buildAgent);
   }
-  gitVersionTool;
+  tool;
   async run(command) {
     switch (command) {
       case "setup":
@@ -228,108 +229,37 @@ class Runner {
     }
   }
   async setup() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.debug("Installing GitVersion");
-      const toolPath = await this.gitVersionTool.install();
-      const pathVariable = this.gitVersionTool.toolPathVariable;
-      this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`);
-      this.buildAgent.setVariable(pathVariable, toolPath);
-      this.buildAgent.setSucceeded("GitVersion installed successfully", true);
-      return {
-        code: 0
-      };
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => {
+      await this.tool.install();
+      return { code: 0 };
+    }, "GitVersion setup successfully");
   }
   async execute() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.info("Executing GitVersion");
-      const result = await this.gitVersionTool.executeJson();
-      if (result.code === 0) {
-        this.buildAgent.info("GitVersion executed successfully");
-        const stdout = result.stdout;
-        this.buildAgent.info("GitVersion output:");
-        this.buildAgent.info("-------------------");
-        this.buildAgent.info(stdout);
-        this.buildAgent.info("-------------------");
-        this.buildAgent.debug("Parsing GitVersion output");
-        if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
-          this.buildAgent.debug("GitVersion output is not valid JSON");
-          this.buildAgent.setFailed("GitVersion output is not valid JSON", true);
-          return {
-            code: -1,
-            error: new Error("GitVersion output is not valid JSON")
-          };
-        } else {
-          const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
-          const gitVersionOutput = JSON.parse(jsonOutput);
-          this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput);
-          this.buildAgent.setSucceeded("GitVersion executed successfully", true);
-          return result;
-        }
-      } else {
-        this.buildAgent.debug("GitVersion failed");
-        const error = result.error;
-        if (error instanceof Error) {
-          this.buildAgent.setFailed(error.message, true);
-        }
-        return result;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
-      return {
-        code: -1,
-        error
-      };
-    }
+    return this.safeExecute(async () => {
+      const result = await this.tool.executeJson();
+      this.buildAgent.debug("Parsing GitVersion output");
+      return this.processGitVersionOutput(result);
+    }, "GitVersion executed successfully");
   }
   async command() {
-    try {
-      this.disableTelemetry();
-      this.buildAgent.info("Executing GitVersion");
-      const result = await this.gitVersionTool.executeCommand();
-      if (result.code === 0) {
-        this.buildAgent.info("GitVersion executed successfully");
-        const stdout = result.stdout;
-        this.buildAgent.info("GitVersion output:");
-        this.buildAgent.info("-------------------");
-        this.buildAgent.info(stdout);
-        this.buildAgent.info("-------------------");
-        this.buildAgent.setSucceeded("GitVersion executed successfully", true);
-        return result;
-      } else {
-        this.buildAgent.debug("GitVersion failed");
-        const error = result.error;
-        if (error instanceof Error) {
-          this.buildAgent.setFailed(error.message, true);
-        }
-        return result;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        this.buildAgent.setFailed(error.message, true);
-      }
+    return this.safeExecute(async () => await this.tool.executeCommand(), "GitVersion executed successfully");
+  }
+  processGitVersionOutput(result) {
+    const stdout = result.stdout;
+    if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
+      this.buildAgent.debug("GitVersion output is not valid JSON");
+      this.buildAgent.setFailed("GitVersion output is not valid JSON", true);
       return {
         code: -1,
-        error
+        error: new Error("GitVersion output is not valid JSON")
       };
+    } else {
+      const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
+      const gitVersionOutput = JSON.parse(jsonOutput);
+      this.tool.writeGitVersionToAgent(gitVersionOutput);
+      this.buildAgent.setSucceeded("GitVersion executed successfully", true);
+      return result;
     }
-  }
-  disableTelemetry() {
-    this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`);
-    this.buildAgent.debug("Disabling telemetry");
-    this.gitVersionTool.disableTelemetry();
   }
 }
 

@@ -51,6 +51,10 @@ class DotnetTool {
     }
     this.buildAgent.info(`Prepending ${toolPath} to PATH`);
     this.buildAgent.addPath(toolPath);
+    const pathVariable = this.toolPathVariable;
+    this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`);
+    this.buildAgent.setVariable(pathVariable, toolPath);
+    this.buildAgent.setSucceeded(`${this.toolName} installed successfully`, true);
     return toolPath;
   }
   async execute(cmd, args) {
@@ -70,9 +74,9 @@ class DotnetTool {
   }
   async executeTool(args) {
     let toolPath;
-    const gitVersionPath = this.buildAgent.getVariableAsPath(this.toolPathVariable);
-    if (gitVersionPath) {
-      toolPath = path.join(gitVersionPath, os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName);
+    const variableAsPath = this.buildAgent.getVariableAsPath(this.toolPathVariable);
+    if (variableAsPath) {
+      toolPath = path.join(variableAsPath, os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName);
     }
     if (!toolPath) {
       toolPath = await this.buildAgent.which(this.toolName, true);
@@ -192,5 +196,45 @@ class SettingsProvider {
 
 const keysOf = Object.keys;
 
-export { DotnetTool as D, SettingsProvider as S, keysOf as k };
+class RunnerBase {
+  constructor(buildAgent) {
+    this.buildAgent = buildAgent;
+  }
+  disableTelemetry() {
+    this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`);
+    this.buildAgent.debug("Disabling telemetry");
+    this.tool.disableTelemetry();
+  }
+  async safeExecute(action, successMessage) {
+    try {
+      this.disableTelemetry();
+      const result = await action();
+      if (result.code === 0) {
+        this.buildAgent.info(`${this.tool.toolName} Output:`);
+        this.buildAgent.info("-------------------");
+        this.buildAgent.info(result.stdout);
+        this.buildAgent.info("-------------------");
+        this.buildAgent.setSucceeded(successMessage, true);
+        return result;
+      } else {
+        this.buildAgent.debug(`${this.tool.toolName} failed`);
+        this.buildAgent.error(result.stderr);
+        this.buildAgent.setFailed(result.stderr, true);
+        return result;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        this.buildAgent.debug(`${this.tool.toolName} failed`);
+        this.buildAgent.error(error.message);
+        this.buildAgent.setFailed(error.message, true);
+      }
+      return {
+        code: -1,
+        error
+      };
+    }
+  }
+}
+
+export { DotnetTool as D, RunnerBase as R, SettingsProvider as S, keysOf as k };
 //# sourceMappingURL=tools.mjs.map
