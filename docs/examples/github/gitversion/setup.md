@@ -47,7 +47,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v3.0.4
     with:
-      versionSpec: '6.0.x'
+      versionSpec: '6.1.x'
 ```
 
 ### Example 2
@@ -71,7 +71,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v3.0.4
     with:
-      versionSpec: '6.0.x'
+      versionSpec: '6.1.x'
       includePrerelease: true
 ```
 
@@ -84,6 +84,6 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v3.0.4
     with:
-      versionSpec: '6.0.x'
+      versionSpec: '6.1.x'
       preferLatestVersion: true
 ```
