@@ -41,10 +41,11 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
-          repository: ${{ github.repository }}
+          repository: actions
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           isPreRelease: 'false'
+          targetcommitish: 'main'
       - run: |
           $mode = "prod"
           $date = Get-Date -format "yyMMddHH"
@@ -67,7 +68,7 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
-          repository: ${{ github.repository }}
+          repository: actions
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           assets: ${{ steps.publish-azure.outputs.vsix }}
       - name: Close Release
@@ -75,7 +76,7 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
-          repository: ${{ github.repository }}
+          repository: actions
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
       - name: Get tags
         id: get-tags
