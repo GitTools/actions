@@ -1,13 +1,14 @@
 import { type ExecResult, type IBuildAgent } from '@agents/common'
-import { type IRunner } from '@tools/common'
 import { type Commands } from './models'
 import { GitReleaseManagerTool } from './tool'
+import { RunnerBase } from '../common/runner'
 
-export class Runner implements IRunner {
-    private readonly gitReleaseManagerTool: GitReleaseManagerTool
+export class Runner extends RunnerBase {
+    protected readonly tool: GitReleaseManagerTool
 
-    constructor(private readonly buildAgent: IBuildAgent) {
-        this.gitReleaseManagerTool = new GitReleaseManagerTool(this.buildAgent)
+    constructor(protected readonly buildAgent: IBuildAgent) {
+        super(buildAgent)
+        this.tool = new GitReleaseManagerTool(this.buildAgent)
     }
 
     async run(command: Commands): Promise<ExecResult> {
@@ -30,160 +31,33 @@ export class Runner implements IRunner {
     }
 
     private async setup(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Installing GitReleaseManager')
-            const toolPath = await this.gitReleaseManagerTool.install()
-
-            const pathVariable = this.gitReleaseManagerTool.toolPathVariable
-            this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`)
-            this.buildAgent.setVariable(pathVariable, toolPath)
-
-            this.buildAgent.setSucceeded('GitReleaseManager installed successfully', true)
-            return {
-                code: 0
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => {
+            await this.tool.install()
+            return { code: 0 }
+        }, 'GitReleaseManager setup successfully')
     }
 
     private async create(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Creating release')
-
-            const result = await this.gitReleaseManagerTool.create()
-
-            this.buildAgent.setSucceeded('GitReleaseManager created release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.create(), 'GitReleaseManager created release successfully')
     }
 
     private async discard(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Discarding release')
-
-            const result = await this.gitReleaseManagerTool.discard()
-
-            this.buildAgent.setSucceeded('GitReleaseManager discarded release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.discard(), 'GitReleaseManager discarded release successfully')
     }
 
     private async close(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Closing release')
-
-            const result = await this.gitReleaseManagerTool.close()
-
-            this.buildAgent.setSucceeded('GitReleaseManager closed release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.close(), 'GitReleaseManager closed release successfully')
     }
 
     private async open(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Opening release')
-
-            const result = await this.gitReleaseManagerTool.open()
-
-            this.buildAgent.setSucceeded('GitReleaseManager opened release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.open(), 'GitReleaseManager opened release successfully')
     }
 
     private async publish(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Publishing release')
-
-            const result = await this.gitReleaseManagerTool.publish()
-
-            this.buildAgent.setSucceeded('GitReleaseManager published release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.publish(), 'GitReleaseManager published release successfully')
     }
 
     private async addAsset(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.debug('Adding asset to release')
-
-            const result = await this.gitReleaseManagerTool.addAsset()
-
-            this.buildAgent.setSucceeded('GitReleaseManager added assets to release successfully', true)
-            return result
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
-    }
-
-    private disableTelemetry(): void {
-        this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`)
-        this.buildAgent.debug('Disabling telemetry')
-        this.gitReleaseManagerTool.disableTelemetry()
+        return this.safeExecute(async () => await this.tool.addAsset(), 'GitReleaseManager added assets to release successfully')
     }
 }
