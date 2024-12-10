@@ -24,15 +24,7 @@ export class Runner implements IRunner {
     private async setup(): Promise<ExecResult> {
         try {
             this.disableTelemetry()
-
-            this.buildAgent.debug('Installing GitVersion')
-            const toolPath = await this.gitVersionTool.install()
-
-            const pathVariable = this.gitVersionTool.toolPathVariable
-            this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`)
-            this.buildAgent.setVariable(pathVariable, toolPath)
-
-            this.buildAgent.setSucceeded('GitVersion installed successfully', true)
+            await this.gitVersionTool.install()
             return {
                 code: 0
             }
@@ -65,21 +57,7 @@ export class Runner implements IRunner {
                 this.buildAgent.info('-------------------')
                 this.buildAgent.debug('Parsing GitVersion output')
 
-                if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
-                    this.buildAgent.debug('GitVersion output is not valid JSON')
-                    this.buildAgent.setFailed('GitVersion output is not valid JSON', true)
-                    return {
-                        code: -1,
-                        error: new Error('GitVersion output is not valid JSON')
-                    }
-                } else {
-                    const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
-
-                    const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
-                    this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
-                    this.buildAgent.setSucceeded('GitVersion executed successfully', true)
-                    return result
-                }
+                return this.processGitVersionOutput(result)
             } else {
                 this.buildAgent.debug('GitVersion failed')
                 const error = result.error
@@ -134,6 +112,25 @@ export class Runner implements IRunner {
                 code: -1,
                 error: error as Error
             }
+        }
+    }
+
+    private processGitVersionOutput(result: ExecResult): ExecResult {
+        const stdout = result.stdout as string
+        if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
+            this.buildAgent.debug('GitVersion output is not valid JSON')
+            this.buildAgent.setFailed('GitVersion output is not valid JSON', true)
+            return {
+                code: -1,
+                error: new Error('GitVersion output is not valid JSON')
+            }
+        } else {
+            const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
+
+            const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
+            this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+            this.buildAgent.setSucceeded('GitVersion executed successfully', true)
+            return result
         }
     }
 
