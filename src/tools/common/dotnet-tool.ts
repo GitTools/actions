@@ -9,6 +9,8 @@ import { ISettingsProvider } from './settings'
 import { NugetVersions } from './models'
 
 export interface IDotnetTool {
+    toolName: string
+
     disableTelemetry(): void
 
     install(): Promise<string>
@@ -88,7 +90,7 @@ export abstract class DotnetTool implements IDotnetTool {
         const pathVariable = this.toolPathVariable
         this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`)
         this.buildAgent.setVariable(pathVariable, toolPath)
-        this.buildAgent.setSucceeded(`${this.packageName} installed successfully`, true)
+        this.buildAgent.setSucceeded(`${this.toolName} installed successfully`, true)
 
         return toolPath
     }

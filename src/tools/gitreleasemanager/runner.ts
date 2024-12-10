@@ -1,7 +1,7 @@
 import { type ExecResult, type IBuildAgent } from '@agents/common'
 import { type Commands } from './models'
 import { GitReleaseManagerTool } from './tool'
-import { RunnerBase } from '../common/RunnerBase.ts'
+import { RunnerBase } from '../common/runner'
 
 export class Runner extends RunnerBase {
     protected readonly tool: GitReleaseManagerTool
@@ -38,26 +38,26 @@ export class Runner extends RunnerBase {
     }
 
     private async create(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.create(), 'GitReleaseManager created release successfully')
+        return this.safeExecute(async () => await this.tool.create(), 'GitReleaseManager created release successfully')
     }
 
     private async discard(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.discard(), 'GitReleaseManager discarded release successfully')
+        return this.safeExecute(async () => await this.tool.discard(), 'GitReleaseManager discarded release successfully')
     }
 
     private async close(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.close(), 'GitReleaseManager closed release successfully')
+        return this.safeExecute(async () => await this.tool.close(), 'GitReleaseManager closed release successfully')
     }
 
     private async open(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.open(), 'GitReleaseManager opened release successfully')
+        return this.safeExecute(async () => await this.tool.open(), 'GitReleaseManager opened release successfully')
     }
 
     private async publish(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.publish(), 'GitReleaseManager published release successfully')
+        return this.safeExecute(async () => await this.tool.publish(), 'GitReleaseManager published release successfully')
     }
 
     private async addAsset(): Promise<ExecResult> {
-        return this.safeExecute(async () => this.tool.addAsset(), 'GitReleaseManager added assets to release successfully')
+        return this.safeExecute(async () => await this.tool.addAsset(), 'GitReleaseManager added assets to release successfully')
     }
 }

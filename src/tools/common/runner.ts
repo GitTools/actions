@@ -21,19 +21,21 @@ export abstract class RunnerBase implements IRunner {
             const result = await action()
 
             if (result.code === 0) {
-                this.buildAgent.info('Output:')
+                this.buildAgent.info(`${this.tool.toolName} Output:`)
                 this.buildAgent.info('-------------------')
                 this.buildAgent.info(result.stdout as string)
                 this.buildAgent.info('-------------------')
                 this.buildAgent.setSucceeded(successMessage, true)
                 return result
             } else {
+                this.buildAgent.debug(`${this.tool.toolName} failed`)
                 this.buildAgent.error(result.stderr as string)
                 this.buildAgent.setFailed(result.stderr as string, true)
                 return result
             }
         } catch (error) {
             if (error instanceof Error) {
+                this.buildAgent.debug(`${this.tool.toolName} failed`)
                 this.buildAgent.error(error.message)
                 this.buildAgent.setFailed(error.message, true)
             }

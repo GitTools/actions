@@ -1,7 +1,7 @@
 import { type ExecResult, type IBuildAgent } from '@agents/common'
 import { type Commands, type GitVersionOutput } from './models'
 import { GitVersionTool } from './tool'
-import { RunnerBase } from '../common/RunnerBase.ts'
+import { RunnerBase } from '../common/runner'
 
 export class Runner extends RunnerBase {
     protected readonly tool: GitVersionTool
@@ -30,79 +30,15 @@ export class Runner extends RunnerBase {
     }
 
     private async execute(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.info('Executing GitVersion')
-
+        return this.safeExecute(async () => {
             const result = await this.tool.executeJson()
-
-            if (result.code === 0) {
-                this.buildAgent.info('GitVersion executed successfully')
-                const stdout: string = result.stdout as string
-
-                this.buildAgent.info('GitVersion output:')
-                this.buildAgent.info('-------------------')
-                this.buildAgent.info(stdout)
-                this.buildAgent.info('-------------------')
-                this.buildAgent.debug('Parsing GitVersion output')
-
-                return this.processGitVersionOutput(result)
-            } else {
-                this.buildAgent.debug('GitVersion failed')
-                const error = result.error
-                if (error instanceof Error) {
-                    this.buildAgent.setFailed(error.message, true)
-                }
-                return result
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+            this.buildAgent.debug('Parsing GitVersion output')
+            return this.processGitVersionOutput(result)
+        }, 'GitVersion executed successfully')
     }
 
     private async command(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-
-            this.buildAgent.info('Executing GitVersion')
-
-            const result = await this.tool.executeCommand()
-
-            if (result.code === 0) {
-                this.buildAgent.info('GitVersion executed successfully')
-                const stdout = result.stdout as string
-
-                this.buildAgent.info('GitVersion output:')
-                this.buildAgent.info('-------------------')
-                this.buildAgent.info(stdout)
-                this.buildAgent.info('-------------------')
-
-                this.buildAgent.setSucceeded('GitVersion executed successfully', true)
-                return result
-            } else {
-                this.buildAgent.debug('GitVersion failed')
-                const error = result.error
-                if (error instanceof Error) {
-                    this.buildAgent.setFailed(error.message, true)
-                }
-                return result
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => await this.tool.executeCommand(), 'GitVersion executed successfully')
     }
 
     private processGitVersionOutput(result: ExecResult): ExecResult {
