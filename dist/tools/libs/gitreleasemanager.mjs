@@ -126,7 +126,9 @@ class GitReleaseManagerTool extends DotnetTool {
     args.push("--token", settings.token);
     settings.targetDirectory = await this.getRepoDir(settings);
     args.push("--targetDirectory", settings.targetDirectory);
-    args.push("--logFilePath", settings.logFilePath);
+    if (settings.logFilePath) {
+      args.push("--logFilePath", settings.logFilePath);
+    }
     return args;
   }
   async getCreateArguments(settings) {

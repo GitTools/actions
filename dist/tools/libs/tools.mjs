@@ -209,11 +209,12 @@ class RunnerBase {
     try {
       this.disableTelemetry();
       const result = await action();
+      this.buildAgent.info(`${this.tool.toolName} Output:`);
+      this.buildAgent.info("-------------------");
+      this.buildAgent.info(result.stdout);
+      this.buildAgent.info("-------------------");
       if (result.code === 0) {
-        this.buildAgent.info(`${this.tool.toolName} Output:`);
-        this.buildAgent.info("-------------------");
-        this.buildAgent.info(result.stdout);
-        this.buildAgent.info("-------------------");
+        this.buildAgent.debug(`${this.tool.toolName} succeeded`);
         this.buildAgent.setSucceeded(successMessage, true);
         return result;
       } else {
