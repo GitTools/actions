@@ -87,8 +87,10 @@ export class GitReleaseManagerTool extends DotnetTool {
         settings.targetDirectory = await this.getRepoDir(settings)
 
         args.push('--targetDirectory', settings.targetDirectory)
-        args.push('--logFilePath', settings.logFilePath)
 
+        if (settings.logFilePath) {
+            args.push('--logFilePath', settings.logFilePath)
+        }
         return args
     }
 
