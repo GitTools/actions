@@ -85,6 +85,11 @@ export abstract class DotnetTool implements IDotnetTool {
         this.buildAgent.info(`Prepending ${toolPath} to PATH`)
         this.buildAgent.addPath(toolPath)
 
+        const pathVariable = this.toolPathVariable
+        this.buildAgent.info(`Set ${pathVariable} to ${toolPath}`)
+        this.buildAgent.setVariable(pathVariable, toolPath)
+        this.buildAgent.setSucceeded(`${this.packageName} installed successfully`, true)
+
         return toolPath
     }
 
@@ -108,9 +113,9 @@ export abstract class DotnetTool implements IDotnetTool {
 
     protected async executeTool(args: string[]): Promise<ExecResult> {
         let toolPath: string | undefined
-        const gitVersionPath = this.buildAgent.getVariableAsPath(this.toolPathVariable)
-        if (gitVersionPath) {
-            toolPath = path.join(gitVersionPath, os.platform() === 'win32' ? `${this.toolName}.exe` : this.toolName)
+        const variableAsPath = this.buildAgent.getVariableAsPath(this.toolPathVariable)
+        if (variableAsPath) {
+            toolPath = path.join(variableAsPath, os.platform() === 'win32' ? `${this.toolName}.exe` : this.toolName)
         }
         if (!toolPath) {
             toolPath = await this.buildAgent.which(this.toolName, true)
