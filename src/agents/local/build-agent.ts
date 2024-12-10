@@ -35,4 +35,6 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
         this.debug(`setVariable - ${name} - ${value}`)
         process.env[name] = value
     }
+
+    updateBuildNumber = (version: string): void => this.debug(`updateBuildNumber - ${version}`)
 }

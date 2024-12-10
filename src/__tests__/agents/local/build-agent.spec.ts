@@ -90,4 +90,12 @@ describe('build-agent/local', () => {
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith('setOutput - test - value')
     })
+
+    it('should update build number', () => {
+        const spy = vi.spyOn(agent, 'debug')
+
+        agent.updateBuildNumber('test')
+        expect(spy).toHaveBeenCalledTimes(1)
+        expect(spy).toHaveBeenCalledWith('updateBuildNumber - test')
+    })
 })

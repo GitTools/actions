@@ -33,6 +33,13 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
 
     setVariable = (name: string, value: string): void => this._setVariable(name, value)
 
+    updateBuildNumber = (version: string): void => this._updateBuildNumber(version)
+
+    private _updateBuildNumber(version: string): void {
+        this.debug(`build number: ${version}`)
+        issueCommand('build.updatebuildnumber', {}, version)
+    }
+
     private _setResult(result: TaskResult, message: string, done?: boolean): void {
         this.debug(`task result: ${TaskResult[result]}`)
         // add an error issue
