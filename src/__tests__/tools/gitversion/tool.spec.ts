@@ -152,21 +152,21 @@ describe('GitVersionTool', () => {
     describe('getExecuteArguments', () => {
         it('should return correct arguments for empty settings', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console'])
         })
 
         it('should return correct arguments for settings with cache', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableCache: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/nocache'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/nocache'])
         })
 
         it('should return correct arguments for settings with normalization', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableNormalization: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/nonormalize'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/nonormalize'])
         })
 
         it('should return correct arguments for settings with config', async () => {
@@ -175,7 +175,7 @@ describe('GitVersionTool', () => {
                 useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/config', 'workdir/GitVersion.yml'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml'])
         })
 
         it('should return correct arguments for settings with wrong config file', async () => {
@@ -193,7 +193,17 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 overrideConfig: ['tag-prefix=release-', 'next-version=1.0.0']
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/overrideconfig', 'tag-prefix=release-', '/overrideconfig', 'next-version=1.0.0'])
+            expect(args).toEqual([
+                'workdir',
+                '/output',
+                'json',
+                '/l',
+                'console',
+                '/overrideconfig',
+                'tag-prefix=release-',
+                '/overrideconfig',
+                'next-version=1.0.0'
+            ])
         })
 
         it('should return correct arguments for settings with assembly info', async () => {
@@ -202,7 +212,7 @@ describe('GitVersionTool', () => {
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/updateassemblyinfo', 'AssemblyInfo.cs'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateassemblyinfo', 'AssemblyInfo.cs'])
         })
 
         it('should return correct arguments for settings with wrong assembly info', async () => {
@@ -224,7 +234,7 @@ describe('GitVersionTool', () => {
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/config', 'workdir/GitVersion.yml', '/updateassemblyinfo', 'AssemblyInfo.cs'])
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml', '/updateassemblyinfo', 'AssemblyInfo.cs'])
         })
     })
 
