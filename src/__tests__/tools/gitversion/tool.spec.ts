@@ -58,6 +58,9 @@ describe('GitVersionTool', () => {
                 },
                 setVariable(name: string, value: string) {
                     variables.set(name, value)
+                },
+                updateBuildNumber(_version: string): void {
+                    return
                 }
             } as IBuildAgent
             tool = new TestGitVersionTool(buildAgent)

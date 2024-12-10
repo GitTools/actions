@@ -64,6 +64,11 @@ export class GitVersionTool extends DotnetTool {
                 this.buildAgent.error(`Unable to set output/variable for ${property}`)
             }
         }
+
+        if (output.FullSemVer.endsWith('+0')) {
+            output.FullSemVer = output.FullSemVer.slice(0, -2)
+        }
+        this.buildAgent.updateBuildNumber(output.FullSemVer)
     }
 
     protected async getRepoDir(settings: ExecuteSettings | CommandSettings): Promise<string> {

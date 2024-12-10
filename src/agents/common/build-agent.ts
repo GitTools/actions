@@ -61,6 +61,8 @@ export interface IBuildAgent {
 
     setVariable(name: string, value: string): void
 
+    updateBuildNumber: (version: string) => void
+
     which(tool: string, check?: boolean): Promise<string>
 }
 
@@ -85,6 +87,8 @@ export abstract class BuildAgentBase implements IBuildAgent {
     abstract setOutput(name: string, value: string): void
 
     abstract setVariable(name: string, value: string): void
+
+    abstract updateBuildNumber: (version: string) => void
 
     get sourceDir(): string {
         return this.getVariableAsPath(this.sourceDirVariable)?.replace(/\\/g, '/')

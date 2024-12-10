@@ -132,6 +132,7 @@ class BuildAgent extends BuildAgentBase {
     }
     issueCommand("set-env", { name }, convertedVal);
   };
+  updateBuildNumber = (version) => this.debug(`updateBuildNumber - ${version}`);
 }
 
 export { BuildAgent };

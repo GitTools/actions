@@ -147,4 +147,12 @@ describe.skipIf(isGitHubActions)('build-agent/github', () => {
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
     })
+
+    it('should update build number', () => {
+        const spy = vi.spyOn(process.stdout, 'write')
+
+        agent.updateBuildNumber('test')
+        expect(spy).toHaveBeenCalledTimes(1)
+        expect(spy).toHaveBeenCalledWith(`::debug::updateBuildNumber - test${os.EOL}`)
+    })
 })

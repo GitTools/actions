@@ -80,6 +80,11 @@ class BuildAgent extends BuildAgentBase {
   setFailed = (message, done) => this._setResult(TaskResult.Failed, message, done);
   setOutput = (name, value) => this._setVariable(name, value, true);
   setVariable = (name, value) => this._setVariable(name, value);
+  updateBuildNumber = (version) => this._updateBuildNumber(version);
+  _updateBuildNumber(version) {
+    this.debug(`build number: ${version}`);
+    issueCommand("build.updatebuildnumber", {}, version);
+  }
   _setResult(result, message, done) {
     this.debug(`task result: ${TaskResult[result]}`);
     if (result === TaskResult.Failed && message) {

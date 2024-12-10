@@ -25,6 +25,7 @@ class BuildAgent extends BuildAgentBase {
     this.debug(`setVariable - ${name} - ${value}`);
     process.env[name] = value;
   }
+  updateBuildNumber = (version) => this.debug(`updateBuildNumber - ${version}`);
 }
 
 export { BuildAgent };

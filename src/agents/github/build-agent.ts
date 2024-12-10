@@ -60,4 +60,6 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
 
         issueCommand('set-env', { name }, convertedVal)
     }
+
+    updateBuildNumber = (version: string): void => this.debug(`updateBuildNumber - ${version}`)
 }

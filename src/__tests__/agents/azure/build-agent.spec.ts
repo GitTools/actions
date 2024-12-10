@@ -119,4 +119,14 @@ describe.skipIf(isAzurePipelines)('build-agent/azure', () => {
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith(`##vso[task.setvariable variable=test;isOutput=true;issecret=false;]value${os.EOL}`)
     })
+
+    it('should update build number', () => {
+        const spyDebug = vi.spyOn(agent, 'debug')
+        const spyWrite = vi.spyOn(process.stdout, 'write')
+
+        agent.updateBuildNumber('test')
+        expect(spyDebug).toHaveBeenCalledTimes(1)
+        expect(spyDebug).toHaveBeenCalledWith('build number: test')
+        expect(spyWrite).toHaveBeenCalledWith(`##vso[build.updatebuildnumber]test${os.EOL}`)
+    })
 })
