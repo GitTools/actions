@@ -29,9 +29,22 @@ jobs:
         uses: ./gitversion/setup
         with:
           versionSpec: '6.0.x'
+      - name: Install GitReleaseManager
+        uses: ./gitreleasemanager/setup
+        with:
+            versionSpec: '0.18.x'
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
+      - name: Update Release Notes
+        uses: ./gitreleasemanager/create
+        with:
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
+          milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
+          name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
+          isPreRelease: 'false'
       - run: |
           $mode = "prod"
           $date = Get-Date -format "yyMMddHH"
@@ -39,10 +52,31 @@ jobs:
           $major = "${{steps.gitversion.outputs.major}}"
           $minor = "${{steps.gitversion.outputs.minor}}"
           $patch = "${{steps.gitversion.outputs.patch}}"
+          $vsix = "dist/gittools.gittools-$version.vsix"
 
           npm run publish:prepare -- --mode $mode --version $version
-          npm run publish:azure -- --token ${{ secrets.TFX_TOKEN }} --env mode=$mode version=$version
+          npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
+          npm run publish:azure:marketplace -- --token ${{ secrets.TFX_TOKEN }} --env mode=$mode version=$version
+
+          echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
+
+        id: publish-azure
         name: Publish Azure extension
+      - name: Add Assets
+        uses: ./gitreleasemanager/addasset
+        with:
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
+          milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
+          assets: ${{ steps.publish-azure.outputs.vsix }}
+      - name: Close Release
+        uses: ./gitreleasemanager/close
+        with:
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
+          milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
       - name: Get tags
         id: get-tags
         shell: pwsh
