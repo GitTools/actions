@@ -1,13 +1,14 @@
 import { type ExecResult, type IBuildAgent } from '@agents/common'
-import { type IRunner } from '@tools/common'
 import { type Commands, type GitVersionOutput } from './models'
 import { GitVersionTool } from './tool'
+import { RunnerBase } from '../common/RunnerBase.ts'
 
-export class Runner implements IRunner {
-    private readonly gitVersionTool: GitVersionTool
+export class Runner extends RunnerBase {
+    protected readonly tool: GitVersionTool
 
-    constructor(private readonly buildAgent: IBuildAgent) {
-        this.gitVersionTool = new GitVersionTool(this.buildAgent)
+    constructor(protected readonly buildAgent: IBuildAgent) {
+        super(buildAgent)
+        this.tool = new GitVersionTool(this.buildAgent)
     }
 
     async run(command: Commands): Promise<ExecResult> {
@@ -22,21 +23,10 @@ export class Runner implements IRunner {
     }
 
     private async setup(): Promise<ExecResult> {
-        try {
-            this.disableTelemetry()
-            await this.gitVersionTool.install()
-            return {
-                code: 0
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.setFailed(error.message, true)
-            }
-            return {
-                code: -1,
-                error: error as Error
-            }
-        }
+        return this.safeExecute(async () => {
+            await this.tool.install()
+            return { code: 0 }
+        }, 'GitVersion setup successfully')
     }
 
     private async execute(): Promise<ExecResult> {
@@ -45,7 +35,7 @@ export class Runner implements IRunner {
 
             this.buildAgent.info('Executing GitVersion')
 
-            const result = await this.gitVersionTool.executeJson()
+            const result = await this.tool.executeJson()
 
             if (result.code === 0) {
                 this.buildAgent.info('GitVersion executed successfully')
@@ -83,7 +73,7 @@ export class Runner implements IRunner {
 
             this.buildAgent.info('Executing GitVersion')
 
-            const result = await this.gitVersionTool.executeCommand()
+            const result = await this.tool.executeCommand()
 
             if (result.code === 0) {
                 this.buildAgent.info('GitVersion executed successfully')
@@ -128,15 +118,9 @@ export class Runner implements IRunner {
             const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
 
             const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
-            this.gitVersionTool.writeGitVersionToAgent(gitVersionOutput)
+            this.tool.writeGitVersionToAgent(gitVersionOutput)
             this.buildAgent.setSucceeded('GitVersion executed successfully', true)
             return result
         }
-    }
-
-    private disableTelemetry(): void {
-        this.buildAgent.info(`Running on: '${this.buildAgent.agentName}'`)
-        this.buildAgent.debug('Disabling telemetry')
-        this.gitVersionTool.disableTelemetry()
     }
 }
