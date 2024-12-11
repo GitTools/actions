@@ -10,7 +10,7 @@ The Setup GitVersion task accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.x or exact version like 6.0.0.
+  description: Required version in the form of 6.0.x or exact version like 6.0.0.
   required: true
   default: ''
 includePrerelease:
