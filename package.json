@@ -47,14 +47,14 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
+    "@eslint/js": "^9.17.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.10.2",
     "@types/semver": "^7.5.8",
     "@vitest/eslint-plugin": "^1.1.16",
     "dotenv": "^16.4.7",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "glob": "^11.0.0",
