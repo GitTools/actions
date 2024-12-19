@@ -83,14 +83,12 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
 
     getCommonSettings(): CommonSettings {
         const milestone = this.buildAgent.getInput<CommonSettings>('milestone')
-        const owner = this.buildAgent.getInput<CommonSettings>('owner')
         const repository = this.buildAgent.getInput<CommonSettings>('repository')
         const token = this.buildAgent.getInput<CommonSettings>('token')
         const targetDirectory = this.buildAgent.getInput<CommonSettings>('targetDirectory')
         const logFilePath = this.buildAgent.getInput<CommonSettings>('logFilePath')
 
         return {
-            owner,
             repository,
             token,
             targetDirectory,
