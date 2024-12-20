@@ -19,6 +19,17 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PUSH_GITHUB_TOKEN }}
       - run: |
+          if (${{ github.event.release.prerelease }}) {
+            $releaseMode = "test"
+          } else {
+            $releaseMode = "prod"
+          }
+
+          echo "This is a $releaseMode release"
+          echo "releaseMode=$releaseMode" >> $env:GITHUB_OUTPUT
+        id: set-release-mode
+        name: Set release mode
+      - run: |
           npm install
           npm run build:tools
           npm run build:agent:github
@@ -44,16 +55,19 @@ jobs:
           repository: actions
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
-          isPreRelease: 'false'
+          isPreRelease: ${{ github.event.release.prerelease }}
           targetcommitish: 'main'
       - run: |
-          $mode = "prod"
+          $mode = "${{ steps.set-release-mode.outputs.releaseMode }}"
           $date = Get-Date -format "yyMMddHH"
           $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
           $major = "${{steps.gitversion.outputs.major}}"
           $minor = "${{steps.gitversion.outputs.minor}}"
           $patch = "${{steps.gitversion.outputs.patch}}"
           $vsix = "dist/gittools.gittools-$version.vsix"
+
+          echo "Release mode: $mode"
+          echo "Version: $version"
 
           npm run publish:prepare -- --mode $mode --version $version
           npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
