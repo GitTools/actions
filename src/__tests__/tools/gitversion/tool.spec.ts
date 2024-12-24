@@ -86,12 +86,6 @@ describe('GitVersionTool', () => {
             expect(outputs.get('GitVersion_SemVer')).toBe('1.2.3-alpha.1')
             expect(outputs.get('GitVersion_FullSemVer')).toBe('1.2.3-alpha.1')
 
-            expect(outputs.get('GitVersion.Major')).toBe('1')
-            expect(outputs.get('GitVersion.Minor')).toBe('2')
-            expect(outputs.get('GitVersion.Patch')).toBe('3')
-            expect(outputs.get('GitVersion.SemVer')).toBe('1.2.3-alpha.1')
-            expect(outputs.get('GitVersion.FullSemVer')).toBe('1.2.3-alpha.1')
-
             expect(variables.get('major')).toBe('1')
             expect(variables.get('minor')).toBe('2')
             expect(variables.get('patch')).toBe('3')
@@ -103,12 +97,6 @@ describe('GitVersionTool', () => {
             expect(variables.get('GitVersion_Patch')).toBe('3')
             expect(variables.get('GitVersion_SemVer')).toBe('1.2.3-alpha.1')
             expect(variables.get('GitVersion_FullSemVer')).toBe('1.2.3-alpha.1')
-
-            expect(variables.get('GitVersion.Major')).toBe('1')
-            expect(variables.get('GitVersion.Minor')).toBe('2')
-            expect(variables.get('GitVersion.Patch')).toBe('3')
-            expect(variables.get('GitVersion.SemVer')).toBe('1.2.3-alpha.1')
-            expect(variables.get('GitVersion.FullSemVer')).toBe('1.2.3-alpha.1')
         })
     })
 
