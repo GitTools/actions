@@ -20,9 +20,9 @@ describe('GitReleaseManager settings', () => {
             targetDirectory: 'path',
             milestone: 'milestone',
             name: 'name',
-            inputFileName: 'inputFileName',
+            inputFilePath: 'inputFilePath',
             isPreRelease: false,
-            commit: 'commit',
+            targetcommitish: 'commit',
             assets: ['asset'],
             logFilePath: './output.log'
         }

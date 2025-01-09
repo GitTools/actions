@@ -1,0 +1,7 @@
+@prerelease=false
+
+### GET Request GitVersion.Tool versions
+GET https://azuresearch-usnc.nuget.org/query?q=GitVersion.Tool&prerelease={{prerelease}}&semVerLevel=2.0.0&take=1
+
+### GET Request GitReleaseManager.Tool versions
+GET https://azuresearch-usnc.nuget.org/query?q=GitReleaseManager.Tool&prerelease={{prerelease}}&semVerLevel=2.0.0&take=1
