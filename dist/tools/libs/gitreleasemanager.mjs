@@ -9,17 +9,17 @@ import './semver.mjs';
 class GitReleaseManagerSettingsProvider extends SettingsProvider {
   getCreateSettings() {
     const name = this.buildAgent.getInput("name");
-    const inputFileName = this.buildAgent.getInput("inputFileName");
+    const inputFilePath = this.buildAgent.getInput("inputFilePath");
     const isPreRelease = this.buildAgent.getBooleanInput("isPreRelease");
-    const commit = this.buildAgent.getInput("commit");
+    const targetcommitish = this.buildAgent.getInput("targetcommitish");
     const assets = this.buildAgent.getListInput("assets");
     const commonSettings = this.getCommonSettings();
     return {
       ...commonSettings,
       name,
-      inputFileName,
+      inputFilePath,
       isPreRelease,
-      commit,
+      targetcommitish,
       assets
     };
   }
@@ -139,14 +139,14 @@ class GitReleaseManagerTool extends DotnetTool {
     if (settings.name) {
       args.push("--name", settings.name);
     }
-    if (settings.commit) {
-      args.push("--targetcommitish", settings.commit);
+    if (settings.targetcommitish) {
+      args.push("--targetcommitish", settings.targetcommitish);
     }
-    if (settings.inputFileName) {
-      if (await this.buildAgent.fileExists(settings.inputFileName)) {
-        args.push("--inputFilePath", settings.inputFileName);
+    if (settings.inputFilePath) {
+      if (await this.buildAgent.fileExists(settings.inputFilePath)) {
+        args.push("--inputFilePath", settings.inputFilePath);
       } else {
-        throw new Error(`GitReleaseManager inputFilePath not found at ${settings.inputFileName}`);
+        throw new Error(`GitReleaseManager inputFilePath not found at ${settings.inputFilePath}`);
       }
     }
     if (settings.isPreRelease) {
