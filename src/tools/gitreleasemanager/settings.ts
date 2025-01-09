@@ -27,18 +27,18 @@ export interface IGitReleaseManagerSettingsProvider extends ISettingsProvider {
 export class GitReleaseManagerSettingsProvider extends SettingsProvider implements IGitReleaseManagerSettingsProvider {
     getCreateSettings(): CreateSettings {
         const name = this.buildAgent.getInput<CreateSettings>('name')
-        const inputFileName = this.buildAgent.getInput<CreateSettings>('inputFileName')
+        const inputFilePath = this.buildAgent.getInput<CreateSettings>('inputFilePath')
         const isPreRelease = this.buildAgent.getBooleanInput<CreateSettings>('isPreRelease')
-        const commit = this.buildAgent.getInput<CreateSettings>('commit')
+        const targetcommitish = this.buildAgent.getInput<CreateSettings>('targetcommitish')
         const assets = this.buildAgent.getListInput<CreateSettings>('assets')
 
         const commonSettings = this.getCommonSettings()
         return {
             ...commonSettings,
             name,
-            inputFileName,
+            inputFilePath,
             isPreRelease,
-            commit,
+            targetcommitish,
             assets
         }
     }

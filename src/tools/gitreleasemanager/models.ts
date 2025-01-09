@@ -11,9 +11,9 @@ export type CommonSettings = {
 
 export type CreateSettings = CommonSettings & {
     name: string
-    inputFileName: string
+    inputFilePath: string
     isPreRelease: boolean
-    commit: string
+    targetcommitish: string
     assets?: string[]
 }
 

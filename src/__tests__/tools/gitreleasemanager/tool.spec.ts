@@ -200,9 +200,9 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getCreateArguments({
                     ...commonSettings,
                     name: 'name',
-                    commit: 'commit',
+                    targetcommitish: 'commit',
                     milestone: 'milestone',
-                    inputFileName: 'inputFileName',
+                    inputFilePath: 'inputFilePath',
                     isPreRelease: true,
                     assets: ['asset1', 'asset2'],
                     logFilePath: './createLogFilePath'
@@ -227,7 +227,7 @@ describe('GitReleaseManagerTool', () => {
                     '--targetcommitish',
                     'commit',
                     '--inputFilePath',
-                    'inputFileName',
+                    'inputFilePath',
                     '--pre',
                     '--assets',
                     `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
