@@ -18,17 +18,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PUSH_GITHUB_TOKEN }}
-      - run: |
-          if (${{ github.event.release.prerelease }}) {
-            $releaseMode = "test"
-          } else {
-            $releaseMode = "prod"
-          }
 
-          echo "This is a $releaseMode release"
-          echo "releaseMode=$releaseMode" >> $env:GITHUB_OUTPUT
-        id: set-release-mode
-        name: Set release mode
       - run: |
           npm install
           npm run build:tools
@@ -43,7 +33,7 @@ jobs:
       - name: Install GitReleaseManager
         uses: ./gitreleasemanager/setup
         with:
-            versionSpec: '0.18.x'
+          versionSpec: '0.18.x'
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
@@ -56,9 +46,13 @@ jobs:
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           isPreRelease: ${{ github.event.release.prerelease }}
-          targetcommitish: 'main'
+          targetcommitish: "main"
       - run: |
-          $mode = "${{ steps.set-release-mode.outputs.releaseMode }}"
+          if (${{ github.event.release.prerelease }}) {
+              $mode = "test"
+          } else {
+              $mode = "prod"
+          }
           $date = Get-Date -format "yyMMddHH"
           $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
           $major = "${{steps.gitversion.outputs.major}}"
