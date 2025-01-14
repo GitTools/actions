@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - task: gitreleasemanager/addasset@3.1.1
+  - task: gitreleasemanager/addasset@3.1.2
     inputs:
       token: '$(GITHUB_TOKEN)'
       owner: 'someOwner'
