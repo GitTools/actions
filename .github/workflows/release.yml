@@ -114,7 +114,7 @@ jobs:
           # Finding the version from release tag
 
           $newTag = "${{steps.gitversion.outputs.majorMinorPatch}}"
-          $oldTag = $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)).Trim("v")
+          $oldTag = cat package.json | ConvertFrom-Json | Select-Object -ExpandProperty version
           echo "Old tag: $oldTag"
           echo "New tag: $newTag"
 
