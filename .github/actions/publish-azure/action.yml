@@ -20,11 +20,13 @@ inputs:
 outputs:
   vsix:
     description: 'Path to the generated VSIX file'
+    value: ${{ steps.publish-azure.outputs.vsix }}
 
 runs:
   using: 'composite'
   steps:
     -   name: Publish Azure extension
+        id: publish-azure
         shell: pwsh
         run: |
           $date = Get-Date -format "yyMMddHH"
