@@ -8,6 +8,10 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  ignore:
+    - dependency-name: "gittools/actions/gitversion/setup"
+    - dependency-name: "gittools/actions/gitversion/execute"
+
 - package-ecosystem: npm
   labels:
     - "dependencies (npm)"
