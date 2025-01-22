@@ -34,26 +34,15 @@ jobs:
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
-      - run: |
-          $mode = "test"
-          $date = Get-Date -format "yyMMddHH"
-          $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
-          $major = "${{steps.gitversion.outputs.major}}"
-          $minor = "${{steps.gitversion.outputs.minor}}"
-          $patch = "${{steps.gitversion.outputs.patch}}"
-          $vsix = "dist/gittools.gittools-$version.vsix"
-
-          echo "Release mode: $mode"
-          echo "Version: $version"
-
-          npm run publish:prepare -- --mode $mode --version $version
-          npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
-          npm run publish:azure:marketplace -- --token ${{ secrets.TFX_TOKEN }} --env mode=$mode version=$version
-
-          echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
-
+      - name: Publish To Azure Marketplace
         id: publish-azure
-        name: Publish Azure extension
+        uses: ./.github/actions/publish-azure
+        with:
+          mode: 'test'
+          major: ${{ steps.gitversion.outputs.major }}
+          minor: ${{ steps.gitversion.outputs.minor }}
+          patch: ${{ steps.gitversion.outputs.patch }}
+          token: ${{ secrets.TFX_TOKEN }}
   release:
     if: github.event.release.prerelease == false
     runs-on: ${{ matrix.os }}
@@ -94,26 +83,15 @@ jobs:
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           isPreRelease: ${{ github.event.release.prerelease }}
           targetcommitish: "main"
-      - run: |
-          $mode = "prod"
-          $date = Get-Date -format "yyMMddHH"
-          $version = "${{steps.gitversion.outputs.majorMinorPatch}}.$date"
-          $major = "${{steps.gitversion.outputs.major}}"
-          $minor = "${{steps.gitversion.outputs.minor}}"
-          $patch = "${{steps.gitversion.outputs.patch}}"
-          $vsix = "dist/gittools.gittools-$version.vsix"
-
-          echo "Release mode: $mode"
-          echo "Version: $version"
-
-          npm run publish:prepare -- --mode $mode --version $version
-          npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
-          npm run publish:azure:marketplace -- --token ${{ secrets.TFX_TOKEN }} --env mode=$mode version=$version
-
-          echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
-
+      - name: Publish To Azure Marketplace
         id: publish-azure
-        name: Publish Azure extension
+        uses: ./.github/actions/publish-azure
+        with:
+          mode: 'prod'
+          major: ${{ steps.gitversion.outputs.major }}
+          minor: ${{ steps.gitversion.outputs.minor }}
+          patch: ${{ steps.gitversion.outputs.patch }}
+          token: ${{ secrets.TFX_TOKEN }}
       - name: Add Assets
         uses: ./gitreleasemanager/addasset
         with:
