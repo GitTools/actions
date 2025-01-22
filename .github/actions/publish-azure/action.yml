@@ -17,6 +17,10 @@ inputs:
     description: 'Token for Azure DevOps'
     required: true
 
+outputs:
+  vsix:
+    description: 'Path to the generated VSIX file'
+
 runs:
   using: 'composite'
   steps:

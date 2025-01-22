@@ -1,48 +1,13 @@
 name: release
 on:
   release:
-    types: [ prereleased, released ]
+    types: [ released ]
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
-  prerelease:
-    if: github.event.release.prerelease == true
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
-
-      - run: |
-          npm install
-          npm run build:tools
-          npm run build:agent:github
-          npm run build:agent:azure
-
-        name: Build code
-      - name: Install GitVersion
-        uses: ./gitversion/setup
-        with:
-          versionSpec: '6.0.x'
-      - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
-        uses: ./gitversion/execute
-      - name: Publish To Azure Marketplace
-        id: publish-azure
-        uses: ./.github/actions/publish-azure
-        with:
-          mode: 'test'
-          major: ${{ steps.gitversion.outputs.major }}
-          minor: ${{ steps.gitversion.outputs.minor }}
-          patch: ${{ steps.gitversion.outputs.patch }}
-          token: ${{ secrets.TFX_TOKEN }}
   release:
     if: github.event.release.prerelease == false
     runs-on: ${{ matrix.os }}
