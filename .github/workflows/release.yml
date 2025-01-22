@@ -1,7 +1,7 @@
 name: release
 on:
   release:
-    types: [ published ]
+    types: [ prereleased, released ]
 
 defaults:
   run:
@@ -38,6 +38,7 @@ jobs:
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
       - name: Update Release Notes
+        if: github.event.release.prerelease == false
         uses: ./gitreleasemanager/create
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
@@ -72,6 +73,7 @@ jobs:
         id: publish-azure
         name: Publish Azure extension
       - name: Add Assets
+        if: github.event.release.prerelease == false
         uses: ./gitreleasemanager/addasset
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
@@ -80,6 +82,7 @@ jobs:
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           assets: ${{ steps.publish-azure.outputs.vsix }}
       - name: Close Release
+        if: github.event.release.prerelease == false
         uses: ./gitreleasemanager/close
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
@@ -87,6 +90,7 @@ jobs:
           repository: actions
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
       - name: Get tags
+        if: github.event.release.prerelease == false
         id: get-tags
         shell: pwsh
         run: |
