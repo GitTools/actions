@@ -13,14 +13,14 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v3.1.2
+    uses: gittools/actions/gitversion/setup@v3.1.4
     with:
       versionSpec: '6.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _3.1.2_ of the GitVersion Command action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _3.1.4_ of the GitVersion Command action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -52,10 +52,10 @@ arguments:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v3.1.2 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v3.1.4 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/command@v3.1.2
+    uses: gittools/actions/gitversion/command@v3.1.4
     with:
       useConfigFile: true
       arguments: '/showConfig'
@@ -70,10 +70,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v3.1.2 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v3.1.4 action omitted for brevity.
 
   - name: Output the FullSemVer variable
-    uses: gittools/actions/gitversion/command@v3.1.2
+    uses: gittools/actions/gitversion/command@v3.1.4
     with:
       arguments: '/showvariable FullSemVer'
 ```
@@ -87,10 +87,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v3.1.2 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v3.1.4 action omitted for brevity.
 
   - name: Output the formatted version
-    uses: gittools/actions/gitversion/command@v3.1.2
+    uses: gittools/actions/gitversion/command@v3.1.4
     with:
       arguments: '/format {Major}.{Minor}' # any Output Variable can be used here
 ```

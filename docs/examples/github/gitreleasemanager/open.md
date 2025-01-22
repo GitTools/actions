@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/open@v3.1.2
+  - uses: gittools/actions/gitreleasemanager/open@v3.1.4
     name: Open release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
