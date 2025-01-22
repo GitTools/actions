@@ -48,7 +48,7 @@ jobs:
           isPreRelease: ${{ github.event.release.prerelease }}
           targetcommitish: "main"
       - run: |
-          if (${{ github.event.release.prerelease }}) {
+          if ('${{ github.event.release.prerelease }}' -eq 'true') {
               $mode = "test"
           } else {
               $mode = "prod"
