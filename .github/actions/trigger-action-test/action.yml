@@ -1,0 +1,45 @@
+name: 'Trigger Action Test'
+description: 'Test the actions/tasks in the action-test repository'
+inputs:
+  mode:
+    description: 'Release mode'
+    required: true
+  majorMinorPatch:
+    description: 'Major.Minor.Patch version'
+    required: true
+  token:
+    description: 'Token for Azure DevOps'
+    required: true
+
+outputs:
+  oldTag:
+    description: 'Old tag'
+    value: ${{ steps.get-tags.outputs.oldTag }}
+  newTag:
+    description: 'New tag'
+    value: ${{ steps.get-tags.outputs.newTag }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get tags
+      id: get-tags
+      shell: pwsh
+      run: |
+        # Finding the version from release tag
+
+        $newTag = "${{ inputs.majorMinorPatch }}"
+        $oldTag = cat package.json | ConvertFrom-Json | Select-Object -ExpandProperty version
+        echo "Old tag: $oldTag"
+        echo "New tag: $newTag"
+
+        "oldTag=$oldTag" >> $env:GITHUB_OUTPUT
+        "newTag=$newTag" >> $env:GITHUB_OUTPUT
+
+    - uses: peter-evans/repository-dispatch@v3
+      name: Trigger Update Examples version (actions-test)
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ github.repository_owner }}/actions-test
+        event-type: update-examples-prod
+        client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
