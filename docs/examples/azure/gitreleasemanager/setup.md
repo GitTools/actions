@@ -2,7 +2,7 @@
 
 Find out how to use the **gitreleasemanager/setup** task using the examples below.
 
-> The examples use version _3.1.4_ of the GitReleaseManager Setup task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _3.1.6_ of the GitReleaseManager Setup task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -29,7 +29,7 @@ Install the latest GitReleaseManager 0.18.x version.
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@3.1.4
+  - task: gitreleasemanager/setup@3.1.6
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.18.x'
@@ -41,7 +41,7 @@ Install specific GitReleaseManager version 0.18.0.
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@3.1.4
+  - task: gitreleasemanager/setup@3.1.6
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.18.0'
@@ -53,7 +53,7 @@ Install the latest GitReleaseManager 0.18.x version even it there is a cached ve
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@3.1.4
+  - task: gitreleasemanager/setup@3.1.6
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.18.x'
