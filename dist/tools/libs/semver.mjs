@@ -363,7 +363,7 @@ function requireSemver$1 () {
 
 	    if (version instanceof SemVer) {
 	      if (version.loose === !!options.loose &&
-	          version.includePrerelease === !!options.includePrerelease) {
+	        version.includePrerelease === !!options.includePrerelease) {
 	        return version
 	      } else {
 	        version = version.version;
@@ -529,6 +529,19 @@ function requireSemver$1 () {
 	  // preminor will bump the version up to the next minor release, and immediately
 	  // down to pre-release. premajor and prepatch work the same way.
 	  inc (release, identifier, identifierBase) {
+	    if (release.startsWith('pre')) {
+	      if (!identifier && identifierBase === false) {
+	        throw new Error('invalid increment argument: identifier is empty')
+	      }
+	      // Avoid an invalid semver results
+	      if (identifier) {
+	        const match = `-${identifier}`.match(this.options.loose ? re[t.PRERELEASELOOSE] : re[t.PRERELEASE]);
+	        if (!match || match[1] !== identifier) {
+	          throw new Error(`invalid identifier: ${identifier}`)
+	        }
+	      }
+	    }
+
 	    switch (release) {
 	      case 'premajor':
 	        this.prerelease.length = 0;
@@ -558,6 +571,12 @@ function requireSemver$1 () {
 	          this.inc('patch', identifier, identifierBase);
 	        }
 	        this.inc('pre', identifier, identifierBase);
+	        break
+	      case 'release':
+	        if (this.prerelease.length === 0) {
+	          throw new Error(`version ${this.raw} is not a prerelease`)
+	        }
+	        this.prerelease.length = 0;
 	        break
 
 	      case 'major':
@@ -601,10 +620,6 @@ function requireSemver$1 () {
 	      // 1.0.0 'pre' would become 1.0.0-0 which is the wrong direction.
 	      case 'pre': {
 	        const base = Number(identifierBase) ? 1 : 0;
-
-	        if (!identifier && identifierBase === false) {
-	          throw new Error('invalid increment argument: identifier is empty')
-	        }
 
 	        if (this.prerelease.length === 0) {
 	          this.prerelease = [base];
@@ -774,20 +789,13 @@ function requireDiff () {
 	      return 'major'
 	    }
 
-	    // Otherwise it can be determined by checking the high version
-
-	    if (highVersion.patch) {
-	      // anything higher than a patch bump would result in the wrong version
+	    // If the main part has no difference
+	    if (lowVersion.compareMain(highVersion) === 0) {
+	      if (lowVersion.minor && !lowVersion.patch) {
+	        return 'minor'
+	      }
 	      return 'patch'
 	    }
-
-	    if (highVersion.minor) {
-	      // anything higher than a minor bump would result in the wrong version
-	      return 'minor'
-	    }
-
-	    // bumping major/minor/patch all have same result
-	    return 'major'
 	  }
 
 	  // add the `pre` prefix if we are going to a prerelease version
