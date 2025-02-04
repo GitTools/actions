@@ -80,6 +80,7 @@ function requireRe () {
 		const re = exports.re = [];
 		const safeRe = exports.safeRe = [];
 		const src = exports.src = [];
+		const safeSrc = exports.safeSrc = [];
 		const t = exports.t = {};
 		let R = 0;
 
@@ -112,6 +113,7 @@ function requireRe () {
 		  debug(name, index, value);
 		  t[name] = index;
 		  src[index] = value;
+		  safeSrc[index] = safe;
 		  re[index] = new RegExp(value, isGlobal ? 'g' : undefined);
 		  safeRe[index] = new RegExp(safe, isGlobal ? 'g' : undefined);
 		};
@@ -353,7 +355,7 @@ function requireSemver$1 () {
 	hasRequiredSemver$1 = 1;
 	const debug = requireDebug();
 	const { MAX_LENGTH, MAX_SAFE_INTEGER } = requireConstants();
-	const { safeRe: re, t } = requireRe();
+	const { safeRe: re, safeSrc: src, t } = requireRe();
 
 	const parseOptions = requireParseOptions();
 	const { compareIdentifiers } = requireIdentifiers();
@@ -535,7 +537,8 @@ function requireSemver$1 () {
 	      }
 	      // Avoid an invalid semver results
 	      if (identifier) {
-	        const match = `-${identifier}`.match(this.options.loose ? re[t.PRERELEASELOOSE] : re[t.PRERELEASE]);
+	        const r = new RegExp(`^${this.options.loose ? src[t.PRERELEASELOOSE] : src[t.PRERELEASE]}$`);
+	        const match = `-${identifier}`.match(r);
 	        if (!match || match[1] !== identifier) {
 	          throw new Error(`invalid identifier: ${identifier}`)
 	        }
