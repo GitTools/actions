@@ -14,7 +14,8 @@ describe('GitVersion settings', () => {
             configFilePath: 'path',
             overrideConfig: ['update-build-number=false'],
             updateAssemblyInfo: true,
-            updateAssemblyInfoFilename: 'path'
+            updateAssemblyInfoFilename: 'path',
+            updateProjectFiles: true
         }
 
         const buildAgent = {

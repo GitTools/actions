@@ -64,6 +64,10 @@ updateAssemblyInfoFilename:
   description: Update versions in specified file
   required: false
   default: ''
+updateProjectFiles:
+  description: Whether to update versions in all project files
+  required: false
+  default: 'false'
 ```
 
 ## Outputs
@@ -484,6 +488,23 @@ stages:
             displayName: Use mapped local env from job variables (bash - outputs with prefix)
             env:
               localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
+```
+
+</details>
+
+### Example 10
+
+<details>
+  <summary>Calculate the version for the build. Update the version in the project files.</summary>
+
+```yaml
+steps:
+  # gitversion/setup@3.1.11 task omitted for brevity.
+
+  - task: gitversion/execute@3.1.11
+    displayName: Determine Version
+    inputs:
+      updateProjectFiles: true
 ```
 
 </details>

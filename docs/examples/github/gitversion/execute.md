@@ -66,6 +66,10 @@ updateAssemblyInfoFilename:
   description: Update versions in specified file
   required: false
   default: ''
+updateProjectFiles:
+  description: Whether to update versions in the project files
+  required: false
+  default: 'false'
 ```
 
 ## Outputs
@@ -455,6 +459,23 @@ jobs:
           echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
+```
+
+</details>
+
+### Example 9
+
+<details>
+  <summary>Calculate the version for the build. Update the version in the project files.</summary>
+
+```yaml
+steps:
+  # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
+
+  - name: Determine Version
+    uses: gittools/actions/gitversion/execute@v3.1.11
+    with:
+      updateProjectFiles: true
 ```
 
 </details>

@@ -47,6 +47,10 @@ inputs:
     description: Update versions in specified file
     required: false
     default: ''
+  updateProjectFiles:
+    description: Whether to update versions in the project files
+    required: false
+    default: 'false'
 outputs:
   major: # id of output
     description: 'The Major value'
