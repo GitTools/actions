@@ -123,6 +123,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
 
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
 ```
 
@@ -136,6 +137,7 @@ steps:
 ```yaml
 steps:
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
     with:
       useConfigFile: true
@@ -164,6 +166,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
 
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
     with:
       useConfigFile: true
@@ -182,6 +185,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
 
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
     with:
       disableCache: true
@@ -217,6 +221,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
 
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
     with:
       overrideConfig: |
@@ -236,6 +241,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
 
   - name: Determine Version
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.1.11
     with:
       updateProjectFiles: true
