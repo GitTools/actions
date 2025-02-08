@@ -251,6 +251,14 @@ describe('GitVersionTool', () => {
             } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml', '/updateassemblyinfo', 'AssemblyInfo.cs'])
         })
+
+        it('should return correct arguments for settings with project files', async () => {
+            tool.init(true)
+            const args = await tool.getExecuteArguments('workdir', {
+                updateProjectFiles: true
+            } as ExecuteSettings)
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateprojectfiles'])
+        })
     })
 
     describe('getCommandArguments', () => {

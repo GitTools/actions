@@ -108,6 +108,14 @@
       "required": false,
       "helpMarkDown": "Update versions in specified file",
       "visibleRule": "updateAssemblyInfo = true"
+    },
+    {
+      "name": "updateProjectFiles",
+      "type": "boolean",
+      "label": "Update project files",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to update versions in the project files"
     }
   ]
 }

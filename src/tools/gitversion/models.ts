@@ -10,6 +10,7 @@ export type ExecuteSettings = {
     overrideConfig: string[]
     updateAssemblyInfo: boolean
     updateAssemblyInfoFilename: string
+    updateProjectFiles: boolean
 }
 
 export type CommandSettings = {

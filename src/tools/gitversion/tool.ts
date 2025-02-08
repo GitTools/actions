@@ -87,7 +87,8 @@ export class GitVersionTool extends DotnetTool {
             configFilePath,
             overrideConfig,
             updateAssemblyInfo,
-            updateAssemblyInfoFilename
+            updateAssemblyInfoFilename,
+            updateProjectFiles
             //
         } = options
 
@@ -127,6 +128,10 @@ export class GitVersionTool extends DotnetTool {
                     throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)
                 }
             }
+        }
+
+        if (updateProjectFiles) {
+            args.push('/updateprojectfiles')
         }
 
         return args
