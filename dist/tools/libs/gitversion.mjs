@@ -16,6 +16,7 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const overrideConfig = this.buildAgent.getListInput("overrideConfig");
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
     const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
+    const updateProjectFiles = this.buildAgent.getBooleanInput("updateProjectFiles");
     return {
       targetPath,
       disableCache,
@@ -25,7 +26,8 @@ class GitVersionSettingsProvider extends SettingsProvider {
       configFilePath,
       overrideConfig,
       updateAssemblyInfo,
-      updateAssemblyInfoFilename
+      updateAssemblyInfoFilename,
+      updateProjectFiles
     };
   }
   getCommandSettings() {
@@ -107,7 +109,8 @@ class GitVersionTool extends DotnetTool {
       configFilePath,
       overrideConfig,
       updateAssemblyInfo,
-      updateAssemblyInfoFilename
+      updateAssemblyInfoFilename,
+      updateProjectFiles
       //
     } = options;
     if (disableCache) {
@@ -140,6 +143,9 @@ class GitVersionTool extends DotnetTool {
           throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`);
         }
       }
+    }
+    if (updateProjectFiles) {
+      args.push("/updateprojectfiles");
     }
     return args;
   }
