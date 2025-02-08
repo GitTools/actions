@@ -227,6 +227,23 @@ steps:
 
 </details>
 
+### Example 7
+
+<details>
+  <summary>Calculate the version for the build. Update the version in the project files.</summary>
+
+```yaml
+steps:
+  # gitversion/setup@3.1.11 task omitted for brevity.
+
+  - task: gitversion/execute@3.1.11
+    displayName: Determine Version
+    inputs:
+      updateProjectFiles: true
+```
+
+</details>
+
 ## Output usage
 
 The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`,
@@ -239,7 +256,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 **GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
 You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
 
-### Example 7
+### Example 8
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -309,7 +326,7 @@ jobs:
 
 </details>
 
-### Example 8
+### Example 9
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -397,7 +414,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Example 10
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>
@@ -488,23 +505,6 @@ stages:
             displayName: Use mapped local env from job variables (bash - outputs with prefix)
             env:
               localvar_GitVersion_FullSemVer: $(myvar_GitVersion_FullSemVer)
-```
-
-</details>
-
-### Example 10
-
-<details>
-  <summary>Calculate the version for the build. Update the version in the project files.</summary>
-
-```yaml
-steps:
-  # gitversion/setup@3.1.11 task omitted for brevity.
-
-  - task: gitversion/execute@3.1.11
-    displayName: Determine Version
-    inputs:
-      updateProjectFiles: true
 ```
 
 </details>

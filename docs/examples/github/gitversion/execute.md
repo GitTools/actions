@@ -226,6 +226,23 @@ steps:
 
 </details>
 
+### Example 7
+
+<details>
+  <summary>Calculate the version for the build. Update the version in the project files.</summary>
+
+```yaml
+steps:
+  # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
+
+  - name: Determine Version
+    uses: gittools/actions/gitversion/execute@v3.1.11
+    with:
+      updateProjectFiles: true
+```
+
+</details>
+
 ## Output usage
 
 The outputs can be accessed using the syntax `${{ steps.<id>.outputs.<outputName> }}` or `${{ steps.<id>.outputs.GitVersion_<OutputName> }}`,
@@ -233,7 +250,7 @@ where `<id>` is the ID assigned to the step that calls the action, by subsequent
 
 The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
-### Example 7
+### Example 8
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -317,7 +334,7 @@ jobs:
 
 </details>
 
-### Example 8
+### Example 9
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -459,23 +476,6 @@ jobs:
           echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
-```
-
-</details>
-
-### Example 9
-
-<details>
-  <summary>Calculate the version for the build. Update the version in the project files.</summary>
-
-```yaml
-steps:
-  # gittools/actions/gitversion/setup@v3.1.11 action omitted for brevity.
-
-  - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v3.1.11
-    with:
-      updateProjectFiles: true
 ```
 
 </details>
