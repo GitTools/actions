@@ -54,7 +54,7 @@
     "@types/semver": "^7.5.8",
     "@vitest/eslint-plugin": "^1.1.28",
     "dotenv": "^16.4.7",
-    "eslint": "^9.20.0",
+    "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
     "glob": "^11.0.1",
