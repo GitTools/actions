@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { S as SettingsProvider, D as DotnetTool, R as RunnerBase } from './tools.mjs';
+import { S as SettingsProvider, D as DotnetTool, A as ArgumentsBuilder, R as RunnerBase } from './tools.mjs';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
@@ -120,86 +120,86 @@ class GitReleaseManagerTool extends DotnetTool {
     return await this.executeTool(args);
   }
   async getCommonArguments(settings) {
-    const args = [];
-    args.push("--owner", settings.owner);
-    args.push("--repository", settings.repository);
-    args.push("--token", settings.token);
+    const builder = new ArgumentsBuilder();
+    builder.addKeyValue("owner", settings.owner);
+    builder.addKeyValue("repository", settings.repository);
+    builder.addKeyValue("token", settings.token);
     settings.targetDirectory = await this.getRepoDir(settings);
-    args.push("--targetDirectory", settings.targetDirectory);
+    builder.addKeyValue("targetDirectory", settings.targetDirectory);
     if (settings.logFilePath) {
-      args.push("--logFilePath", settings.logFilePath);
+      builder.addKeyValue("logFilePath", settings.logFilePath);
     }
-    return args;
+    return builder.build();
   }
   async getCreateArguments(settings) {
-    const args = ["create", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("create").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--milestone", settings.milestone);
+      builder.addKeyValue("milestone", settings.milestone);
     }
     if (settings.name) {
-      args.push("--name", settings.name);
+      builder.addKeyValue("name", settings.name);
     }
     if (settings.targetcommitish) {
-      args.push("--targetcommitish", settings.targetcommitish);
+      builder.addKeyValue("targetcommitish", settings.targetcommitish);
     }
     if (settings.inputFilePath) {
       if (await this.buildAgent.fileExists(settings.inputFilePath)) {
-        args.push("--inputFilePath", settings.inputFilePath);
+        builder.addKeyValue("inputFilePath", settings.inputFilePath);
       } else {
         throw new Error(`GitReleaseManager inputFilePath not found at ${settings.inputFilePath}`);
       }
     }
     if (settings.isPreRelease) {
-      args.push("--pre");
+      builder.addFlag("pre");
     }
     if (settings.assets && settings.assets.length > 0) {
       settings.assets = settings.assets.map((asset) => {
         return path.join(settings.targetDirectory, asset);
       });
-      args.push("--assets", settings.assets.join(","));
+      builder.addKeyValue("assets", settings.assets.join(","));
     }
-    return args;
+    return builder.build();
   }
   async getDiscardArguments(settings) {
-    const args = ["discard", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("discard").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--milestone", settings.milestone);
+      builder.addKeyValue("milestone", settings.milestone);
     }
-    return args;
+    return builder.build();
   }
   async getCloseArguments(settings) {
-    const args = ["close", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("close").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--milestone", settings.milestone);
+      builder.addKeyValue("milestone", settings.milestone);
     }
-    return args;
+    return builder.build();
   }
   async getOpenArguments(settings) {
-    const args = ["open", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("open").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--milestone", settings.milestone);
+      builder.addKeyValue("milestone", settings.milestone);
     }
-    return args;
+    return builder.build();
   }
   async getPublishArguments(settings) {
-    const args = ["publish", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("publish").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--tagName", settings.milestone);
+      builder.addKeyValue("tagName", settings.milestone);
     }
-    return args;
+    return builder.build();
   }
   async getAddAssetArguments(settings) {
-    const args = ["addasset", ...await this.getCommonArguments(settings)];
+    const builder = new ArgumentsBuilder().addArgument("addasset").addArguments(await this.getCommonArguments(settings));
     if (settings.milestone) {
-      args.push("--tagName", settings.milestone);
+      builder.addKeyValue("tagName", settings.milestone);
     }
     if (settings.assets && settings.assets.length > 0) {
       settings.assets = settings.assets.map((asset) => {
         return path.join(settings.targetDirectory, asset);
       });
-      args.push("--assets", settings.assets.join(","));
+      builder.addKeyValue("assets", settings.assets.join(","));
     }
-    return args;
+    return builder.build();
   }
   async getRepoDir(settings) {
     return await this.getRepoPath(settings.targetDirectory);
