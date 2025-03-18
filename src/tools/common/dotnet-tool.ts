@@ -7,6 +7,7 @@ import * as semver from 'semver'
 import { type IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
 import { NugetVersions } from './models'
+import { ArgumentsBuilder } from './arguments-builder'
 
 export interface IDotnetTool {
     toolName: string
@@ -199,12 +200,18 @@ export abstract class DotnetTool implements IDotnetTool {
             throw new Error('Unable to create temp directory')
         }
 
-        const args = ['tool', 'install', toolName, '--tool-path', tempDirectory, '--version', semverVersion]
+        const builder = new ArgumentsBuilder()
+            .addArgument('tool')
+            .addArgument('install')
+            .addArgument(toolName)
+            .addKeyValue('tool-path', tempDirectory)
+            .addKeyValue('version', semverVersion)
+
         if (ignoreFailedSources) {
-            args.push('--ignore-failed-sources')
+            builder.addFlag('ignore-failed-sources')
         }
 
-        const result = await this.execute('dotnet', args)
+        const result = await this.execute('dotnet', builder.build())
         const status = result.code === 0 ? 'success' : 'failure'
         const message = result.code === 0 ? result.stdout : result.stderr
 

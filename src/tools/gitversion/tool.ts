@@ -1,5 +1,5 @@
 import { type ExecResult } from '@agents/common'
-import { DotnetTool, keysOf } from '@tools/common'
+import { ArgumentsBuilder, DotnetTool, keysOf } from '@tools/common'
 import { type CommandSettings, type ExecuteSettings, type GitVersionOutput } from './models'
 import { GitVersionSettingsProvider, type IGitVersionSettingsProvider } from './settings'
 
@@ -78,7 +78,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     protected async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
-        const args = [workDir, '/output', 'json', '/l', 'console']
+        const builder = new ArgumentsBuilder().addArgument(workDir).addArgument('/output').addArgument('json').addArgument('/l').addArgument('console')
 
         const {
             useConfigFile,
@@ -93,16 +93,16 @@ export class GitVersionTool extends DotnetTool {
         } = options
 
         if (disableCache) {
-            args.push('/nocache')
+            builder.addArgument('/nocache')
         }
 
         if (disableNormalization) {
-            args.push('/nonormalize')
+            builder.addArgument('/nonormalize')
         }
 
         if (useConfigFile) {
             if (await this.isValidInputFile('configFilePath', configFilePath)) {
-                args.push('/config', configFilePath)
+                builder.addArgument('/config').addArgument(configFilePath)
             } else {
                 throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
             }
@@ -112,18 +112,18 @@ export class GitVersionTool extends DotnetTool {
             for (let config of overrideConfig) {
                 config = config.trim()
                 if (config.match(/([a-zA-Z0-9]+(-[a-zA-Z]+)*=[a-zA-Z0-9\- :.']*)/)) {
-                    args.push('/overrideconfig', config)
+                    builder.addArgument('/overrideconfig').addArgument(config)
                 }
             }
         }
 
         if (updateAssemblyInfo) {
-            args.push('/updateassemblyinfo')
+            builder.addArgument('/updateassemblyinfo')
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
             if (updateAssemblyInfoFilename?.length > 0) {
                 if (await this.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
-                    args.push(updateAssemblyInfoFilename)
+                    builder.addArgument(updateAssemblyInfoFilename)
                 } else {
                     throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)
                 }
@@ -131,81 +131,20 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (updateProjectFiles) {
-            args.push('/updateprojectfiles')
+            builder.addArgument('/updateprojectfiles')
         }
 
-        return args
+        return builder.build()
     }
 
     protected getCommandArguments(workDir: string, options: CommandSettings): string[] {
-        let args = [workDir]
+        const builder = new ArgumentsBuilder().addArgument(workDir)
 
         if (options.arguments) {
-            args = args.concat(this.argStringToArray(options.arguments))
-        }
-        return args
-    }
-
-    private argStringToArray(argString: string): string[] {
-        const args: string[] = []
-
-        let inQuotes = false
-        let escaped = false
-        let lastCharWasSpace = true
-        let arg = ''
-
-        const append = (c: string): void => {
-            // we only escape double quotes.
-            if (escaped && c !== '"') {
-                arg += '\\'
-            }
-
-            arg += c
-            escaped = false
+            builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
         }
 
-        for (let i = 0; i < argString.length; i++) {
-            const c = argString.charAt(i)
-
-            if (c === ' ' && !inQuotes) {
-                if (!lastCharWasSpace) {
-                    args.push(arg)
-                    arg = ''
-                }
-                lastCharWasSpace = true
-                continue
-            } else {
-                lastCharWasSpace = false
-            }
-
-            if (c === '"') {
-                if (!escaped) {
-                    inQuotes = !inQuotes
-                } else {
-                    append(c)
-                }
-                continue
-            }
-
-            if (c === '\\' && escaped) {
-                append(c)
-                continue
-            }
-
-            if (c === '\\' && inQuotes) {
-                escaped = true
-                continue
-            }
-
-            append(c)
-            lastCharWasSpace = false
-        }
-
-        if (!lastCharWasSpace) {
-            args.push(arg.trim())
-        }
-
-        return args
+        return builder.build()
     }
 
     private async checkShallowClone(settings: ExecuteSettings | CommandSettings, workDir: string): Promise<void> {
