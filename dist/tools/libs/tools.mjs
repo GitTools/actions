@@ -220,6 +220,49 @@ class DotnetTool {
     this.buildAgent.info(`Command: ${cmd} ${args.join(" ")}`);
     return await this.buildAgent.exec(cmd, args);
   }
+  async findToolExecutable(toolBasePath) {
+    const toolName = os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName;
+    const toolPath = path.join(toolBasePath, toolName);
+    if (await this.buildAgent.fileExists(toolPath)) {
+      return toolPath;
+    }
+    const arch = os.arch();
+    this.buildAgent.debug(`Current system architecture: ${arch}`);
+    const archPaths = [];
+    if (arch === "x64") {
+      archPaths.push(path.join(toolBasePath, "x64", toolName));
+    } else if (arch === "arm64") {
+      archPaths.push(path.join(toolBasePath, "arm64", toolName));
+    }
+    if (os.platform() === "darwin" && arch === "arm64") {
+      archPaths.push(path.join(toolBasePath, "osx-arm64", toolName));
+    } else if (os.platform() === "darwin" && arch === "x64") {
+      archPaths.push(path.join(toolBasePath, "osx-x64", toolName));
+    }
+    for (const archPath of archPaths) {
+      if (await this.buildAgent.fileExists(archPath)) {
+        this.buildAgent.debug(`Found tool in architecture-specific directory: ${archPath}`);
+        return archPath;
+      }
+    }
+    try {
+      const entries = await fs.readdir(toolBasePath, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const nestedPath = path.join(toolBasePath, entry.name, toolName);
+          if (await this.buildAgent.fileExists(nestedPath)) {
+            this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`);
+            return nestedPath;
+          }
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        this.buildAgent.debug(`Error reading subdirectories: ${error.message}`);
+      }
+    }
+    return null;
+  }
   async setDotnetRoot() {
     if (os.platform() !== "win32" && !this.buildAgent.getVariable("DOTNET_ROOT")) {
       let dotnetPath = await this.buildAgent.which("dotnet", true);
@@ -232,10 +275,17 @@ class DotnetTool {
     }
   }
   async executeTool(args) {
+    const variablePath = this.buildAgent.getVariableAsPath(this.toolPathVariable);
     let toolPath;
-    const variableAsPath = this.buildAgent.getVariableAsPath(this.toolPathVariable);
-    if (variableAsPath) {
-      toolPath = path.join(variableAsPath, os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName);
+    if (variablePath) {
+      const foundExecutable = await this.findToolExecutable(variablePath);
+      if (foundExecutable) {
+        toolPath = foundExecutable;
+        this.buildAgent.debug(`Found tool executable at: ${toolPath}`);
+      } else {
+        toolPath = path.join(variablePath, os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName);
+        this.buildAgent.debug(`Defaulting to expected tool path: ${toolPath}`);
+      }
     }
     if (!toolPath) {
       toolPath = await this.buildAgent.which(this.toolName, true);

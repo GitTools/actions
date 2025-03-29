@@ -101,6 +101,65 @@ export abstract class DotnetTool implements IDotnetTool {
         return await this.buildAgent.exec(cmd, args)
     }
 
+    protected async findToolExecutable(toolBasePath: string): Promise<string | null> {
+        const toolName = os.platform() === 'win32' ? `${this.toolName}.exe` : this.toolName
+
+        // Check in the base path first
+        const toolPath = path.join(toolBasePath, toolName)
+        if (await this.buildAgent.fileExists(toolPath)) {
+            return toolPath
+        }
+
+        // Get current system architecture
+        const arch = os.arch()
+        this.buildAgent.debug(`Current system architecture: ${arch}`)
+
+        // Map node's architecture names to .NET's architecture folders
+        const archPaths = []
+
+        // Add primary architecture path based on current architecture
+        if (arch === 'x64') {
+            archPaths.push(path.join(toolBasePath, 'x64', toolName))
+        } else if (arch === 'arm64') {
+            archPaths.push(path.join(toolBasePath, 'arm64', toolName))
+        }
+
+        // Add platform-specific architecture paths
+        if (os.platform() === 'darwin' && arch === 'arm64') {
+            archPaths.push(path.join(toolBasePath, 'osx-arm64', toolName))
+        } else if (os.platform() === 'darwin' && arch === 'x64') {
+            archPaths.push(path.join(toolBasePath, 'osx-x64', toolName))
+        }
+
+        // Try each architecture-specific path
+        for (const archPath of archPaths) {
+            if (await this.buildAgent.fileExists(archPath)) {
+                this.buildAgent.debug(`Found tool in architecture-specific directory: ${archPath}`)
+                return archPath
+            }
+        }
+
+        // Check in any other subdirectory as a fallback
+        try {
+            const entries = await fs.readdir(toolBasePath, { withFileTypes: true })
+            for (const entry of entries) {
+                if (entry.isDirectory()) {
+                    const nestedPath = path.join(toolBasePath, entry.name, toolName)
+                    if (await this.buildAgent.fileExists(nestedPath)) {
+                        this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`)
+                        return nestedPath
+                    }
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                this.buildAgent.debug(`Error reading subdirectories: ${error.message}`)
+            }
+        }
+
+        return null
+    }
+
     protected async setDotnetRoot(): Promise<void> {
         if (os.platform() !== 'win32' && !this.buildAgent.getVariable('DOTNET_ROOT')) {
             let dotnetPath = await this.buildAgent.which('dotnet', true)
@@ -115,11 +174,24 @@ export abstract class DotnetTool implements IDotnetTool {
     }
 
     protected async executeTool(args: string[]): Promise<ExecResult> {
+        // First, check if we have a path variable set
+        const variablePath = this.buildAgent.getVariableAsPath(this.toolPathVariable)
         let toolPath: string | undefined
-        const variableAsPath = this.buildAgent.getVariableAsPath(this.toolPathVariable)
-        if (variableAsPath) {
-            toolPath = path.join(variableAsPath, os.platform() === 'win32' ? `${this.toolName}.exe` : this.toolName)
+
+        if (variablePath) {
+            // Try to find the executable in the path or its subdirectories
+            const foundExecutable = await this.findToolExecutable(variablePath)
+            if (foundExecutable) {
+                toolPath = foundExecutable
+                this.buildAgent.debug(`Found tool executable at: ${toolPath}`)
+            } else {
+                // Fallback to old behavior if executable not found
+                toolPath = path.join(variablePath, os.platform() === 'win32' ? `${this.toolName}.exe` : this.toolName)
+                this.buildAgent.debug(`Defaulting to expected tool path: ${toolPath}`)
+            }
         }
+
+        // If we still don't have a path, try to find it in PATH
         if (!toolPath) {
             toolPath = await this.buildAgent.which(this.toolName, true)
         }
