@@ -1,6 +1,6 @@
 {
   "id": "c77d38be-46a9-4ef1-a181-2d6050ed23d2",
-  "name": "gitreleasemanager/create",
+  "name": "gitreleasemanager-create",
   "friendlyName": "Create GitReleaseManager Task",
   "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
   "author": "GitTools Contributors",
