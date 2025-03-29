@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { BuildAgent } from '@agents/local'
 import process from 'node:process'
+import os from 'node:os'
 
 describe('build-agent/local', () => {
     let agent: BuildAgent
@@ -35,7 +36,7 @@ describe('build-agent/local', () => {
 
         agent.debug('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[debug] test')
+        expect(spy).toHaveBeenCalledWith('[debug] test' + os.EOL)
     })
 
     it('should log info', () => {
@@ -43,7 +44,7 @@ describe('build-agent/local', () => {
 
         agent.info('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[info] - test')
+        expect(spy).toHaveBeenCalledWith('[info] - test' + os.EOL)
     })
 
     it('should log warn', () => {
@@ -51,7 +52,7 @@ describe('build-agent/local', () => {
 
         agent.warn('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[warn] - test')
+        expect(spy).toHaveBeenCalledWith('[warn] - test' + os.EOL)
     })
 
     it('should log error', () => {
@@ -59,7 +60,7 @@ describe('build-agent/local', () => {
 
         agent.error('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[error] - test')
+        expect(spy).toHaveBeenCalledWith('[error] - test' + os.EOL)
     })
 
     it('should set succeeded', () => {

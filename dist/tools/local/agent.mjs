@@ -1,4 +1,5 @@
 import * as process from 'node:process';
+import os from 'node:os';
 import { B as BuildAgentBase } from '../libs/agents.mjs';
 
 class BuildAgent extends BuildAgentBase {
@@ -7,16 +8,16 @@ class BuildAgent extends BuildAgentBase {
   tempDirVariable = "AGENT_TEMP_DIR";
   cacheDirVariable = "AGENT_TOOLS_DIR";
   debug = (message) => {
-    process.stdout.write(`[debug] ${message}`);
+    process.stdout.write(`[debug] ${message}` + os.EOL);
   };
   info = (message) => {
-    process.stdout.write(`[info] - ${message}`);
+    process.stdout.write(`[info] - ${message}` + os.EOL);
   };
   warn = (message) => {
-    process.stderr.write(`[warn] - ${message}`);
+    process.stderr.write(`[warn] - ${message}` + os.EOL);
   };
   error = (message) => {
-    process.stderr.write(`[error] - ${message}`);
+    process.stderr.write(`[error] - ${message}` + os.EOL);
   };
   setSucceeded = (message, done) => this.info(`setSucceeded - ${message} - ${done}`);
   setFailed = (message, done) => this.error(`setFailed - ${message} - ${done}`);
