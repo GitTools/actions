@@ -1,6 +1,6 @@
 {
   "id": "b3c54483-4140-45d8-b442-3a0b096b5f7f",
-  "name": "gitreleasemanager/publish",
+  "name": "gitreleasemanager-publish",
   "friendlyName": "Publish GitReleaseManager Task",
   "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
   "author": "GitTools Contributors",
