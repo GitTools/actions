@@ -4,6 +4,165 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { s as semverExports } from './semver.mjs';
 
+class ArgumentsBuilder {
+  args = [];
+  isWindows = os.platform() === "win32";
+  /**
+   * Adds a simple argument without a key
+   * @param value The argument value
+   */
+  addArgument(value) {
+    if (value) {
+      this.args.push(this.escapeArgument(value));
+    }
+    return this;
+  }
+  /**
+   * Adds multiple arguments
+   * @param values The argument values
+   */
+  addArguments(values) {
+    for (const value of values) {
+      this.addArgument(value);
+    }
+    return this;
+  }
+  /**
+   * Adds a flag argument (--flag)
+   * @param key The flag name
+   */
+  addFlag(key) {
+    if (key) {
+      this.args.push(`--${key}`);
+    }
+    return this;
+  }
+  /**
+   * Adds a key-value argument (--key value)
+   * @param key The argument key
+   * @param value The argument value
+   */
+  addKeyValue(key, value) {
+    if (key && value !== undefined && value !== null) {
+      this.args.push(`--${key}`);
+      this.args.push(this.escapeArgument(value));
+    }
+    return this;
+  }
+  /**
+   * Adds an equals-style argument (--key=value)
+   * @param key The argument key
+   * @param value The argument value
+   */
+  addKeyValueEquals(key, value) {
+    if (key && value !== undefined && value !== null) {
+      this.args.push(`--${key}=${this.escapeArgument(value)}`);
+    }
+    return this;
+  }
+  /**
+   * Adds a comma-separated list (--key value1,value2,value3)
+   * @param key The argument key
+   * @param values The list of values
+   */
+  addCommaList(key, values) {
+    if (key && values && values.length > 0) {
+      const escapedValues = values.map((v) => this.escapeArgument(v));
+      this.args.push(`--${key}`);
+      this.args.push(escapedValues.join(","));
+    }
+    return this;
+  }
+  /**
+   * Escapes an argument value based on the current OS
+   * @param value The argument value to escape
+   * @returns The escaped argument value
+   */
+  escapeArgument(value) {
+    if (!value) return value;
+    if (!this.needsEscaping(value)) return value;
+    if (this.isWindows) {
+      return `"${value.replace(/"/g, '\\"')}"`;
+    } else {
+      return `'${value.replace(/'/g, "'\\''")}'`;
+    }
+  }
+  /**
+   * Determines if a value needs to be escaped
+   * @param value The value to check
+   * @returns True if the value needs escaping
+   */
+  needsEscaping(value) {
+    const windowsNeedsEscaping = /[\s&|<>^(){}[\]"']/;
+    const unixNeedsEscaping = /[\s$\\`&|<>(){}[\]"']/;
+    if (this.isWindows) {
+      return windowsNeedsEscaping.test(value);
+    }
+    return unixNeedsEscaping.test(value);
+  }
+  /**
+   * Returns the built argument array
+   */
+  build() {
+    return [...this.args];
+  }
+  /**
+   * Parses an argument string into an array
+   * @param argString The argument string to parse
+   * @returns Array of parsed arguments
+   */
+  static parseArgumentString(argString) {
+    const args = [];
+    let inQuotes = false;
+    let escaped = false;
+    let lastCharWasSpace = true;
+    let arg = "";
+    const append = (c) => {
+      if (escaped && c !== '"' && c !== "\\") {
+        arg += "\\";
+      }
+      arg += c;
+      escaped = false;
+    };
+    for (let i = 0; i < argString.length; i++) {
+      const c = argString.charAt(i);
+      if (c === " " && !inQuotes) {
+        if (!lastCharWasSpace) {
+          args.push(arg);
+          arg = "";
+        }
+        lastCharWasSpace = true;
+        continue;
+      } else {
+        lastCharWasSpace = false;
+      }
+      if (c === '"') {
+        if (!escaped) {
+          inQuotes = !inQuotes;
+        } else {
+          append(c);
+        }
+        continue;
+      }
+      if (c === "\\" && escaped) {
+        arg += "\\";
+        escaped = false;
+        continue;
+      }
+      if (c === "\\" && inQuotes) {
+        escaped = true;
+        continue;
+      }
+      append(c);
+      lastCharWasSpace = false;
+    }
+    if (!lastCharWasSpace) {
+      args.push(arg.trim());
+    }
+    return args;
+  }
+}
+
 class DotnetTool {
   constructor(buildAgent) {
     this.buildAgent = buildAgent;
@@ -141,11 +300,11 @@ class DotnetTool {
     if (!tempDirectory) {
       throw new Error("Unable to create temp directory");
     }
-    const args = ["tool", "install", toolName, "--tool-path", tempDirectory, "--version", semverVersion];
+    const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", tempDirectory).addKeyValue("version", semverVersion);
     if (ignoreFailedSources) {
-      args.push("--ignore-failed-sources");
+      builder.addFlag("ignore-failed-sources");
     }
-    const result = await this.execute("dotnet", args);
+    const result = await this.execute("dotnet", builder.build());
     const status = result.code === 0 ? "success" : "failure";
     const message = result.code === 0 ? result.stdout : result.stderr;
     this.buildAgent.debug(`Tool install result: ${status} ${message}`);
@@ -238,5 +397,5 @@ class RunnerBase {
   }
 }
 
-export { DotnetTool as D, RunnerBase as R, SettingsProvider as S, keysOf as k };
+export { ArgumentsBuilder as A, DotnetTool as D, RunnerBase as R, SettingsProvider as S, keysOf as k };
 //# sourceMappingURL=tools.mjs.map
