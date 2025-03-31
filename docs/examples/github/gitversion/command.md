@@ -15,7 +15,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v3.1.11
     with:
-      versionSpec: '6.0.x'
+      versionSpec: '6.2.x'
 ```
 
 These steps are omitted from the examples for brevity.
