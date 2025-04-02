@@ -57,7 +57,6 @@ steps:
   - name: Display GitVersion config
     uses: gittools/actions/gitversion/command@v3.2.1
     with:
-      useConfigFile: true
       arguments: '/showConfig'
 ```
 
