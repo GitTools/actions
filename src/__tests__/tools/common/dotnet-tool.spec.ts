@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
+import * as process from 'node:process'
 import { DotnetTool, ISettingsProvider } from '@tools/common'
 import { IBuildAgent } from '@agents/common'
 import { Dirent } from 'node:fs'
@@ -22,6 +23,10 @@ class TestDotnetTool extends DotnetTool {
 
     get toolPathVariable(): string {
         return 'TEST_TOOL_PATH'
+    }
+
+    async getRepoPath(targetPath: string): Promise<string> {
+        return super.getRepoPath(targetPath)
     }
 
     get versionRange(): string | null {
@@ -240,6 +245,63 @@ describe('DotnetTool', () => {
             expect(mockInfo).toHaveBeenCalledWith('Disable Telemetry')
             expect(mockSetVariable).toHaveBeenCalledWith('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
             expect(mockSetVariable).toHaveBeenCalledWith('DOTNET_NOLOGO', 'true')
+        })
+    })
+
+    describe('getRepoDir', () => {
+        it('should return correct repo dir for empty target path, takes build agent sourceDir', async () => {
+            const buildAgent = {
+                sourceDir: '/workdir'
+            } as IBuildAgent
+            tool = new TestDotnetTool(buildAgent)
+            const repoDir = await tool.getRepoPath('')
+            expect(repoDir).toBe(path.normalize('/workdir'))
+        })
+
+        it('should return correct repo dir for empty target path, takes default', async () => {
+            const buildAgent = {
+                sourceDir: ''
+            } as IBuildAgent
+            tool = new TestDotnetTool(buildAgent)
+            const repoDir = await tool.getRepoPath('')
+            expect(repoDir).toBe('.')
+        })
+
+        it('should return correct repo dir for existing absolute target path', async () => {
+            const buildAgent = {
+                async directoryExists(_file: string): Promise<boolean> {
+                    return Promise.resolve(true)
+                }
+            } as IBuildAgent
+            tool = new TestDotnetTool(buildAgent)
+            const repoDir = await tool.getRepoPath('/targetDir')
+            expect(repoDir).toBe(path.normalize('/targetDir'))
+        })
+
+        it('should return correct repo dir for existing relative target path', async () => {
+            const targetPath = 'targetDir'
+            const buildAgent = {
+                async directoryExists(_file: string): Promise<boolean> {
+                    return Promise.resolve(true)
+                }
+            } as IBuildAgent
+            tool = new TestDotnetTool(buildAgent)
+            const repoDir = await tool.getRepoPath(targetPath)
+            const resolvedPath = path.join(process.cwd(), 'targetDir')
+            expect(repoDir).toBe(resolvedPath)
+        })
+
+        it('should throw error for non-existing target path', async () => {
+            const wrongDir = 'wrongdir'
+            const buildAgent = {
+                async directoryExists(_file: string): Promise<boolean> {
+                    return Promise.resolve(false)
+                }
+            } as IBuildAgent
+            tool = new TestDotnetTool(buildAgent)
+
+            const resolvedPath = path.join(process.cwd(), wrongDir)
+            await expect(tool.getRepoPath(wrongDir)).rejects.toThrowError(`Directory not found at ${resolvedPath}`)
         })
     })
 })

@@ -60,10 +60,12 @@ jobs:
     - name: gitversion/command (showvariable)
       uses: ./gitversion/command
       with:
+        targetPath: './'
         arguments: '/showvariable FullSemVer'
     - name: gitversion/command (format)
       uses: ./gitversion/command
       with:
+        targetPath: './'
         arguments: '/format {Major}.{Minor}'
     - name: gitversion/execute
       id: gitversion # step id used as reference for output values

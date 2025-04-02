@@ -79,64 +79,12 @@ describe('GitReleaseManagerTool', () => {
         expect(tool.settingsProvider).toBeDefined()
     })
 
-    describe('getRepoDir', () => {
-        it('should return correct repo dir for empty target path, takes build agent sourceDir', async () => {
-            const buildAgent = {
-                sourceDir: 'workdir'
-            } as IBuildAgent
-            tool = new TestGitReleaseManagerTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetDirectory: ''
-            } as CommonSettings)
-            expect(repoDir).toBe('workdir')
-        })
-
-        it('should return correct repo dir for empty target path, takes default', async () => {
-            const buildAgent = {
-                sourceDir: ''
-            } as IBuildAgent
-            tool = new TestGitReleaseManagerTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetDirectory: ''
-            } as CommonSettings)
-            expect(repoDir).toBe('.')
-        })
-
-        it('should return correct repo dir for existing target path', async () => {
-            const buildAgent = {
-                async directoryExists(_file: string): Promise<boolean> {
-                    return Promise.resolve(true)
-                }
-            } as IBuildAgent
-            tool = new TestGitReleaseManagerTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetDirectory: 'targetDir'
-            } as CommonSettings)
-            expect(repoDir).toBe('targetDir')
-        })
-
-        it('should throw error for non-existing target path', async () => {
-            const wrongDir = 'wrongdir'
-            const buildAgent = {
-                async directoryExists(_file: string): Promise<boolean> {
-                    return Promise.resolve(false)
-                }
-            } as IBuildAgent
-            tool = new TestGitReleaseManagerTool(buildAgent)
-            await expect(
-                tool.getRepoDir({
-                    targetDirectory: wrongDir
-                } as CommonSettings)
-            ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
-        })
-    })
-
     describe('getArguments', () => {
         const commonSettings = {
             owner: 'owner',
             repository: 'repo',
             token: 'token',
-            targetDirectory: 'targetDirectory',
+            targetDirectory: '/targetDirectory',
             logFilePath: './logFilePath'
         } as CommonSettings
 
@@ -171,27 +119,10 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath'
                 ])
-            })
-
-            it('should throw error for non-existing target path', async () => {
-                tool = new TestGitReleaseManagerTool({
-                    async directoryExists(_file: string): Promise<boolean> {
-                        return Promise.resolve(false)
-                    }
-                } as IBuildAgent)
-
-                const wrongDir = 'wrongdir'
-
-                await expect(
-                    tool.getCommonArguments({
-                        ...commonSettings,
-                        targetDirectory: wrongDir
-                    } as CommonSettings)
-                ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
             })
         })
 
@@ -217,7 +148,7 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './createLogFilePath',
                     '--milestone',
@@ -230,7 +161,7 @@ describe('GitReleaseManagerTool', () => {
                     'inputFilePath',
                     '--pre',
                     '--assets',
-                    `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
+                    `${path.join('/targetDirectory', 'asset1')},${path.join('/targetDirectory', 'asset2')}`
                 ])
             })
         })
@@ -251,7 +182,7 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath',
                     '--milestone',
@@ -276,7 +207,7 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath',
                     '--milestone',
@@ -301,7 +232,7 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath',
                     '--milestone',
@@ -326,7 +257,7 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath',
                     '--tagName',
@@ -352,13 +283,13 @@ describe('GitReleaseManagerTool', () => {
                     '--token',
                     'token',
                     '--targetDirectory',
-                    'targetDirectory',
+                    path.normalize('/targetDirectory'),
                     '--logFilePath',
                     './logFilePath',
                     '--tagName',
                     'milestone',
                     '--assets',
-                    `${path.join('targetDirectory', 'asset1')},${path.join('targetDirectory', 'asset2')}`
+                    `${path.join('/targetDirectory', 'asset1')},${path.join('/targetDirectory', 'asset2')}`
                 ])
             })
         })

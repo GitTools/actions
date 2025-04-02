@@ -112,58 +112,6 @@ describe('GitVersionTool', () => {
         })
     })
 
-    describe('getRepoDir', () => {
-        it('should return correct repo dir for empty target path, takes build agent sourceDir', async () => {
-            const buildAgent = {
-                sourceDir: 'workdir'
-            } as IBuildAgent
-            tool = new TestGitVersionTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetPath: ''
-            } as ExecuteSettings | CommandSettings)
-            expect(repoDir).toBe('workdir')
-        })
-
-        it('should return correct repo dir for empty target path, takes default', async () => {
-            const buildAgent = {
-                sourceDir: ''
-            } as IBuildAgent
-            tool = new TestGitVersionTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetPath: ''
-            } as ExecuteSettings | CommandSettings)
-            expect(repoDir).toBe('.')
-        })
-
-        it('should return correct repo dir for existing target path', async () => {
-            const buildAgent = {
-                async directoryExists(_file: string): Promise<boolean> {
-                    return Promise.resolve(true)
-                }
-            } as IBuildAgent
-            tool = new TestGitVersionTool(buildAgent)
-            const repoDir = await tool.getRepoDir({
-                targetPath: 'targetDir'
-            } as ExecuteSettings | CommandSettings)
-            expect(repoDir).toBe('targetDir')
-        })
-
-        it('should throw error for non-existing target path', async () => {
-            const wrongDir = 'wrongdir'
-            const buildAgent = {
-                async directoryExists(_file: string): Promise<boolean> {
-                    return Promise.resolve(false)
-                }
-            } as IBuildAgent
-            tool = new TestGitVersionTool(buildAgent)
-            await expect(
-                tool.getRepoDir({
-                    targetPath: wrongDir
-                } as ExecuteSettings | CommandSettings)
-            ).rejects.toThrowError(`Directory not found at ${wrongDir}`)
-        })
-    })
-
     describe('getExecuteArguments', () => {
         it('should return correct arguments for empty settings', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
