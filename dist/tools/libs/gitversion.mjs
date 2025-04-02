@@ -11,7 +11,6 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const disableCache = this.buildAgent.getBooleanInput("disableCache");
     const disableNormalization = this.buildAgent.getBooleanInput("disableNormalization");
     const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
-    const useConfigFile = this.buildAgent.getBooleanInput("useConfigFile");
     const configFilePath = this.buildAgent.getInput("configFilePath");
     const overrideConfig = this.buildAgent.getListInput("overrideConfig");
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
@@ -22,7 +21,6 @@ class GitVersionSettingsProvider extends SettingsProvider {
       disableCache,
       disableNormalization,
       disableShallowCloneCheck,
-      useConfigFile,
       configFilePath,
       overrideConfig,
       updateAssemblyInfo,
@@ -101,7 +99,6 @@ class GitVersionTool extends DotnetTool {
   async getExecuteArguments(workDir, options) {
     const builder = new ArgumentsBuilder().addArgument(workDir).addArgument("/output").addArgument("json").addArgument("/l").addArgument("console");
     const {
-      useConfigFile,
       disableCache,
       disableNormalization,
       configFilePath,
@@ -117,7 +114,7 @@ class GitVersionTool extends DotnetTool {
     if (disableNormalization) {
       builder.addArgument("/nonormalize");
     }
-    if (useConfigFile) {
+    if (configFilePath) {
       if (await this.isValidInputFile("configFilePath", configFilePath)) {
         builder.addArgument("/config").addArgument(configFilePath);
       } else {

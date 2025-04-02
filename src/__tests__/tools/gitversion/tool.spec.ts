@@ -123,7 +123,6 @@ describe('GitVersionTool', () => {
         it('should return correct arguments for settings with config', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {
-                useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml'
             } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml'])
@@ -134,7 +133,6 @@ describe('GitVersionTool', () => {
             const configFile = 'workdir/WrongConfig.yml'
             await expect(
                 tool.getExecuteArguments('workdir', {
-                    useConfigFile: true,
                     configFilePath: configFile
                 } as ExecuteSettings)
             ).rejects.toThrowError(`GitVersion configuration file not found at ${configFile}`)
@@ -180,7 +178,6 @@ describe('GitVersionTool', () => {
         it('should return correct arguments for settings with config and assembly info', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {
-                useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml',
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'

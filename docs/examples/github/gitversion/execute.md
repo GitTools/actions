@@ -43,10 +43,6 @@ disableShallowCloneCheck:
   description: Whether to disable the check for shallow clone
   required: false
   default: 'false'
-useConfigFile:
-  description: Whether to use a custom configuration file
-  required: false
-  default: 'false'
 configFilePath:
   description: Optional path to config file (defaults to GitVersion.yml)
   required: false
@@ -137,10 +133,8 @@ steps:
 ```yaml
 steps:
   - name: Determine Version
-    id: version_step # step id used as a reference for output values
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.1
-    with:
-      useConfigFile: true
 ```
 
 Example contents of **GitVersion.yml**:
@@ -169,7 +163,6 @@ steps:
     id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.1
     with:
-      useConfigFile: true
       configFilePath: VersionConfig.yml
 ```
 

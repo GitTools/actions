@@ -10,7 +10,6 @@ describe('GitVersion settings', () => {
             disableCache: true,
             disableNormalization: true,
             disableShallowCloneCheck: true,
-            useConfigFile: true,
             configFilePath: 'path',
             overrideConfig: ['update-build-number=false'],
             updateAssemblyInfo: true,
