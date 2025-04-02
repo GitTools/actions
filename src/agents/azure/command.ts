@@ -23,7 +23,7 @@ export enum TaskResult {
  **/
 export function issueCommand(command: string, properties: CommandProperties, message: string): void {
     const cmd = new Command(command, properties, message)
-    process.stdout.write(cmd.toString() + os.EOL)
+    process.stdout.write(`${cmd.toString()}${os.EOL}`)
 }
 
 class Command {

@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 const CMD_STRING = "::";
 function issueCommand(command, properties, message) {
   const cmd = new Command(command, properties, message);
-  process.stdout.write(cmd.toString() + os.EOL);
+  process.stdout.write(`${cmd.toString()}${os.EOL}`);
 }
 function issueFileCommand(command, message) {
   const filePath = process.env[`GITHUB_${command}`];
@@ -104,7 +104,7 @@ class BuildAgent extends BuildAgentBase {
   }
   debug = (message) => issueCommand("debug", {}, message);
   info = (message) => {
-    process__default.stdout.write(message + os.EOL);
+    process__default.stdout.write(`${message}${os.EOL}`);
   };
   warn = (message) => issueCommand("warning", {}, message);
   error = (message) => issueCommand("error", {}, message);

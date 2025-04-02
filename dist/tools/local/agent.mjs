@@ -8,16 +8,16 @@ class BuildAgent extends BuildAgentBase {
   tempDirVariable = "AGENT_TEMP_DIR";
   cacheDirVariable = "AGENT_TOOLS_DIR";
   debug = (message) => {
-    process.stdout.write(`[debug] ${message}` + os.EOL);
+    process.stdout.write(`[debug] ${message}${os.EOL}`);
   };
   info = (message) => {
-    process.stdout.write(`[info] - ${message}` + os.EOL);
+    process.stdout.write(`[info] - ${message}${os.EOL}`);
   };
   warn = (message) => {
-    process.stderr.write(`[warn] - ${message}` + os.EOL);
+    process.stderr.write(`[warn] - ${message}${os.EOL}`);
   };
   error = (message) => {
-    process.stderr.write(`[error] - ${message}` + os.EOL);
+    process.stderr.write(`[error] - ${message}${os.EOL}`);
   };
   setSucceeded = (message, done) => this.info(`setSucceeded - ${message} - ${done}`);
   setFailed = (message, done) => this.error(`setFailed - ${message} - ${done}`);

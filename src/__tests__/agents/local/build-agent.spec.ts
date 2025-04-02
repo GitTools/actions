@@ -36,7 +36,7 @@ describe('build-agent/local', () => {
 
         agent.debug('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[debug] test' + os.EOL)
+        expect(spy).toHaveBeenCalledWith(`[debug] test${os.EOL}`)
     })
 
     it('should log info', () => {
@@ -44,7 +44,7 @@ describe('build-agent/local', () => {
 
         agent.info('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[info] - test' + os.EOL)
+        expect(spy).toHaveBeenCalledWith(`[info] - test${os.EOL}`)
     })
 
     it('should log warn', () => {
@@ -52,7 +52,7 @@ describe('build-agent/local', () => {
 
         agent.warn('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[warn] - test' + os.EOL)
+        expect(spy).toHaveBeenCalledWith(`[warn] - test${os.EOL}`)
     })
 
     it('should log error', () => {
@@ -60,7 +60,7 @@ describe('build-agent/local', () => {
 
         agent.error('test')
         expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('[error] - test' + os.EOL)
+        expect(spy).toHaveBeenCalledWith(`[error] - test${os.EOL}`)
     })
 
     it('should set succeeded', () => {

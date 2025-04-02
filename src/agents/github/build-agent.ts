@@ -23,7 +23,7 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
     debug = (message: string): void => issueCommand('debug', {}, message)
 
     info = (message: string): void => {
-        process.stdout.write(message + os.EOL)
+        process.stdout.write(`${message}${os.EOL}`)
     }
 
     warn = (message: string): void => issueCommand('warning', {}, message)

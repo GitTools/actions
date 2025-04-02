@@ -16,7 +16,7 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
     }
 
     info = (message: string): void => {
-        process.stdout.write(message + os.EOL)
+        process.stdout.write(`${message}${os.EOL}`)
     }
 
     debug = (message: string): void => issueCommand('task.debug', {}, message)

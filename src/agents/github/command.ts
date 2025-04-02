@@ -18,7 +18,7 @@ export type CommandProperties = Record<string, string | object>
  */
 export function issueCommand(command: string, properties: CommandProperties, message: string): void {
     const cmd = new Command(command, properties, message)
-    process.stdout.write(cmd.toString() + os.EOL)
+    process.stdout.write(`${cmd.toString()}${os.EOL}`)
 }
 
 export function issueFileCommand(command: string, message: string | object): void {

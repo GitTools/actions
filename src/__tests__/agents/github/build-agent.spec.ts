@@ -108,7 +108,7 @@ describe.skipIf(isGitHubActions)('build-agent/github', () => {
         const expected = prepareKeyValueMessage('name', 'value')
 
         expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', expected + os.EOL, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
 
         expect(spy).toHaveBeenCalledTimes(2)
         expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
@@ -142,7 +142,7 @@ describe.skipIf(isGitHubActions)('build-agent/github', () => {
         const expected = prepareKeyValueMessage('name', 'value')
 
         expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', expected + os.EOL, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
 
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)

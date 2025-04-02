@@ -13,7 +13,7 @@ var TaskResult = /* @__PURE__ */ ((TaskResult2) => {
 })(TaskResult || {});
 function issueCommand(command, properties, message) {
   const cmd = new Command(command, properties, message);
-  process.stdout.write(cmd.toString() + os.EOL);
+  process.stdout.write(`${cmd.toString()}${os.EOL}`);
 }
 class Command {
   command;
@@ -71,7 +71,7 @@ class BuildAgent extends BuildAgentBase {
     issueCommand("task.prependpath", {}, inputPath);
   }
   info = (message) => {
-    process.stdout.write(message + os.EOL);
+    process.stdout.write(`${message}${os.EOL}`);
   };
   debug = (message) => issueCommand("task.debug", {}, message);
   warn = (message) => issueCommand("task.issue", { type: "warning" }, message);
