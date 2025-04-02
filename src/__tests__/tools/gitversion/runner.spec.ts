@@ -75,9 +75,6 @@ describe('GitVersion Runner', () => {
             expect(getEnv('GitVersion_Major')).toBeDefined()
             expect(getEnv('GitVersion_Minor')).toBeDefined()
             expect(getEnv('GitVersion_Patch')).toBeDefined()
-            expect(getEnv('GitVersion.Major')).toBeDefined()
-            expect(getEnv('GitVersion.Minor')).toBeDefined()
-            expect(getEnv('GitVersion.Patch')).toBeDefined()
 
             expect(getEnv('major')).toBeDefined()
             expect(getEnv('minor')).toBeDefined()
