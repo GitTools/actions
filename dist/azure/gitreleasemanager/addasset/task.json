@@ -1,6 +1,6 @@
 {
   "id": "b803651c-21ac-4851-9fbf-c75b0e82e4c5",
-  "name": "gitreleasemanager/addasset",
+  "name": "gitreleasemanager-addasset",
   "friendlyName": "Add Asset GitReleaseManager Task",
   "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
   "author": "GitTools Contributors",
