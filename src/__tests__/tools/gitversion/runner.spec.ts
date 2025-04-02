@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
@@ -38,6 +38,15 @@ describe('GitVersion Runner', () => {
 
         afterEach(() => {
             resetEnv(agent, toolPathVariable)
+        })
+
+        afterAll(() => {
+            // Clean up the base directory after all tests
+            // if (fs.existsSync(baseDir)) {
+            //     fs.rmSync(baseDir, { recursive: true, force: true })
+            // }
+
+            resetEnv(agent, '')
         })
 
         it.sequential('should run setup GitVersion', async () => {
@@ -114,11 +123,11 @@ describe('GitVersion Runner', () => {
         testOnAgent(new LocalBuildAgent())
     })
 
-    describe.skipIf(isGitHubActionsAgent())('GitHub Actions Agent', () => {
+    describe.skipIf(isGitHubActionsAgent()).sequential('GitHub Actions Agent', () => {
         testOnAgent(new GitHubActionsAgent())
     })
 
-    describe.skipIf(isAzurePipelinesAgent())('Azure Pipelines Agent', () => {
+    describe.skipIf(isAzurePipelinesAgent()).sequential('Azure Pipelines Agent', () => {
         testOnAgent(new AzurePipelinesAgent())
     })
 })
