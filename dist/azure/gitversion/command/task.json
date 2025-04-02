@@ -1,6 +1,6 @@
 {
   "id": "41dc3dd2-6a51-4ba5-a889-824274acca8b",
-  "name": "gitversion/command",
+  "name": "gitversion-command",
   "friendlyName": "Command GitVersion Task",
   "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
   "author": "GitTools Contributors",
