@@ -68,21 +68,11 @@
       "helpMarkDown": "Whether to disable GitVersion shallow clone check"
     },
     {
-      "name": "useConfigFile",
-      "type": "boolean",
-      "label": "Specify Configuration file",
-      "defaultValue": "false",
-      "required": false,
-      "helpMarkDown": "Whether to use a custom configuration file"
-    },
-    {
       "name": "configFilePath",
       "type": "filePath",
       "label": "Configuration file",
-      "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
-      "visibleRule": "useConfigFile = true"
+      "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)"
     },
     {
       "name": "overrideConfig",

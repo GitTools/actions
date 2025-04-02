@@ -79,7 +79,6 @@ export class GitVersionTool extends DotnetTool {
         const builder = new ArgumentsBuilder().addArgument(workDir).addArgument('/output').addArgument('json').addArgument('/l').addArgument('console')
 
         const {
-            useConfigFile,
             disableCache,
             disableNormalization,
             configFilePath,
@@ -98,7 +97,7 @@ export class GitVersionTool extends DotnetTool {
             builder.addArgument('/nonormalize')
         }
 
-        if (useConfigFile) {
+        if (configFilePath) {
             if (await this.isValidInputFile('configFilePath', configFilePath)) {
                 builder.addArgument('/config').addArgument(configFilePath)
             } else {

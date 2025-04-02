@@ -5,7 +5,6 @@ export type ExecuteSettings = {
     disableCache: boolean
     disableNormalization: boolean
     disableShallowCloneCheck: boolean
-    useConfigFile: boolean
     configFilePath: string
     overrideConfig: string[]
     updateAssemblyInfo: boolean

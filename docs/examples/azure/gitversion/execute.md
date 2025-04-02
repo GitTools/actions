@@ -41,10 +41,6 @@ disableShallowCloneCheck:
   description: Whether to disable the check for shallow clone
   required: false
   default: 'false'
-useConfigFile:
-  description: Whether to use a custom configuration file
-  required: false
-  default: 'false'
 configFilePath:
   description: Optional path to config file (defaults to GitVersion.yml)
   required: false
@@ -139,8 +135,6 @@ steps:
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
     name: version_step # step id used as reference for output values
-    inputs:
-      useConfigFile: true
 
 ```
 
@@ -170,7 +164,6 @@ steps:
     displayName: Determine Version
     name: version_step # step id used as reference for output values
     inputs:
-      useConfigFile: true
       configFilePath: 'VersionConfig.yml'
 ```
 
