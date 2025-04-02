@@ -6,7 +6,7 @@ import { expectValidSettings } from './utils'
 describe('SettingsProvider', () => {
     it('should return SetupSettings', () => {
         const settings: SetupSettings = {
-            versionSpec: '6.0.x',
+            versionSpec: '6.2.x',
             includePrerelease: false,
             ignoreFailedSources: true,
             preferLatestVersion: false
