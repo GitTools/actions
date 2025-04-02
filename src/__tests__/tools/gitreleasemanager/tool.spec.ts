@@ -81,8 +81,7 @@ describe('GitReleaseManagerTool', () => {
 
     describe('getArguments', () => {
         const commonSettings = {
-            owner: 'owner',
-            repository: 'repo',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: '/targetDirectory',
             logFilePath: './logFilePath'

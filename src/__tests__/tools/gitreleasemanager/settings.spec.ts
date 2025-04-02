@@ -14,8 +14,7 @@ import { expectValidSettings } from '../common/utils'
 describe('GitReleaseManager settings', () => {
     it('should return GitReleaseManagerCreateSettings', () => {
         const settings: CreateSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
@@ -42,8 +41,7 @@ describe('GitReleaseManager settings', () => {
 
     it('should return OpenSettings', () => {
         const settings: OpenSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
@@ -63,8 +61,7 @@ describe('GitReleaseManager settings', () => {
 
     it('should return GitReleaseManagerCloseSettings', () => {
         const settings: CloseSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
@@ -84,8 +81,7 @@ describe('GitReleaseManager settings', () => {
 
     it('should return DiscardSettings', () => {
         const settings: DiscardSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
@@ -105,8 +101,7 @@ describe('GitReleaseManager settings', () => {
 
     it('should return PublishSettings', () => {
         const settings: PublishSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
@@ -126,8 +121,7 @@ describe('GitReleaseManager settings', () => {
 
     it('should return AddAssetSettings', () => {
         const settings: AddAssetSettings = {
-            repository: 'repo',
-            owner: 'owner',
+            repository: 'owner/repo',
             token: 'token',
             targetDirectory: 'path',
             milestone: 'milestone',
