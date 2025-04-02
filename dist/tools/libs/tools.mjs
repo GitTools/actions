@@ -307,13 +307,16 @@ class DotnetTool {
     if (!targetPath) {
       workDir = srcDir;
     } else {
+      if (!path.isAbsolute(targetPath)) {
+        targetPath = path.resolve(targetPath);
+      }
       if (await this.buildAgent.directoryExists(targetPath)) {
         workDir = targetPath;
       } else {
         throw new Error(`Directory not found at ${targetPath}`);
       }
     }
-    return workDir.replace(/\\/g, "/");
+    return path.normalize(workDir);
   }
   async queryLatestMatch(toolName, versionSpec, includePrerelease) {
     this.buildAgent.info(

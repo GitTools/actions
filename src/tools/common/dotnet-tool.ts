@@ -216,13 +216,16 @@ export abstract class DotnetTool implements IDotnetTool {
         if (!targetPath) {
             workDir = srcDir
         } else {
+            if (!path.isAbsolute(targetPath)) {
+                targetPath = path.resolve(targetPath)
+            }
             if (await this.buildAgent.directoryExists(targetPath)) {
                 workDir = targetPath
             } else {
                 throw new Error(`Directory not found at ${targetPath}`)
             }
         }
-        return workDir.replace(/\\/g, '/')
+        return path.normalize(workDir)
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {

@@ -84,7 +84,7 @@ describe('GitVersion Runner', () => {
             expect(getEnv('patch')).toBeDefined()
         })
 
-        it.sequential('should output Major variable', async () => {
+        it.sequential('should output Sha variable', async () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
