@@ -50,6 +50,7 @@ jobs:
       name: Run tests
     - name: Test Summary
       uses: test-summary/action@v2.4
+      if: always()
       with:
         paths: junit-report.xml
     - name: gitversion/setup
