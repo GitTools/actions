@@ -1,1 +1,3 @@
+npm run build
+git add **/*.mjs*
 npx lint-staged
