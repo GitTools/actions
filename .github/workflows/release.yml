@@ -42,8 +42,7 @@ jobs:
         uses: ./gitreleasemanager/create
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-          owner: ${{ github.repository_owner }}
-          repository: actions
+          repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           isPreRelease: ${{ github.event.release.prerelease }}
@@ -61,16 +60,14 @@ jobs:
         uses: ./gitreleasemanager/addasset
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-          owner: ${{ github.repository_owner }}
-          repository: actions
+          repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           assets: ${{ steps.publish-azure.outputs.vsix }}
       - name: Close Release
         uses: ./gitreleasemanager/close
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-          owner: ${{ github.repository_owner }}
-          repository: actions
+          repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
