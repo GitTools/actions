@@ -10,7 +10,7 @@ The Setup GitReleaseManager action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 0.18.x or exact version like 0.18.0.
+  description: Required version in the form of 0.19.x or exact version like 0.19.0.
   required: true
   default: ''
 includePrerelease:
@@ -25,37 +25,37 @@ ignoreFailedSources:
 
 ### Example 1
 
-Install the latest GitReleaseManager 0.18.x version.
+Install the latest GitReleaseManager 0.19.x version.
 
 ```yaml
 steps:
   - task: gitreleasemanager/setup@3.2.0
     displayName: Install GitReleaseManager
     inputs:
-      versionSpec: '0.18.x'
+      versionSpec: '0.19.x'
 ```
 
 ### Example 2
 
-Install specific GitReleaseManager version 0.18.0.
+Install specific GitReleaseManager version 0.19.0.
 
 ```yaml
 steps:
   - task: gitreleasemanager/setup@3.2.0
     displayName: Install GitReleaseManager
     inputs:
-      versionSpec: '0.18.0'
+      versionSpec: '0.19.0'
 ```
 
 ### Example 3
 
-Install the latest GitReleaseManager 0.18.x version even it there is a cached version matching the versionSpec.
+Install the latest GitReleaseManager 0.19.x version even it there is a cached version matching the versionSpec.
 
 ```yaml
 steps:
   - task: gitreleasemanager/setup@3.2.0
     displayName: Install GitReleaseManager
     inputs:
-      versionSpec: '0.18.x'
+      versionSpec: '0.19.x'
       preferLatestVersion: true
 ```

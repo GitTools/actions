@@ -34,7 +34,7 @@ jobs:
       - name: Install GitReleaseManager
         uses: ./gitreleasemanager/setup
         with:
-          versionSpec: '0.18.x'
+          versionSpec: '0.19.x'
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
