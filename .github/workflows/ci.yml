@@ -3,12 +3,14 @@ on:
   push:
     branches:
     - main
+    - vnext
     - 'fix/*'
     - 'feature/*'
 
   pull_request:
     branches:
     - main
+    - vnext
 
   workflow_dispatch:
 
