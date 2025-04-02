@@ -80,8 +80,9 @@ export class GitReleaseManagerTool extends DotnetTool {
     protected async getCommonArguments(settings: CommonSettings): Promise<string[]> {
         const builder = new ArgumentsBuilder()
 
-        builder.addKeyValue('owner', settings.owner)
-        builder.addKeyValue('repository', settings.repository)
+        const [owner, repository] = settings.repository.split('/') // this is the github repository
+        builder.addKeyValue('owner', owner)
+        builder.addKeyValue('repository', repository)
         builder.addKeyValue('token', settings.token)
 
         settings.targetDirectory = await this.getRepoDir(settings)

@@ -2,7 +2,6 @@ export type Commands = 'setup' | 'addasset' | 'close' | 'create' | 'discard' | '
 
 export type CommonSettings = {
     repository: string
-    owner: string
     token: string
     targetDirectory: string
     milestone: string
