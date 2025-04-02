@@ -5,7 +5,6 @@
   - task: gitreleasemanager/open@3.2.0
     inputs:
       token: '$(GITHUB_TOKEN)'
-      owner: 'someOwner'
-      repository: 'someRepo'
+      repository: 'someOwner/someRepo'
       milestone: '0.1.0'
 ```
