@@ -273,7 +273,7 @@ jobs:
   - job: GitVersion_v6_same_job
     displayName: GitVersion v6 (same job)
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-24.04
     steps:
       - checkout: self
         fetchDepth: 0
@@ -343,7 +343,7 @@ jobs:
   - job: GitVersion_v6_cross_job
     displayName: GitVersion v6 (cross job)
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-24.04
     steps:
       - checkout: self
         fetchDepth: 0
@@ -367,7 +367,7 @@ jobs:
     variables:
       myvar_fullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.fullSemVer'] ]
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-24.04
     steps:
       - pwsh: |
           echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
@@ -396,7 +396,7 @@ jobs:
     variables:
       myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-24.04
     steps:
       - pwsh: |
           echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"
@@ -434,7 +434,7 @@ stages:
       - job: GitVersion_v6_cross_stage_producer
         displayName: GitVersion v6 (cross stage producer)
         pool:
-          vmImage: ubuntu-latest
+          vmImage: ubuntu-24.04
         steps:
           - checkout: self
             fetchDepth: 0
@@ -460,7 +460,7 @@ stages:
         variables:
           myvar_fullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.fullSemVer'] ]
         pool:
-          vmImage: ubuntu-latest
+          vmImage: ubuntu-24.04
         steps:
           - pwsh: |
               echo "FullSemVer (myvar_fullSemVer)          : $(myvar_fullSemVer)"
@@ -491,7 +491,7 @@ stages:
         variables:
           myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
         pool:
-          vmImage: ubuntu-latest
+          vmImage: ubuntu-24.04
         steps:
           - pwsh: |
               echo "FullSemVer (myvar_GitVersion_FullSemVer)          : $(myvar_GitVersion_FullSemVer)"

@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-15 ]
+        os: [ windows-2025, ubuntu-24.04, macos-15 ]
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
         echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
       name: Use variables and output
     - name: Check for changes
-      if: matrix.os == 'ubuntu-latest' && github.event_name == 'push'
+      if: matrix.os == 'ubuntu-24.04' && github.event_name == 'push'
       id: status
       run: |
         if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }

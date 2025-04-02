@@ -265,7 +265,7 @@ The action also creates environment variables of the form `${{ env.<outputName> 
 jobs:
   GitVersion_v6_same_job:
     name: GitVersion v6 (same job)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -349,7 +349,7 @@ jobs:
 jobs:
   GitVersion_v6_cross_job:
     name: GitVersion v6 (cross job)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       branchName: ${{ steps.version_step.outputs.branchName }}
       fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
@@ -374,7 +374,7 @@ jobs:
   GitVersion_v6_cross_job_consumer_without_prefix:
     name: GitVersion v6 (cross job consumer) - without prefix
     needs: GitVersion_v6_cross_job
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: contains(needs.GitVersion_v6_cross_job.outputs['branchName'], 'main')
     env:
       myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
@@ -430,7 +430,7 @@ jobs:
   GitVersion_v6_cross_job_consumer_with_prefix:
     name: GitVersion v6 (cross job consumer) - with prefix
     needs: GitVersion_v6_cross_job
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: contains(needs.GitVersion_v6_cross_job.outputs['GitVersion_BranchName'], 'main')
     env:
       myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}

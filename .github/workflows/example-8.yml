@@ -9,7 +9,7 @@ defaults:
 jobs:
   GitVersion_v6_same_job:
     name: GitVersion v6 (same job)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
