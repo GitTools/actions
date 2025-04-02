@@ -17,7 +17,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '>=5.2.0 <7.0.0'
+        return '>=6.1.0 <7.0.0'
     }
 
     get settingsProvider(): IGitVersionSettingsProvider {
