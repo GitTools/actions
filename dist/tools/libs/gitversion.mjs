@@ -84,10 +84,8 @@ class GitVersionTool extends DotnetTool {
         }
         this.buildAgent.setOutput(name, value);
         this.buildAgent.setOutput(`GitVersion_${property}`, value);
-        this.buildAgent.setOutput(`GitVersion.${property}`, value);
         this.buildAgent.setVariable(name, value);
         this.buildAgent.setVariable(`GitVersion_${property}`, value);
-        this.buildAgent.setVariable(`GitVersion.${property}`, value);
       } catch (_error) {
         this.buildAgent.error(`Unable to set output/variable for ${property}`);
       }
