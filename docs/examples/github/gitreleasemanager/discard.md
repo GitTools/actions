@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/discard@v3.1.11
+  - uses: gittools/actions/gitreleasemanager/discard@v3.2.0
     name: Discard release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
