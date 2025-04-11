@@ -14,7 +14,7 @@ describe('GitReleaseManager Runner', () => {
 
     const toolPathVariable = 'GITRELEASEMANAGER_PATH'
     const toolName = 'dotnet-gitreleasemanager'
-    const versionSpec = '0.x'
+    const versionSpec = '0.19.x'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
