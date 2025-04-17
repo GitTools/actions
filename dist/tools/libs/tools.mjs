@@ -43,7 +43,7 @@ class ArgumentsBuilder {
    * @param value The argument value
    */
   addKeyValue(key, value) {
-    if (key && value !== undefined && value !== null) {
+    if (key && value !== void 0 && value !== null) {
       this.args.push(`--${key}`);
       this.args.push(this.escapeArgument(value));
     }
@@ -55,7 +55,7 @@ class ArgumentsBuilder {
    * @param value The argument value
    */
   addKeyValueEquals(key, value) {
-    if (key && value !== undefined && value !== null) {
+    if (key && value !== void 0 && value !== null) {
       this.args.push(`--${key}=${this.escapeArgument(value)}`);
     }
     return this;

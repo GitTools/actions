@@ -68,7 +68,7 @@ function escapeProperty(s) {
   return toCommandValue(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/:/g, "%3A").replace(/,/g, "%2C");
 }
 function toCommandValue(input) {
-  if (input === null || input === undefined) {
+  if (input === null || input === void 0) {
     return "";
   } else if (typeof input === "string" || input instanceof String) {
     return input;

@@ -6,14 +6,14 @@ import * as util from 'node:util';
 import { s as semverExports } from './semver.mjs';
 
 const isFilePath = (cmd) => {
-  return cmd.includes(path.sep) ? path.resolve(cmd) : undefined;
+  return cmd.includes(path.sep) ? path.resolve(cmd) : void 0;
 };
 const access = async (filePath) => {
   try {
     await fs.access(filePath);
     return filePath;
   } catch (_error) {
-    return undefined;
+    return void 0;
   }
 };
 const isExecutable = async (absPath, options = {}) => {

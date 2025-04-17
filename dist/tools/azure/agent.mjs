@@ -53,7 +53,7 @@ function escapeProperty(s) {
   return toCommandValue(s).replace(/%/g, "%AZP25").replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/]/g, "%5D").replace(/;/g, "%3B");
 }
 function toCommandValue(input) {
-  if (input === null || input === undefined) {
+  if (input === null || input === void 0) {
     return "";
   } else if (typeof input === "string" || input instanceof String) {
     return input;
