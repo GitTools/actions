@@ -30,11 +30,11 @@ jobs:
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.2.x'
+          versionSpec: '6.3.x'
       - name: Install GitReleaseManager
         uses: ./gitreleasemanager/setup
         with:
-          versionSpec: '0.19.x'
+          versionSpec: '0.20.x'
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
         uses: ./gitversion/execute
