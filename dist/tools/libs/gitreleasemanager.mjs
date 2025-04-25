@@ -84,7 +84,7 @@ class GitReleaseManagerTool extends DotnetTool {
     return "GITRELEASEMANAGER_PATH";
   }
   get versionRange() {
-    return ">=0.10.0 <0.20.0";
+    return ">=0.19.0 <0.21.0";
   }
   get settingsProvider() {
     return new GitReleaseManagerSettingsProvider(this.buildAgent);

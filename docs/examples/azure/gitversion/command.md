@@ -13,7 +13,7 @@ steps:
   - task: gitversion/setup@3.2.0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.2.x'
+      versionSpec: '6.3.x'
 ```
 
 These steps are omitted from the examples for brevity.

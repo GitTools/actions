@@ -10,7 +10,7 @@ The Setup GitVersion task accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.2.x or exact version like 6.2.0.
+  description: Required version in the form of 6.3.x or exact version like 6.3.0.
   required: true
   default: ''
 includePrerelease:
@@ -48,7 +48,7 @@ steps:
   - task: gitversion/setup@3.2.0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.2.x'
+      versionSpec: '6.3.x'
 ```
 
 ### Example 2
@@ -72,7 +72,7 @@ steps:
   - task: gitversion/setup@3.2.0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.2.x'
+      versionSpec: '6.3.x'
       includePrerelease: true
 ```
 
@@ -85,6 +85,6 @@ steps:
   - task: gitversion/setup@3.2.0
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.2.x'
+      versionSpec: '6.3.x'
       preferLatestVersion: true
 ```

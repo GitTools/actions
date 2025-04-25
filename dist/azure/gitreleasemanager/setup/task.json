@@ -28,7 +28,7 @@
       "label": "The version spec",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Required version in the form of 0.19.x or exact version like 0.19.0"
+      "helpMarkDown": "Required version in the form of 0.20.x or exact version like 0.20.0"
     },
     {
       "name": "includePrerelease",

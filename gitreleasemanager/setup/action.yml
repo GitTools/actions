@@ -9,7 +9,7 @@ runs:
   main: main.mjs
 inputs:
   versionSpec:
-    description: Required version in the form of 0.19.x or exact version like 0.19.0
+    description: Required version in the form of 0.20.x or exact version like 0.20.0
     required: true
     default: ''
   includePrerelease:
