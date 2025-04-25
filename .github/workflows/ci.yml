@@ -68,7 +68,7 @@ jobs:
         targetPath: './'
         arguments: '/format {Major}.{Minor}'
     - name: gitversion/execute
-      id: gitversion # step id used as reference for output values
+      id: gitversion # step id used as a reference for output values
       uses: ./gitversion/execute
       with:
         targetPath: './'

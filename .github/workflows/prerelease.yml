@@ -31,7 +31,7 @@ jobs:
         with:
           versionSpec: '6.3.x'
       - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
+        id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
       - name: Publish To Azure Marketplace
         id: publish-azure

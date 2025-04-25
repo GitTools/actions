@@ -121,7 +121,7 @@ steps:
   # gitversion/setup@3.2.0 task omitted for brevity.
 
   - task: gitversion/execute@3.2.0
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
 
@@ -138,7 +138,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       useConfigFile: true
 
@@ -168,7 +168,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       useConfigFile: true
       configFilePath: 'VersionConfig.yml'
@@ -187,7 +187,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       disableCache: true
       disableNormalization: true
@@ -206,7 +206,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       updateAssemblyInfo: true
 ```
@@ -224,7 +224,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       overrideConfig: |
         update-build-number=false
@@ -244,7 +244,7 @@ steps:
 
   - task: gitversion/execute@3.2.0
     displayName: Determine Version
-    name: version_step # step id used as reference for output values
+    name: version_step # step id used as a reference for output values
     inputs:
       updateProjectFiles: true
 ```
@@ -285,7 +285,7 @@ jobs:
 
       - task: gitversion/execute@3.2.0
         displayName: Determine Version
-        name: version_step # step id used as reference for output values
+        name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
             update-build-number=false
@@ -355,7 +355,7 @@ jobs:
 
       - task: gitversion/execute@3.2.0
         displayName: Determine Version
-        name: version_step # step id used as reference for output values
+        name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
             update-build-number=false
@@ -446,7 +446,7 @@ stages:
 
           - task: gitversion/execute@3.2.0
             displayName: Determine Version
-            name: version_step # step id used as reference for output values
+            name: version_step # step id used as a reference for output values
             inputs:
               overrideConfig: |
                 update-build-number=false

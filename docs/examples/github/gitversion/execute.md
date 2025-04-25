@@ -123,7 +123,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.2.0 action omitted for brevity.
 
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
 ```
 
@@ -137,7 +137,7 @@ steps:
 ```yaml
 steps:
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
     with:
       useConfigFile: true
@@ -166,7 +166,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.2.0 action omitted for brevity.
 
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
     with:
       useConfigFile: true
@@ -185,7 +185,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.2.0 action omitted for brevity.
 
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
     with:
       disableCache: true
@@ -221,7 +221,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.2.0 action omitted for brevity.
 
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
     with:
       overrideConfig: |
@@ -241,7 +241,7 @@ steps:
   # gittools/actions/gitversion/setup@v3.2.0 action omitted for brevity.
 
   - name: Determine Version
-    id: version_step # step id used as reference for output values
+    id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.0
     with:
       updateProjectFiles: true
@@ -278,7 +278,7 @@ jobs:
           versionSpec: '6.3.x'
 
       - name: Determine Version
-        id: version_step # step id used as reference for output values
+        id: version_step # step id used as a reference for output values
         uses: gittools/actions/gitversion/execute@v3.2.0
 
       - run: |
@@ -368,7 +368,7 @@ jobs:
           versionSpec: '6.3.x'
 
       - name: Determine Version
-        id: version_step # step id used as reference for output values
+        id: version_step # step id used as a reference for output values
         uses: gittools/actions/gitversion/execute@v3.2.0
 
   GitVersion_v6_cross_job_consumer_without_prefix:

@@ -36,7 +36,7 @@ jobs:
         with:
           versionSpec: '0.20.x'
       - name: Use GitVersion
-        id: gitversion # step id used as reference for output values
+        id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
       - name: Update Release Notes
         uses: ./gitreleasemanager/create
