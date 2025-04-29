@@ -14,7 +14,8 @@ describe('GitVersion settings', () => {
             overrideConfig: ['semantic-version-format=Loose'],
             updateAssemblyInfo: true,
             updateAssemblyInfoFilename: 'path',
-            updateProjectFiles: true
+            updateProjectFiles: true,
+            buildNumberFormat: 'format'
         }
 
         const buildAgent = {

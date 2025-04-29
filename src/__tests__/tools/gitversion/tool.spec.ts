@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type IBuildAgent } from '@agents/common'
-import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool } from '@tools/gitversion'
+import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool, IGitVersionSettingsProvider } from '@tools/gitversion'
 
 class TestGitVersionTool extends GitVersionTool {
     private _isValidInputFile = false
@@ -97,6 +97,69 @@ describe('GitVersionTool', () => {
             expect(variables.get('GitVersion_Patch')).toBe('3')
             expect(variables.get('GitVersion_SemVer')).toBe('1.2.3-alpha.1')
             expect(variables.get('GitVersion_FullSemVer')).toBe('1.2.3-alpha.1')
+        })
+    })
+
+    describe('updateBuildNumber', () => {
+        it('should update build number when buildNumberFormat is provided', () => {
+            // Setup
+            let updatedBuildNumber: string | undefined
+            const buildAgent = {
+                updateBuildNumber(version: string): void {
+                    updatedBuildNumber = version
+                },
+                getExpandedString(format: string): string {
+                    return format.replace('${GitVersion_SemVer}', '2.3.4-beta.5')
+                }
+            } as IBuildAgent
+
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Mock the settings provider to return a buildNumberFormat
+            const mockSettingsProvider = {
+                getExecuteSettings: () =>
+                    ({
+                        buildNumberFormat: 'v${GitVersion_SemVer}'
+                    }) as ExecuteSettings
+            } as IGitVersionSettingsProvider
+
+            // Override the settingsProvider getter
+            vi.spyOn(tool, 'settingsProvider', 'get').mockReturnValue(mockSettingsProvider)
+
+            // Act
+            tool.updateBuildNumber()
+
+            // Assert
+            expect(updatedBuildNumber).toBe('v2.3.4-beta.5')
+        })
+
+        it('should not update build number when buildNumberFormat is not provided', () => {
+            // Setup
+            let wasCalled = false
+            const buildAgent = {
+                updateBuildNumber(_: string): void {
+                    wasCalled = true
+                },
+                getExpandedString(format: string): string {
+                    return format
+                }
+            } as IBuildAgent
+
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Mock the settings provider to return empty settings
+            const mockSettingsProvider = {
+                getExecuteSettings: () => ({}) as ExecuteSettings
+            } as IGitVersionSettingsProvider
+
+            // Override the settingsProvider getter
+            vi.spyOn(tool, 'settingsProvider', 'get').mockReturnValue(mockSettingsProvider)
+
+            // Act
+            tool.updateBuildNumber()
+
+            // Assert
+            expect(wasCalled).toBe(false)
         })
     })
 

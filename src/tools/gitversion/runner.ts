@@ -56,6 +56,7 @@ export class Runner extends RunnerBase {
 
             const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
             this.tool.writeGitVersionToAgent(gitVersionOutput)
+            this.tool.updateBuildNumber()
             this.buildAgent.setSucceeded('GitVersion executed successfully', true)
             return result
         }

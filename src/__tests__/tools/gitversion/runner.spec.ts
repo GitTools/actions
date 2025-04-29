@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
@@ -38,6 +38,7 @@ describe('GitVersion Runner', () => {
 
         afterEach(() => {
             resetEnv(agent, toolPathVariable)
+            vi.restoreAllMocks()
         })
 
         afterAll(() => {
@@ -80,6 +81,9 @@ describe('GitVersion Runner', () => {
             const result = await runner.run('execute')
 
             expect(result.code).toBe(0)
+            expect(result.error).toBeDefined()
+            expect(result.stdout).toBeDefined()
+            expect(result.stderr).toBeDefined()
 
             expect(getEnv('GitVersion_Major')).toBeDefined()
             expect(getEnv('GitVersion_Minor')).toBeDefined()
@@ -88,6 +92,31 @@ describe('GitVersion Runner', () => {
             expect(getEnv('major')).toBeDefined()
             expect(getEnv('minor')).toBeDefined()
             expect(getEnv('patch')).toBeDefined()
+        })
+
+        it.sequential('should execute GitVersion with build number update', async () => {
+            setEnv(toolPathVariable, toolPath)
+            setInputs({
+                buildNumberFormat: 'v${GitVersion_SemVer}'
+            })
+
+            // Spy on the agent's updateBuildNumber method
+            const updateBuildNumberSpy = vi.spyOn(agent, 'updateBuildNumber')
+
+            // Mock getExpandedString to return a predictable value
+            const getExpandedStringSpy = vi.spyOn(agent, 'getExpandedString')
+            getExpandedStringSpy.mockImplementation(format => {
+                return format.replace('${GitVersion_SemVer}', '1.2.3')
+            })
+
+            const result = await runner.run('execute')
+
+            expect(result.code).toBe(0)
+            expect(result.stdout).toBeDefined()
+
+            // Verify updateBuildNumber was called with the expected expanded format
+            expect(updateBuildNumberSpy).toHaveBeenCalled()
+            expect(updateBuildNumberSpy).toHaveBeenCalledWith('v1.2.3')
         })
 
         it.sequential('should output Sha variable', async () => {
@@ -101,6 +130,7 @@ describe('GitVersion Runner', () => {
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
+            expect(result.stdout).toBeDefined()
             expect(result.stdout).toContain(sha)
         })
 
@@ -115,6 +145,7 @@ describe('GitVersion Runner', () => {
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
+            expect(result.stdout).toBeDefined()
             expect(result.stdout).toContain(sha)
         })
     }

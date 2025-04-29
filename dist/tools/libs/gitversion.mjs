@@ -16,7 +16,7 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
     const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
     const updateProjectFiles = this.buildAgent.getBooleanInput("updateProjectFiles");
-    const buildNumberFormat = this.buildAgent.getInput("buildNumberFormat");
+    const buildNumberFormat = this.buildAgent.getInput("buildNumberFormat", false);
     return {
       targetPath,
       disableCache,
@@ -75,7 +75,6 @@ class GitVersionTool extends DotnetTool {
     return await this.executeTool(args);
   }
   writeGitVersionToAgent(output) {
-    const settings = this.settingsProvider.getExecuteSettings();
     for (const property of keysOf(output)) {
       const name = this.toCamelCase(property);
       try {
@@ -91,6 +90,9 @@ class GitVersionTool extends DotnetTool {
         this.buildAgent.error(`Unable to set output/variable for ${property}`);
       }
     }
+  }
+  updateBuildNumber() {
+    const settings = this.settingsProvider.getExecuteSettings();
     if (settings.buildNumberFormat) {
       const buildNumber = this.buildAgent.getExpandedString(settings.buildNumberFormat);
       this.buildAgent.updateBuildNumber(buildNumber);
@@ -219,6 +221,7 @@ class Runner extends RunnerBase {
       const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
       const gitVersionOutput = JSON.parse(jsonOutput);
       this.tool.writeGitVersionToAgent(gitVersionOutput);
+      this.tool.updateBuildNumber();
       this.buildAgent.setSucceeded("GitVersion executed successfully", true);
       return result;
     }
