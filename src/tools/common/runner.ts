@@ -20,10 +20,12 @@ export abstract class RunnerBase implements IRunner {
             this.disableTelemetry()
             const result = await action()
 
-            this.buildAgent.info(`${this.tool.toolName} Output:`)
-            this.buildAgent.info('-------------------')
-            this.buildAgent.info(result.stdout as string)
-            this.buildAgent.info('-------------------')
+            if (result.stdout) {
+                this.buildAgent.info(`${this.tool.toolName} Output:`)
+                this.buildAgent.info('-------------------')
+                this.buildAgent.info(result.stdout)
+                this.buildAgent.info('-------------------')
+            }
             if (result.code === 0) {
                 this.buildAgent.debug(`${this.tool.toolName} succeeded`)
                 this.buildAgent.setSucceeded(successMessage, true)
