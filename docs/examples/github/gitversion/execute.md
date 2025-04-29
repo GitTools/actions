@@ -249,7 +249,7 @@ where `<id>` is the ID assigned to the step that calls the action, by subsequent
 
 The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
-### Example 8
+### Output Example 1
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -333,7 +333,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Output Example 2
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -455,6 +455,7 @@ jobs:
       - run: |
           echo "FullSemVer (myvar_GitVersion_FullSemVer)   : $myvar_GitVersion_FullSemVer"
         name: Use job variables (bash - outputs without prefix)
+
         shell: bash
 
       - run: |
