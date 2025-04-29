@@ -59,6 +59,8 @@ export interface IBuildAgent {
 
     getVariableAsPath(name: string): string
 
+    getExpandedString(pattern: string): string
+
     setVariable(name: string, value: string): void
 
     updateBuildNumber: (version: string) => void
@@ -147,6 +149,14 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
     getVariableAsPath(name: string): string {
         return path.resolve(path.normalize(this.getVariable(name)))
+    }
+
+    getExpandedString(pattern: string): string {
+        const expanded = pattern.replace(/\${([a-zA-Z_][a-zA-Z0-9_]*)}/gi, (_, name: string) => {
+            return process.env[name] ?? ''
+        })
+        this.debug(`getExpandedString - ${pattern}: ${expanded}`)
+        return expanded
     }
 
     async directoryExists(dir: string): Promise<boolean> {
