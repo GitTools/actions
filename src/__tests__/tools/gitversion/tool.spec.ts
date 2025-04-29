@@ -142,7 +142,8 @@ describe('GitVersionTool', () => {
                 },
                 getExpandedString(format: string): string {
                     return format
-                }
+                },
+                debug(_: string): void {}
             } as IBuildAgent
 
             tool = new TestGitVersionTool(buildAgent)

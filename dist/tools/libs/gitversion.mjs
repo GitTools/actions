@@ -96,6 +96,8 @@ class GitVersionTool extends DotnetTool {
     if (settings.buildNumberFormat) {
       const buildNumber = this.buildAgent.getExpandedString(settings.buildNumberFormat);
       this.buildAgent.updateBuildNumber(buildNumber);
+    } else {
+      this.buildAgent.debug("No buildNumberFormat provided. Skipping build number update.");
     }
   }
   async getRepoDir(settings) {
