@@ -44,11 +44,12 @@ export class Runner extends RunnerBase {
     private processGitVersionOutput(result: ExecResult): ExecResult {
         const stdout = result.stdout as string
         if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
-            this.buildAgent.debug('GitVersion output is not valid JSON')
-            this.buildAgent.setFailed('GitVersion output is not valid JSON', true)
+            const errorMessage = 'GitVersion output is not valid JSON, see output details'
+            this.buildAgent.debug(errorMessage)
+            this.buildAgent.setFailed(errorMessage, true)
             return {
                 code: -1,
-                error: new Error('GitVersion output is not valid JSON')
+                error: new Error(errorMessage)
             }
         } else {
             const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)

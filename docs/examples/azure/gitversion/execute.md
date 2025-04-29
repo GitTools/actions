@@ -48,7 +48,7 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    update-build-number=false
+    semantic-version-format=Loose
     next-version=3.2.1
   required: false
   default: ''
@@ -220,7 +220,7 @@ steps:
     name: version_step # step id used as a reference for output values
     inputs:
       overrideConfig: |
-        update-build-number=false
+        semantic-version-format=Loose
         next-version=3.2.1
 ```
 
@@ -253,13 +253,10 @@ The action also creates environment variables of the form `$(<outputName>)` or `
 
 The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
 
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
-You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
-
 ### Example 8
 
 <details>
-  <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
+  <summary>Calculate the version for the build and use the output in later steps within the same job.</summary>
 
 ```yaml
 jobs:
@@ -281,7 +278,7 @@ jobs:
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            update-build-number=false
+            semantic-version-format=Loose
 
       - pwsh: |
           echo "FullSemVer (fullSemVer)            : $(fullSemVer)"
@@ -351,7 +348,7 @@ jobs:
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            update-build-number=false
+            semantic-version-format=Loose
 
   - job: GitVersion_v6_cross_job_consumer_without_prefix
     displayName: GitVersion v6 (cross job consumer) - without prefix
@@ -442,7 +439,7 @@ stages:
             name: version_step # step id used as a reference for output values
             inputs:
               overrideConfig: |
-                update-build-number=false
+                semantic-version-format=Loose
   - stage: GitVersion_v6_cross_stage_consumer_without_prefix
     displayName: GitVersion v6 (cross stage consumer) - without prefix
     dependsOn: GitVersion_v6_cross_stage

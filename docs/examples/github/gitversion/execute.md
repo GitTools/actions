@@ -50,7 +50,7 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    update-build-number=false
+    semantic-version-format=Loose
     next-version=3.2.1
   required: false
   default: ''
@@ -218,7 +218,7 @@ steps:
     uses: gittools/actions/gitversion/execute@v3.2.1
     with:
       overrideConfig: |
-        update-build-number=false
+        semantic-version-format=Loose
         next-version=3.2.1
 ```
 

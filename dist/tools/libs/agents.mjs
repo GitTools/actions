@@ -84,6 +84,13 @@ class BuildAgentBase {
   getVariableAsPath(name) {
     return path.resolve(path.normalize(this.getVariable(name)));
   }
+  getExpandedString(pattern) {
+    const expanded = pattern.replace(/\${([a-zA-Z_][a-zA-Z0-9_]*)}/gi, (_, name) => {
+      return process.env[name] ?? "";
+    });
+    this.debug(`getExpandedString - ${pattern}: ${expanded}`);
+    return expanded;
+  }
   async directoryExists(dir) {
     try {
       await fs.access(dir);
