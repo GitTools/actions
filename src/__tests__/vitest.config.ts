@@ -16,7 +16,7 @@ const config = defineConfig({
         globals: true,
         include: ['**/__tests__/**/*.spec.[tj]s'],
         exclude: ['**/node_modules/**', '**/dist/**'],
-        reporters: ['junit'],
+        reporters: [['default', { summary: true }], 'junit'],
         testTimeout: 60000,
         outputFile: {
             junit: './junit-report.xml'
