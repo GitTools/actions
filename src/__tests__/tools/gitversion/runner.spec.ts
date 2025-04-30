@@ -9,7 +9,7 @@ import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, getLatestVersion, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
@@ -117,11 +117,11 @@ describe('GitVersion Runner', () => {
         testOnAgent(new LocalBuildAgent())
     })
 
-    describe('GitHub Actions Agent', () => {
+    describe.skipIf(isGitHubActionsAgent())('GitHub Actions Agent', () => {
         testOnAgent(new GitHubActionsAgent())
     })
 
-    describe('Azure Pipelines Agent', () => {
+    describe.skipIf(isAzurePipelinesAgent())('Azure Pipelines Agent', () => {
         testOnAgent(new AzurePipelinesAgent())
     })
 })

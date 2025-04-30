@@ -12,6 +12,14 @@ export function getEnv(key: string): string {
     return process.env[key] || ''
 }
 
+export function isAzurePipelinesAgent(): boolean {
+    return !!process.env.AGENT_NAME
+}
+
+export function isGitHubActionsAgent(): boolean {
+    return process.env.GITHUB_ACTIONS === 'true'
+}
+
 export function resetEnv(agent: IBuildAgent, toolPathVariable: string): void {
     const envName = process.platform === 'win32' ? 'Path' : 'PATH'
     process.env.PATH = process.env[envName] // workaround for windows

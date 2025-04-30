@@ -4,10 +4,9 @@ import process from 'node:process'
 import * as fs from 'node:fs'
 import * as crypto from 'node:crypto'
 import * as os from 'node:os'
+import { isGitHubActionsAgent } from '../../tools/common/utils.ts'
 
-// Check if running in GitHub Actions
-const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
-describe.skipIf(isGitHubActions)('build-agent/github', () => {
+describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
     let agent: BuildAgent
 
     beforeEach(() => {

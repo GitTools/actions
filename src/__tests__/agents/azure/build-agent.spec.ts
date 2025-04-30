@@ -2,10 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BuildAgent } from '@agents/azure'
 import process from 'node:process'
 import * as os from 'node:os'
+import { isAzurePipelinesAgent } from '../../tools/common/utils.ts'
 
-// Check if running in Azure Pipelines
-const isAzurePipelines = !!process.env.AGENT_NAME
-describe.skipIf(isAzurePipelines)('build-agent/azure', () => {
+describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
     let agent: BuildAgent
 
     beforeEach(() => {
