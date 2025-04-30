@@ -23,6 +23,8 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const updateProjectFiles = this.buildAgent.getBooleanInput<ExecuteSettings>('updateProjectFiles')
 
+        const buildNumberFormat = this.buildAgent.getInput<ExecuteSettings>('buildNumberFormat', false)
+
         return {
             targetPath,
             disableCache,
@@ -32,7 +34,8 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
-            updateProjectFiles
+            updateProjectFiles,
+            buildNumberFormat
         }
     }
 

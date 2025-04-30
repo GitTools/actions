@@ -80,7 +80,7 @@
       "label": "Override Configuration",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
+      "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nsemantic-version-format=Loose\nnext-version=1.0.0"
     },
     {
       "name": "updateAssemblyInfo",
@@ -106,6 +106,14 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Whether to update versions in the project files"
+    },
+    {
+      "name": "buildNumberFormat",
+      "type": "string",
+      "label": "Build Number Format",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional build number format. This is used to set the build number in Azure DevOps. If not specified, the build number is not set."
     }
   ]
 }

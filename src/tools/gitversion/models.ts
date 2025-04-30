@@ -10,6 +10,7 @@ export type ExecuteSettings = {
     updateAssemblyInfo: boolean
     updateAssemblyInfoFilename: string
     updateProjectFiles: boolean
+    buildNumberFormat?: string
 }
 
 export type CommandSettings = {

@@ -48,7 +48,7 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    update-build-number=false
+    semantic-version-format=Loose
     next-version=3.2.1
   required: false
   default: ''
@@ -64,6 +64,12 @@ updateProjectFiles:
   description: Whether to update versions in all project files
   required: false
   default: 'false'
+buildNumberFormat:
+  description: |
+    Optional build number format. This is used to set the build number in Azure DevOps. If not specified, the build number is not set. Example:
+    v${GitVersion_MajorMinorPatch} or v$GitVersion_FullSemVer
+  required: false
+  default: ''
 ```
 
 ## Outputs
@@ -220,7 +226,7 @@ steps:
     name: version_step # step id used as a reference for output values
     inputs:
       overrideConfig: |
-        update-build-number=false
+        semantic-version-format=Loose
         next-version=3.2.1
 ```
 
@@ -244,6 +250,24 @@ steps:
 
 </details>
 
+### Example 8
+
+<details>
+  <summary>Calculate the version for the build. Set the build number using a format.</summary>
+
+```yaml
+steps:
+  # gitversion/setup@3.2.1 task omitted for brevity.
+
+  - task: gitversion/execute@3.2.1
+    displayName: Determine Version
+    name: version_step # step id used as a reference for output values
+    inputs:
+      buildNumberFormat: 'v${GitVersion_MajorMinorPatch}'
+```
+
+</details>
+
 ## Output usage
 
 The outputs can be accessed using the syntax `$(<id>.<outputName>)` or `$(<id>.GitVersion_<OutputName>)`,
@@ -253,13 +277,10 @@ The action also creates environment variables of the form `$(<outputName>)` or `
 
 The multi-job output variables can be accessed across jobs and stages, in both conditions and variables.
 
-**GitVersion also automatically updates the pre-defined Build variable `Build.BuildNumber`.**
-You can disable the default behavior by setting the `update-build-number` to `false` in the configuration file or by using the `overrideConfig` input.
-
-### Example 8
+### Output Example 1
 
 <details>
-  <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
+  <summary>Calculate the version for the build and use the output in later steps within the same job.</summary>
 
 ```yaml
 jobs:
@@ -281,7 +302,7 @@ jobs:
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            update-build-number=false
+            semantic-version-format=Loose
 
       - pwsh: |
           echo "FullSemVer (fullSemVer)            : $(fullSemVer)"
@@ -326,7 +347,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Output Example 2
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -351,7 +372,7 @@ jobs:
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            update-build-number=false
+            semantic-version-format=Loose
 
   - job: GitVersion_v6_cross_job_consumer_without_prefix
     displayName: GitVersion v6 (cross job consumer) - without prefix
@@ -414,7 +435,7 @@ jobs:
 
 </details>
 
-### Example 10
+### Output Example 3
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent stage.</summary>
@@ -442,7 +463,7 @@ stages:
             name: version_step # step id used as a reference for output values
             inputs:
               overrideConfig: |
-                update-build-number=false
+                semantic-version-format=Loose
   - stage: GitVersion_v6_cross_stage_consumer_without_prefix
     displayName: GitVersion v6 (cross stage consumer) - without prefix
     dependsOn: GitVersion_v6_cross_stage

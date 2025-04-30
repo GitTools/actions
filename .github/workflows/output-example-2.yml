@@ -1,4 +1,4 @@
-name: example-9
+name: output-example-2
 on:
   workflow_dispatch:
 
