@@ -1,4 +1,7 @@
 name: release
+
+permissions: read-all
+
 on:
   release:
     types: [ released ]

@@ -1,4 +1,7 @@
 name: checkout-path
+
+permissions: read-all
+
 on:
   push:
     branches:

@@ -1,4 +1,7 @@
 name: example-8
+
+permissions: read-all
+
 on:
   workflow_dispatch:
 
