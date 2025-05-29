@@ -82,7 +82,7 @@ class ArgumentsBuilder {
     if (!value) return value;
     if (!this.needsEscaping(value)) return value;
     if (this.isWindows) {
-      return `"${value.replace(/"/g, '\\"')}"`;
+      return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
     } else {
       return `'${value.replace(/'/g, "'\\''")}'`;
     }

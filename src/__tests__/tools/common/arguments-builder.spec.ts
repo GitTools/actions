@@ -219,7 +219,7 @@ describe('ArgumentsBuilder', () => {
             // Test Windows paths
             const args = new ArgumentsBuilder().addArgument('C:\\Program Files\\App\\tool.exe').addKeyValue('output', 'D:\\My Documents\\output.txt').build()
 
-            expect(args).toEqual(['"C:\\Program Files\\App\\tool.exe"', '--output', '"D:\\My Documents\\output.txt"'])
+            expect(args).toEqual(['"C:\\\\Program Files\\\\App\\\\tool.exe"', '--output', '"D:\\\\My Documents\\\\output.txt"'])
         })
     })
 
