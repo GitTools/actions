@@ -89,7 +89,7 @@ export class ArgumentsBuilder {
 
         if (this.isWindows) {
             // On Windows, wrap in double quotes and escape inner double quotes with backslash
-            return `"${value.replace(/"/g, '\\"')}"`
+            return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
         } else {
             // On Unix, wrap in single quotes and escape inner single quotes
             // Escaping single quotes in bash requires closing the quote, adding an escaped quote, and reopening
