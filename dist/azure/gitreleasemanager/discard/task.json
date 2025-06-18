@@ -1,6 +1,6 @@
 {
   "id": "9ae78b66-6100-4522-8106-b7ae00bbfcdf",
-  "name": "gitreleasemanager/discard",
+  "name": "gitreleasemanager-discard",
   "friendlyName": "Discard GitReleaseManager Task",
   "description": "Tool for creating and exporting releases for software applications hosted on GitHub",
   "author": "GitTools Contributors",

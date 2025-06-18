@@ -43,10 +43,6 @@ disableShallowCloneCheck:
   description: Whether to disable the check for shallow clone
   required: false
   default: 'false'
-useConfigFile:
-  description: Whether to use a custom configuration file
-  required: false
-  default: 'false'
 configFilePath:
   description: Optional path to config file (defaults to GitVersion.yml)
   required: false
@@ -54,7 +50,7 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    update-build-number=false
+    semantic-version-format=Loose
     next-version=3.2.1
   required: false
   default: ''
@@ -137,10 +133,8 @@ steps:
 ```yaml
 steps:
   - name: Determine Version
-    id: version_step # step id used as a reference for output values
+    id: version_step # step id used as reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.1
-    with:
-      useConfigFile: true
 ```
 
 Example contents of **GitVersion.yml**:
@@ -169,7 +163,6 @@ steps:
     id: version_step # step id used as a reference for output values
     uses: gittools/actions/gitversion/execute@v3.2.1
     with:
-      useConfigFile: true
       configFilePath: VersionConfig.yml
 ```
 
@@ -225,7 +218,7 @@ steps:
     uses: gittools/actions/gitversion/execute@v3.2.1
     with:
       overrideConfig: |
-        update-build-number=false
+        semantic-version-format=Loose
         next-version=3.2.1
 ```
 
@@ -256,7 +249,7 @@ where `<id>` is the ID assigned to the step that calls the action, by subsequent
 
 The action also creates environment variables of the form `${{ env.<outputName> }}` or `${{ env.GitVersion_<OutputName> }}` for use by other steps in the same job.
 
-### Example 8
+### Output Example 1
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent steps within the same job.</summary>
@@ -340,7 +333,7 @@ jobs:
 
 </details>
 
-### Example 9
+### Output Example 2
 
 <details>
   <summary>Calculate the version for the build and use the output in a subsequent job.</summary>
@@ -462,6 +455,7 @@ jobs:
       - run: |
           echo "FullSemVer (myvar_GitVersion_FullSemVer)   : $myvar_GitVersion_FullSemVer"
         name: Use job variables (bash - outputs without prefix)
+
         shell: bash
 
       - run: |

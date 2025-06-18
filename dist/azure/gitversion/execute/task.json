@@ -1,6 +1,6 @@
 {
   "id": "9013cf7f-ee8d-49f4-a39b-db244928d391",
-  "name": "gitversion/execute",
+  "name": "gitversion-execute",
   "friendlyName": "Execute GitVersion Task",
   "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
   "author": "GitTools Contributors",
@@ -68,21 +68,11 @@
       "helpMarkDown": "Whether to disable GitVersion shallow clone check"
     },
     {
-      "name": "useConfigFile",
-      "type": "boolean",
-      "label": "Specify Configuration file",
-      "defaultValue": "false",
-      "required": false,
-      "helpMarkDown": "Whether to use a custom configuration file"
-    },
-    {
       "name": "configFilePath",
       "type": "filePath",
       "label": "Configuration file",
-      "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
-      "visibleRule": "useConfigFile = true"
+      "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)"
     },
     {
       "name": "overrideConfig",
@@ -90,7 +80,7 @@
       "label": "Override Configuration",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nupdate-build-number=false\nnext-version=1.0.0"
+      "helpMarkDown": "Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.: \n\nsemantic-version-format=Loose\nnext-version=1.0.0"
     },
     {
       "name": "updateAssemblyInfo",
@@ -116,6 +106,14 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Whether to update versions in the project files"
+    },
+    {
+      "name": "buildNumberFormat",
+      "type": "string",
+      "label": "Build Number Format",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional build number format. This is used to set the build number in Azure DevOps. If not specified, the build number is not set."
     }
   ]
 }

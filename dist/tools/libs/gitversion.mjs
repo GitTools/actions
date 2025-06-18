@@ -11,23 +11,23 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const disableCache = this.buildAgent.getBooleanInput("disableCache");
     const disableNormalization = this.buildAgent.getBooleanInput("disableNormalization");
     const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
-    const useConfigFile = this.buildAgent.getBooleanInput("useConfigFile");
     const configFilePath = this.buildAgent.getInput("configFilePath");
     const overrideConfig = this.buildAgent.getListInput("overrideConfig");
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
     const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
     const updateProjectFiles = this.buildAgent.getBooleanInput("updateProjectFiles");
+    const buildNumberFormat = this.buildAgent.getInput("buildNumberFormat", false);
     return {
       targetPath,
       disableCache,
       disableNormalization,
       disableShallowCloneCheck,
-      useConfigFile,
       configFilePath,
       overrideConfig,
       updateAssemblyInfo,
       updateAssemblyInfoFilename,
-      updateProjectFiles
+      updateProjectFiles,
+      buildNumberFormat
     };
   }
   getCommandSettings() {
@@ -53,7 +53,7 @@ class GitVersionTool extends DotnetTool {
     return "GITVERSION_PATH";
   }
   get versionRange() {
-    return ">=5.2.0 <7.0.0";
+    return ">=6.1.0 <7.0.0";
   }
   get settingsProvider() {
     return new GitVersionSettingsProvider(this.buildAgent);
@@ -84,18 +84,21 @@ class GitVersionTool extends DotnetTool {
         }
         this.buildAgent.setOutput(name, value);
         this.buildAgent.setOutput(`GitVersion_${property}`, value);
-        this.buildAgent.setOutput(`GitVersion.${property}`, value);
         this.buildAgent.setVariable(name, value);
         this.buildAgent.setVariable(`GitVersion_${property}`, value);
-        this.buildAgent.setVariable(`GitVersion.${property}`, value);
       } catch (_error) {
         this.buildAgent.error(`Unable to set output/variable for ${property}`);
       }
     }
-    if (output.FullSemVer.endsWith("+0")) {
-      output.FullSemVer = output.FullSemVer.slice(0, -2);
+  }
+  updateBuildNumber() {
+    const settings = this.settingsProvider.getExecuteSettings();
+    if (settings.buildNumberFormat) {
+      const buildNumber = this.buildAgent.getExpandedString(settings.buildNumberFormat);
+      this.buildAgent.updateBuildNumber(buildNumber);
+    } else {
+      this.buildAgent.debug("No buildNumberFormat provided. Skipping build number update.");
     }
-    this.buildAgent.updateBuildNumber(output.FullSemVer);
   }
   async getRepoDir(settings) {
     return await super.getRepoPath(settings.targetPath);
@@ -103,7 +106,6 @@ class GitVersionTool extends DotnetTool {
   async getExecuteArguments(workDir, options) {
     const builder = new ArgumentsBuilder().addArgument(workDir).addArgument("/output").addArgument("json").addArgument("/l").addArgument("console");
     const {
-      useConfigFile,
       disableCache,
       disableNormalization,
       configFilePath,
@@ -119,7 +121,7 @@ class GitVersionTool extends DotnetTool {
     if (disableNormalization) {
       builder.addArgument("/nonormalize");
     }
-    if (useConfigFile) {
+    if (configFilePath) {
       if (await this.isValidInputFile("configFilePath", configFilePath)) {
         builder.addArgument("/config").addArgument(configFilePath);
       } else {
@@ -210,16 +212,18 @@ class Runner extends RunnerBase {
   processGitVersionOutput(result) {
     const stdout = result.stdout;
     if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
-      this.buildAgent.debug("GitVersion output is not valid JSON");
-      this.buildAgent.setFailed("GitVersion output is not valid JSON", true);
+      const errorMessage = "GitVersion output is not valid JSON, see output details";
+      this.buildAgent.debug(errorMessage);
+      this.buildAgent.setFailed(errorMessage, true);
       return {
         code: -1,
-        error: new Error("GitVersion output is not valid JSON")
+        error: new Error(errorMessage)
       };
     } else {
       const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
       const gitVersionOutput = JSON.parse(jsonOutput);
       this.tool.writeGitVersionToAgent(gitVersionOutput);
+      this.tool.updateBuildNumber();
       this.buildAgent.setSucceeded("GitVersion executed successfully", true);
       return result;
     }

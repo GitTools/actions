@@ -24,18 +24,13 @@ inputs:
     description: Whether to disable the check for shallow clone
     required: false
     default: 'false'
-  useConfigFile:
-    description: Whether to use a custom configuration file
-    required: false
-    default: 'false'
   configFilePath:
     description: Optional path to config file (defaults to GitVersion.yml)
     required: false
-    default: 'GitVersion.yml'
   overrideConfig:
     description: |
         Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-        update-build-number=false
+        semantic-version-format=Loose
         next-version=1.0.0
     required: false
     default: ''

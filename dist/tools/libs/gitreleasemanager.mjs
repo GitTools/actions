@@ -57,13 +57,11 @@ class GitReleaseManagerSettingsProvider extends SettingsProvider {
   }
   getCommonSettings() {
     const milestone = this.buildAgent.getInput("milestone");
-    const owner = this.buildAgent.getInput("owner");
     const repository = this.buildAgent.getInput("repository");
     const token = this.buildAgent.getInput("token");
     const targetDirectory = this.buildAgent.getInput("targetDirectory");
     const logFilePath = this.buildAgent.getInput("logFilePath");
     return {
-      owner,
       repository,
       token,
       targetDirectory,
@@ -121,8 +119,9 @@ class GitReleaseManagerTool extends DotnetTool {
   }
   async getCommonArguments(settings) {
     const builder = new ArgumentsBuilder();
-    builder.addKeyValue("owner", settings.owner);
-    builder.addKeyValue("repository", settings.repository);
+    const [owner, repository] = settings.repository.split("/");
+    builder.addKeyValue("owner", owner);
+    builder.addKeyValue("repository", repository);
     builder.addKeyValue("token", settings.token);
     settings.targetDirectory = await this.getRepoDir(settings);
     builder.addKeyValue("targetDirectory", settings.targetDirectory);

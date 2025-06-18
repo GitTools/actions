@@ -1,7 +1,7 @@
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitreleasemanager'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
@@ -38,6 +38,15 @@ describe('GitReleaseManager Runner', () => {
             resetEnv(agent, toolPathVariable)
         })
 
+        afterAll(() => {
+            // Clean up the base directory after all tests
+            // if (fs.existsSync(baseDir)) {
+            //     fs.rmSync(baseDir, { recursive: true, force: true })
+            // }
+
+            resetEnv(agent, '')
+        })
+
         it.sequential('should run setup GitReleaseManager', async () => {
             setInputs({
                 versionSpec: versionSpec,
@@ -64,15 +73,15 @@ describe('GitReleaseManager Runner', () => {
         })
     }
 
-    describe('Local Agent', () => {
+    describe.sequential('Local Agent', () => {
         testOnAgent(new LocalBuildAgent())
     })
 
-    describe.skipIf(isGitHubActionsAgent())('GitHub Actions Agent', () => {
+    describe.skipIf(isGitHubActionsAgent()).sequential('GitHub Actions Agent', () => {
         testOnAgent(new GitHubActionsAgent())
     })
 
-    describe.skipIf(isAzurePipelinesAgent())('Azure Pipelines Agent', () => {
+    describe.skipIf(isAzurePipelinesAgent()).sequential('Azure Pipelines Agent', () => {
         testOnAgent(new AzurePipelinesAgent())
     })
 })

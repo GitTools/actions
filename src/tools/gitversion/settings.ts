@@ -15,7 +15,6 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         const disableNormalization = this.buildAgent.getBooleanInput<ExecuteSettings>('disableNormalization')
         const disableShallowCloneCheck = this.buildAgent.getBooleanInput<ExecuteSettings>('disableShallowCloneCheck')
 
-        const useConfigFile = this.buildAgent.getBooleanInput<ExecuteSettings>('useConfigFile')
         const configFilePath = this.buildAgent.getInput<ExecuteSettings>('configFilePath')
         const overrideConfig = this.buildAgent.getListInput<ExecuteSettings>('overrideConfig')
 
@@ -24,17 +23,19 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const updateProjectFiles = this.buildAgent.getBooleanInput<ExecuteSettings>('updateProjectFiles')
 
+        const buildNumberFormat = this.buildAgent.getInput<ExecuteSettings>('buildNumberFormat', false)
+
         return {
             targetPath,
             disableCache,
             disableNormalization,
             disableShallowCloneCheck,
-            useConfigFile,
             configFilePath,
             overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
-            updateProjectFiles
+            updateProjectFiles,
+            buildNumberFormat
         }
     }
 

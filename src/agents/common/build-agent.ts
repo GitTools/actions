@@ -59,6 +59,8 @@ export interface IBuildAgent {
 
     getVariableAsPath(name: string): string
 
+    getExpandedString(pattern: string): string
+
     setVariable(name: string, value: string): void
 
     updateBuildNumber: (version: string) => void
@@ -147,6 +149,24 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
     getVariableAsPath(name: string): string {
         return path.resolve(path.normalize(this.getVariable(name)))
+    }
+
+    /**
+     * Replaces environment variable references in a string with their values.
+     * Supports both $VAR and ${VAR} formats.
+     * Ignores invalid patterns like ${} or non-existing variables (replaced with empty string).
+     *
+     * @param pattern - The input string containing env variable placeholders.
+     * @returns The string with env variables expanded.
+     */
+    getExpandedString(pattern: string): string {
+        const expanded = pattern.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*|{([a-zA-Z_][a-zA-Z0-9_]*)})/g, (_, whole: string, braced?: string) => {
+            const name = braced ?? whole
+            const value = process.env[name.toUpperCase()]
+            return value !== undefined ? value : ''
+        })
+        this.debug(`getExpandedString - ${pattern}: ${expanded}`)
+        return expanded
     }
 
     async directoryExists(dir: string): Promise<boolean> {

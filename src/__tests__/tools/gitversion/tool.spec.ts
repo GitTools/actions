@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type IBuildAgent } from '@agents/common'
-import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool } from '@tools/gitversion'
+import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool, IGitVersionSettingsProvider } from '@tools/gitversion'
 
 class TestGitVersionTool extends GitVersionTool {
     private _isValidInputFile = false
@@ -41,7 +41,7 @@ describe('GitVersionTool', () => {
     })
 
     it('should return correct version range', () => {
-        expect(tool.versionRange).toBe('>=5.2.0 <7.0.0')
+        expect(tool.versionRange).toBe('>=6.1.0 <7.0.0')
     })
 
     it('should have settings provider defined', () => {
@@ -86,12 +86,6 @@ describe('GitVersionTool', () => {
             expect(outputs.get('GitVersion_SemVer')).toBe('1.2.3-alpha.1')
             expect(outputs.get('GitVersion_FullSemVer')).toBe('1.2.3-alpha.1')
 
-            expect(outputs.get('GitVersion.Major')).toBe('1')
-            expect(outputs.get('GitVersion.Minor')).toBe('2')
-            expect(outputs.get('GitVersion.Patch')).toBe('3')
-            expect(outputs.get('GitVersion.SemVer')).toBe('1.2.3-alpha.1')
-            expect(outputs.get('GitVersion.FullSemVer')).toBe('1.2.3-alpha.1')
-
             expect(variables.get('major')).toBe('1')
             expect(variables.get('minor')).toBe('2')
             expect(variables.get('patch')).toBe('3')
@@ -103,12 +97,70 @@ describe('GitVersionTool', () => {
             expect(variables.get('GitVersion_Patch')).toBe('3')
             expect(variables.get('GitVersion_SemVer')).toBe('1.2.3-alpha.1')
             expect(variables.get('GitVersion_FullSemVer')).toBe('1.2.3-alpha.1')
+        })
+    })
 
-            expect(variables.get('GitVersion.Major')).toBe('1')
-            expect(variables.get('GitVersion.Minor')).toBe('2')
-            expect(variables.get('GitVersion.Patch')).toBe('3')
-            expect(variables.get('GitVersion.SemVer')).toBe('1.2.3-alpha.1')
-            expect(variables.get('GitVersion.FullSemVer')).toBe('1.2.3-alpha.1')
+    describe('updateBuildNumber', () => {
+        it('should update build number when buildNumberFormat is provided', () => {
+            // Setup
+            let updatedBuildNumber: string | undefined
+            const buildAgent = {
+                updateBuildNumber(version: string): void {
+                    updatedBuildNumber = version
+                },
+                getExpandedString(format: string): string {
+                    return format.replace('${GitVersion_SemVer}', '2.3.4-beta.5')
+                }
+            } as IBuildAgent
+
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Mock the settings provider to return a buildNumberFormat
+            const mockSettingsProvider = {
+                getExecuteSettings: () =>
+                    ({
+                        buildNumberFormat: 'v${GitVersion_SemVer}'
+                    }) as ExecuteSettings
+            } as IGitVersionSettingsProvider
+
+            // Override the settingsProvider getter
+            vi.spyOn(tool, 'settingsProvider', 'get').mockReturnValue(mockSettingsProvider)
+
+            // Act
+            tool.updateBuildNumber()
+
+            // Assert
+            expect(updatedBuildNumber).toBe('v2.3.4-beta.5')
+        })
+
+        it('should not update build number when buildNumberFormat is not provided', () => {
+            // Setup
+            let wasCalled = false
+            const buildAgent = {
+                updateBuildNumber(_: string): void {
+                    wasCalled = true
+                },
+                getExpandedString(format: string): string {
+                    return format
+                },
+                debug(_: string): void {}
+            } as IBuildAgent
+
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Mock the settings provider to return empty settings
+            const mockSettingsProvider = {
+                getExecuteSettings: () => ({}) as ExecuteSettings
+            } as IGitVersionSettingsProvider
+
+            // Override the settingsProvider getter
+            vi.spyOn(tool, 'settingsProvider', 'get').mockReturnValue(mockSettingsProvider)
+
+            // Act
+            tool.updateBuildNumber()
+
+            // Assert
+            expect(wasCalled).toBe(false)
         })
     })
 
@@ -135,7 +187,6 @@ describe('GitVersionTool', () => {
         it('should return correct arguments for settings with config', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {
-                useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml'
             } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml'])
@@ -146,7 +197,6 @@ describe('GitVersionTool', () => {
             const configFile = 'workdir/WrongConfig.yml'
             await expect(
                 tool.getExecuteArguments('workdir', {
-                    useConfigFile: true,
                     configFilePath: configFile
                 } as ExecuteSettings)
             ).rejects.toThrowError(`GitVersion configuration file not found at ${configFile}`)
@@ -192,7 +242,6 @@ describe('GitVersionTool', () => {
         it('should return correct arguments for settings with config and assembly info', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {
-                useConfigFile: true,
                 configFilePath: 'workdir/GitVersion.yml',
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'

@@ -17,7 +17,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '>=5.2.0 <7.0.0'
+        return '>=6.1.0 <7.0.0'
     }
 
     get settingsProvider(): IGitVersionSettingsProvider {
@@ -58,19 +58,22 @@ export class GitVersionTool extends DotnetTool {
                 }
                 this.buildAgent.setOutput(name, value)
                 this.buildAgent.setOutput(`GitVersion_${property}`, value)
-                this.buildAgent.setOutput(`GitVersion.${property}`, value)
                 this.buildAgent.setVariable(name, value)
                 this.buildAgent.setVariable(`GitVersion_${property}`, value)
-                this.buildAgent.setVariable(`GitVersion.${property}`, value)
             } catch (_error) {
                 this.buildAgent.error(`Unable to set output/variable for ${property}`)
             }
         }
+    }
 
-        if (output.FullSemVer.endsWith('+0')) {
-            output.FullSemVer = output.FullSemVer.slice(0, -2)
+    updateBuildNumber(): void {
+        const settings = this.settingsProvider.getExecuteSettings()
+        if (settings.buildNumberFormat) {
+            const buildNumber = this.buildAgent.getExpandedString(settings.buildNumberFormat)
+            this.buildAgent.updateBuildNumber(buildNumber)
+        } else {
+            this.buildAgent.debug('No buildNumberFormat provided. Skipping build number update.')
         }
-        this.buildAgent.updateBuildNumber(output.FullSemVer)
     }
 
     protected async getRepoDir(settings: ExecuteSettings | CommandSettings): Promise<string> {
@@ -81,7 +84,6 @@ export class GitVersionTool extends DotnetTool {
         const builder = new ArgumentsBuilder().addArgument(workDir).addArgument('/output').addArgument('json').addArgument('/l').addArgument('console')
 
         const {
-            useConfigFile,
             disableCache,
             disableNormalization,
             configFilePath,
@@ -100,7 +102,7 @@ export class GitVersionTool extends DotnetTool {
             builder.addArgument('/nonormalize')
         }
 
-        if (useConfigFile) {
+        if (configFilePath) {
             if (await this.isValidInputFile('configFilePath', configFilePath)) {
                 builder.addArgument('/config').addArgument(configFilePath)
             } else {

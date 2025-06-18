@@ -10,12 +10,12 @@ describe('GitVersion settings', () => {
             disableCache: true,
             disableNormalization: true,
             disableShallowCloneCheck: true,
-            useConfigFile: true,
             configFilePath: 'path',
-            overrideConfig: ['update-build-number=false'],
+            overrideConfig: ['semantic-version-format=Loose'],
             updateAssemblyInfo: true,
             updateAssemblyInfoFilename: 'path',
-            updateProjectFiles: true
+            updateProjectFiles: true,
+            buildNumberFormat: 'format'
         }
 
         const buildAgent = {
@@ -26,9 +26,9 @@ describe('GitVersion settings', () => {
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const ExecuteSettings = settingsProvider.getExecuteSettings()
+        const executeSettings = settingsProvider.getExecuteSettings()
 
-        expectValidSettings(settings, ExecuteSettings)
+        expectValidSettings(settings, executeSettings)
     })
 
     it('should return CommandSettings', () => {
@@ -45,8 +45,8 @@ describe('GitVersion settings', () => {
 
         const settingsProvider = new GitVersionSettingsProvider(buildAgent)
 
-        const CommandSettings = settingsProvider.getCommandSettings()
+        const commandSettings = settingsProvider.getCommandSettings()
 
-        expectValidSettings(settings, CommandSettings)
+        expectValidSettings(settings, commandSettings)
     })
 })

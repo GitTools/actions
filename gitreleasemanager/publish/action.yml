@@ -8,12 +8,8 @@ runs:
   using: node20
   main: main.mjs
 inputs:
-  owner:
-    description: The owner of the repository
-    required: true
-    default: ''
   repository:
-    description: The name of the repository
+    description: The name of the repository in the format owner/repo
     required: true
     default: ''
   token:

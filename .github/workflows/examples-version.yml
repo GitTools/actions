@@ -1,6 +1,5 @@
 name: Update examples version
 
-
 permissions: read-all
 
 on:

@@ -6,12 +6,14 @@ on:
   push:
     branches:
     - main
+    - vnext
     - 'fix/*'
     - 'feature/*'
 
   pull_request:
     branches:
     - main
+    - vnext
 
   workflow_dispatch:
 
@@ -78,7 +80,7 @@ jobs:
         disableCache: true
         disableNormalization: false
         overrideConfig: |
-          update-build-number=false
+          semantic-version-format=Loose
     - run: |
         echo "Major      (env.major)                                      : ${{ env.major }}"
         echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"
