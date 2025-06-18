@@ -1,5 +1,7 @@
 name: Update examples version
 
+permissions: read-all
+
 on:
   repository_dispatch:
     types: [ update-examples ]

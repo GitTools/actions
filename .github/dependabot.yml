@@ -7,10 +7,12 @@ updates:
     prefix: "(github-actions)"
   directory: "/"
   schedule:
-    interval: daily
+    interval: cron
+    cronjob: "0 12 * * *"
   ignore:
     - dependency-name: "gittools/actions/gitversion/setup"
     - dependency-name: "gittools/actions/gitversion/execute"
+    - dependency-name: "gittools/actions/gitversion/command"
 
 - package-ecosystem: npm
   labels:
@@ -38,5 +40,6 @@ updates:
         - "@types/*"
   directory: "/"
   schedule:
-    interval: daily
+    interval: cron
+    cronjob: "0 12 * * *"
   open-pull-requests-limit: 10
