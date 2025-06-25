@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion/setup@3.3.0
+  - task: gitversion/setup@3.2.1
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.3.x'
@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _3.3.0_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _3.2.1_ of the GitVersion Execute task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -49,7 +49,7 @@ overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
     semantic-version-format=Loose
-    next-version=3.3.0
+    next-version=3.2.1
   required: false
   default: ''
 updateAssemblyInfo:
@@ -120,9 +120,9 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
@@ -136,9 +136,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as reference for output values
 
@@ -164,9 +164,9 @@ branches:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -182,9 +182,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -201,9 +201,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -219,15 +219,15 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
       overrideConfig: |
         semantic-version-format=Loose
-        next-version=3.3.0
+        next-version=3.2.1
 ```
 
 </details>
@@ -239,9 +239,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -257,9 +257,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@3.3.0 task omitted for brevity.
+  # gitversion/setup@3.2.1 task omitted for brevity.
 
-  - task: gitversion/execute@3.3.0
+  - task: gitversion/execute@3.2.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -292,12 +292,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@3.3.0
+      - task: gitversion/setup@3.2.1
         displayName: Install GitVersion
         inputs:
           versionSpec: '6.3.x'
 
-      - task: gitversion/execute@3.3.0
+      - task: gitversion/execute@3.2.1
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -362,12 +362,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@3.3.0
+      - task: gitversion/setup@3.2.1
         displayName: Install GitVersion
         inputs:
           versionSpec: '6.3.x'
 
-      - task: gitversion/execute@3.3.0
+      - task: gitversion/execute@3.2.1
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -453,12 +453,12 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion/setup@3.3.0
+          - task: gitversion/setup@3.2.1
             displayName: Install GitVersion
             inputs:
               versionSpec: '6.3.x'
 
-          - task: gitversion/execute@3.3.0
+          - task: gitversion/execute@3.2.1
             displayName: Determine Version
             name: version_step # step id used as a reference for output values
             inputs:

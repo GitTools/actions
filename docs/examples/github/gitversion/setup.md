@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** action using the examples below.
 
-> The examples use version _3.3.0_ of the GitVersion Setup action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _3.2.1_ of the GitVersion Setup action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -45,7 +45,7 @@ Install the latest GitVersion 6 version.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v3.3.0
+    uses: gittools/actions/gitversion/setup@v3.2.1
     with:
       versionSpec: '6.3.x'
 ```
@@ -57,7 +57,7 @@ Install GitVersion 6.0.0.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v3.3.0
+    uses: gittools/actions/gitversion/setup@v3.2.1
     with:
       versionSpec: '6.0.0'
 ```
@@ -69,7 +69,7 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v3.3.0
+    uses: gittools/actions/gitversion/setup@v3.2.1
     with:
       versionSpec: '6.3.x'
       includePrerelease: true
@@ -82,7 +82,7 @@ Install the latest GitVersion 6 version even it there is a cached version matchi
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v3.3.0
+    uses: gittools/actions/gitversion/setup@v3.2.1
     with:
       versionSpec: '6.3.x'
       preferLatestVersion: true
