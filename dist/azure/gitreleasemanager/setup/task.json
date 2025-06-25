@@ -39,6 +39,14 @@
       "helpMarkDown": "Include pre-release versions when matching a version"
     },
     {
+      "name": "packageSource",
+      "type": "string",
+      "label": "The source to fetch the package from",
+      "defaultValue": "https://azuresearch-usnc.nuget.org",
+      "required": false,
+      "helpMarkDown": "Any address hosting a [NuGet SearchQueryService](https://learn.microsoft.com/en-us/nuget/api/search-query-service-resource)"
+    },
+    {
       "name": "ignoreFailedSources",
       "type": "boolean",
       "label": "Treat package source failures as warnings",
