@@ -343,18 +343,18 @@ class DotnetTool {
       this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");
       return null;
     }
-    var nugetIndex = await fetch(defaultNugetSource);
+    const nugetIndex = await fetch(defaultNugetSource);
     if (!nugetIndex?.ok) {
       this.buildAgent.error(`Failed to fetch data from NuGet source ${defaultNugetSource}.`);
       return null;
     }
     const resources = (await nugetIndex.json())?.resources;
-    var service = resources?.find((s) => s["@type"].startsWith("SearchQueryService"))?.["@id"];
-    if (!service) {
+    const serviceUrl = resources?.find((s) => s["@type"].startsWith(NugetServiceType.SearchQueryService))?.["@id"];
+    if (!serviceUrl) {
       this.buildAgent.error(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${defaultNugetSource}`);
       return null;
     }
-    return service;
+    return serviceUrl;
   }
   async queryLatestMatch(toolName, versionSpec, includePrerelease) {
     this.buildAgent.info(

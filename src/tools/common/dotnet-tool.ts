@@ -247,14 +247,15 @@ export abstract class DotnetTool implements IDotnetTool {
             return null
         }
 
+        // Parse the nuget service index and get the (first / primary) query service
         const resources = ((await nugetIndex.json()) as NugetServiceIndex)?.resources
-        const service = resources?.find(s => s['@type'].startsWith('SearchQueryService'))?.['@id']
+        const serviceUrl = resources?.find(s => s['@type'].startsWith(NugetServiceType.SearchQueryService))?.['@id']
 
-        if (!service) {
+        if (!serviceUrl) {
             this.buildAgent.error(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${defaultNugetSource}`)
             return null
         }
-        return service
+        return serviceUrl
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
