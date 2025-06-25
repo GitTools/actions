@@ -233,7 +233,7 @@ export abstract class DotnetTool implements IDotnetTool {
 
         const toolNameParam = encodeURIComponent(toolName.toLowerCase())
         const prereleaseParam = includePrerelease ? 'true' : 'false'
-        const downloadPath = `${packageSource}/query?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
+        const downloadPath = `${packageSource}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
         const response = await fetch(downloadPath)
 

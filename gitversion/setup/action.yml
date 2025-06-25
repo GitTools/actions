@@ -20,7 +20,7 @@ inputs:
   packageSource:
     description: The source to fetch the package from
     required: false
-    default: https://azuresearch-usnc.nuget.org
+    default: https://azuresearch-usnc.nuget.org/query
   ignoreFailedSources:
     description: Treat package source failures as warnings.
     required: false
