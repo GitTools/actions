@@ -6,7 +6,7 @@ import * as path from 'node:path'
 import * as semver from 'semver'
 import { type IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
-import { NugetVersions } from './models'
+import { NugetServiceIndex, NugetServiceType, NugetVersions } from './models'
 import { ArgumentsBuilder } from './arguments-builder'
 
 export interface IDotnetTool {
@@ -18,8 +18,6 @@ export interface IDotnetTool {
 }
 
 export abstract class DotnetTool implements IDotnetTool {
-    private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/query'
-
     constructor(protected buildAgent: IBuildAgent) {}
 
     abstract get packageName(): string
@@ -228,14 +226,50 @@ export abstract class DotnetTool implements IDotnetTool {
         return path.normalize(workDir)
     }
 
+    private async getQueryService(): Promise<string | null> {
+        // Use dotnet tool to get the first enabled nuget source.
+        const result = await this.execute(
+            'dotnet',
+            new ArgumentsBuilder().addArgument('nuget').addArgument('list').addArgument('source').addKeyValue('format', 'short').build()
+        )
+
+        const defaultNugetSource = /E (?<index>.+)/.exec(result.stdout ?? '')?.groups?.index
+
+        if (!defaultNugetSource) {
+            this.buildAgent.error('Failed to fetch an enabled package source for dotnet.')
+            return null
+        }
+
+        // Fetch the nuget source index to obtain the query service
+        const nugetIndex = await fetch(defaultNugetSource)
+        if (!nugetIndex?.ok) {
+            this.buildAgent.error(`Failed to fetch data from NuGet source ${defaultNugetSource}.`)
+            return null
+        }
+
+        const resources = ((await nugetIndex.json()) as NugetServiceIndex)?.resources
+        const service = resources?.find(s => s['@type'].startsWith('SearchQueryService'))?.['@id']
+
+        if (!service) {
+            this.buildAgent.error(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${defaultNugetSource}`)
+            return null
+        }
+        return service
+    }
+
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
         this.buildAgent.info(
             `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
+        const queryService = await this.getQueryService()
+        if (!queryService) {
+            return null
+        }
+
         const toolNameParam = encodeURIComponent(toolName.toLowerCase())
         const prereleaseParam = includePrerelease ? 'true' : 'false'
-        const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
+        const downloadPath = `${queryService}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
         const response = await fetch(downloadPath)
 
