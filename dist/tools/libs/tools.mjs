@@ -167,7 +167,6 @@ class DotnetTool {
   constructor(buildAgent) {
     this.buildAgent = buildAgent;
   }
-  static nugetRoot = "https://azuresearch-usnc.nuget.org/query";
   disableTelemetry() {
     this.buildAgent.info("Disable Telemetry");
     this.buildAgent.setVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "true");
@@ -183,7 +182,7 @@ class DotnetTool {
     this.buildAgent.info(`Acquiring ${this.packageName} for version spec: ${version}`);
     this.buildAgent.info("--------------------------");
     if (!this.isExplicitVersion(version)) {
-      version = await this.queryLatestMatch(this.packageName, version, setupSettings.includePrerelease);
+      version = await this.queryLatestMatch(this.packageName, version, setupSettings.includePrerelease, setupSettings.packageSource);
       if (!version) {
         throw new Error(`Unable to find ${this.packageName} version '${version}'.`);
       }
@@ -318,13 +317,13 @@ class DotnetTool {
     }
     return path.normalize(workDir);
   }
-  async queryLatestMatch(toolName, versionSpec, includePrerelease) {
+  async queryLatestMatch(toolName, versionSpec, includePrerelease, packageSource) {
     this.buildAgent.info(
       `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`
     );
     const toolNameParam = encodeURIComponent(toolName.toLowerCase());
     const prereleaseParam = includePrerelease ? "true" : "false";
-    const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
+    const downloadPath = `${packageSource}/query?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
     const response = await fetch(downloadPath);
     if (!response || !response.ok) {
       this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
@@ -396,11 +395,13 @@ class SettingsProvider {
   getSetupSettings() {
     const versionSpec = this.buildAgent.getInput("versionSpec");
     const includePrerelease = this.buildAgent.getBooleanInput("includePrerelease");
+    const packageSource = this.buildAgent.getInput("packageSource");
     const ignoreFailedSources = this.buildAgent.getBooleanInput("ignoreFailedSources");
     const preferLatestVersion = this.buildAgent.getBooleanInput("preferLatestVersion");
     return {
       versionSpec,
       includePrerelease,
+      packageSource,
       ignoreFailedSources,
       preferLatestVersion
     };

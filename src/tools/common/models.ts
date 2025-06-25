@@ -2,6 +2,7 @@ import { type ExecResult } from '@agents/common'
 
 export type SetupSettings = {
     versionSpec: string
+    packageSource: string
     includePrerelease: boolean
     ignoreFailedSources: boolean
     preferLatestVersion: boolean

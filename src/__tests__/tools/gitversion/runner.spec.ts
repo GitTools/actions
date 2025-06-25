@@ -17,6 +17,7 @@ describe('GitVersion Runner', () => {
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
     const versionSpec = '6.3.x'
+    const packageSource = 'https://azuresearch-usnc.nuget.org'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -54,6 +55,7 @@ describe('GitVersion Runner', () => {
             setInputs({
                 versionSpec: versionSpec,
                 includePrerelease: false,
+                packageSource,
                 ignoreFailedSources: false,
                 preferLatestVersion: true
             })
