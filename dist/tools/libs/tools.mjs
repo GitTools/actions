@@ -336,9 +336,7 @@ class DotnetTool {
   async getQueryServices() {
     const builder = new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short");
     const result = await this.execute("dotnet", builder.build());
-    const nugetSources = [
-      ...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)
-    ].map((m) => m.groups.index);
+    const nugetSources = [...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)].map((m) => m.groups.index);
     if (!nugetSources.length) {
       this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");
       return [];
@@ -381,9 +379,7 @@ class DotnetTool {
     if (!queryServices.length) {
       return null;
     }
-    let versions = (await Promise.all(
-      queryServices.map(async (service) => await this.queryVersionsFromNugetSource(service, toolName, includePrerelease))
-    )).flat();
+    let versions = (await Promise.all(queryServices.map(async (service) => await this.queryVersionsFromNugetSource(service, toolName, includePrerelease)))).flat();
     versions = [...new Set(versions)];
     this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
     const version = semverExports.maxSatisfying(versions, versionSpec, { includePrerelease });
