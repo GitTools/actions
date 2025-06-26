@@ -333,48 +333,58 @@ class DotnetTool {
     }
     return path.normalize(workDir);
   }
-  async getQueryService() {
+  async getQueryServices() {
     const builder = new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short");
     const result = await this.execute("dotnet", builder.build());
-    const defaultNugetSource = /E (?<index>.+)/.exec(result.stdout ?? "")?.groups?.index;
-    if (!defaultNugetSource) {
+    const nugetSources = [
+      ...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)
+    ].map((m) => m.groups.index);
+    if (!nugetSources.length) {
       this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");
-      return null;
+      return [];
     }
-    const nugetIndex = await fetch(defaultNugetSource);
-    if (!nugetIndex?.ok) {
-      this.buildAgent.error(`Failed to fetch data from NuGet source ${defaultNugetSource}.`);
-      return null;
+    const sources = [];
+    for (const nugetSource of nugetSources) {
+      const nugetIndex = await fetch(nugetSource);
+      if (!nugetIndex?.ok) {
+        this.buildAgent.warn(`Failed to fetch data from NuGet source ${nugetSource}.`);
+        continue;
+      }
+      const resources = (await nugetIndex.json())?.resources;
+      const serviceUrl = resources?.find((s) => s["@type"].startsWith(NugetServiceType.SearchQueryService))?.["@id"];
+      if (!serviceUrl) {
+        this.buildAgent.warn(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${nugetSource}`);
+        continue;
+      }
+      sources.push(serviceUrl);
     }
-    const resources = (await nugetIndex.json())?.resources;
-    const serviceUrl = resources?.find((s) => s["@type"].startsWith(NugetServiceType.SearchQueryService))?.["@id"];
-    if (!serviceUrl) {
-      this.buildAgent.error(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${defaultNugetSource}`);
-      return null;
+    return sources;
+  }
+  async queryVersionsFromNugetSource(serviceUrl, toolName, includePrerelease) {
+    const toolNameParam = encodeURIComponent(toolName.toLowerCase());
+    const prereleaseParam = includePrerelease ? "true" : "false";
+    const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
+    const response = await fetch(downloadPath);
+    if (!response || !response.ok) {
+      this.buildAgent.warn(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
+      return [];
     }
-    return serviceUrl;
+    const { data } = await response.json();
+    const versions = data[0].versions.map((x) => x.version);
+    return versions ?? [];
   }
   async queryLatestMatch(toolName, versionSpec, includePrerelease) {
     this.buildAgent.info(
       `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`
     );
-    const queryService = await this.getQueryService();
-    if (!queryService) {
+    const queryServices = await this.getQueryServices();
+    if (!queryServices.length) {
       return null;
     }
-    const toolNameParam = encodeURIComponent(toolName.toLowerCase());
-    const prereleaseParam = includePrerelease ? "true" : "false";
-    const downloadPath = `${queryService}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
-    const response = await fetch(downloadPath);
-    if (!response || !response.ok) {
-      this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
-      return null;
-    }
-    const { data } = await response.json();
-    const versions = data[0].versions.map((x) => x.version);
-    if (!versions || !versions.length) {
-      return null;
-    }
+    let versions = (await Promise.all(
+      queryServices.map(async (service) => await this.queryVersionsFromNugetSource(service, toolName, includePrerelease))
+    )).flat();
+    versions = [...new Set(versions)];
     this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
     const version = semverExports.maxSatisfying(versions, versionSpec, { includePrerelease });
     if (version) {
