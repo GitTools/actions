@@ -334,10 +334,8 @@ class DotnetTool {
     return path.normalize(workDir);
   }
   async getQueryService() {
-    const result = await this.execute(
-      "dotnet",
-      new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short").build()
-    );
+    const builder = new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short");
+    const result = await this.execute("dotnet", builder.build());
     const defaultNugetSource = /E (?<index>.+)/.exec(result.stdout ?? "")?.groups?.index;
     if (!defaultNugetSource) {
       this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");

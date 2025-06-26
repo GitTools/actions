@@ -228,11 +228,10 @@ export abstract class DotnetTool implements IDotnetTool {
 
     private async getQueryService(): Promise<string | null> {
         // Use dotnet tool to get the first enabled nuget source.
-        const result = await this.execute(
-            'dotnet',
-            new ArgumentsBuilder().addArgument('nuget').addArgument('list').addArgument('source').addKeyValue('format', 'short').build()
-        )
+        const builder = new ArgumentsBuilder().addArgument('nuget').addArgument('list').addArgument('source').addKeyValue('format', 'short')
+        const result = await this.execute('dotnet', builder.build())
 
+        // Each line of the output starts with either E (enabled) or D (disabled), followed by a space and index url.
         const defaultNugetSource = /E (?<index>.+)/.exec(result.stdout ?? '')?.groups?.index
 
         if (!defaultNugetSource) {
