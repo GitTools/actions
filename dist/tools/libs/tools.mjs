@@ -344,7 +344,7 @@ class DotnetTool {
     const sources = [];
     for (const nugetSource of nugetSources) {
       const nugetIndex = await fetch(nugetSource).catch((e) => {
-        this.buildAgent.warn(e.cause?.message ?? "");
+        this.buildAgent.warn(e.cause?.message ?? "An unknown error occurred while fetching data");
         return Response.error();
       });
       if (!nugetIndex?.ok) {
@@ -367,7 +367,7 @@ class DotnetTool {
     const prereleaseParam = includePrerelease ? "true" : "false";
     const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
     const response = await fetch(downloadPath).catch((e) => {
-      this.buildAgent.warn(e.cause?.message ?? "");
+      this.buildAgent.warn(e.cause?.message ?? "An unknown error occurred while fetching data");
       return Response.error();
     });
     if (!response || !response.ok) {

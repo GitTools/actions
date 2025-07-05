@@ -243,7 +243,7 @@ export abstract class DotnetTool implements IDotnetTool {
         for (const nugetSource of nugetSources) {
             // Fetch the nuget source index to obtain the query service
             const nugetIndex = await fetch(nugetSource).catch((e: { cause: { message: string | undefined } | undefined }) => {
-                this.buildAgent.warn(e.cause?.message ?? '')
+                this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
                 return Response.error()
             })
             if (!nugetIndex?.ok) {
@@ -271,7 +271,7 @@ export abstract class DotnetTool implements IDotnetTool {
         const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
         const response = await fetch(downloadPath).catch((e: { cause: { message: string | undefined } | undefined }) => {
-            this.buildAgent.warn(e.cause?.message ?? '')
+            this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
             return Response.error()
         })
 
