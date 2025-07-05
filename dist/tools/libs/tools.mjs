@@ -336,14 +336,17 @@ class DotnetTool {
   async getQueryServices() {
     const builder = new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short");
     const result = await this.execute("dotnet", builder.build());
-    const nugetSources = [...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)].map((m) => m.groups.index);
+    const nugetSources = [...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)].map((m) => m.groups?.index ?? "").filter((s) => !!s);
     if (!nugetSources.length) {
       this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");
       return [];
     }
     const sources = [];
     for (const nugetSource of nugetSources) {
-      const nugetIndex = await fetch(nugetSource);
+      const nugetIndex = await fetch(nugetSource).catch((e) => {
+        this.buildAgent.warn(e.cause?.message ?? "");
+        return Response.error();
+      });
       if (!nugetIndex?.ok) {
         this.buildAgent.warn(`Failed to fetch data from NuGet source ${nugetSource}.`);
         continue;
@@ -359,17 +362,22 @@ class DotnetTool {
     return sources;
   }
   async queryVersionsFromNugetSource(serviceUrl, toolName, includePrerelease) {
+    this.buildAgent.debug(`Fetching ${toolName} versions from source ${serviceUrl}`);
     const toolNameParam = encodeURIComponent(toolName.toLowerCase());
     const prereleaseParam = includePrerelease ? "true" : "false";
     const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
-    const response = await fetch(downloadPath);
+    const response = await fetch(downloadPath).catch((e) => {
+      this.buildAgent.warn(e.cause?.message ?? "");
+      return Response.error();
+    });
     if (!response || !response.ok) {
       this.buildAgent.warn(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
       return [];
     }
     const { data } = await response.json();
-    const versions = data[0].versions.map((x) => x.version);
-    return versions ?? [];
+    const versions = data?.[0]?.versions?.map((x) => x.version) ?? [];
+    this.buildAgent.debug(`Found ${versions.length} versions: ${versions.join(", ")}`);
+    return versions;
   }
   async queryLatestMatch(toolName, versionSpec, includePrerelease) {
     this.buildAgent.info(
