@@ -202,6 +202,15 @@ describe('GitVersionTool', () => {
             ).rejects.toThrowError(`GitVersion configuration file not found at ${configFile}`)
         })
 
+        it('should return correct arguments for settings with no config file', async () => {
+            tool.init(false)
+            await expect(
+                tool.getExecuteArguments('workdir', {
+                    configFilePath: undefined
+                } as ExecuteSettings)
+            ).resolves.toEqual(['workdir', '/output', 'json', '/l', 'console'])
+        })
+
         it('should return correct arguments for settings with override config', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 overrideConfig: ['tag-prefix=release-', 'next-version=1.0.0']

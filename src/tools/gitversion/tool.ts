@@ -123,7 +123,7 @@ export class GitVersionTool extends DotnetTool {
             builder.addArgument('/updateassemblyinfo')
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
-            if (updateAssemblyInfoFilename?.length > 0) {
+            if (updateAssemblyInfoFilename) {
                 if (await this.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
                     builder.addArgument(updateAssemblyInfoFilename)
                 } else {
