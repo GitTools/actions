@@ -20,13 +20,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.0.0
+        uses: gittools/actions/gitversion/setup@v4.0.1
         with:
           versionSpec: '6.3.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v4.0.0
+        uses: gittools/actions/gitversion/execute@v4.0.1
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
