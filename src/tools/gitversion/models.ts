@@ -5,10 +5,10 @@ export type ExecuteSettings = {
     disableCache: boolean
     disableNormalization: boolean
     disableShallowCloneCheck: boolean
-    configFilePath: string
-    overrideConfig: string[]
+    configFilePath?: string
+    overrideConfig?: string[]
     updateAssemblyInfo: boolean
-    updateAssemblyInfoFilename: string
+    updateAssemblyInfoFilename?: string
     updateProjectFiles: boolean
     buildNumberFormat?: string
 }

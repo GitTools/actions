@@ -11,8 +11,8 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const disableCache = this.buildAgent.getBooleanInput("disableCache");
     const disableNormalization = this.buildAgent.getBooleanInput("disableNormalization");
     const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
-    const configFilePath = this.buildAgent.getInput("configFilePath");
-    const overrideConfig = this.buildAgent.getListInput("overrideConfig");
+    const configFilePath = this.buildAgent.getInput("configFilePath", false);
+    const overrideConfig = this.buildAgent.getListInput("overrideConfig", false);
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
     const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
     const updateProjectFiles = this.buildAgent.getBooleanInput("updateProjectFiles");
@@ -138,7 +138,7 @@ class GitVersionTool extends DotnetTool {
     }
     if (updateAssemblyInfo) {
       builder.addArgument("/updateassemblyinfo");
-      if (updateAssemblyInfoFilename?.length > 0) {
+      if (updateAssemblyInfoFilename) {
         if (await this.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
           builder.addArgument(updateAssemblyInfoFilename);
         } else {
