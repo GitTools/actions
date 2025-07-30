@@ -78,7 +78,7 @@ steps:
 
 ### Example 4
 
-Install the latest GitVersion 6 version even it there is a cached version matching the versionSpec.
+Install the latest GitVersion 6 version even if there is a cached version matching the versionSpec.
 
 ```yaml
 steps:

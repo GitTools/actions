@@ -49,7 +49,7 @@ steps:
 
 ### Example 3
 
-Install the latest GitReleaseManager 0.20.x version even it there is a cached version matching the versionSpec.
+Install the latest GitReleaseManager 0.20.x version even if there is a cached version matching the versionSpec.
 
 ```yaml
 steps:
