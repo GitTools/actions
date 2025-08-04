@@ -232,7 +232,7 @@ export abstract class DotnetTool implements IDotnetTool {
         const result = await this.execute('dotnet', builder.build())
 
         // Each line of the output starts with either E (enabled) or D (disabled), followed by a space and index url.
-        const nugetSources = [...(result.stdout ?? '').matchAll(/^E (?<index>.+)/gm)].map(m => m.groups?.index ?? '').filter(s => !!s)
+        const nugetSources = [...(result.stdout ?? '').matchAll(/^E (?<index>.+)/gm)].map(m => m.groups!.index)
 
         if (!nugetSources.length) {
             this.buildAgent.error('Failed to fetch an enabled package source for dotnet.')
@@ -242,10 +242,7 @@ export abstract class DotnetTool implements IDotnetTool {
         const sources: string[] = []
         for (const nugetSource of nugetSources) {
             // Fetch the nuget source index to obtain the query service
-            const nugetIndex = await fetch(nugetSource).catch((e: { cause: { message: string | undefined } | undefined }) => {
-                this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
-                return Response.error()
-            })
+            const nugetIndex = await fetch(nugetSource)
             if (!nugetIndex?.ok) {
                 this.buildAgent.warn(`Failed to fetch data from NuGet source ${nugetSource}.`)
                 continue
@@ -265,15 +262,11 @@ export abstract class DotnetTool implements IDotnetTool {
     }
 
     private async queryVersionsFromNugetSource(serviceUrl: string, toolName: string, includePrerelease: boolean): Promise<string[]> {
-        this.buildAgent.debug(`Fetching ${toolName} versions from source ${serviceUrl}`)
         const toolNameParam = encodeURIComponent(toolName.toLowerCase())
         const prereleaseParam = includePrerelease ? 'true' : 'false'
         const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
 
-        const response = await fetch(downloadPath).catch((e: { cause: { message: string | undefined } | undefined }) => {
-            this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
-            return Response.error()
-        })
+        const response = await fetch(downloadPath)
 
         if (!response || !response.ok) {
             this.buildAgent.warn(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : 'unknown'}`)
@@ -281,10 +274,9 @@ export abstract class DotnetTool implements IDotnetTool {
         }
         const { data } = (await response.json()) as NugetVersions
 
-        const versions = data?.[0]?.versions?.map(x => x.version) ?? []
+        const versions = data[0].versions.map(x => x.version)
 
-        this.buildAgent.debug(`Found ${versions.length} versions: ${versions.join(', ')}`)
-        return versions
+        return versions ?? []
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
