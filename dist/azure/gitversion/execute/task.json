@@ -71,6 +71,7 @@
       "name": "configFilePath",
       "type": "filePath",
       "label": "Configuration file",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)"
     },
