@@ -6,7 +6,7 @@ import * as path from 'node:path'
 import * as semver from 'semver'
 import { type IBuildAgent, type ExecResult } from '@agents/common'
 import { ISettingsProvider } from './settings'
-import { NugetServiceIndex, NugetServiceType, NugetVersions } from './models'
+import { NugetVersions } from './models'
 import { ArgumentsBuilder } from './arguments-builder'
 
 export interface IDotnetTool {
@@ -18,6 +18,8 @@ export interface IDotnetTool {
 }
 
 export abstract class DotnetTool implements IDotnetTool {
+    private static readonly nugetRoot: string = 'https://azuresearch-usnc.nuget.org/query'
+
     constructor(protected buildAgent: IBuildAgent) {}
 
     abstract get packageName(): string
@@ -226,81 +228,28 @@ export abstract class DotnetTool implements IDotnetTool {
         return path.normalize(workDir)
     }
 
-    private async getQueryServices(): Promise<string[]> {
-        // Use dotnet tool to get the first enabled nuget source.
-        const builder = new ArgumentsBuilder().addArgument('nuget').addArgument('list').addArgument('source').addKeyValue('format', 'short')
-        const result = await this.execute('dotnet', builder.build())
-
-        // Each line of the output starts with either E (enabled) or D (disabled), followed by a space and index url.
-        const nugetSources = [...(result.stdout ?? '').matchAll(/^E (?<index>.+)/gm)].map(m => m.groups?.index ?? '').filter(s => !!s)
-
-        if (!nugetSources.length) {
-            this.buildAgent.error('Failed to fetch an enabled package source for dotnet.')
-            return []
-        }
-
-        const sources: string[] = []
-        for (const nugetSource of nugetSources) {
-            // Fetch the nuget source index to obtain the query service
-            const nugetIndex = await fetch(nugetSource).catch((e: { cause: { message: string | undefined } | undefined }) => {
-                this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
-                return Response.error()
-            })
-            if (!nugetIndex?.ok) {
-                this.buildAgent.warn(`Failed to fetch data from NuGet source ${nugetSource}.`)
-                continue
-            }
-
-            // Parse the nuget service index and get the (first / primary) query service
-            const resources = ((await nugetIndex.json()) as NugetServiceIndex)?.resources
-            const serviceUrl = resources?.find(s => s['@type'].startsWith(NugetServiceType.SearchQueryService))?.['@id']
-
-            if (!serviceUrl) {
-                this.buildAgent.warn(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${nugetSource}`)
-                continue
-            }
-            sources.push(serviceUrl)
-        }
-        return sources
-    }
-
-    private async queryVersionsFromNugetSource(serviceUrl: string, toolName: string, includePrerelease: boolean): Promise<string[]> {
-        this.buildAgent.debug(`Fetching ${toolName} versions from source ${serviceUrl}`)
-        const toolNameParam = encodeURIComponent(toolName.toLowerCase())
-        const prereleaseParam = includePrerelease ? 'true' : 'false'
-        const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
-
-        const response = await fetch(downloadPath).catch((e: { cause: { message: string | undefined } | undefined }) => {
-            this.buildAgent.warn(e.cause?.message ?? 'An unknown error occurred while fetching data')
-            return Response.error()
-        })
-
-        if (!response || !response.ok) {
-            this.buildAgent.warn(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : 'unknown'}`)
-            return []
-        }
-        const { data } = (await response.json()) as NugetVersions
-
-        const versions = data?.[0]?.versions?.map(x => x.version) ?? []
-
-        this.buildAgent.debug(`Found ${versions.length} versions: ${versions.join(', ')}`)
-        return versions
-    }
-
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
         this.buildAgent.info(
             `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
         )
 
-        const queryServices = await this.getQueryServices()
-        if (!queryServices.length) {
+        const toolNameParam = encodeURIComponent(toolName.toLowerCase())
+        const prereleaseParam = includePrerelease ? 'true' : 'false'
+        const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`
+
+        const response = await fetch(downloadPath)
+
+        if (!response || !response.ok) {
+            this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : 'unknown'}`)
             return null
         }
 
-        let versions = (
-            await Promise.all(queryServices.map(async service => await this.queryVersionsFromNugetSource(service, toolName, includePrerelease)))
-        ).flat()
-        versions = [...new Set(versions)] // remove duplicates
+        const { data } = (await response.json()) as NugetVersions
+
+        const versions = data[0].versions.map(x => x.version)
+        if (!versions || !versions.length) {
+            return null
+        }
 
         this.buildAgent.debug(`got versions: ${versions.join(', ')}`)
 

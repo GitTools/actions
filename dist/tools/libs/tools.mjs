@@ -4,22 +4,6 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { s as semverExports } from './semver.mjs';
 
-var NugetServiceType = /* @__PURE__ */ ((NugetServiceType2) => {
-  NugetServiceType2["Catalog"] = "Catalog";
-  NugetServiceType2["PackageBaseAddress"] = "PackageBaseAddress";
-  NugetServiceType2["PackageDetailsUriTemplate"] = "PackageDetailsUriTemplate";
-  NugetServiceType2["PackagePublish"] = "PackagePublish";
-  NugetServiceType2["ReadmeUriTemplate"] = "ReadmeUriTemplate";
-  NugetServiceType2["RegistrationsBaseUrl"] = "RegistrationsBaseUrl";
-  NugetServiceType2["ReportAbuseUriTemplate"] = "ReportAbuseUriTemplate";
-  NugetServiceType2["RepositorySignatures"] = "RepositorySignatures";
-  NugetServiceType2["SearchAutocompleteService"] = "SearchAutocompleteService";
-  NugetServiceType2["SearchQueryService"] = "SearchQueryService";
-  NugetServiceType2["SymbolPackagePublish"] = "SymbolPackagePublish";
-  NugetServiceType2["VulnerabilityInfo"] = "VulnerabilityInfo";
-  return NugetServiceType2;
-})(NugetServiceType || {});
-
 class ArgumentsBuilder {
   args = [];
   isWindows = os.platform() === "win32";
@@ -183,6 +167,7 @@ class DotnetTool {
   constructor(buildAgent) {
     this.buildAgent = buildAgent;
   }
+  static nugetRoot = "https://azuresearch-usnc.nuget.org/query";
   disableTelemetry() {
     this.buildAgent.info("Disable Telemetry");
     this.buildAgent.setVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "true");
@@ -333,62 +318,23 @@ class DotnetTool {
     }
     return path.normalize(workDir);
   }
-  async getQueryServices() {
-    const builder = new ArgumentsBuilder().addArgument("nuget").addArgument("list").addArgument("source").addKeyValue("format", "short");
-    const result = await this.execute("dotnet", builder.build());
-    const nugetSources = [...(result.stdout ?? "").matchAll(/^E (?<index>.+)/gm)].map((m) => m.groups?.index ?? "").filter((s) => !!s);
-    if (!nugetSources.length) {
-      this.buildAgent.error("Failed to fetch an enabled package source for dotnet.");
-      return [];
-    }
-    const sources = [];
-    for (const nugetSource of nugetSources) {
-      const nugetIndex = await fetch(nugetSource).catch((e) => {
-        this.buildAgent.warn(e.cause?.message ?? "An unknown error occurred while fetching data");
-        return Response.error();
-      });
-      if (!nugetIndex?.ok) {
-        this.buildAgent.warn(`Failed to fetch data from NuGet source ${nugetSource}.`);
-        continue;
-      }
-      const resources = (await nugetIndex.json())?.resources;
-      const serviceUrl = resources?.find((s) => s["@type"].startsWith(NugetServiceType.SearchQueryService))?.["@id"];
-      if (!serviceUrl) {
-        this.buildAgent.warn(`Could not find a ${NugetServiceType.SearchQueryService} in NuGet source ${nugetSource}`);
-        continue;
-      }
-      sources.push(serviceUrl);
-    }
-    return sources;
-  }
-  async queryVersionsFromNugetSource(serviceUrl, toolName, includePrerelease) {
-    this.buildAgent.debug(`Fetching ${toolName} versions from source ${serviceUrl}`);
-    const toolNameParam = encodeURIComponent(toolName.toLowerCase());
-    const prereleaseParam = includePrerelease ? "true" : "false";
-    const downloadPath = `${serviceUrl}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
-    const response = await fetch(downloadPath).catch((e) => {
-      this.buildAgent.warn(e.cause?.message ?? "An unknown error occurred while fetching data");
-      return Response.error();
-    });
-    if (!response || !response.ok) {
-      this.buildAgent.warn(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
-      return [];
-    }
-    const { data } = await response.json();
-    const versions = data?.[0]?.versions?.map((x) => x.version) ?? [];
-    this.buildAgent.debug(`Found ${versions.length} versions: ${versions.join(", ")}`);
-    return versions;
-  }
   async queryLatestMatch(toolName, versionSpec, includePrerelease) {
     this.buildAgent.info(
       `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`
     );
-    const queryServices = await this.getQueryServices();
-    if (!queryServices.length) {
+    const toolNameParam = encodeURIComponent(toolName.toLowerCase());
+    const prereleaseParam = includePrerelease ? "true" : "false";
+    const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
+    const response = await fetch(downloadPath);
+    if (!response || !response.ok) {
+      this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
       return null;
     }
-    let versions = (await Promise.all(queryServices.map(async (service) => await this.queryVersionsFromNugetSource(service, toolName, includePrerelease)))).flat();
-    versions = [...new Set(versions)];
+    const { data } = await response.json();
+    const versions = data[0].versions.map((x) => x.version);
+    if (!versions || !versions.length) {
+      return null;
+    }
     this.buildAgent.debug(`got versions: ${versions.join(", ")}`);
     const version = semverExports.maxSatisfying(versions, versionSpec, { includePrerelease });
     if (version) {
