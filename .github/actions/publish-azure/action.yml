@@ -29,7 +29,7 @@ runs:
         id: publish-azure
         shell: pwsh
         run: |
-          $date = Get-Date -format "yyMMddHH"
+          $date = (Get-Date -format "yyMMddHHmm").Substring(0, 9)
           $mode = "${{ inputs.mode }}"
           $major = "${{ inputs.major }}"
           $minor = "${{ inputs.minor }}"

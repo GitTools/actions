@@ -1,6 +1,6 @@
-# Execute GitVersion Task (gitversion/execute) usage Examples
+# Execute GitVersion Task (gitversion-execute) usage Examples
 
-Find out how to use the **gitversion/execute** task using the examples below.
+Find out how to use the **gitversion-execute** task using the examples below.
 
 Note that if the pipeline is set up to use a shallow git fetch mode the GitVersion Execute task will fail. It is required to use `fetchDepth: 0`.
 You must also run the GitVersion Setup step before the Execute step:
@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion/setup@4.0.1
+  - task: gitversion-setup@4.0.1
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.3.x'
@@ -120,9 +120,9 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
@@ -136,9 +136,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as reference for output values
 
@@ -164,9 +164,9 @@ branches:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -182,9 +182,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -201,9 +201,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -219,9 +219,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -239,9 +239,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -257,9 +257,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/execute@4.0.1
+  - task: gitversion-execute@4.0.1
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -292,12 +292,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@4.0.1
+      - task: gitversion-setup@4.0.1
         displayName: Install GitVersion
         inputs:
           versionSpec: '6.3.x'
 
-      - task: gitversion/execute@4.0.1
+      - task: gitversion-execute@4.0.1
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -362,12 +362,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion/setup@4.0.1
+      - task: gitversion-setup@4.0.1
         displayName: Install GitVersion
         inputs:
           versionSpec: '6.3.x'
 
-      - task: gitversion/execute@4.0.1
+      - task: gitversion-execute@4.0.1
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -453,12 +453,12 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion/setup@4.0.1
+          - task: gitversion-setup@4.0.1
             displayName: Install GitVersion
             inputs:
               versionSpec: '6.3.x'
 
-          - task: gitversion/execute@4.0.1
+          - task: gitversion-execute@4.0.1
             displayName: Determine Version
             name: version_step # step id used as a reference for output values
             inputs:

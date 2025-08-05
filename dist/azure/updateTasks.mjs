@@ -4,7 +4,7 @@ import { glob } from 'glob'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
-import tasks from './tasks.json' assert { type: 'json' }
+import tasks from './tasks.json' with { type: 'json' }
 
 // Function to read JSON file
 const readJsonFile = async (filePath) => {
@@ -27,9 +27,11 @@ const updateJsonFields = async (filePath, versionStr, mode) => {
 
     const version = versionStr.split('.').map(Number)
     const id = mode === 'prod' ? tasks[grandParentDir][parentDir].prod : tasks[grandParentDir][parentDir].test
+    const friendlyNameSuffix = mode === 'prod' ? "" : " (Test)"
     let updates = {
         id: id,
-        minimumAgentVersion: "3.224.0",
+        friendlyName: `${data.friendlyName}${friendlyNameSuffix}`,
+        minimumAgentVersion: "4.244.1",
         version: {
             Major: version[0],
             Minor: version[1],

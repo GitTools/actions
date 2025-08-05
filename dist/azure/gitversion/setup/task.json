@@ -12,7 +12,7 @@
     "Minor": 0,
     "Patch": 1
   },
-  "minimumAgentVersion": "3.224.0",
+  "minimumAgentVersion": "4.244.1",
   "execution": {
     "Node20_1": {
       "target": "main.mjs",
@@ -20,7 +20,7 @@
       "workingDirectory": "."
     }
   },
-  "instanceNameFormat": "gitversion/setup",
+  "instanceNameFormat": "gitversion-setup",
   "inputs": [
     {
       "name": "versionSpec",
