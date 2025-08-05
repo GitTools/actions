@@ -122,7 +122,7 @@ class GitVersionTool extends DotnetTool {
       builder.addArgument("/nonormalize");
     }
     if (configFilePath) {
-      if (await this.isValidInputFile("configFilePath", configFilePath)) {
+      if (await this.isValidInputFile(workDir, configFilePath)) {
         builder.addArgument("/config").addArgument(configFilePath);
       } else {
         throw new Error(`GitVersion configuration file not found at ${configFilePath}`);
@@ -139,7 +139,7 @@ class GitVersionTool extends DotnetTool {
     if (updateAssemblyInfo) {
       builder.addArgument("/updateassemblyinfo");
       if (updateAssemblyInfoFilename) {
-        if (await this.isValidInputFile("updateAssemblyInfoFilename", updateAssemblyInfoFilename)) {
+        if (await this.isValidInputFile(workDir, updateAssemblyInfoFilename)) {
           builder.addArgument(updateAssemblyInfoFilename);
         } else {
           throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`);

@@ -33,3 +33,5 @@ dist-ssr
 .debug/
 
 junit-report.xml
+
+src/__tests__/test.env

@@ -103,7 +103,7 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (configFilePath) {
-            if (await this.isValidInputFile('configFilePath', configFilePath)) {
+            if (await this.isValidInputFile(workDir, configFilePath)) {
                 builder.addArgument('/config').addArgument(configFilePath)
             } else {
                 throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
@@ -124,7 +124,7 @@ export class GitVersionTool extends DotnetTool {
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
             if (updateAssemblyInfoFilename) {
-                if (await this.isValidInputFile('updateAssemblyInfoFilename', updateAssemblyInfoFilename)) {
+                if (await this.isValidInputFile(workDir, updateAssemblyInfoFilename)) {
                     builder.addArgument(updateAssemblyInfoFilename)
                 } else {
                     throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`)
