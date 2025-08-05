@@ -293,13 +293,18 @@ class DotnetTool {
     args = ["--roll-forward Major", ...args];
     return await this.execute(toolPath, args);
   }
-  async isValidInputFile(input, file) {
-    return this.filePathSupplied(input) && await this.buildAgent.fileExists(file);
-  }
-  filePathSupplied(file) {
-    const pathValue = path.resolve(this.buildAgent.getInput(file) || "");
-    const repoRoot = this.buildAgent.sourceDir;
-    return pathValue !== repoRoot;
+  async isValidInputFile(workDir, file) {
+    if (!file) {
+      this.buildAgent.debug("No file path supplied");
+      return false;
+    }
+    if (path.isAbsolute(file)) {
+      this.buildAgent.debug("File path is absolute");
+      return await this.buildAgent.fileExists(file);
+    }
+    const filePath = path.resolve(workDir, file);
+    this.buildAgent.debug(`Resolved file path: ${filePath}`);
+    return await this.buildAgent.fileExists(filePath);
   }
   async getRepoPath(targetPath) {
     const srcDir = this.buildAgent.sourceDir || ".";

@@ -200,14 +200,18 @@ export abstract class DotnetTool implements IDotnetTool {
         return await this.execute(toolPath, args)
     }
 
-    protected async isValidInputFile(input: string, file: string): Promise<boolean> {
-        return this.filePathSupplied(input) && (await this.buildAgent.fileExists(file))
-    }
-
-    protected filePathSupplied(file: string): boolean {
-        const pathValue = path.resolve(this.buildAgent.getInput(file) || '')
-        const repoRoot = this.buildAgent.sourceDir
-        return pathValue !== repoRoot
+    protected async isValidInputFile(workDir: string, file: string): Promise<boolean> {
+        if (!file) {
+            this.buildAgent.debug('No file path supplied')
+            return false
+        }
+        if (path.isAbsolute(file)) {
+            this.buildAgent.debug('File path is absolute')
+            return await this.buildAgent.fileExists(file)
+        }
+        const filePath = path.resolve(workDir, file)
+        this.buildAgent.debug(`Resolved file path: ${filePath}`)
+        return await this.buildAgent.fileExists(filePath)
     }
 
     protected async getRepoPath(targetPath: string): Promise<string> {
