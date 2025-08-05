@@ -1,6 +1,6 @@
-# Command GitVersion Task (gitversion/command) usage Examples
+# Command GitVersion Task (gitversion-command) usage Examples
 
-Find out how to use the **gitversion/command** task using the examples below.
+Find out how to use the **gitversion-command** task using the examples below.
 
 Note that if the pipeline is set up to use a shallow git fetch mode the GitVersion Command task will fail. It is required to use `fetchDepth: 0`.
 You must also run the GitVersion Setup step before the Command step:
@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion/setup@4.0.1
+  - task: gitversion-setup@4.0.1
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.3.x'
@@ -50,9 +50,9 @@ arguments:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/command@4.0.1
+  - task: gitversion-command@4.0.1
     displayName: Display GitVersion config
     inputs:
       arguments: '/showConfig'
@@ -67,9 +67,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/command@4.0.1
+  - task: gitversion-command@4.0.1
     displayName: Output the FullSemVer variable
     inputs:
       arguments: '/showvariable FullSemVer'
@@ -84,9 +84,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion/setup@4.0.1 task omitted for brevity.
+  # gitversion-setup@4.0.1 task omitted for brevity.
 
-  - task: gitversion/command@4.0.1
+  - task: gitversion-command@4.0.1
     displayName: Output the formatted version
     inputs:
       arguments: '/format {Major}.{Minor}' # any Output Variable can be used here

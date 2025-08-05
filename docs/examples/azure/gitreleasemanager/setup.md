@@ -1,6 +1,6 @@
-# Setup GitReleaseManager Task (gitreleasemanager/setup) Usage Examples
+# Setup GitReleaseManager Task (gitreleasemanager-setup) Usage Examples
 
-Find out how to use the **gitreleasemanager/setup** task using the examples below.
+Find out how to use the **gitreleasemanager-setup** task using the examples below.
 
 > The examples use version _4.0.1_ of the GitReleaseManager Setup task.  It is recommended to use the latest released version in your own workflows.
 
@@ -29,7 +29,7 @@ Install the latest GitReleaseManager 0.20.x version.
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@4.0.1
+  - task: gitreleasemanager-setup@4.0.1
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.20.x'
@@ -41,7 +41,7 @@ Install specific GitReleaseManager version 0.20.0.
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@4.0.1
+  - task: gitreleasemanager-setup@4.0.1
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.20.0'
@@ -53,7 +53,7 @@ Install the latest GitReleaseManager 0.20.x version even if there is a cached ve
 
 ```yaml
 steps:
-  - task: gitreleasemanager/setup@4.0.1
+  - task: gitreleasemanager-setup@4.0.1
     displayName: Install GitReleaseManager
     inputs:
       versionSpec: '0.20.x'
