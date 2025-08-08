@@ -65,7 +65,7 @@
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
     "simple-git": "^3.28.0",
-    "tfx-cli": "^0.21.1",
+    "tfx-cli": "^0.21.3",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
     "vite": "^7.1.1",
