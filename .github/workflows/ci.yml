@@ -30,12 +30,12 @@ jobs:
         os: [ windows-2025, ubuntu-24.04, macos-15 ]
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       with:
         fetch-depth: 0
         token: ${{ secrets.PUSH_GITHUB_TOKEN }}
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       if: github.event_name == 'pull_request'
       with:
         fetch-depth: 0
