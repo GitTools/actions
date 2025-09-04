@@ -147,7 +147,7 @@ steps:
 Example contents of **GitVersion.yml**:
 
 ```yaml
-mode: Mainline
+mode: ContinuousDelivery
 branches:
   master:
     regex: ^latest$
