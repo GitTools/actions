@@ -35,48 +35,48 @@ describe('build-agent/local', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.debug('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`[debug] test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`[debug] test${os.EOL}`)
     })
 
     it('should log info', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.info('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`[info] - test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`[info] - test${os.EOL}`)
     })
 
     it('should log warn', () => {
         const spy = vi.spyOn(process.stderr, 'write')
 
         agent.warn('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`[warn] - test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`[warn] - test${os.EOL}`)
     })
 
     it('should log error', () => {
         const spy = vi.spyOn(process.stderr, 'write')
 
         agent.error('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`[error] - test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`[error] - test${os.EOL}`)
     })
 
     it('should set succeeded', () => {
         const spy = vi.spyOn(agent, 'info')
 
         agent.setSucceeded('test', true)
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('setSucceeded - test - true')
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith('setSucceeded - test - true')
     })
 
     it('should set failed', () => {
         const spy = vi.spyOn(agent, 'error')
 
         agent.setFailed('test', true)
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('setFailed - test - true')
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith('setFailed - test - true')
     })
 
     it('should set environment variable', () => {
@@ -88,15 +88,15 @@ describe('build-agent/local', () => {
         const spy = vi.spyOn(agent, 'debug')
 
         agent.setOutput('test', 'value')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('setOutput - test - value')
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith('setOutput - test - value')
     })
 
     it('should update build number', () => {
         const spy = vi.spyOn(agent, 'debug')
 
         agent.updateBuildNumber('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith('updateBuildNumber - test')
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith('updateBuildNumber - test')
     })
 })

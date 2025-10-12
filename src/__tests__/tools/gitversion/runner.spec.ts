@@ -116,7 +116,7 @@ describe('GitVersion Runner', () => {
 
             // Verify updateBuildNumber was called with the expected expanded format
             expect(updateBuildNumberSpy).toHaveBeenCalled()
-            expect(updateBuildNumberSpy).toHaveBeenCalledWith('v1.2.3')
+            expect(updateBuildNumberSpy).toHaveBeenCalledExactlyOnceWith('v1.2.3')
         })
 
         it.sequential('should output Sha variable', async () => {

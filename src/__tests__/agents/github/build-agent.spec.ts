@@ -38,32 +38,32 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.debug('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::debug::test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::debug::test${os.EOL}`)
     })
 
     it('should log info', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.info('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`test${os.EOL}`)
     })
 
     it('should log warn', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.warn('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::warning::test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::warning::test${os.EOL}`)
     })
 
     it('should log error', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.error('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::error::test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::error::test${os.EOL}`)
     })
 
     it('should set succeeded', () => {
@@ -76,8 +76,8 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
 
         agent.setFailed('test')
         expect(process.exitCode).toBe(1)
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::error::test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::error::test${os.EOL}`)
     })
 
     it('should set output', () => {
@@ -86,7 +86,7 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
         agent.setOutput('name', 'value')
 
         expect(spy).toHaveBeenCalledTimes(2)
-        expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::set-output name=name::value${os.EOL}`)
 
         vi.mock('fs')
         vi.mock('crypto')
@@ -99,18 +99,18 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
 
         agent.setOutput('name', 'value')
 
-        expect(existsSpy).toHaveBeenCalledTimes(1)
-        expect(existsSpy).toHaveBeenCalledWith('test.env')
+        expect(existsSpy).toHaveBeenCalledExactlyOnceWith()
+        expect(existsSpy).toHaveBeenCalledExactlyOnceWith('test.env')
 
-        expect(cryptoSpy).toHaveBeenCalledTimes(1)
+        expect(cryptoSpy).toHaveBeenCalledExactlyOnceWith()
 
         const expected = prepareKeyValueMessage('name', 'value')
 
-        expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledExactlyOnceWith()
+        expect(appendFileSyncSpy).toHaveBeenCalledExactlyOnceWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
 
         expect(spy).toHaveBeenCalledTimes(2)
-        expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::set-output name=name::value${os.EOL}`)
     })
 
     it('should set variable', () => {
@@ -118,8 +118,8 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
 
         agent.setVariable('name', 'value')
         expect(process.env['name']).toBe('value')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::set-env name=name::value${os.EOL}`)
 
         vi.mock('fs')
         vi.mock('crypto')
@@ -133,25 +133,25 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
         agent.setVariable('name', 'value')
 
         expect(process.env['name']).toBe('value')
-        expect(existsSpy).toHaveBeenCalledTimes(1)
-        expect(existsSpy).toHaveBeenCalledWith('test.env')
+        expect(existsSpy).toHaveBeenCalledExactlyOnceWith()
+        expect(existsSpy).toHaveBeenCalledExactlyOnceWith('test.env')
 
-        expect(cryptoSpy).toHaveBeenCalledTimes(1)
+        expect(cryptoSpy).toHaveBeenCalledExactlyOnceWith()
 
         const expected = prepareKeyValueMessage('name', 'value')
 
-        expect(appendFileSyncSpy).toHaveBeenCalledTimes(1)
-        expect(appendFileSyncSpy).toHaveBeenCalledWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
+        expect(appendFileSyncSpy).toHaveBeenCalledExactlyOnceWith()
+        expect(appendFileSyncSpy).toHaveBeenCalledExactlyOnceWith('test.env', `${expected}${os.EOL}`, { encoding: 'utf8' })
 
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::set-env name=name::value${os.EOL}`)
     })
 
     it('should update build number', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.updateBuildNumber('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`::debug::updateBuildNumber - test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`::debug::updateBuildNumber - test${os.EOL}`)
     })
 })

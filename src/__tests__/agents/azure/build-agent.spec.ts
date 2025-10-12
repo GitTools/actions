@@ -35,32 +35,32 @@ describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.debug('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`##vso[task.debug]test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`##vso[task.debug]test${os.EOL}`)
     })
 
     it('should log info', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.info('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`test${os.EOL}`)
     })
 
     it('should log warn', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.warn('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`##vso[task.issue type=warning;]test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`##vso[task.issue type=warning;]test${os.EOL}`)
     })
 
     it('should log error', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.error('test')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`##vso[task.issue type=error;]test${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`##vso[task.issue type=error;]test${os.EOL}`)
     })
 
     it('should set succeeded', () => {
@@ -70,16 +70,16 @@ describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
 
         agent.setSucceeded('test', true)
 
-        expect(spyDebug).toHaveBeenCalledTimes(1)
-        expect(spyDebug).toHaveBeenCalledWith('task result: Succeeded')
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith()
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith('task result: Succeeded')
 
-        expect(spyInfo).toHaveBeenCalledTimes(1)
-        expect(spyInfo).toHaveBeenCalledWith('test')
+        expect(spyInfo).toHaveBeenCalledExactlyOnceWith()
+        expect(spyInfo).toHaveBeenCalledExactlyOnceWith('test')
 
         expect(spyWrite).toHaveBeenCalledTimes(3)
 
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.debug]task result: Succeeded${os.EOL}`)
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.complete result=Succeeded;done=true;]test${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[task.debug]task result: Succeeded${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[task.complete result=Succeeded;done=true;]test${os.EOL}`)
     })
 
     it('should set failed', () => {
@@ -89,17 +89,17 @@ describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
 
         agent.setFailed('test', true)
 
-        expect(spyDebug).toHaveBeenCalledTimes(1)
-        expect(spyDebug).toHaveBeenCalledWith('task result: Failed')
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith()
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith('task result: Failed')
 
-        expect(spyError).toHaveBeenCalledTimes(1)
-        expect(spyError).toHaveBeenCalledWith('test')
+        expect(spyError).toHaveBeenCalledExactlyOnceWith()
+        expect(spyError).toHaveBeenCalledExactlyOnceWith('test')
 
         expect(spyWrite).toHaveBeenCalledTimes(3)
 
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.debug]task result: Failed${os.EOL}`)
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.issue type=error;]test${os.EOL}`)
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[task.complete result=Failed;done=true;]test${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[task.debug]task result: Failed${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[task.issue type=error;]test${os.EOL}`)
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[task.complete result=Failed;done=true;]test${os.EOL}`)
     })
 
     it('should set environment variable', () => {
@@ -107,16 +107,16 @@ describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
 
         agent.setVariable('test', 'value')
         expect(process.env['TEST']).toBe('value')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`##vso[task.setvariable variable=test;isOutput=false;issecret=false;]value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`##vso[task.setvariable variable=test;isOutput=false;issecret=false;]value${os.EOL}`)
     })
 
     it('should set output', () => {
         const spy = vi.spyOn(process.stdout, 'write')
 
         agent.setOutput('test', 'value')
-        expect(spy).toHaveBeenCalledTimes(1)
-        expect(spy).toHaveBeenCalledWith(`##vso[task.setvariable variable=test;isOutput=true;issecret=false;]value${os.EOL}`)
+        expect(spy).toHaveBeenCalledExactlyOnceWith()
+        expect(spy).toHaveBeenCalledExactlyOnceWith(`##vso[task.setvariable variable=test;isOutput=true;issecret=false;]value${os.EOL}`)
     })
 
     it('should update build number', () => {
@@ -124,8 +124,8 @@ describe.skipIf(isAzurePipelinesAgent())('build-agent/azure', () => {
         const spyWrite = vi.spyOn(process.stdout, 'write')
 
         agent.updateBuildNumber('test')
-        expect(spyDebug).toHaveBeenCalledTimes(1)
-        expect(spyDebug).toHaveBeenCalledWith('build number: test')
-        expect(spyWrite).toHaveBeenCalledWith(`##vso[build.updatebuildnumber]test${os.EOL}`)
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith()
+        expect(spyDebug).toHaveBeenCalledExactlyOnceWith('build number: test')
+        expect(spyWrite).toHaveBeenCalledExactlyOnceWith(`##vso[build.updatebuildnumber]test${os.EOL}`)
     })
 })

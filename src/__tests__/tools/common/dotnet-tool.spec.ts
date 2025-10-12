@@ -242,9 +242,9 @@ describe('DotnetTool', () => {
 
             tool.disableTelemetry()
 
-            expect(mockInfo).toHaveBeenCalledWith('Disable Telemetry')
-            expect(mockSetVariable).toHaveBeenCalledWith('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
-            expect(mockSetVariable).toHaveBeenCalledWith('DOTNET_NOLOGO', 'true')
+            expect(mockInfo).toHaveBeenCalledExactlyOnceWith('Disable Telemetry')
+            expect(mockSetVariable).toHaveBeenCalledExactlyOnceWith('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
+            expect(mockSetVariable).toHaveBeenCalledExactlyOnceWith('DOTNET_NOLOGO', 'true')
         })
     })
 
