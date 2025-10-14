@@ -37,5 +37,5 @@ junit-report.xml
 
 src/__tests__/test.env
 
-# Unit test created
+# Unit test files
 test.env

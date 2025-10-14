@@ -33,7 +33,6 @@ export class Runner extends RunnerBase {
     private async execute(): Promise<ExecResult> {
         return this.safeExecute(async () => {
             const result = await this.tool.executeJson()
-            this.buildAgent.debug('Parsing GitVersion output')
             return this.processGitVersionOutput(result)
         }, 'GitVersion executed successfully')
     }
@@ -43,6 +42,8 @@ export class Runner extends RunnerBase {
     }
 
     private processGitVersionOutput(result: ExecResult): ExecResult {
+        this.buildAgent.debug('Parsing GitVersion output')
+
         // Return error to be handled by calling function
         if (result.code !== 0) {
             return result

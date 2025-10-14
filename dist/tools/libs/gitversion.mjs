@@ -203,7 +203,6 @@ class Runner extends RunnerBase {
   async execute() {
     return this.safeExecute(async () => {
       const result = await this.tool.executeJson();
-      this.buildAgent.debug("Parsing GitVersion output");
       return this.processGitVersionOutput(result);
     }, "GitVersion executed successfully");
   }
@@ -211,6 +210,7 @@ class Runner extends RunnerBase {
     return this.safeExecute(async () => await this.tool.executeCommand(), "GitVersion executed successfully");
   }
   processGitVersionOutput(result) {
+    this.buildAgent.debug("Parsing GitVersion output");
     if (result.code !== 0) {
       return result;
     }

@@ -44,7 +44,7 @@ You can find the compatibility matrix in the [versions.md](docs/versions.md) fil
 
 ### Prerequisites
 
-1. **Linux** - Any UNIX compatible OS
+1. **Linux** - Required to build and run
 2. **Node.js** - Latest LTS version recommended
 3. **.NET SDK** - Version 6.0 or later required for GitVersion and GitReleaseManager tools
 4. **Git** - Latest version recommended
@@ -71,6 +71,12 @@ If developing on Windows, please use WSL as it's likely you will run issues
    - For local development: `npm run build:local`
    - For Azure Pipelines: `npm run build:azure`
    - For GitHub Actions: `npm run build:github`
+
+4. Test the project:
+
+   ```bash
+   npm run test
+   ```
 
 ### Required Knowledge
 
