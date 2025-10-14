@@ -214,7 +214,8 @@ class Runner extends RunnerBase {
       return result;
     }
     const stdout = result.stdout;
-    if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
+    const gitVersionOutput = this.extractValidJsonObject(stdout);
+    if (gitVersionOutput === null) {
       const errorMessage = "GitVersion output is not valid JSON, see output details";
       this.buildAgent.debug(errorMessage);
       this.buildAgent.setFailed(errorMessage, true);
@@ -223,12 +224,47 @@ class Runner extends RunnerBase {
         error: new Error(errorMessage)
       };
     }
-    const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
-    const gitVersionOutput = JSON.parse(jsonOutput);
     this.tool.writeGitVersionToAgent(gitVersionOutput);
     this.tool.updateBuildNumber();
     this.buildAgent.setSucceeded("GitVersion executed successfully", true);
     return result;
+  }
+  extractValidJsonObject(input) {
+    const decodePass = 1;
+    const allStartOfJsonIndexes = this.allIndexesOf(input, "{");
+    let startPos = allStartOfJsonIndexes.length - 1;
+    const endOfJsonIndex = input.lastIndexOf("}") + 1;
+    let currSearchString = input.substring(allStartOfJsonIndexes[startPos], endOfJsonIndex);
+    let resultJson = null;
+    while (resultJson === null) {
+      try {
+        this.buildAgent.debug(`Starting JSON extraction at ${startPos} to ${endOfJsonIndex}`);
+        resultJson = JSON.parse(currSearchString);
+      } catch (ex) {
+        let exMessage = Error("Unable to parse exception object");
+        if (ex instanceof Error) {
+          exMessage = ex;
+        }
+        const errorMessage = `Failed to parse JSON object on pass ${decodePass}. Expanding search area from string index ${allStartOfJsonIndexes[startPos]} to ${endOfJsonIndex}
+Caught Exception: ${exMessage.message}`;
+        this.buildAgent.debug(errorMessage);
+        startPos--;
+        currSearchString = input.substring(allStartOfJsonIndexes[startPos], endOfJsonIndex);
+      }
+    }
+    return resultJson;
+  }
+  allIndexesOf(searchString, indexOf) {
+    if (indexOf.length !== 1) {
+      throw new Error("indexOf must be a single character");
+    }
+    const resultArray = [];
+    for (let i = 0; i < searchString.length; i++) {
+      if (searchString[i] === indexOf) {
+        resultArray.push(i);
+      }
+    }
+    return resultArray;
   }
 }
 

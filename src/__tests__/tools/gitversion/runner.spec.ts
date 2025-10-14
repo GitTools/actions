@@ -18,6 +18,10 @@ describe('GitVersion Runner', () => {
     const toolName = 'dotnet-gitversion'
     const versionSpec = '6.3.x'
 
+    const cleanBranchName = 'test/delete/me/if/found'
+    const jsonBranchName = 'test/delete/me/{if}/found'
+    let startBranch = 'main'
+
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
@@ -27,6 +31,9 @@ describe('GitVersion Runner', () => {
             version = await getLatestVersion('GitVersion.Tool', versionSpec)
             toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
+            startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
+
+            console.log('Started on branch: ' + startBranch)
         })
 
         beforeEach(() => {
@@ -34,6 +41,12 @@ describe('GitVersion Runner', () => {
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
+
+            simpleGit()
+                .checkout(startBranch)
+                .catch(error => {
+                    console.log(`Failed to checkout to original branch!\nError: ${error}`)
+                })
         })
 
         afterEach(() => {
@@ -46,6 +59,12 @@ describe('GitVersion Runner', () => {
             // if (fs.existsSync(baseDir)) {
             //     fs.rmSync(baseDir, { recursive: true, force: true })
             // }
+
+            simpleGit()
+                .deleteLocalBranches([cleanBranchName, jsonBranchName])
+                .catch(error => {
+                    console.log(`Failed to delete test branches!\nError: ${error}`)
+                })
 
             resetEnv(agent, '')
         })
@@ -117,6 +136,50 @@ describe('GitVersion Runner', () => {
             // Verify updateBuildNumber was called with the expected expanded format
             expect(updateBuildNumberSpy).toHaveBeenCalled()
             expect(updateBuildNumberSpy).toHaveBeenCalledWith('v1.2.3')
+        })
+
+        it.sequential('should execute GitVersion with a clean branch name containing no JSON brackets', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            await simpleGit().checkoutLocalBranch(cleanBranchName)
+
+            const result = await runner.run('execute')
+
+            //TODO: Fix test by updating git branch name for test, set to always fail for now
+            expect(result.code).toBe(0)
+            expect(result.error).toBeDefined()
+            expect(result.stdout).toBeDefined()
+            expect(result.stderr).toBeDefined()
+
+            expect(getEnv('GitVersion_Major')).toBeDefined()
+            expect(getEnv('GitVersion_Minor')).toBeDefined()
+            expect(getEnv('GitVersion_Patch')).toBeDefined()
+
+            expect(getEnv('major')).toBeDefined()
+            expect(getEnv('minor')).toBeDefined()
+            expect(getEnv('patch')).toBeDefined()
+        })
+
+        it.sequential('should execute GitVersion with a branch name containing JSON brackets', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            await simpleGit().checkoutLocalBranch(jsonBranchName)
+
+            const result = await runner.run('execute')
+
+            //TODO: Fix test by updating git branch name for test, set to always fail for now
+            expect(result.code).toBe(0)
+            expect(result.error).toBeDefined()
+            expect(result.stdout).toBeDefined()
+            expect(result.stderr).toBeDefined()
+
+            expect(getEnv('GitVersion_Major')).toBeDefined()
+            expect(getEnv('GitVersion_Minor')).toBeDefined()
+            expect(getEnv('GitVersion_Patch')).toBeDefined()
+
+            expect(getEnv('major')).toBeDefined()
+            expect(getEnv('minor')).toBeDefined()
+            expect(getEnv('patch')).toBeDefined()
         })
 
         it.sequential('should output Sha variable', async () => {

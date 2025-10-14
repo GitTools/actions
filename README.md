@@ -44,11 +44,15 @@ You can find the compatibility matrix in the [versions.md](docs/versions.md) fil
 
 ### Prerequisites
 
-1. **Node.js** - Latest LTS version recommended
-2. **.NET SDK** - Version 6.0 or later required for GitVersion and GitReleaseManager tools
-3. **Git** - Latest version recommended
+1. **Linux** - Any UNIX compatible OS
+2. **Node.js** - Latest LTS version recommended
+3. **.NET SDK** - Version 6.0 or later required for GitVersion and GitReleaseManager tools
+4. **Git** - Latest version recommended
 
 ### Development Environment Setup
+
+This project is design to be run and worked on in a Linux environment.
+If developing on Windows, please use WSL as it's likely you will run issues
 
 1. Clone the repository:
 
