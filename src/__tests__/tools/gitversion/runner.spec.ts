@@ -114,11 +114,42 @@ describe('GitVersion Runner', () => {
             expect(updateBuildNumberSpy).toHaveBeenCalledWith('v1.2.3')
         })
 
+        it.sequential('should output Sha variable', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            setInputs({
+                arguments: '/showvariable Sha'
+            })
+
+            const sha = await simpleGit().revparse(['HEAD'])
+            const result = await runner.run('command')
+
+            expect(result.code).toBe(0)
+            expect(result.stdout).toBeDefined()
+            expect(result.stdout).toContain(sha)
+        })
+
+        it.sequential('should output formatted version', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            setInputs({
+                arguments: '/format {Sha}'
+            })
+
+            const sha = await simpleGit().revparse(['HEAD'])
+            const result = await runner.run('command')
+
+            expect(result.code).toBe(0)
+            expect(result.stdout).toBeDefined()
+            expect(result.stdout).toContain(sha)
+        })
+
         it.sequential('should execute GitVersion with a clean branch name containing no JSON brackets', async () => {
             setEnv(toolPathVariable, toolPath)
             const cleanBranchName = 'test/delete/me/if/found'
 
             const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
+            console.log(`Starting branch: ${startBranch}`)
             await simpleGit().checkoutLocalBranch(cleanBranchName)
 
             const result = await runner.run('execute')
@@ -149,6 +180,7 @@ describe('GitVersion Runner', () => {
             const jsonBranchName = 'test/delete/me/{if}/found'
 
             const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
+            console.log(`Starting branch: ${startBranch}`)
             await simpleGit().checkoutLocalBranch(jsonBranchName)
 
             const result = await runner.run('execute')
@@ -172,36 +204,6 @@ describe('GitVersion Runner', () => {
             expect(getEnv('major')).toBeDefined()
             expect(getEnv('minor')).toBeDefined()
             expect(getEnv('patch')).toBeDefined()
-        })
-
-        it.sequential('should output Sha variable', async () => {
-            setEnv(toolPathVariable, toolPath)
-
-            setInputs({
-                arguments: '/showvariable Sha'
-            })
-
-            const sha = await simpleGit().revparse(['HEAD'])
-            const result = await runner.run('command')
-
-            expect(result.code).toBe(0)
-            expect(result.stdout).toBeDefined()
-            expect(result.stdout).toContain(sha)
-        })
-
-        it.sequential('should output formatted version', async () => {
-            setEnv(toolPathVariable, toolPath)
-
-            setInputs({
-                arguments: '/format {Sha}'
-            })
-
-            const sha = await simpleGit().revparse(['HEAD'])
-            const result = await runner.run('command')
-
-            expect(result.code).toBe(0)
-            expect(result.stdout).toBeDefined()
-            expect(result.stdout).toContain(sha)
         })
 
         it.sequential('git version output extractor should return valid', () => {
