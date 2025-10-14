@@ -58,11 +58,6 @@ describe('GitVersion Runner', () => {
         })
 
         afterAll(async () => {
-            // Clean up the base directory after all tests
-            // if (fs.existsSync(baseDir)) {
-            //     fs.rmSync(baseDir, { recursive: true, force: true })
-            // }
-
             await simpleGit()
                 .deleteLocalBranches([cleanBranchName, jsonBranchName])
                 .catch(error => {
