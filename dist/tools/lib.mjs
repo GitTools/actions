@@ -24,6 +24,18 @@ async function run(agent, tool, command) {
   const runner = await getToolRunner(agent, tool);
   return await runner.run(command);
 }
+function allIndexesOf(searchString, indexOf) {
+  if (indexOf.length !== 1) {
+    throw new Error("indexOf must be a single character");
+  }
+  const resultArray = [];
+  for (let i = 0; i < searchString.length; i++) {
+    if (searchString[i] === indexOf) {
+      resultArray.push(i);
+    }
+  }
+  return resultArray;
+}
 
-export { getAgent, getToolRunner, parseCliArgs, run };
+export { allIndexesOf, getAgent, getToolRunner, parseCliArgs, run };
 //# sourceMappingURL=lib.mjs.map
