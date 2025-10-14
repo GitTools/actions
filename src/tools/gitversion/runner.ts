@@ -2,6 +2,7 @@ import { type ExecResult, type IBuildAgent } from '@agents/common'
 import { type Commands, type GitVersionOutput } from './models'
 import { GitVersionTool } from './tool'
 import { RunnerBase } from '../common/runner'
+import { allIndexesOf } from '@lib'
 
 export class Runner extends RunnerBase {
     protected readonly tool: GitVersionTool
@@ -51,7 +52,7 @@ export class Runner extends RunnerBase {
         const stdout = result.stdout as string
 
         //TODO: Update JSON parsing to handle {} in branches and commits
-        const gitVersionOutput = this.extractValidJsonObject(stdout)
+        const gitVersionOutput = this.extractGitVersionOutput(stdout)
 
         if (gitVersionOutput === null) {
             const errorMessage = 'GitVersion output is not valid JSON, see output details'
@@ -69,22 +70,21 @@ export class Runner extends RunnerBase {
         return result
     }
 
-    private extractValidJsonObject(input: string): GitVersionOutput | null {
-        const success = false
-        const decodePass = 1
-
+    private extractGitVersionOutput(input: string): GitVersionOutput | null {
         //Assumed last '}' character will be end of JSON object
-        const allStartOfJsonIndexes = this.allIndexesOf(input, '{')
-        let startPos = allStartOfJsonIndexes.length - 1
+        const allStartOfJsonIndexes = allIndexesOf(input, '{')
         const endOfJsonIndex = input.lastIndexOf('}') + 1
 
         //Start from the bottom searching for JSON object
-        let currSearchString = input.substring(allStartOfJsonIndexes[startPos], endOfJsonIndex)
+        let startIndexArrayPos = allStartOfJsonIndexes.length - 1
+        let decodePassCount = 1
+
+        let currSearchString = input.substring(allStartOfJsonIndexes[startIndexArrayPos], endOfJsonIndex)
         let resultJson = null
 
-        while (!success && resultJson === null) {
+        while (resultJson === null && startIndexArrayPos >= 0) {
             try {
-                this.buildAgent.debug(`Starting JSON extraction at ${startPos} to ${endOfJsonIndex}`)
+                this.buildAgent.debug(`Starting JSON extraction at ${startIndexArrayPos} to ${endOfJsonIndex}`)
 
                 resultJson = JSON.parse(currSearchString) as GitVersionOutput
             } catch (ex) {
@@ -94,30 +94,16 @@ export class Runner extends RunnerBase {
                     exMessage = ex
                 }
 
-                const errorMessage = `Failed to parse JSON object on pass ${decodePass}. Expanding search area from string index ${allStartOfJsonIndexes[startPos]} to ${endOfJsonIndex}\nCaught Exception: ${exMessage.message}`
+                const errorMessage = `Failed to parse JSON object on pass ${decodePassCount}. Expanding search area from string index ${allStartOfJsonIndexes[startIndexArrayPos]} to ${endOfJsonIndex}\nCaught Exception: ${exMessage.message}`
                 this.buildAgent.debug(errorMessage)
 
                 //Expand search area
-                startPos--
-                currSearchString = input.substring(allStartOfJsonIndexes[startPos], endOfJsonIndex)
+                decodePassCount++
+                startIndexArrayPos--
+                currSearchString = input.substring(allStartOfJsonIndexes[startIndexArrayPos], endOfJsonIndex)
             }
         }
 
         return resultJson
-    }
-
-    private allIndexesOf(searchString: string, indexOf: string): number[] {
-        if (indexOf.length !== 1) {
-            throw new Error('indexOf must be a single character')
-        }
-
-        const resultArray = []
-        for (let i = 0; i < searchString.length; i++) {
-            if (searchString[i] === indexOf) {
-                resultArray.push(i)
-            }
-        }
-
-        return resultArray
     }
 }
