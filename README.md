@@ -4,8 +4,8 @@
 
 GitHub Actions that allow the setup and use of the [GitVersion](https://github.com/GitTools/GitVersion) and [GitReleaseManager](https://github.com/GitTools/GitReleaseManager) tools.
 
-[![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
-[![Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
+[![CI Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
+[![Release Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
 
 [![GitHub Release](https://img.shields.io/github/v/release/gittools/actions?logo=github&sort=semver)](https://github.com/GitTools/actions/releases/latest)
 
@@ -44,7 +44,7 @@ You can find the compatibility matrix in the [versions.md](docs/versions.md) fil
 
 ### Prerequisites
 
-1. **Linux** - Required to build and run
+1. **Linux** - Recommended to build and run
 2. **Node.js** - Latest LTS version recommended
 3. **.NET SDK** - Version 6.0 or later required for GitVersion and GitReleaseManager tools
 4. **Git** - Latest version recommended
@@ -52,7 +52,7 @@ You can find the compatibility matrix in the [versions.md](docs/versions.md) fil
 ### Development Environment Setup
 
 This project is design to be run and worked on in a Linux environment.
-If developing on Windows, please use WSL as it's likely you will run issues
+If developing on Windows, please consider using WSL as it's likely you will run issues with file paths etc
 
 1. Clone the repository:
 
