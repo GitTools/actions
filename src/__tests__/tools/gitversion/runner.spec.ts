@@ -185,7 +185,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/showvariable Sha'
             })
 
-            const sha = await simpleGit().revparse()
+            const sha = await simpleGit().revparse(['HEAD'])
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
@@ -200,7 +200,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/format {Sha}'
             })
 
-            const sha = await simpleGit().revparse()
+            const sha = await simpleGit().revparse(['HEAD'])
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
