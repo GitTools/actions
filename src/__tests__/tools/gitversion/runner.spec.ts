@@ -36,13 +36,13 @@ describe('GitVersion Runner', () => {
             console.log('Started on branch: ' + startBranch)
         })
 
-        beforeEach(() => {
+        beforeEach(async () => {
             resetEnv(agent, toolPathVariable)
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
 
-            simpleGit()
+            await simpleGit()
                 .checkout(startBranch)
                 .catch(error => {
                     console.log(`Failed to checkout to original branch!\nError: ${error}`)
@@ -54,13 +54,13 @@ describe('GitVersion Runner', () => {
             vi.restoreAllMocks()
         })
 
-        afterAll(() => {
+        afterAll(async () => {
             // Clean up the base directory after all tests
             // if (fs.existsSync(baseDir)) {
             //     fs.rmSync(baseDir, { recursive: true, force: true })
             // }
 
-            simpleGit()
+            await simpleGit()
                 .deleteLocalBranches([cleanBranchName, jsonBranchName])
                 .catch(error => {
                     console.log(`Failed to delete test branches!\nError: ${error}`)
