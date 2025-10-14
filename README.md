@@ -39,3 +39,46 @@ Examples for usage of **GitReleaseManager**:
 ### Versioning and Compatibility
 
 You can find the compatibility matrix in the [versions.md](docs/versions.md) file.
+
+## Contributing
+
+### Prerequisites
+
+1. **Node.js** - Latest LTS version recommended
+2. **.NET SDK** - Version 6.0 or later required for GitVersion and GitReleaseManager tools
+3. **Git** - Latest version recommended
+
+### Development Environment Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/GitTools/actions.git
+   cd actions
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Build the project:
+   - For local development: `npm run build:local`
+   - For Azure Pipelines: `npm run build:azure`
+   - For GitHub Actions: `npm run build:github`
+
+### Required Knowledge
+
+- **TypeScript/JavaScript** - Primary development languages
+- **GitHub Actions** - Understanding of action creation and workflows
+- **Azure Pipelines** - Familiarity with pipeline tasks and extensions
+- **.NET Tools** - Basic understanding of .NET CLI tools
+- **Git** - Strong knowledge of Git versioning and release management
+
+### Project Structure
+
+- `src/tools/` - Core implementation of GitVersion and GitReleaseManager integrations
+- `src/agents/` - Build agent implementations for different CI platforms
+- `src/__tests__/` - Test suites organized by component
+- `docs/examples/` - Usage examples for both GitHub Actions and Azure Pipelines
