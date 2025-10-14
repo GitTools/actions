@@ -44,6 +44,9 @@ describe('GitVersion Runner', () => {
 
             await simpleGit()
                 .checkout(startBranch)
+                .then(() => {
+                    console.log('Checked out to start branch: ' + startBranch)
+                })
                 .catch(error => {
                     console.log(`Failed to checkout to original branch!\nError: ${error}`)
                 })
