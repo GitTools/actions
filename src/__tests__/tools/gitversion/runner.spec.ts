@@ -18,10 +18,6 @@ describe('GitVersion Runner', () => {
     const toolName = 'dotnet-gitversion'
     const versionSpec = '6.3.x'
 
-    const cleanBranchName = 'test/delete/me/if/found'
-    const jsonBranchName = 'test/delete/me/{if}/found'
-    let startBranch = 'main'
-
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
@@ -31,25 +27,13 @@ describe('GitVersion Runner', () => {
             version = await getLatestVersion('GitVersion.Tool', versionSpec)
             toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
-            startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
-
-            console.log('Started on branch: ' + startBranch)
         })
 
-        beforeEach(async () => {
+        beforeEach(() => {
             resetEnv(agent, toolPathVariable)
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
-
-            await simpleGit()
-                .checkout(startBranch)
-                .then(() => {
-                    console.log('Checked out to start branch: ' + startBranch)
-                })
-                .catch(error => {
-                    console.log(`Failed to checkout to original branch!\nError: ${error}`)
-                })
         })
 
         afterEach(() => {
@@ -57,13 +41,7 @@ describe('GitVersion Runner', () => {
             vi.restoreAllMocks()
         })
 
-        afterAll(async () => {
-            await simpleGit()
-                .deleteLocalBranches([cleanBranchName, jsonBranchName])
-                .catch(error => {
-                    console.log(`Failed to delete test branches!\nError: ${error}`)
-                })
-
+        afterAll(() => {
             resetEnv(agent, '')
         })
 
@@ -138,10 +116,19 @@ describe('GitVersion Runner', () => {
 
         it.sequential('should execute GitVersion with a clean branch name containing no JSON brackets', async () => {
             setEnv(toolPathVariable, toolPath)
+            const cleanBranchName = 'test/delete/me/if/found'
 
+            const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
             await simpleGit().checkoutLocalBranch(cleanBranchName)
 
             const result = await runner.run('execute')
+
+            await simpleGit().checkout(startBranch)
+            await simpleGit()
+                .deleteLocalBranch(cleanBranchName)
+                .catch(error => {
+                    console.log(`Failed to delete test branches!\nError: ${error}`)
+                })
 
             expect(result.code).toBe(0)
             expect(result.error).toBeDefined()
@@ -159,10 +146,19 @@ describe('GitVersion Runner', () => {
 
         it.sequential('should execute GitVersion with a branch name containing JSON brackets', async () => {
             setEnv(toolPathVariable, toolPath)
+            const jsonBranchName = 'test/delete/me/{if}/found'
 
+            const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
             await simpleGit().checkoutLocalBranch(jsonBranchName)
 
             const result = await runner.run('execute')
+
+            await simpleGit().checkout(startBranch)
+            await simpleGit()
+                .deleteLocalBranch(jsonBranchName)
+                .catch(error => {
+                    console.log(`Failed to delete test branches!\nError: ${error}`)
+                })
 
             expect(result.code).toBe(0)
             expect(result.error).toBeDefined()
