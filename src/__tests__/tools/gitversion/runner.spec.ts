@@ -148,18 +148,18 @@ describe('GitVersion Runner', () => {
             setEnv(toolPathVariable, toolPath)
             const cleanBranchName = 'test/delete/me/if/found'
 
-            const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
+            const gitClient = simpleGit()
+
+            const startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
             console.log(`Starting branch: ${startBranch}`)
-            await simpleGit().checkoutLocalBranch(cleanBranchName)
+            await gitClient.checkoutLocalBranch(cleanBranchName)
 
             const result = await runner.run('execute')
 
-            await simpleGit().checkout(startBranch)
-            await simpleGit()
-                .deleteLocalBranch(cleanBranchName)
-                .catch(error => {
-                    console.log(`Failed to delete test branches!\nError: ${error}`)
-                })
+            await gitClient.checkout(startBranch)
+            await gitClient.deleteLocalBranch(cleanBranchName).catch(error => {
+                console.log(`Failed to delete test branches!\nError: ${error}`)
+            })
 
             expect(result.code).toBe(0)
             expect(result.error).toBeDefined()
@@ -179,18 +179,19 @@ describe('GitVersion Runner', () => {
             setEnv(toolPathVariable, toolPath)
             const jsonBranchName = 'test/delete/me/{if}/found'
 
-            const startBranch = await simpleGit().revparse(['--abbrev-ref', 'HEAD'])
+            const gitClient = simpleGit()
+
+            const startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
             console.log(`Starting branch: ${startBranch}`)
-            await simpleGit().checkoutLocalBranch(jsonBranchName)
+            await gitClient.checkoutLocalBranch(jsonBranchName)
 
             const result = await runner.run('execute')
 
-            await simpleGit().checkout(startBranch)
-            await simpleGit()
-                .deleteLocalBranch(jsonBranchName)
-                .catch(error => {
-                    console.log(`Failed to delete test branches!\nError: ${error}`)
-                })
+            await gitClient.checkout(startBranch)
+
+            await gitClient.deleteLocalBranch(jsonBranchName).catch(error => {
+                console.log(`Failed to delete test branches!\nError: ${error}`)
+            })
 
             expect(result.code).toBe(0)
             expect(result.error).toBeDefined()
