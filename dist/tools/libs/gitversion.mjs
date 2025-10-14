@@ -210,27 +210,25 @@ class Runner extends RunnerBase {
     return this.safeExecute(async () => await this.tool.executeCommand(), "GitVersion executed successfully");
   }
   processGitVersionOutput(result) {
-    if (result.code === 0) {
-      const stdout = result.stdout;
-      if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
-        const errorMessage = "GitVersion output is not valid JSON, see output details";
-        this.buildAgent.debug(errorMessage);
-        this.buildAgent.setFailed(errorMessage, true);
-        return {
-          code: -1,
-          error: new Error(errorMessage)
-        };
-      } else {
-        const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
-        const gitVersionOutput = JSON.parse(jsonOutput);
-        this.tool.writeGitVersionToAgent(gitVersionOutput);
-        this.tool.updateBuildNumber();
-        this.buildAgent.setSucceeded("GitVersion executed successfully", true);
-        return result;
-      }
-    } else {
+    if (result.code !== 0) {
       return result;
     }
+    const stdout = result.stdout;
+    if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
+      const errorMessage = "GitVersion output is not valid JSON, see output details";
+      this.buildAgent.debug(errorMessage);
+      this.buildAgent.setFailed(errorMessage, true);
+      return {
+        code: -1,
+        error: new Error(errorMessage)
+      };
+    }
+    const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
+    const gitVersionOutput = JSON.parse(jsonOutput);
+    this.tool.writeGitVersionToAgent(gitVersionOutput);
+    this.tool.updateBuildNumber();
+    this.buildAgent.setSucceeded("GitVersion executed successfully", true);
+    return result;
   }
 }
 

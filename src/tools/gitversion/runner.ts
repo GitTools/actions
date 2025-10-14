@@ -42,27 +42,31 @@ export class Runner extends RunnerBase {
     }
 
     private processGitVersionOutput(result: ExecResult): ExecResult {
-        if (result.code === 0) {
-            const stdout = result.stdout as string
-            if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
-                const errorMessage = 'GitVersion output is not valid JSON, see output details'
-                this.buildAgent.debug(errorMessage)
-                this.buildAgent.setFailed(errorMessage, true)
-                return {
-                    code: -1,
-                    error: new Error(errorMessage)
-                }
-            } else {
-                const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
-
-                const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
-                this.tool.writeGitVersionToAgent(gitVersionOutput)
-                this.tool.updateBuildNumber()
-                this.buildAgent.setSucceeded('GitVersion executed successfully', true)
-                return result
-            }
-        } else {
+        // True if task failed
+        if (result.code !== 0) {
             return result
         }
+
+        // This gives everything from the output
+        const stdout = result.stdout as string
+
+        if (stdout.lastIndexOf('{') === -1 || stdout.lastIndexOf('}') === -1) {
+            const errorMessage = 'GitVersion output is not valid JSON, see output details'
+            this.buildAgent.debug(errorMessage)
+            this.buildAgent.setFailed(errorMessage, true)
+            return {
+                code: -1,
+                error: new Error(errorMessage)
+            }
+        }
+
+        //TODO: Update JSON parsing to handle {} in branches and commits
+        const jsonOutput = stdout.substring(stdout.lastIndexOf('{'), stdout.lastIndexOf('}') + 1)
+
+        const gitVersionOutput = JSON.parse(jsonOutput) as GitVersionOutput
+        this.tool.writeGitVersionToAgent(gitVersionOutput)
+        this.tool.updateBuildNumber()
+        this.buildAgent.setSucceeded('GitVersion executed successfully', true)
+        return result
     }
 }
