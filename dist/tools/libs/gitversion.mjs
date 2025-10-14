@@ -230,6 +230,15 @@ class Runner extends RunnerBase {
     this.buildAgent.setSucceeded("GitVersion executed successfully", true);
     return result;
   }
+  /**
+   * Attempts to extract and parse a JSON object representing `GitVersionOutput` from the given input string.
+   * The method assumes the last closing curly brace (`}`) in the input belongs to the end of the JSON object,
+   * and iteratively expands the search area backwards from each opening curly brace (`{`) until a valid JSON object is found.
+   * If parsing fails, it logs debug information and continues searching until all possible start positions are exhausted.
+   *
+   * @param input - The string containing the potential JSON output from GitVersion.
+   * @returns The parsed `GitVersionOutput` object if extraction and parsing succeed; otherwise, `null`.
+   */
   extractGitVersionOutput(input) {
     const allStartOfJsonIndexes = allIndexesOf(input, "{");
     const endOfJsonIndex = input.lastIndexOf("}") + 1;
@@ -239,15 +248,15 @@ class Runner extends RunnerBase {
     let resultJson = null;
     while (resultJson === null && startIndexArrayPos >= 0) {
       try {
-        this.buildAgent.debug(`Starting JSON extraction at ${startIndexArrayPos} to ${endOfJsonIndex}`);
+        this.buildAgent.debug(`Starting JSON extraction at ${allStartOfJsonIndexes[startIndexArrayPos]} to ${endOfJsonIndex}`);
         resultJson = JSON.parse(currSearchString);
       } catch (ex) {
-        let exMessage = Error("Unable to parse exception object");
+        let exObject = Error("Unable to parse exception object");
         if (ex instanceof Error) {
-          exMessage = ex;
+          exObject = ex;
         }
         const errorMessage = `Failed to parse JSON object on pass ${decodePassCount}. Expanding search area from string index ${allStartOfJsonIndexes[startIndexArrayPos]} to ${endOfJsonIndex}
-Caught Exception: ${exMessage.message}`;
+Caught Exception: ${exObject.message}`;
         this.buildAgent.debug(errorMessage);
         decodePassCount++;
         startIndexArrayPos--;
