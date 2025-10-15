@@ -165,24 +165,24 @@ INFO [25-12-08 12:20:53:15] This is a crafted example log for testing GitVersion
 {
   "AssemblySemFileVer": "0.1.4.9",
   "AssemblySemVer": "0.1.4.9",
-  "BranchName": "test/delete/me/if/found",
+  "BranchName": "test/example/clean/branch",
   "BuildMetaData": 2840,
   "CommitDate": "2025-12-08",
   "CommitsSinceVersionSource": 2840,
-  "EscapedBranchName": "test-delete-me-if-found",
-  "FullBuildMetaData": "2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "1.4.9-test-delete-me-if-found.1+2840",
-  "InformationalVersion": "1.4.9-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "EscapedBranchName": "test-example-clean-branch",
+  "FullBuildMetaData": "2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "FullSemVer": "1.4.9-test-example-clean-branch.1+2840",
+  "InformationalVersion": "1.4.9-test-example-clean-branch.1+2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
   "Major": 1,
   "MajorMinorPatch": "1.4.9",
   "Minor": 2,
   "Patch": 3,
-  "PreReleaseLabel": "test-delete-me-if-found",
-  "PreReleaseLabelWithDash": "-test-delete-me-if-found",
+  "PreReleaseLabel": "test-example-clean-branch",
+  "PreReleaseLabelWithDash": "-test-example-clean-branch",
   "PreReleaseNumber": 1,
-  "PreReleaseTag": "test-delete-me-if-found.1",
-  "PreReleaseTagWithDash": "-test-delete-me-if-found.1",
-  "SemVer": "1.4.9-test-delete-me-if-found.1",
+  "PreReleaseTag": "test-example-clean-branch.1",
+  "PreReleaseTagWithDash": "-test-example-clean-branch.1",
+  "SemVer": "1.4.9-test-example-clean-branch.1",
   "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
   "ShortSha": "c87a775",
   "UncommittedChanges": 3,
@@ -190,27 +190,27 @@ INFO [25-12-08 12:20:53:15] This is a crafted example log for testing GitVersion
   "WeightedPreReleaseNumber": 1
 }`
 
-            const validGitVersionOutputObject = {
+            const expectedGitVersionOutputObject = {
                 AssemblySemFileVer: '0.1.4.9',
                 AssemblySemVer: '0.1.4.9',
-                BranchName: 'test/delete/me/if/found',
+                BranchName: 'test/example/clean/branch',
                 BuildMetaData: 2840,
                 CommitDate: '2025-12-08',
                 CommitsSinceVersionSource: 2840,
-                EscapedBranchName: 'test-delete-me-if-found',
-                FullBuildMetaData: '2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                FullSemVer: '1.4.9-test-delete-me-if-found.1+2840',
-                InformationalVersion: '1.4.9-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                EscapedBranchName: 'test-example-clean-branch',
+                FullBuildMetaData: '2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                FullSemVer: '1.4.9-test-example-clean-branch.1+2840',
+                InformationalVersion: '1.4.9-test-example-clean-branch.1+2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
                 Major: 1,
                 MajorMinorPatch: '1.4.9',
                 Minor: 2,
                 Patch: 3,
-                PreReleaseLabel: 'test-delete-me-if-found',
-                PreReleaseLabelWithDash: '-test-delete-me-if-found',
+                PreReleaseLabel: 'test-example-clean-branch',
+                PreReleaseLabelWithDash: '-test-example-clean-branch',
                 PreReleaseNumber: 1,
-                PreReleaseTag: 'test-delete-me-if-found.1',
-                PreReleaseTagWithDash: '-test-delete-me-if-found.1',
-                SemVer: '1.4.9-test-delete-me-if-found.1',
+                PreReleaseTag: 'test-example-clean-branch.1',
+                PreReleaseTagWithDash: '-test-example-clean-branch.1',
+                SemVer: '1.4.9-test-example-clean-branch.1',
                 Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
                 ShortSha: 'c87a775',
                 UncommittedChanges: 3,
@@ -223,7 +223,7 @@ INFO [25-12-08 12:20:53:15] This is a crafted example log for testing GitVersion
 
             expect(result).toBeDefined()
             expect(result).toBeTypeOf('object')
-            expect(result).toEqual(validGitVersionOutputObject)
+            expect(result).toEqual(expectedGitVersionOutputObject)
         })
 
         it.sequential('git version output extractor with {} in branch name should return valid output', () => {
@@ -240,24 +240,24 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
 {
   "AssemblySemFileVer": "0.1.2.3",
   "AssemblySemVer": "0.1.2.3",
-  "BranchName": "test/delete/me/{if}/found",
+  "BranchName": "test/branch/{with}/brackets",
   "BuildMetaData": 2841,
   "CommitDate": "2025-10-14",
   "CommitsSinceVersionSource": 2841,
-  "EscapedBranchName": "test-delete-me--if--found",
-  "FullBuildMetaData": "2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "1.2.3-test-delete-me--if--found.1+2840",
-  "InformationalVersion": "1.2.3-test-delete-me--if--found.1+2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "EscapedBranchName": "test-branch--with--brackets",
+  "FullBuildMetaData": "2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "FullSemVer": "1.2.3-test-branch--with--brackets.1+2840",
+  "InformationalVersion": "1.2.3-test-branch--with--brackets.1+2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
   "Major": 1,
   "MajorMinorPatch": "1.2.3",
   "Minor": 2,
   "Patch": 3,
-  "PreReleaseLabel": "test-delete-me--if--found",
-  "PreReleaseLabelWithDash": "-test-delete-me--if--found",
+  "PreReleaseLabel": "test-branch--with--brackets",
+  "PreReleaseLabelWithDash": "-test-branch--with--brackets",
   "PreReleaseNumber": 1,
-  "PreReleaseTag": "test-delete-me--if--found.1",
-  "PreReleaseTagWithDash": "-test-delete-me--if--found.1",
-  "SemVer": "1.2.3-test-delete-me--if--found.1",
+  "PreReleaseTag": "test-branch--with--brackets.1",
+  "PreReleaseTagWithDash": "-test-branch--with--brackets.1",
+  "SemVer": "1.2.3-test-branch--with--brackets.1",
   "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
   "ShortSha": "c87a775",
   "UncommittedChanges": 3,
@@ -265,27 +265,28 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
   "WeightedPreReleaseNumber": 1
 }`
 
-            const validGitVersionOutputObject = {
+            const expectedGitVersionOutputObject = {
                 AssemblySemFileVer: '0.1.2.3',
                 AssemblySemVer: '0.1.2.3',
-                BranchName: 'test/delete/me/{if}/found',
+                BranchName: 'test/branch/{with}/brackets',
                 BuildMetaData: 2841,
                 CommitDate: '2025-10-14',
                 CommitsSinceVersionSource: 2841,
-                EscapedBranchName: 'test-delete-me--if--found',
-                FullBuildMetaData: '2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                FullSemVer: '1.2.3-test-delete-me--if--found.1+2840',
-                InformationalVersion: '1.2.3-test-delete-me--if--found.1+2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                EscapedBranchName: 'test-branch--with--brackets',
+                FullBuildMetaData: '2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                FullSemVer: '1.2.3-test-branch--with--brackets.1+2840',
+                InformationalVersion:
+                    '1.2.3-test-branch--with--brackets.1+2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
                 Major: 1,
                 MajorMinorPatch: '1.2.3',
                 Minor: 2,
                 Patch: 3,
-                PreReleaseLabel: 'test-delete-me--if--found',
-                PreReleaseLabelWithDash: '-test-delete-me--if--found',
+                PreReleaseLabel: 'test-branch--with--brackets',
+                PreReleaseLabelWithDash: '-test-branch--with--brackets',
                 PreReleaseNumber: 1,
-                PreReleaseTag: 'test-delete-me--if--found.1',
-                PreReleaseTagWithDash: '-test-delete-me--if--found.1',
-                SemVer: '1.2.3-test-delete-me--if--found.1',
+                PreReleaseTag: 'test-branch--with--brackets.1',
+                PreReleaseTagWithDash: '-test-branch--with--brackets.1',
+                SemVer: '1.2.3-test-branch--with--brackets.1',
                 Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
                 ShortSha: 'c87a775',
                 UncommittedChanges: 3,
@@ -298,7 +299,7 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
 
             expect(result).toBeDefined()
             expect(result).toBeTypeOf('object')
-            expect(result).toEqual(validGitVersionOutputObject)
+            expect(result).toEqual(expectedGitVersionOutputObject)
         })
 
         it.sequential('git version output is malformed, extractor should return null', () => {
@@ -311,24 +312,24 @@ INFO [25-10-14 19:24:57:67] This is a crafted example log for testing malformed 
 ERROR [25-10-14 19:24:57:67] Output is malformed! 
   "AssemblySemFileVer": "0.1.0.0",
   "AssemblySemVer": "0.1.0.0",
-  "BranchName": "test/delete/me/{if}/found",
+  "BranchName": "test/branch/{with}/brackets",
   "BuildMetaData": 2840,
   "CommitDate": "2025-10-14",
   "CommitsSinceVersionSource": 2840,
-  "EscapedBranchName": "test-delete-me--if--found",
-  "FullBuildMetaData": "2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "0.1.0-test-delete-me--if--found.1+2840",
-  "InformationalVersion": "0.1.0-test-delete-me--if--found.1+2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "EscapedBranchName": "test-branch--with--brackets",
+  "FullBuildMetaData": "2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "FullSemVer": "0.1.0-test-branch--with--brackets.1+2840",
+  "InformationalVersion": "0.1.0-test-branch--with--brackets.1+2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
   "Major": 0,
   "MajorMinorPatch": "0.1.0",
   "Minor": 1,
   "Patch": 0,
-  "PreReleaseLabel": "test-delete-me--if--found",
-  "PreReleaseLabelWithDash": "-test-delete-me--if--found",
+  "PreReleaseLabel": "test-branch--with--brackets",
+  "PreReleaseLabelWithDash": "-test-branch--with--brackets",
   "PreReleaseNumber": 1,
-  "PreReleaseTag": "test-delete-me--if--found.1",
-  "PreReleaseTagWithDash": "-test-delete-me--if--found.1",
-  "SemVer": "0.1.0-test-delete-me--if--found.1",
+  "PreReleaseTag": "test-branch--with--brackets.1",
+  "PreReleaseTagWithDash": "-test-branch--with--brackets.1",
+  "SemVer": "0.1.0-test-branch--with--brackets.1",
   "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
   "ShortSha": "c87a775",
   "UncommittedChanges": 3,
@@ -356,6 +357,12 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
     })
 })
 
+/**
+ * This get the latest commit hash without any merge commits.
+ * Merge commits are omitted as it can cause tests to fail when run as part of CI
+ *
+ * @returns Latest commit hash
+ */
 async function getLatestCommitHash(): Promise<string | undefined> {
     const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' }, '--no-merges': null })
 
