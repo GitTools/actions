@@ -144,7 +144,82 @@ describe('GitVersion Runner', () => {
             expect(result.stdout).toContain(sha)
         })
 
-        it.sequential('git version output extractor should return valid', () => {
+        it.sequential('git version output extractor with no {} in branch name should return valid output', () => {
+            setEnv(toolPathVariable, toolPath)
+
+            // Example GitVersion logs
+            const validGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
+INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
+INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git
+INFO [25-10-14 19:24:57:67] Branch from build environment: 
+INFO [25-10-14 19:24:57:70] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 >-
+INFO [25-10-14 19:24:57:81] -< End: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 (Took: 113.64ms) >-
+INFO [25-10-14 19:24:57:81] No configuration file found, using default configuration
+{
+  "AssemblySemFileVer": "0.1.2.3",
+  "AssemblySemVer": "0.1.2.3",
+  "BranchName": "test/delete/me/if/found",
+  "BuildMetaData": 2840,
+  "CommitDate": "2025-10-14",
+  "CommitsSinceVersionSource": 2840,
+  "EscapedBranchName": "test-delete-me-if-found",
+  "FullBuildMetaData": "2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "FullSemVer": "1.2.3-test-delete-me-if-found.1+2840",
+  "InformationalVersion": "1.2.3-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "Major": 1,
+  "MajorMinorPatch": "1.2.3",
+  "Minor": 2,
+  "Patch": 3,
+  "PreReleaseLabel": "test-delete-me-if-found",
+  "PreReleaseLabelWithDash": "-test-delete-me-if-found",
+  "PreReleaseNumber": 1,
+  "PreReleaseTag": "test-delete-me-if-found.1",
+  "PreReleaseTagWithDash": "-test-delete-me-if-found.1",
+  "SemVer": "1.2.3-test-delete-me-if-found.1",
+  "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
+  "ShortSha": "c87a775",
+  "UncommittedChanges": 3,
+  "VersionSourceSha": "",
+  "WeightedPreReleaseNumber": 1
+}`
+
+            const validGitVersionOutputObject = {
+                AssemblySemFileVer: '0.1.2.3',
+                AssemblySemVer: '0.1.2.3',
+                BranchName: 'test/delete/me/if/found',
+                BuildMetaData: 2840,
+                CommitDate: '2025-10-14',
+                CommitsSinceVersionSource: 2840,
+                EscapedBranchName: 'test-delete-me-if-found',
+                FullBuildMetaData: '2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                FullSemVer: '1.2.3-test-delete-me-if-found.1+2840',
+                InformationalVersion: '1.2.3-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                Major: 1,
+                MajorMinorPatch: '1.2.3',
+                Minor: 2,
+                Patch: 3,
+                PreReleaseLabel: 'test-delete-me-if-found',
+                PreReleaseLabelWithDash: '-test-delete-me-if-found',
+                PreReleaseNumber: 1,
+                PreReleaseTag: 'test-delete-me-if-found.1',
+                PreReleaseTagWithDash: '-test-delete-me-if-found.1',
+                SemVer: '1.2.3-test-delete-me-if-found.1',
+                Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
+                ShortSha: 'c87a775',
+                UncommittedChanges: 3,
+                VersionSourceSha: '',
+                WeightedPreReleaseNumber: 1
+            }
+
+            // Used [] to get private function for testing as it's a vital function that should be covered
+            const result = runner['extractGitVersionOutput'](validGitVersionOutputString)
+
+            expect(result).toBeDefined()
+            expect(result).toBeTypeOf('object')
+            expect(result).toEqual(validGitVersionOutputObject)
+        })
+
+        it.sequential('git version output extractor with {} in branch name should return valid output', () => {
             setEnv(toolPathVariable, toolPath)
 
             // Example GitVersion logs
