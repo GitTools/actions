@@ -355,7 +355,7 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
 })
 
 async function getLatestCommitHash(): Promise<string | undefined> {
-    const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
+    const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' }, '--no-merges': null })
 
     console.log('Git log info: ', gitLogInfo)
 
