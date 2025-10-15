@@ -153,153 +153,43 @@ describe('GitVersion Runner', () => {
         it.sequential('git version output extractor with no {} in branch name should return valid output', () => {
             setEnv(toolPathVariable, toolPath)
 
-            // Example GitVersion logs without {} in branch name
-            const validGitVersionOutputString = `INFO [25-12-08 12:20:52:08] Working directory: /home/test/Projects/git-tool-actions/.test
-INFO [25-12-08 12:20:52:08] Project root is: /home/test/Projects/git-tool-actions/
-INFO [25-12-08 12:20:52:12] DotGit directory is: /home/test/Projects/git-tool-actions/.git
-INFO [25-12-08 12:20:52:50] Branch from build environment: 
-INFO [25-12-08 12:20:52:56] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 >-
-INFO [25-12-08 12:20:52:82] -< End: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 (Took: 113.64ms) >-
-INFO [25-12-08 12:20:53:02] No configuration file found, using default configuration
-INFO [25-12-08 12:20:53:15] This is a crafted example log for testing GitVersion output
-{
-  "AssemblySemFileVer": "0.1.4.9",
-  "AssemblySemVer": "0.1.4.9",
-  "BranchName": "test/example/clean/branch",
-  "BuildMetaData": 2840,
-  "CommitDate": "2025-12-08",
-  "CommitsSinceVersionSource": 2840,
-  "EscapedBranchName": "test-example-clean-branch",
-  "FullBuildMetaData": "2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "1.4.9-test-example-clean-branch.1+2840",
-  "InformationalVersion": "1.4.9-test-example-clean-branch.1+2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "Major": 1,
-  "MajorMinorPatch": "1.4.9",
-  "Minor": 2,
-  "Patch": 3,
-  "PreReleaseLabel": "test-example-clean-branch",
-  "PreReleaseLabelWithDash": "-test-example-clean-branch",
-  "PreReleaseNumber": 1,
-  "PreReleaseTag": "test-example-clean-branch.1",
-  "PreReleaseTagWithDash": "-test-example-clean-branch.1",
-  "SemVer": "1.4.9-test-example-clean-branch.1",
-  "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
-  "ShortSha": "c87a775",
-  "UncommittedChanges": 3,
-  "VersionSourceSha": "",
-  "WeightedPreReleaseNumber": 1
-}`
+            const gitVersionFixture = createGitVersionFixture({
+                branchName: 'test/example/clean/branch',
+                assemblySemFileVer: '0.1.4.9',
+                assemblySemVer: '0.1.4.9',
+                buildMetaData: 2840,
+                commitDate: '2025-12-08',
+                escapedBranchName: 'test-example-clean-branch',
+                fullBuildMetaData: '2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                fullSemVer: '1.4.9-test-example-clean-branch.1+2840'
+            })
 
-            const expectedGitVersionOutputObject = {
-                AssemblySemFileVer: '0.1.4.9',
-                AssemblySemVer: '0.1.4.9',
-                BranchName: 'test/example/clean/branch',
-                BuildMetaData: 2840,
-                CommitDate: '2025-12-08',
-                CommitsSinceVersionSource: 2840,
-                EscapedBranchName: 'test-example-clean-branch',
-                FullBuildMetaData: '2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                FullSemVer: '1.4.9-test-example-clean-branch.1+2840',
-                InformationalVersion: '1.4.9-test-example-clean-branch.1+2840.Branch.test-example-clean-branch.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                Major: 1,
-                MajorMinorPatch: '1.4.9',
-                Minor: 2,
-                Patch: 3,
-                PreReleaseLabel: 'test-example-clean-branch',
-                PreReleaseLabelWithDash: '-test-example-clean-branch',
-                PreReleaseNumber: 1,
-                PreReleaseTag: 'test-example-clean-branch.1',
-                PreReleaseTagWithDash: '-test-example-clean-branch.1',
-                SemVer: '1.4.9-test-example-clean-branch.1',
-                Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
-                ShortSha: 'c87a775',
-                UncommittedChanges: 3,
-                VersionSourceSha: '',
-                WeightedPreReleaseNumber: 1
-            }
-
-            // Used [] to get private function for testing as it's a vital function that should be covered
-            const result = runner['extractGitVersionOutput'](validGitVersionOutputString)
+            const result = runner['extractGitVersionOutput'](gitVersionFixture.log)
 
             expect(result).toBeDefined()
             expect(result).toBeTypeOf('object')
-            expect(result).toEqual(expectedGitVersionOutputObject)
+            expect(result).toEqual(gitVersionFixture.expected)
         })
 
         it.sequential('git version output extractor with {} in branch name should return valid output', () => {
             setEnv(toolPathVariable, toolPath)
 
-            // Example GitVersion logs with {} in branch name
-            const validGitVersionOutputString = `INFO [25-10-14 19:24:57:67] Working directory: /home/test/Projects/git-tool-actions/.test
-INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
-INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git
-INFO [25-10-14 19:24:57:67] Branch from build environment: 
-INFO [25-10-14 19:24:57:70] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 >-
-INFO [25-10-14 19:24:57:81] -< End: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 (Took: 113.64ms) >-
-INFO [25-10-14 19:24:57:81] No configuration file found, using default configuration
-{
-  "AssemblySemFileVer": "0.1.2.3",
-  "AssemblySemVer": "0.1.2.3",
-  "BranchName": "test/branch/{with}/brackets",
-  "BuildMetaData": 2841,
-  "CommitDate": "2025-10-14",
-  "CommitsSinceVersionSource": 2841,
-  "EscapedBranchName": "test-branch--with--brackets",
-  "FullBuildMetaData": "2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "1.2.3-test-branch--with--brackets.1+2840",
-  "InformationalVersion": "1.2.3-test-branch--with--brackets.1+2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "Major": 1,
-  "MajorMinorPatch": "1.2.3",
-  "Minor": 2,
-  "Patch": 3,
-  "PreReleaseLabel": "test-branch--with--brackets",
-  "PreReleaseLabelWithDash": "-test-branch--with--brackets",
-  "PreReleaseNumber": 1,
-  "PreReleaseTag": "test-branch--with--brackets.1",
-  "PreReleaseTagWithDash": "-test-branch--with--brackets.1",
-  "SemVer": "1.2.3-test-branch--with--brackets.1",
-  "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
-  "ShortSha": "c87a775",
-  "UncommittedChanges": 3,
-  "VersionSourceSha": "",
-  "WeightedPreReleaseNumber": 1
-}`
+            const gitVersionFixture = createGitVersionFixture({
+                branchName: 'test/branch/{with}/brackets',
+                assemblySemFileVer: '0.1.2.3',
+                assemblySemVer: '0.1.2.3',
+                buildMetaData: 2841,
+                commitDate: '2025-10-14',
+                escapedBranchName: 'test-branch--with--brackets',
+                fullBuildMetaData: '2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                fullSemVer: '1.2.3-test-branch--with--brackets.1+2840'
+            })
 
-            const expectedGitVersionOutputObject = {
-                AssemblySemFileVer: '0.1.2.3',
-                AssemblySemVer: '0.1.2.3',
-                BranchName: 'test/branch/{with}/brackets',
-                BuildMetaData: 2841,
-                CommitDate: '2025-10-14',
-                CommitsSinceVersionSource: 2841,
-                EscapedBranchName: 'test-branch--with--brackets',
-                FullBuildMetaData: '2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                FullSemVer: '1.2.3-test-branch--with--brackets.1+2840',
-                InformationalVersion:
-                    '1.2.3-test-branch--with--brackets.1+2840.Branch.test-branch--with--brackets.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                Major: 1,
-                MajorMinorPatch: '1.2.3',
-                Minor: 2,
-                Patch: 3,
-                PreReleaseLabel: 'test-branch--with--brackets',
-                PreReleaseLabelWithDash: '-test-branch--with--brackets',
-                PreReleaseNumber: 1,
-                PreReleaseTag: 'test-branch--with--brackets.1',
-                PreReleaseTagWithDash: '-test-branch--with--brackets.1',
-                SemVer: '1.2.3-test-branch--with--brackets.1',
-                Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
-                ShortSha: 'c87a775',
-                UncommittedChanges: 3,
-                VersionSourceSha: '',
-                WeightedPreReleaseNumber: 1
-            }
-
-            // Used [] to get private function for testing as it's a vital function that should be covered
-            const result = runner['extractGitVersionOutput'](validGitVersionOutputString)
+            const result = runner['extractGitVersionOutput'](gitVersionFixture.log)
 
             expect(result).toBeDefined()
             expect(result).toBeTypeOf('object')
-            expect(result).toEqual(expectedGitVersionOutputObject)
+            expect(result).toEqual(gitVersionFixture.expected)
         })
 
         it.sequential('git version output is malformed, extractor should return null', () => {
@@ -372,4 +262,69 @@ async function getLatestCommitHash(): Promise<string | undefined> {
     expect(gitLogInfo).toHaveProperty('latest')
 
     return gitLogInfo.latest?.hash
+}
+
+// helper to create fixture (log + expected object)
+function createGitVersionFixture(params: {
+    branchName: string
+    assemblySemFileVer: string
+    assemblySemVer: string
+    buildMetaData: number
+    commitDate: string
+    escapedBranchName: string
+    fullBuildMetaData: string
+    fullSemVer: string
+    sha?: string
+}): { log: string; expected: object } {
+    const {
+        branchName,
+        assemblySemFileVer,
+        assemblySemVer,
+        buildMetaData,
+        commitDate,
+        escapedBranchName,
+        fullBuildMetaData,
+        fullSemVer,
+        sha = 'c87a775d03b610759891de381b93211f0dc6eac2'
+    } = params
+
+    const jsonObj = {
+        AssemblySemFileVer: assemblySemFileVer,
+        AssemblySemVer: assemblySemVer,
+        BranchName: branchName,
+        BuildMetaData: buildMetaData,
+        CommitDate: commitDate,
+        CommitsSinceVersionSource: buildMetaData,
+        EscapedBranchName: escapedBranchName,
+        FullBuildMetaData: fullBuildMetaData,
+        FullSemVer: fullSemVer,
+        InformationalVersion: `${fullSemVer}.Branch.${escapedBranchName}.Sha.${sha}`,
+        Major: 1,
+        MajorMinorPatch: fullSemVer.split('-')[0],
+        Minor: 2,
+        Patch: 3,
+        PreReleaseLabel: escapedBranchName,
+        PreReleaseLabelWithDash: `-${escapedBranchName}`,
+        PreReleaseNumber: 1,
+        PreReleaseTag: `${escapedBranchName}.1`,
+        PreReleaseTagWithDash: `-${escapedBranchName}.1`,
+        SemVer: fullSemVer.split('+')[0],
+        Sha: sha,
+        ShortSha: sha.substring(0, 7),
+        UncommittedChanges: 3,
+        VersionSourceSha: '',
+        WeightedPreReleaseNumber: 1
+    }
+
+    const log = [
+        'INFO [25-10-14 19:24:57:67] Working directory: /home/test/Projects/git-tool-actions/.test',
+        'INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/',
+        'INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git',
+        'INFO [25-10-14 19:24:57:67] Branch from build environment: ',
+        'INFO [25-10-14 19:24:57:70] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/... >-',
+        'INFO [25-10-14 19:24:57:81] No configuration file found, using default configuration',
+        JSON.stringify(jsonObj, null, 2)
+    ].join('\n')
+
+    return { log, expected: jsonObj }
 }
