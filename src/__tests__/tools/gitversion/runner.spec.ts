@@ -10,6 +10,7 @@ import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
 import { getEnv, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+import { _ } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
@@ -121,12 +122,23 @@ describe('GitVersion Runner', () => {
                 arguments: '/showvariable Sha'
             })
 
-            const sha = await simpleGit().revparse(['HEAD'])
+            // const sha = await simpleGit().revparse(['HEAD'])
+            const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
+
+            console.log('Git log info: ', gitLogInfo)
+
+            expect(gitLogInfo).toBeDefined()
+            expect(gitLogInfo).toHaveProperty('latest')
+
+            const shaHash = gitLogInfo.latest?.hash
+
+            console.log('Commit hash found: ', shaHash)
+
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
             expect(result.stdout).toBeDefined()
-            expect(result.stdout).toContain(sha)
+            expect(result.stdout).toContain(shaHash)
         })
 
         it.sequential('should output formatted version', async () => {
@@ -136,12 +148,23 @@ describe('GitVersion Runner', () => {
                 arguments: '/format {Sha}'
             })
 
-            const sha = await simpleGit().revparse(['HEAD'])
+            // const sha = await simpleGit().revparse(['HEAD'])
+            const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
+
+            console.log('Git log info: ', gitLogInfo)
+
+            expect(gitLogInfo).toBeDefined()
+            expect(gitLogInfo).toHaveProperty('latest')
+
+            const shaHash = gitLogInfo.latest?.hash
+
+            console.log('Commit hash found: ', shaHash)
+
             const result = await runner.run('command')
 
             expect(result.code).toBe(0)
             expect(result.stdout).toBeDefined()
-            expect(result.stdout).toContain(sha)
+            expect(result.stdout).toContain(shaHash)
         })
 
         it.sequential('git version output extractor with no {} in branch name should return valid output', () => {
