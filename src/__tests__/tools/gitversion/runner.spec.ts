@@ -153,27 +153,28 @@ describe('GitVersion Runner', () => {
         it.sequential('git version output extractor with no {} in branch name should return valid output', () => {
             setEnv(toolPathVariable, toolPath)
 
-            // Example GitVersion logs
-            const validGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
-INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
-INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git
-INFO [25-10-14 19:24:57:67] Branch from build environment: 
-INFO [25-10-14 19:24:57:70] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 >-
-INFO [25-10-14 19:24:57:81] -< End: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 (Took: 113.64ms) >-
-INFO [25-10-14 19:24:57:81] No configuration file found, using default configuration
+            // Example GitVersion logs without {} in branch name
+            const validGitVersionOutputString = `INFO [25-12-08 12:20:52:08] Working directory: /home/test/Projects/git-tool-actions/.test
+INFO [25-12-08 12:20:52:08] Project root is: /home/test/Projects/git-tool-actions/
+INFO [25-12-08 12:20:52:12] DotGit directory is: /home/test/Projects/git-tool-actions/.git
+INFO [25-12-08 12:20:52:50] Branch from build environment: 
+INFO [25-12-08 12:20:52:56] -< Begin: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 >-
+INFO [25-12-08 12:20:52:82] -< End: Loading version variables from disk cache file /home/test/Projects/git-tool-actions/.git/gitversion_cache/B2958F4EE88E2DD93F5FC632227013D4730ADF80 (Took: 113.64ms) >-
+INFO [25-12-08 12:20:53:02] No configuration file found, using default configuration
+INFO [25-12-08 12:20:53:15] This is a crafted example log for testing GitVersion output
 {
-  "AssemblySemFileVer": "0.1.2.3",
-  "AssemblySemVer": "0.1.2.3",
+  "AssemblySemFileVer": "0.1.4.9",
+  "AssemblySemVer": "0.1.4.9",
   "BranchName": "test/delete/me/if/found",
   "BuildMetaData": 2840,
-  "CommitDate": "2025-10-14",
+  "CommitDate": "2025-12-08",
   "CommitsSinceVersionSource": 2840,
   "EscapedBranchName": "test-delete-me-if-found",
   "FullBuildMetaData": "2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
-  "FullSemVer": "1.2.3-test-delete-me-if-found.1+2840",
-  "InformationalVersion": "1.2.3-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
+  "FullSemVer": "1.4.9-test-delete-me-if-found.1+2840",
+  "InformationalVersion": "1.4.9-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
   "Major": 1,
-  "MajorMinorPatch": "1.2.3",
+  "MajorMinorPatch": "1.4.9",
   "Minor": 2,
   "Patch": 3,
   "PreReleaseLabel": "test-delete-me-if-found",
@@ -181,7 +182,7 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
   "PreReleaseNumber": 1,
   "PreReleaseTag": "test-delete-me-if-found.1",
   "PreReleaseTagWithDash": "-test-delete-me-if-found.1",
-  "SemVer": "1.2.3-test-delete-me-if-found.1",
+  "SemVer": "1.4.9-test-delete-me-if-found.1",
   "Sha": "c87a775d03b610759891de381b93211f0dc6eac2",
   "ShortSha": "c87a775",
   "UncommittedChanges": 3,
@@ -190,18 +191,18 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
 }`
 
             const validGitVersionOutputObject = {
-                AssemblySemFileVer: '0.1.2.3',
-                AssemblySemVer: '0.1.2.3',
+                AssemblySemFileVer: '0.1.4.9',
+                AssemblySemVer: '0.1.4.9',
                 BranchName: 'test/delete/me/if/found',
                 BuildMetaData: 2840,
-                CommitDate: '2025-10-14',
+                CommitDate: '2025-12-08',
                 CommitsSinceVersionSource: 2840,
                 EscapedBranchName: 'test-delete-me-if-found',
                 FullBuildMetaData: '2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
-                FullSemVer: '1.2.3-test-delete-me-if-found.1+2840',
-                InformationalVersion: '1.2.3-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
+                FullSemVer: '1.4.9-test-delete-me-if-found.1+2840',
+                InformationalVersion: '1.4.9-test-delete-me-if-found.1+2840.Branch.test-delete-me-if-found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
                 Major: 1,
-                MajorMinorPatch: '1.2.3',
+                MajorMinorPatch: '1.4.9',
                 Minor: 2,
                 Patch: 3,
                 PreReleaseLabel: 'test-delete-me-if-found',
@@ -209,7 +210,7 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
                 PreReleaseNumber: 1,
                 PreReleaseTag: 'test-delete-me-if-found.1',
                 PreReleaseTagWithDash: '-test-delete-me-if-found.1',
-                SemVer: '1.2.3-test-delete-me-if-found.1',
+                SemVer: '1.4.9-test-delete-me-if-found.1',
                 Sha: 'c87a775d03b610759891de381b93211f0dc6eac2',
                 ShortSha: 'c87a775',
                 UncommittedChanges: 3,
@@ -228,8 +229,8 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
         it.sequential('git version output extractor with {} in branch name should return valid output', () => {
             setEnv(toolPathVariable, toolPath)
 
-            // Example GitVersion logs
-            const validGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
+            // Example GitVersion logs with {} in branch name
+            const validGitVersionOutputString = `INFO [25-10-14 19:24:57:67] Working directory: /home/test/Projects/git-tool-actions/.test
 INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
 INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git
 INFO [25-10-14 19:24:57:67] Branch from build environment: 
@@ -240,9 +241,9 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
   "AssemblySemFileVer": "0.1.2.3",
   "AssemblySemVer": "0.1.2.3",
   "BranchName": "test/delete/me/{if}/found",
-  "BuildMetaData": 2840,
+  "BuildMetaData": 2841,
   "CommitDate": "2025-10-14",
-  "CommitsSinceVersionSource": 2840,
+  "CommitsSinceVersionSource": 2841,
   "EscapedBranchName": "test-delete-me--if--found",
   "FullBuildMetaData": "2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2",
   "FullSemVer": "1.2.3-test-delete-me--if--found.1+2840",
@@ -268,9 +269,9 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
                 AssemblySemFileVer: '0.1.2.3',
                 AssemblySemVer: '0.1.2.3',
                 BranchName: 'test/delete/me/{if}/found',
-                BuildMetaData: 2840,
+                BuildMetaData: 2841,
                 CommitDate: '2025-10-14',
-                CommitsSinceVersionSource: 2840,
+                CommitsSinceVersionSource: 2841,
                 EscapedBranchName: 'test-delete-me--if--found',
                 FullBuildMetaData: '2840.Branch.test-delete-me--if--found.Sha.c87a775d03b610759891de381b93211f0dc6eac2',
                 FullSemVer: '1.2.3-test-delete-me--if--found.1+2840',
@@ -306,6 +307,7 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
             // Example GitVersion logs
             const invalidGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
 INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
+INFO [25-10-14 19:24:57:67] This is a crafted example log for testing malformed output
 ERROR [25-10-14 19:24:57:67] Output is malformed! 
   "AssemblySemFileVer": "0.1.0.0",
   "AssemblySemVer": "0.1.0.0",
