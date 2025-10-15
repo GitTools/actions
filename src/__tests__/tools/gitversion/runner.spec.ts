@@ -150,8 +150,15 @@ describe('GitVersion Runner', () => {
 
             const gitClient = simpleGit()
 
-            const startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
+            let startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
+
+            //If git is in detached state
+            if (startBranch === 'HEAD') {
+                startBranch = await gitClient.revparse(['HEAD'])
+            }
             console.log(`Starting branch: ${startBranch}`)
+
+            // Create and switch to test branch
             await gitClient.checkoutLocalBranch(cleanBranchName)
 
             const result = await runner.run('execute')
@@ -181,7 +188,11 @@ describe('GitVersion Runner', () => {
 
             const gitClient = simpleGit()
 
-            const startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
+            let startBranch = await gitClient.revparse(['--abbrev-ref', 'HEAD'])
+            //If git is in detached state
+            if (startBranch === 'HEAD') {
+                startBranch = await gitClient.revparse(['HEAD'])
+            }
             console.log(`Starting branch: ${startBranch}`)
             await gitClient.checkoutLocalBranch(jsonBranchName)
 
@@ -210,6 +221,7 @@ describe('GitVersion Runner', () => {
         it.sequential('git version output extractor should return valid', () => {
             setEnv(toolPathVariable, toolPath)
 
+            // Example GitVersion logs
             const validGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
 INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
 INFO [25-10-14 19:24:57:67] DotGit directory is: /home/test/Projects/git-tool-actions/.git
@@ -284,6 +296,7 @@ INFO [25-10-14 19:24:57:81] No configuration file found, using default configura
         it.sequential('git version output is malformed, extractor should return null', () => {
             setEnv(toolPathVariable, toolPath)
 
+            // Example GitVersion logs
             const invalidGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
 INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
 ERROR [25-10-14 19:24:57:67] Output is malformed! 
