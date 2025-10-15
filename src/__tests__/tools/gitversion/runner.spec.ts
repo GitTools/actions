@@ -10,7 +10,6 @@ import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
 import { getEnv, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
-import { _ } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
@@ -122,15 +121,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/showvariable Sha'
             })
 
-            // const sha = await simpleGit().revparse(['HEAD'])
-            const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
-
-            console.log('Git log info: ', gitLogInfo)
-
-            expect(gitLogInfo).toBeDefined()
-            expect(gitLogInfo).toHaveProperty('latest')
-
-            const shaHash = gitLogInfo.latest?.hash
+            const shaHash = await getLatestCommitHash()
 
             console.log('Commit hash found: ', shaHash)
 
@@ -148,15 +139,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/format {Sha}'
             })
 
-            // const sha = await simpleGit().revparse(['HEAD'])
-            const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
-
-            console.log('Git log info: ', gitLogInfo)
-
-            expect(gitLogInfo).toBeDefined()
-            expect(gitLogInfo).toHaveProperty('latest')
-
-            const shaHash = gitLogInfo.latest?.hash
+            const shaHash = await getLatestCommitHash()
 
             console.log('Commit hash found: ', shaHash)
 
@@ -370,3 +353,14 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
         testOnAgent(new AzurePipelinesAgent())
     })
 })
+
+async function getLatestCommitHash(): Promise<string | undefined> {
+    const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' } })
+
+    console.log('Git log info: ', gitLogInfo)
+
+    expect(gitLogInfo).toBeDefined()
+    expect(gitLogInfo).toHaveProperty('latest')
+
+    return gitLogInfo.latest?.hash
+}
