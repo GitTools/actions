@@ -53,7 +53,8 @@ export function allIndexesOf(searchString: string, indexOf: string): number[] {
         throw new Error('indexOf must be a single character')
     }
 
-    const resultArray = []
+    const resultArray: number[] = []
+
     for (let i = 0; i < searchString.length; i++) {
         if (searchString[i] === indexOf) {
             resultArray.push(i)
