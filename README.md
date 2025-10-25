@@ -129,14 +129,12 @@ When contributing to this project, please follow these guidelines for creating p
    - Push your changes to your fork: `git push origin your-branch`
    - Go to the original repository on GitHub
    - Click "New Pull Request" and select your feature branch
-   - Fill out the PR template with all relevant information
    - Link any related issues
 
 6. **PR Guidelines**
    - Keep PRs focused and single-purpose
    - Include tests and documentation updates
    - Ensure CI checks pass
-   - Be responsive to code review feedback
 
 7. **After PR is Merged**
    - Delete your feature branch locally and remotely
