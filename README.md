@@ -92,3 +92,53 @@ If developing on Windows, please consider using WSL as it's likely you will run 
 - `src/agents/` - Build agent implementations for different CI platforms
 - `src/__tests__/` - Test suites organized by component
 - `docs/examples/` - Usage examples for both GitHub Actions and Azure Pipelines
+
+### Creating Pull Requests
+
+When contributing to this project, please follow these guidelines for creating pull requests:
+
+1. **Fork and Clone**
+   - Fork the repository to your GitHub account
+   - Clone your fork locally: `git clone https://github.com/YOUR-USERNAME/actions.git`
+   - Add upstream remote: `git remote add upstream https://github.com/GitTools/actions.git`
+
+2. **Create a Feature Branch**
+   - Create a branch from main: `git checkout -b feature/your-feature-name`
+   - Use descriptive branch names (e.g., `feature/add-new-version-format`, `fix/issue-123`)
+
+3. **Keep Your Branch Updated**
+   - Fetch upstream changes: `git fetch upstream`
+   - Rebase your branch on upstream main:
+
+     ```bash
+     git checkout main
+     git rebase upstream/main
+     git checkout your-branch
+     git rebase main
+     ```
+
+   - Always use rebase instead of merge to maintain a clean history
+
+4. **Make Your Changes**
+   - Make commits with clear, descriptive messages
+   - Follow the project's code style and conventions
+   - Add tests for new features or bug fixes
+   - Run tests locally to ensure everything passes
+
+5. **Submit the Pull Request**
+   - Push your changes to your fork: `git push origin your-branch`
+   - Go to the original repository on GitHub
+   - Click "New Pull Request" and select your feature branch
+   - Fill out the PR template with all relevant information
+   - Link any related issues
+
+6. **PR Guidelines**
+   - Keep PRs focused and single-purpose
+   - Include tests and documentation updates
+   - Ensure CI checks pass
+   - Be responsive to code review feedback
+
+7. **After PR is Merged**
+   - Delete your feature branch locally and remotely
+   - Update your main branch with the upstream changes
+   - Celebrate your contribution! 🎉
