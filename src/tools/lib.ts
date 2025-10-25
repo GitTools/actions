@@ -36,3 +36,30 @@ export async function run(agent: string, tool: string, command: string): Promise
     const runner = await getToolRunner(agent, tool)
     return await runner.run(command)
 }
+
+/**
+ * Returns all indexes of a specified single character within a given string.
+ *
+ * Iterates through the `searchString` and collects the zero-based indexes
+ * where the character `indexOf` appears. Throws an error if `indexOf` is not a single character.
+ *
+ * @param searchString - The string to search within.
+ * @param indexOf - The single character to find in the string.
+ * @returns An array of indexes where the character appears in the string.
+ * @throws {Error} If `indexOf` is not a single character.
+ */
+export function allIndexesOf(searchString: string, indexOf: string): number[] {
+    if (indexOf.length !== 1) {
+        throw new Error('indexOf must be a single character')
+    }
+
+    const resultArray: number[] = []
+
+    for (let i = 0; i < searchString.length; i++) {
+        if (searchString[i] === indexOf) {
+            resultArray.push(i)
+        }
+    }
+
+    return resultArray
+}
