@@ -15,6 +15,7 @@ export type ExecuteSettings = {
 
 export type CommandSettings = {
     targetPath: string
+    disableNormalization: boolean
     disableShallowCloneCheck: boolean
     arguments: string
 }

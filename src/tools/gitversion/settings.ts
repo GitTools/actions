@@ -41,11 +41,13 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
     getCommandSettings(): CommandSettings {
         const targetPath = this.buildAgent.getInput<CommandSettings>('targetPath')
+        const disableNormalization = this.buildAgent.getBooleanInput<CommandSettings>('disableNormalization')
         const disableShallowCloneCheck = this.buildAgent.getBooleanInput<CommandSettings>('disableShallowCloneCheck')
         const args = this.buildAgent.getInput<CommandSettings>('arguments')
 
         return {
             targetPath,
+            disableNormalization,
             disableShallowCloneCheck,
             arguments: args
         }

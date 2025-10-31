@@ -32,10 +32,12 @@ class GitVersionSettingsProvider extends SettingsProvider {
   }
   getCommandSettings() {
     const targetPath = this.buildAgent.getInput("targetPath");
+    const disableNormalization = this.buildAgent.getBooleanInput("disableNormalization");
     const disableShallowCloneCheck = this.buildAgent.getBooleanInput("disableShallowCloneCheck");
     const args = this.buildAgent.getInput("arguments");
     return {
       targetPath,
+      disableNormalization,
       disableShallowCloneCheck,
       arguments: args
     };
@@ -153,6 +155,9 @@ class GitVersionTool extends DotnetTool {
   }
   getCommandArguments(workDir, options) {
     const builder = new ArgumentsBuilder().addArgument(workDir);
+    if (options.disableNormalization) {
+      builder.addArgument("/nonormalize");
+    }
     if (options.arguments) {
       builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments));
     }

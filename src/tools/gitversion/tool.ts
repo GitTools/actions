@@ -142,6 +142,10 @@ export class GitVersionTool extends DotnetTool {
     protected getCommandArguments(workDir: string, options: CommandSettings): string[] {
         const builder = new ArgumentsBuilder().addArgument(workDir)
 
+        if (options.disableNormalization) {
+            builder.addArgument('/nonormalize')
+        }
+
         if (options.arguments) {
             builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
         }

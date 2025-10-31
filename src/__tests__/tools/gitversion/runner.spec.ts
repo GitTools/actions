@@ -34,6 +34,10 @@ describe('GitVersion Runner', () => {
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
+            setInputs({
+                disableShallowCloneCheck: true,
+                disableNormalization: true
+            })
         })
 
         afterEach(() => {
