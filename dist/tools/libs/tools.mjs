@@ -203,7 +203,7 @@ class DotnetTool {
       }
     }
     if (!toolPath) {
-      toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources);
+      toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources, setupSettings.nugetConfigPath);
       this.buildAgent.info("--------------------------");
       this.buildAgent.info(`${this.packageName} version: ${version} installed.`);
       this.buildAgent.info("--------------------------");
@@ -349,7 +349,7 @@ class DotnetTool {
     }
     return version;
   }
-  async installTool(toolName, version, ignoreFailedSources) {
+  async installTool(toolName, version, ignoreFailedSources, nugetConfigPath) {
     const semverVersion = semverExports.clean(version);
     if (!semverVersion) {
       throw new Error(`Invalid version spec: ${version}`);
@@ -361,6 +361,9 @@ class DotnetTool {
     const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", tempDirectory).addKeyValue("version", semverVersion);
     if (ignoreFailedSources) {
       builder.addFlag("ignore-failed-sources");
+    }
+    if (nugetConfigPath) {
+      builder.addKeyValue("configfile", nugetConfigPath);
     }
     const result = await this.execute("dotnet", builder.build());
     const status = result.code === 0 ? "success" : "failure";
@@ -403,11 +406,13 @@ class SettingsProvider {
     const includePrerelease = this.buildAgent.getBooleanInput("includePrerelease");
     const ignoreFailedSources = this.buildAgent.getBooleanInput("ignoreFailedSources");
     const preferLatestVersion = this.buildAgent.getBooleanInput("preferLatestVersion");
+    const nugetConfigPath = this.buildAgent.getInput("nugetConfigPath", false);
     return {
       versionSpec,
       includePrerelease,
       ignoreFailedSources,
-      preferLatestVersion
+      preferLatestVersion,
+      nugetConfigPath
     };
   }
 }

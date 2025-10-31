@@ -77,7 +77,7 @@ export abstract class DotnetTool implements IDotnetTool {
 
         if (!toolPath) {
             // Download, extract, cache
-            toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources)
+            toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources, setupSettings.nugetConfigPath)
             this.buildAgent.info('--------------------------')
             this.buildAgent.info(`${this.packageName} version: ${version} installed.`)
             this.buildAgent.info('--------------------------')
@@ -267,7 +267,7 @@ export abstract class DotnetTool implements IDotnetTool {
         return version
     }
 
-    private async installTool(toolName: string, version: string, ignoreFailedSources: boolean): Promise<string> {
+    private async installTool(toolName: string, version: string, ignoreFailedSources: boolean, nugetConfigPath: string): Promise<string> {
         const semverVersion = semver.clean(version)
         if (!semverVersion) {
             throw new Error(`Invalid version spec: ${version}`)
@@ -288,6 +288,10 @@ export abstract class DotnetTool implements IDotnetTool {
 
         if (ignoreFailedSources) {
             builder.addFlag('ignore-failed-sources')
+        }
+
+        if (nugetConfigPath) {
+            builder.addKeyValue('configfile', nugetConfigPath)
         }
 
         const result = await this.execute('dotnet', builder.build())

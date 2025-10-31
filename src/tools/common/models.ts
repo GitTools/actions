@@ -5,6 +5,7 @@ export type SetupSettings = {
     includePrerelease: boolean
     ignoreFailedSources: boolean
     preferLatestVersion: boolean
+    nugetConfigPath: string
 }
 
 export type IRunner = {

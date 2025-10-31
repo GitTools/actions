@@ -13,12 +13,14 @@ export class SettingsProvider implements ISettingsProvider {
         const includePrerelease = this.buildAgent.getBooleanInput<SetupSettings>('includePrerelease')
         const ignoreFailedSources = this.buildAgent.getBooleanInput<SetupSettings>('ignoreFailedSources')
         const preferLatestVersion = this.buildAgent.getBooleanInput<SetupSettings>('preferLatestVersion')
+        const nugetConfigPath = this.buildAgent.getInput<SetupSettings>('nugetConfigPath', false)
 
         return {
             versionSpec,
             includePrerelease,
             ignoreFailedSources,
-            preferLatestVersion
+            preferLatestVersion,
+            nugetConfigPath
         }
     }
 }
