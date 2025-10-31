@@ -10,7 +10,7 @@ The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.3.x or exact version like 6.3.0.
+  description: Required version in the form of 6.4.x or exact version like 6.4.0.
   required: true
   default: ''
 includePrerelease:
@@ -47,7 +47,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.1.0
     with:
-      versionSpec: '6.3.x'
+      versionSpec: '6.4.x'
 ```
 
 ### Example 2
@@ -71,7 +71,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.1.0
     with:
-      versionSpec: '6.3.x'
+      versionSpec: '6.4.x'
       includePrerelease: true
 ```
 
@@ -84,6 +84,6 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.1.0
     with:
-      versionSpec: '6.3.x'
+      versionSpec: '6.4.x'
       preferLatestVersion: true
 ```
