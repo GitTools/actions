@@ -23,4 +23,25 @@ describe('SettingsProvider', () => {
 
         expectValidSettings(settings, setupSettings)
     })
+
+    it('should return SetupSettings with nugetConfigPath', () => {
+        const settings: SetupSettings = {
+            versionSpec: '6.4.x',
+            includePrerelease: false,
+            ignoreFailedSources: false,
+            preferLatestVersion: false,
+            nugetConfigPath: '/path/to/nuget.config'
+        }
+
+        const buildAgent = {
+            getInput: (input: keyof SetupSettings) => settings[input] as string,
+            getBooleanInput: (input: keyof SetupSettings) => settings[input] as boolean
+        } as IBuildAgent
+
+        const settingsProvider = new SettingsProvider(buildAgent)
+
+        const setupSettings = settingsProvider.getSetupSettings()
+
+        expectValidSettings(settings, setupSettings)
+    })
 })

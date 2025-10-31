@@ -25,6 +25,10 @@ preferLatestVersion:
   description: Prefer to download the latest version matching the versionSpec, even if there is a local cached version.
   required: false
   default: 'false'
+nugetConfigPath:
+  description: Optional path to a NuGet configuration file to use for package sources.
+  required: false
+  default: ''
 ```
 
 ---
@@ -87,4 +91,17 @@ steps:
     inputs:
       versionSpec: '6.4.x'
       preferLatestVersion: true
+```
+
+### Example 5
+
+Install GitVersion using a custom NuGet configuration file. This is useful in enterprise environments where access to public NuGet feeds is restricted and a private feed (such as Azure Artifacts or Artifactory) is used instead.
+
+```yaml
+steps:
+  - task: gitversion-setup@4.1.0
+    displayName: Install GitVersion
+    inputs:
+      versionSpec: '6.4.x'
+      nugetConfigPath: '$(Build.SourcesDirectory)/nuget.config'
 ```

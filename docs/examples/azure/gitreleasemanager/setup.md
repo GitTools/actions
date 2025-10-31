@@ -21,6 +21,10 @@ ignoreFailedSources:
   description: Treat package source failures as warnings.
   required: false
   default: false
+nugetConfigPath:
+  description: Optional path to a NuGet configuration file to use for package sources.
+  required: false
+  default: ''
 ```
 
 ### Example 1
@@ -58,4 +62,17 @@ steps:
     inputs:
       versionSpec: '0.20.x'
       preferLatestVersion: true
+```
+
+### Example 4
+
+Install GitReleaseManager using a custom NuGet configuration file. This is useful in enterprise environments where access to public NuGet feeds is restricted and a private feed (such as Azure Artifacts or Artifactory) is used instead.
+
+```yaml
+steps:
+  - task: gitreleasemanager-setup@4.1.0
+    displayName: Install GitReleaseManager
+    inputs:
+      versionSpec: '0.20.x'
+      nugetConfigPath: '$(Build.SourcesDirectory)/nuget.config'
 ```

@@ -21,6 +21,10 @@ ignoreFailedSources:
   description: Treat package source failures as warnings.
   required: false
   default: false
+nugetConfigPath:
+  description: Optional path to a NuGet configuration file to use for package sources.
+  required: false
+  default: ''
 ```
 
 ---
@@ -86,4 +90,17 @@ steps:
     with:
       versionSpec: '6.4.x'
       preferLatestVersion: true
+```
+
+### Example 5
+
+Install GitVersion using a custom NuGet configuration file. This is useful in enterprise environments where access to public NuGet feeds is restricted and a private feed (such as Azure Artifacts or Artifactory) is used instead.
+
+```yaml
+steps:
+  - name: Install GitVersion
+    uses: gittools/actions/gitversion/setup@v4.1.0
+    with:
+      versionSpec: '6.4.x'
+      nugetConfigPath: '${{ github.workspace }}/nuget.config'
 ```

@@ -53,6 +53,14 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Prefer to download the latest version matching the versionSpec, even if there is a local cached version."
+    },
+    {
+      "name": "nugetConfigPath",
+      "type": "string",
+      "label": "NuGet Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional path to a NuGet configuration file to use for package sources."
     }
   ]
 }
