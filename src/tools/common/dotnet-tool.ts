@@ -267,7 +267,7 @@ export abstract class DotnetTool implements IDotnetTool {
         return version
     }
 
-    private async installTool(toolName: string, version: string, ignoreFailedSources: boolean, nugetConfigPath: string): Promise<string> {
+    private async installTool(toolName: string, version: string, ignoreFailedSources: boolean, nugetConfigPath?: string): Promise<string> {
         const semverVersion = semver.clean(version)
         if (!semverVersion) {
             throw new Error(`Invalid version spec: ${version}`)

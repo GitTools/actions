@@ -9,8 +9,7 @@ describe('SettingsProvider', () => {
             versionSpec: '6.4.x',
             includePrerelease: false,
             ignoreFailedSources: true,
-            preferLatestVersion: false,
-            nugetConfigPath: ''
+            preferLatestVersion: false
         }
 
         const buildAgent = {

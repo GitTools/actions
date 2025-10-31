@@ -39,8 +39,7 @@ class TestDotnetTool extends DotnetTool {
                 versionSpec: '1.0.0',
                 includePrerelease: false,
                 preferLatestVersion: false,
-                ignoreFailedSources: false,
-                nugetConfigPath: ''
+                ignoreFailedSources: false
             })
         }
     }
