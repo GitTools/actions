@@ -68,10 +68,10 @@
     "tfx-cli": "^0.22.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
-    "vite": "^7.1.11",
+    "vite": "^7.1.12",
     "vite-node": "^3.2.4",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.6"
   },
   "dependencies": {
     "semver": "^7.7.3"

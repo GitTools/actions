@@ -94,8 +94,8 @@ describe('DotnetTool', () => {
 
     describe('findToolExecutable', () => {
         function setupMockFileExists(mockFileExists: ReturnType<typeof vi.fn>, filePath: string): void {
-            mockFileExists.mockImplementation(async (path: string) => {
-                return Promise.resolve(path === filePath)
+            mockFileExists.mockImplementation((path: string) => {
+                return path === filePath
             })
             buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
         }
@@ -180,8 +180,8 @@ describe('DotnetTool', () => {
             const basePath = '/tools/test-tool'
             const customDirPath = path.join(basePath, 'custom-dir', 'test-tool')
 
-            const mockFileExists = vi.fn().mockImplementation(async (filePath: string) => {
-                return Promise.resolve(filePath === customDirPath)
+            const mockFileExists = vi.fn().mockImplementation((filePath: string) => {
+                return filePath === customDirPath
             })
 
             buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
