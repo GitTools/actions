@@ -1,4 +1,4 @@
-function update-md-files()
+function update-files()
 {
     param(
         [Parameter(Mandatory = $True, Position = 0, ValueFromPipeline = $true)]
@@ -14,7 +14,7 @@ function update-md-files()
         $newVersion
     )
     $file = Resolve-Path $file
-    Write-Host "Update md file $file version from $oldVersion to $newVersion"
+    Write-Host "Update file $file version from $oldVersion to $newVersion"
 
     ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
 }
