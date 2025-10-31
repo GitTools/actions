@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "a06c02ae-7b9a-4082-90dc-fe27b500e54f",
   "name": "gitversion-setup",
   "friendlyName": "Setup GitVersion Task",
