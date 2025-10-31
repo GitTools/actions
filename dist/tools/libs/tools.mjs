@@ -412,7 +412,7 @@ class SettingsProvider {
       includePrerelease,
       ignoreFailedSources,
       preferLatestVersion,
-      nugetConfigPath: nugetConfigPath || void 0
+      nugetConfigPath
     };
   }
 }

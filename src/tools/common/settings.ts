@@ -20,7 +20,7 @@ export class SettingsProvider implements ISettingsProvider {
             includePrerelease,
             ignoreFailedSources,
             preferLatestVersion,
-            nugetConfigPath: nugetConfigPath || undefined
+            nugetConfigPath
         }
     }
 }
