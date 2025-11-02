@@ -57,13 +57,7 @@ export class Runner extends RunnerBase {
             try {
                 gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile)
             } catch (error) {
-                const errorMessage = `Failed to read or parse GitVersion output file: ${error instanceof Error ? error.message : String(error)}`
-                this.buildAgent.debug(errorMessage)
-                this.buildAgent.setFailed(errorMessage, true)
-                return {
-                    code: -1,
-                    error: new Error(errorMessage)
-                }
+                return this.handleOutputError(`Failed to read or parse GitVersion output file: ${this.getErrorMessage(error)}`)
             }
         } else {
             // Fallback to parsing stdout (for backward compatibility)
@@ -73,19 +67,26 @@ export class Runner extends RunnerBase {
         }
 
         if (gitVersionOutput === null) {
-            const errorMessage = 'GitVersion output is not valid JSON, see output details'
-            this.buildAgent.debug(errorMessage)
-            this.buildAgent.setFailed(errorMessage, true)
-            return {
-                code: -1,
-                error: new Error(errorMessage)
-            }
+            return this.handleOutputError('GitVersion output is not valid JSON, see output details')
         }
 
         this.tool.writeGitVersionToAgent(gitVersionOutput)
         this.tool.updateBuildNumber()
         this.buildAgent.setSucceeded('GitVersion executed successfully', true)
         return result
+    }
+
+    private getErrorMessage(error: unknown): string {
+        return error instanceof Error ? error.message : String(error)
+    }
+
+    private handleOutputError(message: string): ExecResult {
+        this.buildAgent.debug(message)
+        this.buildAgent.setFailed(message, true)
+        return {
+            code: -1,
+            error: new Error(message)
+        }
     }
 
     /**

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import * as fs from 'node:fs/promises'
 import { type IBuildAgent } from '@agents/common'
 import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool, IGitVersionSettingsProvider } from '@tools/gitversion'
 
@@ -292,7 +293,6 @@ describe('GitVersionTool', () => {
             tool = new TestGitVersionTool(buildAgent)
 
             // Write test file
-            const fs = await import('node:fs/promises')
             await fs.writeFile(outputFile, JSON.stringify(expectedOutput))
 
             try {
@@ -317,7 +317,6 @@ describe('GitVersionTool', () => {
             tool = new TestGitVersionTool(buildAgent)
 
             // Write invalid JSON
-            const fs = await import('node:fs/promises')
             await fs.writeFile(outputFile, 'invalid json content')
 
             try {

@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
+import * as crypto from 'node:crypto';
 import { S as SettingsProvider, D as DotnetTool, k as keysOf, A as ArgumentsBuilder, R as RunnerBase } from './tools.mjs';
-import 'node:crypto';
 import 'node:os';
 import './semver.mjs';
 import { allIndexesOf } from '../lib.mjs';
@@ -63,7 +63,7 @@ class GitVersionTool extends DotnetTool {
     const settings = this.settingsProvider.getExecuteSettings();
     const workDir = await this.getRepoDir(settings);
     await this.checkShallowClone(settings, workDir);
-    const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${Date.now()}.json`);
+    const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`);
     const args = await this.getExecuteArguments(workDir, settings, outputFile);
     await this.setDotnetRoot();
     const result = await this.executeTool(args);
@@ -232,13 +232,7 @@ class Runner extends RunnerBase {
       try {
         gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile);
       } catch (error) {
-        const errorMessage = `Failed to read or parse GitVersion output file: ${error instanceof Error ? error.message : String(error)}`;
-        this.buildAgent.debug(errorMessage);
-        this.buildAgent.setFailed(errorMessage, true);
-        return {
-          code: -1,
-          error: new Error(errorMessage)
-        };
+        return this.handleOutputError(`Failed to read or parse GitVersion output file: ${this.getErrorMessage(error)}`);
       }
     } else {
       this.buildAgent.debug("Parsing GitVersion output from stdout");
@@ -246,18 +240,23 @@ class Runner extends RunnerBase {
       gitVersionOutput = this.extractGitVersionOutput(stdout);
     }
     if (gitVersionOutput === null) {
-      const errorMessage = "GitVersion output is not valid JSON, see output details";
-      this.buildAgent.debug(errorMessage);
-      this.buildAgent.setFailed(errorMessage, true);
-      return {
-        code: -1,
-        error: new Error(errorMessage)
-      };
+      return this.handleOutputError("GitVersion output is not valid JSON, see output details");
     }
     this.tool.writeGitVersionToAgent(gitVersionOutput);
     this.tool.updateBuildNumber();
     this.buildAgent.setSucceeded("GitVersion executed successfully", true);
     return result;
+  }
+  getErrorMessage(error) {
+    return error instanceof Error ? error.message : String(error);
+  }
+  handleOutputError(message) {
+    this.buildAgent.debug(message);
+    this.buildAgent.setFailed(message, true);
+    return {
+      code: -1,
+      error: new Error(message)
+    };
   }
   /**
    * Attempts to extract and parse a JSON object representing `GitVersionOutput` from the given input string.

@@ -1,5 +1,6 @@
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
+import * as crypto from 'node:crypto'
 import { type ExecResult } from '@agents/common'
 import { ArgumentsBuilder, DotnetTool, keysOf } from '@tools/common'
 import { type CommandSettings, type ExecuteSettings, type GitVersionOutput } from './models'
@@ -32,7 +33,7 @@ export class GitVersionTool extends DotnetTool {
 
         await this.checkShallowClone(settings, workDir)
 
-        const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${Date.now()}.json`)
+        const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`)
         const args = await this.getExecuteArguments(workDir, settings, outputFile)
 
         await this.setDotnetRoot()
