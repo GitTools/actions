@@ -17,8 +17,8 @@ class TestGitVersionTool extends GitVersionTool {
         return super.getRepoDir(settings)
     }
 
-    async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
-        return super.getExecuteArguments(workDir, options)
+    async getExecuteArguments(workDir: string, options: ExecuteSettings, outputFile?: string): Promise<string[]> {
+        return super.getExecuteArguments(workDir, options, outputFile)
     }
 
     getCommandArguments(workDir: string, options: CommandSettings): string[] {
@@ -264,6 +264,68 @@ describe('GitVersionTool', () => {
                 updateProjectFiles: true
             } as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateprojectfiles'])
+        })
+
+        it('should include outputfile argument when output file is provided', async () => {
+            const outputFile = '/tmp/gitversion-123.json'
+            const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings, outputFile)
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/outputfile', outputFile])
+        })
+
+        it('should not include outputfile argument when output file is not provided', async () => {
+            const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console'])
+        })
+    })
+
+    describe('readGitVersionOutput', () => {
+        it('should read and parse JSON file correctly', async () => {
+            const outputFile = '/tmp/test-gitversion-output.json'
+            const expectedOutput: Partial<GitVersionOutput> = {
+                Major: 1,
+                Minor: 2,
+                Patch: 3,
+                SemVer: '1.2.3'
+            }
+
+            const buildAgent = {} as IBuildAgent
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Write test file
+            const fs = await import('node:fs/promises')
+            await fs.writeFile(outputFile, JSON.stringify(expectedOutput))
+
+            try {
+                const result = await tool.readGitVersionOutput(outputFile)
+                expect(result).toEqual(expectedOutput)
+
+                // Verify file was deleted
+                const fileExists = await fs
+                    .access(outputFile)
+                    .then(() => true)
+                    .catch(() => false)
+                expect(fileExists).toBe(false)
+            } finally {
+                // Cleanup in case test failed
+                await fs.unlink(outputFile).catch(() => {})
+            }
+        })
+
+        it('should throw error for invalid JSON file', async () => {
+            const outputFile = '/tmp/test-gitversion-invalid.json'
+            const buildAgent = {} as IBuildAgent
+            tool = new TestGitVersionTool(buildAgent)
+
+            // Write invalid JSON
+            const fs = await import('node:fs/promises')
+            await fs.writeFile(outputFile, 'invalid json content')
+
+            try {
+                await expect(tool.readGitVersionOutput(outputFile)).rejects.toThrow()
+            } finally {
+                // Cleanup
+                await fs.unlink(outputFile).catch(() => {})
+            }
         })
     })
 
