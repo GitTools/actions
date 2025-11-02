@@ -121,7 +121,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/showvariable Sha'
             })
 
-            const shaHash = await getLatestCommitHash()
+            const shaHash = await simpleGit().revparse(['HEAD'])
 
             const result = await runner.run('command')
 
@@ -137,7 +137,7 @@ describe('GitVersion Runner', () => {
                 arguments: '/format {Sha}'
             })
 
-            const shaHash = await getLatestCommitHash()
+            const shaHash = await simpleGit().revparse(['HEAD'])
 
             const result = await runner.run('command')
 
@@ -195,7 +195,7 @@ describe('GitVersion Runner', () => {
             const invalidGitVersionOutputString = `INFO [25-10-14 19:24:57:66] Working directory: /home/test/Projects/git-tool-actions/.test
 INFO [25-10-14 19:24:57:67] Project root is: /home/test/Projects/git-tool-actions/
 INFO [25-10-14 19:24:57:67] This is a crafted example log for testing malformed output
-ERROR [25-10-14 19:24:57:67] Output is malformed! 
+ERROR [25-10-14 19:24:57:67] Output is malformed!
   "AssemblySemFileVer": "0.1.0.0",
   "AssemblySemVer": "0.1.0.0",
   "BranchName": "test/branch/{with}/brackets",
@@ -241,23 +241,6 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
         testOnAgent(new AzurePipelinesAgent())
     })
 })
-
-/**
- * This gets the latest commit hash without any merge commits.
- * Merge commits are omitted as it can cause tests to fail when run as part of CI
- *
- * @returns Latest commit hash as a string
- */
-async function getLatestCommitHash(): Promise<string | undefined> {
-    const gitLogInfo = await simpleGit().log({ maxCount: 1, format: { hash: '%H' }, '--no-merges': null })
-
-    console.log('Git log info: ', gitLogInfo)
-
-    expect(gitLogInfo).toBeDefined()
-    expect(gitLogInfo).toHaveProperty('latest')
-
-    return gitLogInfo.latest?.hash
-}
 
 // Helper to create fixture (log + expected object)
 function createGitVersionFixture(params: {
