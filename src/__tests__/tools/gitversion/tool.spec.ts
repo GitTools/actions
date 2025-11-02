@@ -270,12 +270,26 @@ describe('GitVersionTool', () => {
         it('should include outputfile argument when output file is provided', async () => {
             const outputFile = '/tmp/gitversion-123.json'
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings, outputFile)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/outputfile', outputFile])
+            expect(args).toEqual(['workdir', '/output', 'file', '/outputfile', outputFile, '/l', 'console'])
         })
 
         it('should not include outputfile argument when output file is not provided', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console'])
+        })
+
+        it('should include outputfile with other settings', async () => {
+            tool.init(true)
+            const outputFile = '/tmp/gitversion-123.json'
+            const args = await tool.getExecuteArguments(
+                'workdir',
+                {
+                    disableCache: true,
+                    configFilePath: 'workdir/GitVersion.yml'
+                } as ExecuteSettings,
+                outputFile
+            )
+            expect(args).toEqual(['workdir', '/output', 'file', '/outputfile', outputFile, '/l', 'console', '/nocache', '/config', 'workdir/GitVersion.yml'])
         })
     })
 

@@ -107,10 +107,13 @@ class GitVersionTool extends DotnetTool {
     return await super.getRepoPath(settings.targetPath);
   }
   async getExecuteArguments(workDir, options, outputFile) {
-    const builder = new ArgumentsBuilder().addArgument(workDir).addArgument("/output").addArgument("json").addArgument("/l").addArgument("console");
+    const builder = new ArgumentsBuilder().addArgument(workDir);
     if (outputFile) {
-      builder.addArgument("/outputfile").addArgument(outputFile);
+      builder.addArgument("/output").addArgument("file").addArgument("/outputfile").addArgument(outputFile);
+    } else {
+      builder.addArgument("/output").addArgument("json");
     }
+    builder.addArgument("/l").addArgument("console");
     const {
       disableCache,
       disableNormalization,
