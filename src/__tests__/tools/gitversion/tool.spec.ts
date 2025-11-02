@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as fs from 'node:fs/promises'
+import * as os from 'node:os'
+import * as path from 'node:path'
 import { type IBuildAgent } from '@agents/common'
 import { type GitVersionOutput, type CommandSettings, type ExecuteSettings, GitVersionTool, IGitVersionSettingsProvider } from '@tools/gitversion'
 
@@ -295,7 +297,7 @@ describe('GitVersionTool', () => {
 
     describe('readGitVersionOutput', () => {
         it('should read and parse JSON file correctly', async () => {
-            const outputFile = '/tmp/test-gitversion-output.json'
+            const outputFile = path.join(os.tmpdir(), 'test-gitversion-output.json')
             const expectedOutput: Partial<GitVersionOutput> = {
                 Major: 1,
                 Minor: 2,
@@ -326,7 +328,7 @@ describe('GitVersionTool', () => {
         })
 
         it('should throw error for invalid JSON file', async () => {
-            const outputFile = '/tmp/test-gitversion-invalid.json'
+            const outputFile = path.join(os.tmpdir(), 'test-gitversion-invalid.json')
             const buildAgent = {} as IBuildAgent
             tool = new TestGitVersionTool(buildAgent)
 
