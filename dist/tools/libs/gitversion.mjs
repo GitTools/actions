@@ -4,6 +4,7 @@ import 'node:fs/promises';
 import 'node:os';
 import 'node:path';
 import './semver.mjs';
+import { allIndexesOf } from '../lib.mjs';
 
 class GitVersionSettingsProvider extends SettingsProvider {
   getExecuteSettings() {
@@ -202,7 +203,6 @@ class Runner extends RunnerBase {
   async execute() {
     return this.safeExecute(async () => {
       const result = await this.tool.executeJson();
-      this.buildAgent.debug("Parsing GitVersion output");
       return this.processGitVersionOutput(result);
     }, "GitVersion executed successfully");
   }
@@ -210,27 +210,69 @@ class Runner extends RunnerBase {
     return this.safeExecute(async () => await this.tool.executeCommand(), "GitVersion executed successfully");
   }
   processGitVersionOutput(result) {
-    if (result.code === 0) {
-      const stdout = result.stdout;
-      if (stdout.lastIndexOf("{") === -1 || stdout.lastIndexOf("}") === -1) {
-        const errorMessage = "GitVersion output is not valid JSON, see output details";
-        this.buildAgent.debug(errorMessage);
-        this.buildAgent.setFailed(errorMessage, true);
-        return {
-          code: -1,
-          error: new Error(errorMessage)
-        };
-      } else {
-        const jsonOutput = stdout.substring(stdout.lastIndexOf("{"), stdout.lastIndexOf("}") + 1);
-        const gitVersionOutput = JSON.parse(jsonOutput);
-        this.tool.writeGitVersionToAgent(gitVersionOutput);
-        this.tool.updateBuildNumber();
-        this.buildAgent.setSucceeded("GitVersion executed successfully", true);
-        return result;
-      }
-    } else {
+    this.buildAgent.debug("Parsing GitVersion output");
+    if (result.code !== 0) {
       return result;
     }
+    const stdout = result.stdout;
+    const gitVersionOutput = this.extractGitVersionOutput(stdout);
+    if (gitVersionOutput === null) {
+      const errorMessage = "GitVersion output is not valid JSON, see output details";
+      this.buildAgent.debug(errorMessage);
+      this.buildAgent.setFailed(errorMessage, true);
+      return {
+        code: -1,
+        error: new Error(errorMessage)
+      };
+    }
+    this.tool.writeGitVersionToAgent(gitVersionOutput);
+    this.tool.updateBuildNumber();
+    this.buildAgent.setSucceeded("GitVersion executed successfully", true);
+    return result;
+  }
+  /**
+   * Attempts to extract and parse a JSON object representing `GitVersionOutput` from the given input string.
+   * The method assumes the last closing curly brace (`}`) in the input belongs to the end of the JSON object,
+   * and iteratively expands the search area backwards from each opening curly brace (`{`) until a valid JSON object is found.
+   * If parsing fails, it logs debug information and continues searching until all possible start positions are exhausted.
+   *
+   * @param input - The string containing the potential JSON output from GitVersion.
+   * @returns The parsed `GitVersionOutput` object if extraction and parsing succeed; otherwise, `null`.
+   */
+  extractGitVersionOutput(input) {
+    const allStartOfJsonIndexes = allIndexesOf(input, "{");
+    const endOfJsonIndex = input.lastIndexOf("}") + 1;
+    if (allStartOfJsonIndexes.length === 0) {
+      this.buildAgent.debug("No opening curly brace '{' found in input; cannot extract JSON.");
+      return null;
+    }
+    if (endOfJsonIndex === 0) {
+      this.buildAgent.debug("No closing curly brace '}' found in input; cannot extract JSON.");
+      return null;
+    }
+    let startIndexArrayPos = allStartOfJsonIndexes.length - 1;
+    let decodePassCount = 1;
+    let currSearchString = input.substring(allStartOfJsonIndexes[startIndexArrayPos], endOfJsonIndex);
+    let resultJson = null;
+    while (resultJson === null && startIndexArrayPos >= 0) {
+      try {
+        this.buildAgent.debug(`Starting JSON extraction at ${allStartOfJsonIndexes[startIndexArrayPos]} to ${endOfJsonIndex}`);
+        resultJson = JSON.parse(currSearchString);
+      } catch (ex) {
+        let exObject = new Error("Unable to parse exception object");
+        if (ex instanceof Error) {
+          exObject = ex;
+        }
+        const errorMessage = `Failed to parse JSON object on pass ${decodePassCount}. Expanding search area from string index ${allStartOfJsonIndexes[startIndexArrayPos]} to ${endOfJsonIndex}. 
+Previous search area:'${currSearchString}' 
+Caught Exception: ${exObject.message}`;
+        this.buildAgent.debug(errorMessage);
+        decodePassCount++;
+        startIndexArrayPos--;
+        currSearchString = input.substring(allStartOfJsonIndexes[startIndexArrayPos], endOfJsonIndex);
+      }
+    }
+    return resultJson;
   }
 }
 

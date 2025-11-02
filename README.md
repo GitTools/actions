@@ -4,8 +4,8 @@
 
 GitHub Actions that allow the setup and use of the [GitVersion](https://github.com/GitTools/GitVersion) and [GitReleaseManager](https://github.com/GitTools/GitReleaseManager) tools.
 
-[![Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
-[![Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
+[![CI Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
+[![Release Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
 
 [![GitHub Release](https://img.shields.io/github/v/release/gittools/actions?logo=github&sort=semver)](https://github.com/GitTools/actions/releases/latest)
 
@@ -39,3 +39,104 @@ Examples for usage of **GitReleaseManager**:
 ### Versioning and Compatibility
 
 You can find the compatibility matrix in the [versions.md](docs/versions.md) file.
+
+## Contributing
+
+### Prerequisites
+
+1. **Linux** - Recommended to build and run
+2. **Node.js** - Latest LTS version recommended
+3. **.NET SDK** - Version 8.0 or later required for GitVersion and GitReleaseManager tools
+4. **Git** - Latest version recommended
+
+### Development Environment Setup
+
+This project is designed to be run and worked on in a Linux or macOS environment.
+If developing on Windows, please consider using WSL as it's likely you will run into issues with file paths etc
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/GitTools/actions.git
+   cd actions
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Build the project:
+   - For local development: `npm run build:local`
+   - For Azure Pipelines: `npm run build:azure`
+   - For GitHub Actions: `npm run build:github`
+
+4. Test the project:
+
+   ```bash
+   npm run test
+   ```
+
+### Required Knowledge
+
+- **TypeScript/JavaScript** - Primary development languages
+- **GitHub Actions** - Understanding of action creation and workflows
+- **Azure Pipelines** - Familiarity with pipeline tasks and extensions
+- **.NET Tools** - Basic understanding of .NET CLI tools
+- **Git** - Strong knowledge of Git versioning and release management
+
+### Project Structure
+
+- `src/tools/` - Core implementation of GitVersion and GitReleaseManager integrations
+- `src/agents/` - Build agent implementations for different CI platforms
+- `src/__tests__/` - Test suites organized by component
+- `docs/examples/` - Usage examples for both GitHub Actions and Azure Pipelines
+
+### Creating Pull Requests
+
+When contributing to this project, please follow these guidelines for creating pull requests:
+
+1. **Fork and Clone**
+   - Fork the repository to your GitHub account
+   - Clone your fork locally: `git clone https://github.com/YOUR-USERNAME/actions.git`
+   - Add upstream remote: `git remote add upstream https://github.com/GitTools/actions.git`
+
+2. **Create a Feature Branch**
+   - Create a branch from main: `git checkout -b feature/your-feature-name`
+   - Use descriptive branch names (e.g., `feature/add-new-version-format`, `fix/issue-123`)
+
+3. **Keep Your Branch Updated**
+   - Fetch upstream changes: `git fetch upstream`
+   - Rebase your branch on upstream main:
+
+     ```bash
+     git checkout main
+     git rebase upstream/main
+     git checkout your-branch
+     git rebase main
+     ```
+
+   - Always use rebase instead of merge to maintain a clean history
+
+4. **Make Your Changes**
+   - Make commits with clear, descriptive messages
+   - Follow the project's code style and conventions
+   - Add tests for new features or bug fixes
+   - Run tests locally to ensure everything passes
+
+5. **Submit the Pull Request**
+   - Push your changes to your fork: `git push origin your-branch`
+   - Go to the original repository on GitHub
+   - Click "New Pull Request" and select your feature branch
+   - Link any related issues
+
+6. **PR Guidelines**
+   - Keep PRs focused and single-purpose
+   - Include tests and documentation updates
+   - Ensure CI checks pass
+
+7. **After PR is Merged**
+   - Delete your feature branch locally and remotely
+   - Update your main branch with the upstream changes
+   - Celebrate your contribution! 🎉
