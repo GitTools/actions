@@ -1,8 +1,8 @@
+import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
 import { S as SettingsProvider, D as DotnetTool, k as keysOf, A as ArgumentsBuilder, R as RunnerBase } from './tools.mjs';
 import 'node:crypto';
-import 'node:fs/promises';
 import 'node:os';
-import 'node:path';
 import './semver.mjs';
 import { allIndexesOf } from '../lib.mjs';
 
@@ -63,9 +63,11 @@ class GitVersionTool extends DotnetTool {
     const settings = this.settingsProvider.getExecuteSettings();
     const workDir = await this.getRepoDir(settings);
     await this.checkShallowClone(settings, workDir);
-    const args = await this.getExecuteArguments(workDir, settings);
+    const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${Date.now()}.json`);
+    const args = await this.getExecuteArguments(workDir, settings, outputFile);
     await this.setDotnetRoot();
-    return await this.executeTool(args);
+    const result = await this.executeTool(args);
+    return { ...result, outputFile };
   }
   async executeCommand() {
     const settings = this.settingsProvider.getCommandSettings();
@@ -104,8 +106,11 @@ class GitVersionTool extends DotnetTool {
   async getRepoDir(settings) {
     return await super.getRepoPath(settings.targetPath);
   }
-  async getExecuteArguments(workDir, options) {
+  async getExecuteArguments(workDir, options, outputFile) {
     const builder = new ArgumentsBuilder().addArgument(workDir).addArgument("/output").addArgument("json").addArgument("/l").addArgument("console");
+    if (outputFile) {
+      builder.addArgument("/outputfile").addArgument(outputFile);
+    }
     const {
       disableCache,
       disableNormalization,
@@ -169,6 +174,13 @@ class GitVersionTool extends DotnetTool {
       }
     }
   }
+  async readGitVersionOutput(outputFile) {
+    const content = await fs.readFile(outputFile, "utf8");
+    const output = JSON.parse(content);
+    await fs.unlink(outputFile).catch(() => {
+    });
+    return output;
+  }
   toCamelCase(input) {
     return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function(match, index) {
       if (+match === 0) return "";
@@ -203,19 +215,36 @@ class Runner extends RunnerBase {
   async execute() {
     return this.safeExecute(async () => {
       const result = await this.tool.executeJson();
-      return this.processGitVersionOutput(result);
+      return await this.processGitVersionOutput(result);
     }, "GitVersion executed successfully");
   }
   async command() {
     return this.safeExecute(async () => await this.tool.executeCommand(), "GitVersion executed successfully");
   }
-  processGitVersionOutput(result) {
-    this.buildAgent.debug("Parsing GitVersion output");
+  async processGitVersionOutput(result) {
+    this.buildAgent.debug("Processing GitVersion output");
     if (result.code !== 0) {
       return result;
     }
-    const stdout = result.stdout;
-    const gitVersionOutput = this.extractGitVersionOutput(stdout);
+    let gitVersionOutput = null;
+    if (result.outputFile) {
+      this.buildAgent.debug(`Reading GitVersion output from file: ${result.outputFile}`);
+      try {
+        gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile);
+      } catch (error) {
+        const errorMessage = `Failed to read or parse GitVersion output file: ${error instanceof Error ? error.message : String(error)}`;
+        this.buildAgent.debug(errorMessage);
+        this.buildAgent.setFailed(errorMessage, true);
+        return {
+          code: -1,
+          error: new Error(errorMessage)
+        };
+      }
+    } else {
+      this.buildAgent.debug("Parsing GitVersion output from stdout");
+      const stdout = result.stdout;
+      gitVersionOutput = this.extractGitVersionOutput(stdout);
+    }
     if (gitVersionOutput === null) {
       const errorMessage = "GitVersion output is not valid JSON, see output details";
       this.buildAgent.debug(errorMessage);

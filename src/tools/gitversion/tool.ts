@@ -1,3 +1,5 @@
+import * as path from 'node:path'
+import * as fs from 'node:fs/promises'
 import { type ExecResult } from '@agents/common'
 import { ArgumentsBuilder, DotnetTool, keysOf } from '@tools/common'
 import { type CommandSettings, type ExecuteSettings, type GitVersionOutput } from './models'
@@ -24,16 +26,18 @@ export class GitVersionTool extends DotnetTool {
         return new GitVersionSettingsProvider(this.buildAgent)
     }
 
-    async executeJson(): Promise<ExecResult> {
+    async executeJson(): Promise<ExecResult & { outputFile?: string }> {
         const settings = this.settingsProvider.getExecuteSettings()
         const workDir = await this.getRepoDir(settings)
 
         await this.checkShallowClone(settings, workDir)
 
-        const args = await this.getExecuteArguments(workDir, settings)
+        const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${Date.now()}.json`)
+        const args = await this.getExecuteArguments(workDir, settings, outputFile)
 
         await this.setDotnetRoot()
-        return await this.executeTool(args)
+        const result = await this.executeTool(args)
+        return { ...result, outputFile }
     }
 
     async executeCommand(): Promise<ExecResult> {
@@ -80,8 +84,12 @@ export class GitVersionTool extends DotnetTool {
         return await super.getRepoPath(settings.targetPath)
     }
 
-    protected async getExecuteArguments(workDir: string, options: ExecuteSettings): Promise<string[]> {
+    protected async getExecuteArguments(workDir: string, options: ExecuteSettings, outputFile?: string): Promise<string[]> {
         const builder = new ArgumentsBuilder().addArgument(workDir).addArgument('/output').addArgument('json').addArgument('/l').addArgument('console')
+
+        if (outputFile) {
+            builder.addArgument('/outputfile').addArgument(outputFile)
+        }
 
         const {
             disableCache,
@@ -158,6 +166,16 @@ export class GitVersionTool extends DotnetTool {
                 )
             }
         }
+    }
+
+    async readGitVersionOutput(outputFile: string): Promise<GitVersionOutput> {
+        const content = await fs.readFile(outputFile, 'utf8')
+        const output = JSON.parse(content) as GitVersionOutput
+        // Clean up the temporary file
+        await fs.unlink(outputFile).catch(() => {
+            // Ignore errors if file doesn't exist
+        })
+        return output
     }
 
     private toCamelCase(input: string): string {

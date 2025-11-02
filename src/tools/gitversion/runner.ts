@@ -33,7 +33,7 @@ export class Runner extends RunnerBase {
     private async execute(): Promise<ExecResult> {
         return this.safeExecute(async () => {
             const result = await this.tool.executeJson()
-            return this.processGitVersionOutput(result)
+            return await this.processGitVersionOutput(result)
         }, 'GitVersion executed successfully')
     }
 
@@ -41,16 +41,36 @@ export class Runner extends RunnerBase {
         return this.safeExecute(async () => await this.tool.executeCommand(), 'GitVersion executed successfully')
     }
 
-    private processGitVersionOutput(result: ExecResult): ExecResult {
-        this.buildAgent.debug('Parsing GitVersion output')
+    private async processGitVersionOutput(result: ExecResult & { outputFile?: string }): Promise<ExecResult> {
+        this.buildAgent.debug('Processing GitVersion output')
 
         // Return error to be handled by calling function
         if (result.code !== 0) {
             return result
         }
 
-        const stdout = result.stdout as string
-        const gitVersionOutput = this.extractGitVersionOutput(stdout)
+        let gitVersionOutput: GitVersionOutput | null = null
+
+        if (result.outputFile) {
+            // Read from file
+            this.buildAgent.debug(`Reading GitVersion output from file: ${result.outputFile}`)
+            try {
+                gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile)
+            } catch (error) {
+                const errorMessage = `Failed to read or parse GitVersion output file: ${error instanceof Error ? error.message : String(error)}`
+                this.buildAgent.debug(errorMessage)
+                this.buildAgent.setFailed(errorMessage, true)
+                return {
+                    code: -1,
+                    error: new Error(errorMessage)
+                }
+            }
+        } else {
+            // Fallback to parsing stdout (for backward compatibility)
+            this.buildAgent.debug('Parsing GitVersion output from stdout')
+            const stdout = result.stdout as string
+            gitVersionOutput = this.extractGitVersionOutput(stdout)
+        }
 
         if (gitVersionOutput === null) {
             const errorMessage = 'GitVersion output is not valid JSON, see output details'
