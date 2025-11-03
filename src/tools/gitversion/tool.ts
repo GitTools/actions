@@ -34,6 +34,7 @@ export class GitVersionTool extends DotnetTool {
         await this.checkShallowClone(settings, workDir)
 
         const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`)
+        this.buildAgent.debug(`Writing GitVersion variables to file: ${outputFile}`)
         const args = await this.getExecuteArguments(workDir, settings, outputFile)
 
         await this.setDotnetRoot()

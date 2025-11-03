@@ -53,11 +53,11 @@ export class Runner extends RunnerBase {
 
         if (result.outputFile) {
             // Read from file
-            this.buildAgent.debug(`Reading GitVersion output from file: ${result.outputFile}`)
+            this.buildAgent.debug(`Reading GitVersion variables from file: ${result.outputFile}`)
             try {
                 gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile)
             } catch (error) {
-                return this.handleOutputError(`Failed to read or parse GitVersion output file: ${this.getErrorMessage(error)}`)
+                return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`)
             }
         } else {
             // Fallback to parsing stdout (for backward compatibility)

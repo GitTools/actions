@@ -64,6 +64,7 @@ class GitVersionTool extends DotnetTool {
     const workDir = await this.getRepoDir(settings);
     await this.checkShallowClone(settings, workDir);
     const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`);
+    this.buildAgent.debug(`Writing GitVersion variables to file: ${outputFile}`);
     const args = await this.getExecuteArguments(workDir, settings, outputFile);
     await this.setDotnetRoot();
     const result = await this.executeTool(args);
@@ -231,11 +232,11 @@ class Runner extends RunnerBase {
     }
     let gitVersionOutput = null;
     if (result.outputFile) {
-      this.buildAgent.debug(`Reading GitVersion output from file: ${result.outputFile}`);
+      this.buildAgent.debug(`Reading GitVersion variables from file: ${result.outputFile}`);
       try {
         gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile);
       } catch (error) {
-        return this.handleOutputError(`Failed to read or parse GitVersion output file: ${this.getErrorMessage(error)}`);
+        return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`);
       }
     } else {
       this.buildAgent.debug("Parsing GitVersion output from stdout");
