@@ -1,0 +1,30 @@
+name: Update GitVersion version
+
+permissions: read-all
+
+on:
+  repository_dispatch:
+    types: [ gitversion-release-published ]
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  update-gitversion-version:
+    if: ${{ github.event_name == 'repository_dispatch' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+      - run: |
+          $newTag = "${{ github.event.client_payload.tag }}"
+
+          echo "Updating GitVersion version to $newTag"
+          git add --verbose .
+          git config user.name 'gittools-bot'
+          git config user.email 'gittoolsbot@outlook.com'
+          git commit -m "update GitVersion version to $newTag" --allow-empty
+          git push --force
+        name: Update GitVersion version
