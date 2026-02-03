@@ -1,20 +1,14 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "target": "ES2022",
-    "module": "ES2022",
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020"
-    ],
-    "types": [
-      "node",
-      "vite/client"
-    ],
+    "types": ["node", "vite/client"],
     "skipLibCheck": true,
     /* Bundler mode */
-    /*"moduleResolution": "bundler",*/
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -25,39 +19,16 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@lib": [
-        "./tools/lib.ts"
-      ],
-      "@agents/common": [
-        "./agents/common"
-      ],
-      "@agents/azure": [
-        "./agents/azure"
-      ],
-      "@agents/local": [
-        "./agents/local"
-      ],
-      "@agents/github": [
-        "./agents/github"
-      ],
-      "@tools/common": [
-        "./tools/common"
-      ],
-      "@tools/gitreleasemanager": [
-        "./tools/gitreleasemanager"
-      ],
-      "@tools/gitversion": [
-        "./tools/gitversion"
-      ]
+      "@lib": ["./tools/lib.ts"],
+      "@agents/common": ["./agents/common"],
+      "@agents/azure": ["./agents/azure"],
+      "@agents/local": ["./agents/local"],
+      "@agents/github": ["./agents/github"],
+      "@tools/common": ["./tools/common"],
+      "@tools/gitreleasemanager": ["./tools/gitreleasemanager"],
+      "@tools/gitversion": ["./tools/gitversion"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.mts",
-    "tests/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.mts", "tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
