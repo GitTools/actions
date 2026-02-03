@@ -19,6 +19,11 @@
       "target": "main.mjs",
       "argumentFormat": "",
       "workingDirectory": "."
+    },
+    "Node24": {
+      "target": "main.mjs",
+      "argumentFormat": "",
+      "workingDirectory": "."
     }
   },
   "instanceNameFormat": "gitversion-setup",
