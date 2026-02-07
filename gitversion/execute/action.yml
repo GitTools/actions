@@ -90,7 +90,11 @@ outputs:
   versionSourceSha:
     description: 'The VersionSourceSha value'
   commitsSinceVersionSource:
-    description: 'The CommitsSinceVersionSource value'
+    description: 'The CommitsSinceVersionSource value (deprecated in 6.6.0, use versionSourceDistance instead; will be removed in v7.0.0)'
+  versionSourceSemVer:
+    description: 'The VersionSourceSemVer value (since 6.6.0)'
+  versionSourceDistance:
+    description: 'The VersionSourceDistance value (since 6.6.0)'
   uncommittedChanges:
     description: 'The UncommittedChanges value'
   commitDate:

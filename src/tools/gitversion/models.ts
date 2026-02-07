@@ -42,6 +42,8 @@ export type GitVersionOutput = {
     ShortSha: string
     VersionSourceSha: string
     CommitsSinceVersionSource: number
+    VersionSourceSemVer?: string
+    VersionSourceDistance?: number
     UncommittedChanges: number
     CommitDate: string
 }
