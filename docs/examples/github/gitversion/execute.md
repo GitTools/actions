@@ -100,8 +100,11 @@ The Execute GitVersion action creates the following outputs:
 - nuGetPreReleaseTagV2 (removed in 6.0.0)
 - nuGetPreReleaseTag (removed in 6.0.0)
 - versionSourceSha
-- commitsSinceVersionSource
+- commitsSinceVersionSource (deprecated in 6.6.0, use versionSourceDistance instead; will be removed in v7.0.0)
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
+- versionSourceSemVer (since 6.6.0)
+- versionSourceDistance (since 6.6.0)
+- versionSourceIncrement (since 6.6.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
 
