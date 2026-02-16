@@ -230,7 +230,7 @@ class Runner extends RunnerBase {
     if (result.code !== 0) {
       return result;
     }
-    let gitVersionOutput = null;
+    let gitVersionOutput;
     if (result.outputFile) {
       this.buildAgent.debug(`Reading GitVersion variables from file: ${result.outputFile}`);
       try {

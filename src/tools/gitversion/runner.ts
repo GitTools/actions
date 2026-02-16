@@ -49,10 +49,10 @@ export class Runner extends RunnerBase {
             return result
         }
 
-        let gitVersionOutput: GitVersionOutput | null = null
+        let gitVersionOutput: GitVersionOutput | null
 
         if (result.outputFile) {
-            // Read from file
+            // Read from the file
             this.buildAgent.debug(`Reading GitVersion variables from file: ${result.outputFile}`)
             try {
                 gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile)
