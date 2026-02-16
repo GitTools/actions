@@ -44,6 +44,7 @@ export type GitVersionOutput = {
     CommitsSinceVersionSource: number
     VersionSourceSemVer?: string
     VersionSourceDistance?: number
+    VersionSourceIncrement?: string
     UncommittedChanges: number
     CommitDate: string
 }

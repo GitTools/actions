@@ -136,6 +136,10 @@
       "description": "The VersionSourceDistance value (since 6.6.0)"
     },
     {
+      "name": "versionSourceIncrement",
+      "description": "The VersionSourceIncrement value (since 6.6.0)"
+    },
+    {
       "name": "uncommittedChanges",
       "description": "The UncommittedChanges value"
     },

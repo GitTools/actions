@@ -275,6 +275,7 @@ function createGitVersionFixture(params: {
         CommitsSinceVersionSource: buildMetaData,
         VersionSourceSemVer: '1.2.3',
         VersionSourceDistance: buildMetaData,
+        VersionSourceIncrement: 'Patch',
         EscapedBranchName: escapedBranchName,
         FullBuildMetaData: fullBuildMetaData,
         FullSemVer: fullSemVer,

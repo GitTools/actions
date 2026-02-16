@@ -95,6 +95,8 @@ outputs:
     description: 'The VersionSourceSemVer value (since 6.6.0)'
   versionSourceDistance:
     description: 'The VersionSourceDistance value (since 6.6.0)'
+  versionSourceIncrement:
+    description: 'The VersionSourceIncrement value (since 6.6.0)'
   uncommittedChanges:
     description: 'The UncommittedChanges value'
   commitDate:

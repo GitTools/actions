@@ -108,6 +108,7 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - versionSourceSemVer (since 6.6.0)
 - versionSourceDistance (since 6.6.0)
+- versionSourceIncrement (since 6.6.0)
 - uncommittedChanges (since 5.5.0)
 - commitDate
 
