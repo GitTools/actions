@@ -6,10 +6,10 @@
     "type": "git",
     "url": "https://github.com/GitTools/actions.git"
   },
+  "license": "MIT",
   "type": "module",
-  "module": "ES2022",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20"
   },
   "scripts": {
     "build": "run-p build:tools build:agents",
