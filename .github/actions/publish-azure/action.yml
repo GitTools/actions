@@ -29,11 +29,12 @@ runs:
         id: publish-azure
         shell: pwsh
         run: |
-          $date = (Get-Date -format "yyMMddHHmm").Substring(0, 9)
           $mode = "${{ inputs.mode }}"
           $major = "${{ inputs.major }}"
           $minor = "${{ inputs.minor }}"
           $patch = "${{ inputs.patch }}"
+
+          $date = (Get-Date -format "yyMMddHHmm").Substring(0, 9)
           $version = "$major.$minor.$patch.$date"
           $vsix = "dist/gittools.gittools-$version.vsix"
 
