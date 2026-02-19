@@ -34,7 +34,7 @@ runs:
           $minor = "${{ inputs.minor }}"
           $patch = "${{ inputs.patch }}"
 
-          $date = (Get-Date -format "yyMMddHHmm").Substring(0, 9)
+          $date = ([datetime]::UtcNow.ToString("yyMMddHHmm")).Substring(0, 9)
           $version = "$major.$minor.$patch.$date"
           $vsix = "dist/gittools.gittools-$version.vsix"
 
