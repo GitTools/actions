@@ -1,7 +1,5 @@
 name: CI
 
-permissions: read-all
-
 on:
   push:
     branches:
@@ -30,11 +28,17 @@ jobs:
         os: [ windows-2025, ubuntu-24.04, macos-26 ]
       fail-fast: false
     steps:
+    - name: Generate GitHub App Token
+      id: app-token
+      uses: actions/create-github-app-token@v2
+      with:
+        app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
+        private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
     - uses: actions/checkout@v6
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       with:
         fetch-depth: 0
-        token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+        token: ${{ steps.app-token.outputs.token }}
     - uses: actions/checkout@v6
       if: github.event_name == 'pull_request'
       with:
