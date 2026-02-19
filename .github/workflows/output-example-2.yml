@@ -1,7 +1,5 @@
 name: output-example-2
 
-permissions: read-all
-
 on:
   workflow_dispatch:
 
@@ -11,6 +9,8 @@ defaults:
 
 jobs:
   GitVersion_v6_cross_job:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job)
     runs-on: ubuntu-24.04
     outputs:
@@ -36,6 +36,8 @@ jobs:
         uses: gittools/actions/gitversion/execute@v4.3.0
 
   GitVersion_v6_cross_job_consumer_without_prefix:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job consumer) - without prefix
     needs: GitVersion_v6_cross_job
     runs-on: ubuntu-24.04
@@ -93,6 +95,8 @@ jobs:
         shell: bash
 
   GitVersion_v6_cross_job_consumer_with_prefix:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job consumer) - with prefix
     needs: GitVersion_v6_cross_job
     runs-on: ubuntu-24.04

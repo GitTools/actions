@@ -1,6 +1,7 @@
 name: Update examples version
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   repository_dispatch:

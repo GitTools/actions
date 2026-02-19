@@ -1,6 +1,7 @@
 name: output-example-1
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:

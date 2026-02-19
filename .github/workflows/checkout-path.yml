@@ -1,6 +1,7 @@
 name: checkout-path
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   push:

@@ -1,6 +1,7 @@
 name: prerelease
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   release:
