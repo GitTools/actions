@@ -33,7 +33,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - run: |
-          npm install
+          npm install --ignore-scripts
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
