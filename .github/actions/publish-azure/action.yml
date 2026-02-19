@@ -29,20 +29,6 @@ runs:
         id: publish-azure
         shell: pwsh
         run: |
-          $mode = "${{ inputs.mode }}"
-          $major = "${{ inputs.major }}"
-          $minor = "${{ inputs.minor }}"
-          $patch = "${{ inputs.patch }}"
+          . .\utilities.ps1 # Import the functions
 
-          $date = ([datetime]::UtcNow.ToString("yyMMddHHmm")).Substring(0, 9)
-          $version = "$major.$minor.$patch.$date"
-          $vsix = "dist/gittools.gittools-$version.vsix"
-
-          echo "Release mode: $mode"
-          echo "Version: $version"
-
-          npm run publish:prepare -- --mode $mode --version $version
-          npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
-          npm run publish:azure:marketplace -- --token ${{ inputs.token }} --env mode=$mode version=$version
-
-          echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
+          publish-vsix  -mode ${{ inputs.mode }} -token ${{ inputs.token }} -major ${{ inputs.major }} -minor ${{ inputs.minor }} -patch ${{ inputs.patch }}
