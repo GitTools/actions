@@ -15,7 +15,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.3.0
     with:
-      versionSpec: '6.4.x'
+      versionSpec: '6.6.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -271,7 +271,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.3.0
         with:
-          versionSpec: '6.4.x'
+          versionSpec: '6.6.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
@@ -361,7 +361,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.3.0
         with:
-          versionSpec: '6.4.x'
+          versionSpec: '6.6.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
