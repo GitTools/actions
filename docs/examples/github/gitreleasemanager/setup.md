@@ -2,7 +2,7 @@
 
 Find out how to use the **gitreleasemanager/setup** action using the examples below.
 
-> The examples use version _4.2.0_ of the GitReleaseManager Setup action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _4.3.0_ of the GitReleaseManager Setup action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -34,7 +34,7 @@ Install the latest GitReleaseManager 0.20.x version.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v4.2.0
+    uses: gittools/actions/gitreleasemanager/setup@v4.3.0
     with:
       versionSpec: '0.20.x'
 ```
@@ -46,7 +46,7 @@ Install specific GitReleaseManager version 0.20.0.
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v4.2.0
+    uses: gittools/actions/gitreleasemanager/setup@v4.3.0
     with:
       versionSpec: '0.20.0'
 ```
@@ -58,7 +58,7 @@ Install the latest GitReleaseManager 0.20.x version even if there is a cached ve
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v4.2.0
+    uses: gittools/actions/gitreleasemanager/setup@v4.3.0
     with:
       versionSpec: '0.20.x'
       preferLatestVersion: true
@@ -71,7 +71,7 @@ Install GitReleaseManager using a custom NuGet configuration file. This is usefu
 ```yaml
 steps:
   - name: Install GitReleaseManager
-    uses: gittools/actions/gitreleasemanager/setup@v4.2.0
+    uses: gittools/actions/gitreleasemanager/setup@v4.3.0
     with:
       versionSpec: '0.20.x'
       nugetConfigPath: '${{ github.workspace }}/nuget.config'
