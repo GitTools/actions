@@ -28,7 +28,13 @@ runs:
     -   name: Publish Azure extension
         id: publish-azure
         shell: pwsh
+        env:
+          MODE: ${{ inputs.mode }}
+          MAJOR: ${{ inputs.major }}
+          MINOR: ${{ inputs.minor }}
+          PATCH: ${{ inputs.patch }}
+          TFX_TOKEN: ${{ inputs.token }}
         run: |
           . .\utilities.ps1 # Import the functions
 
-          publish-vsix  -mode ${{ inputs.mode }} -token ${{ inputs.token }} -major ${{ inputs.major }} -minor ${{ inputs.minor }} -patch ${{ inputs.patch }}
+          publish-vsix -mode $env.MODE -token $env.TFX_TOKEN -major $env.MAJOR -minor $env.MINOR -patch $env.PATCH
