@@ -15,15 +15,18 @@ jobs:
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
+
       - name: Generate GitHub App Token
         id: app-token
         uses: ./.github/actions/create-push-token
         with:
           app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
           private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
+
       - run: |
           $newTag = "${{ github.event.client_payload.tag }}"
 

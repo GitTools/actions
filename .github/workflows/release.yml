@@ -18,12 +18,14 @@ jobs:
       matrix:
         os: [ ubuntu-24.04 ]
     steps:
+
       - name: Generate GitHub App Token
         id: app-token
         uses: ./.github/actions/create-push-token
         with:
           app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
           private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -34,25 +36,29 @@ jobs:
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
-
         name: Build code
+
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
           versionSpec: '6.6.x'
+
       - name: Install GitReleaseManager
         uses: ./gitreleasemanager/setup
         with:
           versionSpec: '0.20.x'
+
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
+
       - name: Generate GitHub App Release Token
         id: release-token
         uses: ./.github/actions/create-release-token
         with:
           app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
           private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+
       - name: Update Release Notes
         uses: ./gitreleasemanager/create
         with:
@@ -62,6 +68,7 @@ jobs:
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           isPreRelease: ${{ github.event.release.prerelease }}
           targetcommitish: "main"
+
       - name: Publish To Azure Marketplace
         id: publish-azure
         uses: ./.github/actions/publish-azure
@@ -71,6 +78,7 @@ jobs:
           minor: ${{ steps.gitversion.outputs.minor }}
           patch: ${{ steps.gitversion.outputs.patch }}
           token: ${{ secrets.TFX_TOKEN }}
+
       - name: Add Assets
         uses: ./gitreleasemanager/addasset
         with:
@@ -78,12 +86,14 @@ jobs:
           repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           assets: ${{ steps.publish-azure.outputs.vsix }}
+
       - name: Close Release
         uses: ./gitreleasemanager/close
         with:
           token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
+
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
         uses: ./.github/actions/trigger-action-test
@@ -91,6 +101,7 @@ jobs:
           mode: 'prod'
           majorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}
           token: ${{ steps.release-token.outputs.token }}
+
       - name: Trigger Update Examples version (actions)
         uses: peter-evans/repository-dispatch@v4
         with:

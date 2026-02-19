@@ -17,12 +17,14 @@ jobs:
       matrix:
         os: [ ubuntu-24.04 ]
     steps:
+
       - name: Generate GitHub App Token
         id: app-token
         uses: ./.github/actions/create-push-token
         with:
           app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
           private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -33,15 +35,17 @@ jobs:
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
-
         name: Build code
+
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
           versionSpec: '6.6.x'
+
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
+
       - name: Publish To Azure Marketplace
         id: publish-azure
         uses: ./.github/actions/publish-azure
@@ -51,12 +55,14 @@ jobs:
           minor: ${{ steps.gitversion.outputs.minor }}
           patch: ${{ steps.gitversion.outputs.patch }}
           token: ${{ secrets.TFX_TOKEN }}
+
       - name: Generate GitHub App Release Token
         id: release-token
         uses: ./.github/actions/create-release-token
         with:
           app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
           private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
         uses: ./.github/actions/trigger-action-test
