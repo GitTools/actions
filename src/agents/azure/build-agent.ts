@@ -29,9 +29,9 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
 
     setFailed = (message: string, done?: boolean): void => this._setResult(TaskResult.Failed, message, done)
 
-    setOutput = (name: string, value: string): void => this._setVariable(name, value, true)
+    setOutput = (name: string, value: string | undefined): void => this._setVariable(name, value, true)
 
-    setVariable = (name: string, value: string): void => this._setVariable(name, value)
+    setVariable = (name: string, value: string | undefined): void => this._setVariable(name, value)
 
     updateBuildNumber = (version: string): void => this._updateBuildNumber(version)
 
@@ -58,7 +58,7 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
         issueCommand('task.complete', properties, message)
     }
 
-    private _setVariable(name: string, val: string, isOutput = false): void {
+    private _setVariable(name: string, val: string | undefined, isOutput = false): void {
         const key: string = this._getVariableKey(name)
         const varValue = val || ''
         process.env[key] = varValue

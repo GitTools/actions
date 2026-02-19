@@ -53,7 +53,7 @@ export interface IBuildAgent {
 
     setFailed(message: string, done?: boolean): void
 
-    setOutput(name: string, value: string): void
+    setOutput(name: string, value: string | undefined): void
 
     getVariable(name: string): string | undefined
 
@@ -61,7 +61,7 @@ export interface IBuildAgent {
 
     getExpandedString(pattern: string): string
 
-    setVariable(name: string, value: string): void
+    setVariable(name: string, value: string | undefined): void
 
     updateBuildNumber: (version: string) => void
 
@@ -86,9 +86,9 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
     abstract setFailed(message: string, done?: boolean): void
 
-    abstract setOutput(name: string, value: string): void
+    abstract setOutput(name: string, value: string | undefined): void
 
-    abstract setVariable(name: string, value: string): void
+    abstract setVariable(name: string, value: string | undefined): void
 
     abstract updateBuildNumber: (version: string) => void
 
