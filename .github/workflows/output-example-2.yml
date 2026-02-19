@@ -1,7 +1,5 @@
 name: output-example-2
 
-permissions: read-all
-
 on:
   workflow_dispatch:
 
@@ -11,6 +9,8 @@ defaults:
 
 jobs:
   GitVersion_v6_cross_job:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job)
     runs-on: ubuntu-24.04
     outputs:
@@ -20,6 +20,7 @@ jobs:
       GitVersion_BranchName: ${{ steps.version_step.outputs.GitVersion_BranchName }}
       GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
     steps:
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -35,6 +36,8 @@ jobs:
         uses: gittools/actions/gitversion/execute@v4.3.0
 
   GitVersion_v6_cross_job_consumer_without_prefix:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job consumer) - without prefix
     needs: GitVersion_v6_cross_job
     runs-on: ubuntu-24.04
@@ -42,6 +45,7 @@ jobs:
     env:
       myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
     steps:
+
       - run: |
           echo "FullSemVer (env:myvar_fullSemVer)   : $env:myvar_fullSemVer"
         name: Use job variables (pwsh - outputs without prefix)
@@ -91,6 +95,8 @@ jobs:
         shell: bash
 
   GitVersion_v6_cross_job_consumer_with_prefix:
+    permissions:
+      contents: read
     name: GitVersion v6 (cross job consumer) - with prefix
     needs: GitVersion_v6_cross_job
     runs-on: ubuntu-24.04
@@ -98,6 +104,7 @@ jobs:
     env:
       myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
     steps:
+
       - run: |
           echo "FullSemVer (env:myvar_GitVersion_FullSemVer)   : $env:myvar_GitVersion_FullSemVer"
         name: Use job variables (pwsh - outputs without prefix)

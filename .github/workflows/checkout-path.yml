@@ -1,6 +1,7 @@
 name: checkout-path
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   push:
@@ -22,6 +23,7 @@ jobs:
 
     runs-on: ubuntu-24.04
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v6
         with:

@@ -1,6 +1,7 @@
 name: prerelease
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   release:
@@ -17,25 +18,40 @@ jobs:
       matrix:
         os: [ ubuntu-24.04 ]
     steps:
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
+          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+          permission-actions: write
+          permission-contents: write
+          permission-workflows: write
+          permission-members: read
+          permission-metadata: read
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - run: |
-          npm install
+          npm install --ignore-scripts
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
-
         name: Build code
+
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
           versionSpec: '6.6.x'
+
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
+
       - name: Publish To Azure Marketplace
         id: publish-azure
         uses: ./.github/actions/publish-azure
@@ -45,10 +61,22 @@ jobs:
           minor: ${{ steps.gitversion.outputs.minor }}
           patch: ${{ steps.gitversion.outputs.patch }}
           token: ${{ secrets.TFX_TOKEN }}
+
+      - name: Generate GitHub App Release Token
+        id: release-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
+          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+          permission-actions: write
+          permission-contents: write
+          permission-workflows: write
+          permission-packages: write
+
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
         uses: ./.github/actions/trigger-action-test
         with:
           mode: 'test'
           majorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}

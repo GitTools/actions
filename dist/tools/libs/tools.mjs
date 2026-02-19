@@ -331,13 +331,13 @@ class DotnetTool {
     const prereleaseParam = includePrerelease ? "true" : "false";
     const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
     const response = await fetch(downloadPath);
-    if (!response || !response.ok) {
+    if (!response?.ok) {
       this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : "unknown"}`);
       return null;
     }
     const { data } = await response.json();
     const versions = data[0].versions.map((x) => x.version);
-    if (!versions || !versions.length) {
+    if (!versions?.length) {
       return null;
     }
     this.buildAgent.debug(`got versions: ${versions.join(", ")}`);

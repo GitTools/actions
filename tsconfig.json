@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "lib": ["ES2020"],
+    "lib": ["ES2022"],
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "bundler",
