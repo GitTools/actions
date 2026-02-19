@@ -47,10 +47,16 @@ jobs:
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
+      - name: Generate GitHub App Release Token
+        id: release-token
+        uses: ./.github/actions/create-release-token
+        with:
+          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
+          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
       - name: Update Release Notes
         uses: ./gitreleasemanager/create
         with:
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           name: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
@@ -68,14 +74,14 @@ jobs:
       - name: Add Assets
         uses: ./gitreleasemanager/addasset
         with:
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
           assets: ${{ steps.publish-azure.outputs.vsix }}
       - name: Close Release
         uses: ./gitreleasemanager/close
         with:
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           milestone: "v${{ steps.gitversion.outputs.majorMinorPatch }}"
       - name: Trigger Update Examples version (actions-test)
@@ -84,11 +90,11 @@ jobs:
         with:
           mode: 'prod'
           majorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}
       - name: Trigger Update Examples version (actions)
         uses: peter-evans/repository-dispatch@v4
         with:
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           event-type: update-examples
           client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
