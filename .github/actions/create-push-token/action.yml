@@ -10,6 +10,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
+
     - name: Generate GitHub App Token
       id: app-token
       uses: actions/create-github-app-token@v2

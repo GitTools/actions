@@ -20,6 +20,7 @@ jobs:
       GitVersion_BranchName: ${{ steps.version_step.outputs.GitVersion_BranchName }}
       GitVersion_FullSemVer: ${{ steps.version_step.outputs.GitVersion_FullSemVer }}
     steps:
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -42,6 +43,7 @@ jobs:
     env:
       myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
     steps:
+
       - run: |
           echo "FullSemVer (env:myvar_fullSemVer)   : $env:myvar_fullSemVer"
         name: Use job variables (pwsh - outputs without prefix)
@@ -98,6 +100,7 @@ jobs:
     env:
       myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
     steps:
+
       - run: |
           echo "FullSemVer (env:myvar_GitVersion_FullSemVer)   : $env:myvar_GitVersion_FullSemVer"
         name: Use job variables (pwsh - outputs without prefix)
