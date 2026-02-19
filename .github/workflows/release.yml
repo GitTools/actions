@@ -18,10 +18,16 @@ jobs:
       matrix:
         os: [ ubuntu-24.04 ]
     steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: ./.github/actions/create-push-token
+        with:
+          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
+          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - run: |
           npm install

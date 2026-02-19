@@ -30,15 +30,10 @@ jobs:
     steps:
     - name: Generate GitHub App Token
       id: app-token
-      uses: actions/create-github-app-token@v2
+      uses: ./.github/actions/create-push-token
       with:
         app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
         private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
-        permission-actions: write
-        permission-contents: write
-        permission-workflows: write
-        permission-members: read
-        permission-metadata: read
     - uses: actions/checkout@v6
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       with:
