@@ -20,12 +20,23 @@ jobs:
         os: [ ubuntu-24.04 ]
     steps:
 
+      - name: Load secrets from 1Password
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: false
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          gh_app_id: op://cicd/actions/gittools_actions/gh_app_id
+          gh_app_private_key: op://cicd/actions/gittools_actions/gh_app_private_key.pem
+          tfx_token: op://cicd/actions/gittools_actions/tfx_token
+
       - name: Generate GitHub App Token
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
-          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
+          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-workflows: write
@@ -62,8 +73,8 @@ jobs:
         id: release-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ secrets.GITTOOLS_BOT_APP_ID }}
-          private-key: ${{ secrets.GITTOOLS_BOT_APP_PRIVATE_KEY }}
+          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
+          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-workflows: write
@@ -87,7 +98,7 @@ jobs:
           major: ${{ steps.gitversion.outputs.major }}
           minor: ${{ steps.gitversion.outputs.minor }}
           patch: ${{ steps.gitversion.outputs.patch }}
-          token: ${{ secrets.TFX_TOKEN }}
+          token: ${{ steps.op-load-secret.outputs.tfx_token }}
 
       - name: Add Assets
         uses: ./gitreleasemanager/addasset
