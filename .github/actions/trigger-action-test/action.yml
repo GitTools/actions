@@ -25,10 +25,12 @@ runs:
     - name: Get tags
       id: get-tags
       shell: pwsh
+      env:
+        MajorMinorPatch: ${{ inputs.majorMinorPatch }}
       run: |
         # Finding the version from release tag
 
-        $newTag = "${{ inputs.majorMinorPatch }}"
+        $newTag = $env:MajorMinorPatch
         $oldTag = cat package.json | ConvertFrom-Json | Select-Object -ExpandProperty version
         echo "Old tag: $oldTag"
         echo "New tag: $newTag"
