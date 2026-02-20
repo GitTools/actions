@@ -37,4 +37,4 @@ runs:
         run: |
           . .\utilities.ps1 # Import the functions
 
-          publish-vsix -mode $env.MODE -token $env.TFX_TOKEN -major $env.MAJOR -minor $env.MINOR -patch $env.PATCH
+          publish-vsix -mode $env:MODE -token $env:TFX_TOKEN -major $env:MAJOR -minor $env:MINOR -patch $env:PATCH
