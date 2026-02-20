@@ -84,8 +84,8 @@ jobs:
             actions-test
           permission-actions: write
           permission-contents: write
+          permission-issues: write
           permission-workflows: write
-          permission-packages: write
 
       - name: Update Release Notes
         uses: ./gitreleasemanager/create

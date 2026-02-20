@@ -89,7 +89,6 @@ jobs:
           permission-actions: write
           permission-contents: write
           permission-workflows: write
-          permission-packages: write
 
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
