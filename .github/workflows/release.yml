@@ -75,6 +75,9 @@ jobs:
         with:
           app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
           private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
+          repositories: |
+            gittools/actions
+            gittools/actions-test
           permission-actions: write
           permission-contents: write
           permission-workflows: write
