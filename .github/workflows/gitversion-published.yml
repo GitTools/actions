@@ -48,11 +48,10 @@ jobs:
 
       - run: |
           $newTag = "${{ github.event.client_payload.tag }}"
-
           echo "Updating GitVersion version to $newTag"
-          git add --verbose .
-          git config user.name 'gittools-bot'
-          git config user.email 'gittoolsbot@outlook.com'
-          git commit -m "update GitVersion version to $newTag" --allow-empty
-          git push --force
         name: Update GitVersion version
+
+      - uses: ./.github/actions/git-commit-push
+        with:
+          message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
+        name: Commit and push updated GitVersion version
