@@ -136,4 +136,8 @@ jobs:
           token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           event-type: update-examples
-          client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
+          client-payload: |-
+            {
+              "oldTag": "${{ steps.get-tags.outputs.oldTag }}",
+              "newTag": "${{ steps.get-tags.outputs.newTag }}"
+            }
