@@ -24,8 +24,8 @@ jobs:
           export-env: false
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          gh_app_id: op://cicd/actions/gittools_actions/gh_app_id
-          gh_app_private_key: op://cicd/actions/gittools_actions/gh_app_private_key.pem
+          gh_app_id: op://gittools/actions/gh_app_id
+          gh_app_private_key: op://gittools/actions/gh_app_private_key.pem
 
       - name: Generate GitHub App Token
         id: app-token
