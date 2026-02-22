@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion-setup** task using the examples below.
 
-> The examples use version _4.3.1_ of the GitVersion Setup task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _4.3.2_ of the GitVersion Setup task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -49,7 +49,7 @@ Install the latest GitVersion 6 version.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.3.1
+  - task: gitversion-setup@4.3.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.6.x'
@@ -61,7 +61,7 @@ Install GitVersion 6.0.0.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.3.1
+  - task: gitversion-setup@4.3.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.0.0'
@@ -73,7 +73,7 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.3.1
+  - task: gitversion-setup@4.3.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.6.x'
@@ -86,7 +86,7 @@ Install the latest GitVersion 6 version even if there is a cached version matchi
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.3.1
+  - task: gitversion-setup@4.3.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.6.x'
@@ -99,7 +99,7 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.3.1
+  - task: gitversion-setup@4.3.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.6.x'
