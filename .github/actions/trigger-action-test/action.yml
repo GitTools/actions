@@ -38,10 +38,14 @@ runs:
         "oldTag=$oldTag" >> $env:GITHUB_OUTPUT
         "newTag=$newTag" >> $env:GITHUB_OUTPUT
 
-    - uses: peter-evans/repository-dispatch@v3
+    - uses: peter-evans/repository-dispatch@v4
       name: Trigger Update Examples version (actions-test)
       with:
         token: ${{ inputs.token }}
         repository: ${{ github.repository_owner }}/actions-test
         event-type: update-examples-${{ inputs.mode }}
-        client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
+        client-payload: |-
+          {
+            "oldTag": "${{ steps.get-tags.outputs.oldTag }}",
+            "newTag": "${{ steps.get-tags.outputs.newTag }}"
+          }

@@ -27,19 +27,19 @@ jobs:
           export-env: false
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          gh_app_id: op://cicd/actions/gittools_actions/gh_app_id
-          gh_app_private_key: op://cicd/actions/gittools_actions/gh_app_private_key.pem
-          tfx_token: op://cicd/actions/gittools_actions/tfx_token
+          gh_app_id: op://gittools/actions/gh_app_id
+          gh_app_private_key: op://gittools/actions/gh_app_private_key.pem
+          tfx_token: op://gittools/actions/tfx_token
 
       - name: Generate GitHub App Token
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
-          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           owner: gittools
           repositories: |
             actions
+          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
+          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-workflows: write
@@ -76,12 +76,12 @@ jobs:
         id: release-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
-          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           owner: gittools
           repositories: |
             actions
             actions-test
+          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
+          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-issues: write
@@ -136,4 +136,8 @@ jobs:
           token: ${{ steps.release-token.outputs.token }}
           repository: ${{ github.repository }}
           event-type: update-examples
-          client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
+          client-payload: |-
+            {
+              "oldTag": "${{ steps.get-tags.outputs.oldTag }}",
+              "newTag": "${{ steps.get-tags.outputs.newTag }}"
+            }
