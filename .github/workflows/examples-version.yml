@@ -57,10 +57,9 @@ jobs:
           dir -r .azure\**\*.yml  | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
 
           npm install --ignore-scripts
-
-          git add --verbose .
-          git config user.name 'gittools-bot'
-          git config user.email 'gittoolsbot@outlook.com'
-          git commit -m "update examples version to $newTag" --allow-empty
-          git push --force
         name: Update examples version
+
+      - uses: ./.github/actions/git-commit-push
+        with:
+          message: "update examples version to ${{ github.event.client_payload.newTag }}"
+        name: Commit and push updated examples version

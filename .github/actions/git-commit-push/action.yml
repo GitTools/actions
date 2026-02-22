@@ -1,0 +1,19 @@
+name: 'git-commit-push'
+description: 'Adds, commits, and pushes changes with a custom commit message.'
+inputs:
+  message:
+    description: 'Commit message'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Commit and push changes
+      shell: pwsh
+      env:
+        MESSAGE: ${{ inputs.message }}
+      run: |
+        git add --verbose .
+        git config user.name 'gittools-bot'
+        git config user.email 'gittoolsbot@outlook.com'
+        git commit -m $env:MESSAGE --allow-empty
+        git push --force
