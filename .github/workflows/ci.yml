@@ -48,11 +48,11 @@ jobs:
         uses: actions/create-github-app-token@v2
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         with:
-          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
-          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           owner: gittools
           repositories: |
             actions
+          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
+          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-workflows: write
