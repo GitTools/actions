@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - uses: gittools/actions/gitreleasemanager/close@v4.3.2
+  - uses: gittools/actions/gitreleasemanager/close@v4.3.3
     name: Close release with GitReleaseManager
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
