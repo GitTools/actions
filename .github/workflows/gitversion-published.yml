@@ -51,7 +51,7 @@ jobs:
           echo "Updating GitVersion version to $newTag"
         name: Update GitVersion version
 
-      - uses: ./.github/actions/git-commit-push
+      - uses: gittools/cicd/git-commit-push@main
         with:
           message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
         name: Commit and push updated GitVersion version

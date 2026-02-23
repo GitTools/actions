@@ -138,7 +138,7 @@ jobs:
         id: status
         run: |
           if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
-      - uses: ./.github/actions/git-commit-push
+      - uses: gittools/cicd/git-commit-push@main
         with:
           message: 'dist update'
         if: steps.status.outputs.has_changes == '1'

@@ -59,7 +59,7 @@ jobs:
           npm install --ignore-scripts
         name: Update examples version
 
-      - uses: ./.github/actions/git-commit-push
+      - uses: gittools/cicd/git-commit-push@main
         with:
           message: "update examples version to ${{ github.event.client_payload.newTag }}"
         name: Commit and push updated examples version
