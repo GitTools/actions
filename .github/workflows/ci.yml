@@ -42,40 +42,49 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           fetch-depth: 0
+
       - run: |
           npm install --ignore-scripts
         name: Install dependencies
+
       - run: |
           npm run lint:check && npm run format:check && npm run mdlint:check
         name: Check code formatting
+
       - run: |
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure
         name: Build code
+
       - run: |
           npm run test:ci
         name: Run tests
+
       - name: Test Summary
         uses: test-summary/action@v2.4
         if: always()
         with:
           paths: junit-report.xml
+
       - name: gitversion/setup
         uses: ./gitversion/setup
         with:
           versionSpec: '6.6.x'
           nugetConfigPath: '${{ github.workspace }}/nuget.config'
+
       - name: gitversion/command (showvariable)
         uses: ./gitversion/command
         with:
           targetPath: './'
           arguments: '/showvariable FullSemVer'
+
       - name: gitversion/command (format)
         uses: ./gitversion/command
         with:
           targetPath: './'
           arguments: '/format {Major}.{Minor}'
+
       - name: gitversion/execute
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
@@ -85,6 +94,7 @@ jobs:
           disableNormalization: false
           overrideConfig: |
             semantic-version-format=Loose
+
       - run: |
           echo "Major      (env.major)                                      : ${{ env.major }}"
           echo "Major      (env.GitVersion_Major)                           : ${{ env.GitVersion_Major }}"
@@ -106,11 +116,13 @@ jobs:
           echo "FullSemVer (steps.gitversion.outputs.fullSemVer)            : ${{ steps.gitversion.outputs.fullSemVer }}"
           echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
         name: Use variables and output
+
       - name: Check for changes
         if: matrix.os == 'ubuntu-24.04' && github.event_name == 'push'
         id: status
         run: |
           if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
+
       - uses: gittools/cicd/git-commit-push@main
         with:
           message: 'dist update'
