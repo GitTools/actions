@@ -16,35 +16,12 @@ jobs:
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
-
-      - name: Load secrets from 1Password
-        id: op-load-secret
-        uses: 1password/load-secrets-action@v3
+      - name: Auth and Checkout
+        id: auth_and_checkout
+        uses: gittools/cicd/auth-checkout@main
         with:
-          export-env: false
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          gh_app_id: op://gittools/actions/gh_app_id
-          gh_app_private_key: op://gittools/actions/gh_app_private_key.pem
-
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          owner: gittools
-          repositories: |
-            actions
-          app-id: ${{ steps.op-load-secret.outputs.gh_app_id }}
-          private-key: ${{ steps.op-load-secret.outputs.gh_app_private_key }}
-          permission-actions: write
-          permission-contents: write
-          permission-workflows: write
-          permission-members: read
-          permission-metadata: read
-
-      - uses: actions/checkout@v6
-        with:
-          token: ${{ steps.app-token.outputs.token }}
+          op-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          fetch-depth: 0
 
       - run: |
           $oldTag = "${{ github.event.client_payload.oldTag }}"
@@ -59,7 +36,7 @@ jobs:
           npm install --ignore-scripts
         name: Update examples version
 
-      - uses: ./.github/actions/git-commit-push
+      - uses: gittools/cicd/git-commit-push@main
         with:
           message: "update examples version to ${{ github.event.client_payload.newTag }}"
         name: Commit and push updated examples version
