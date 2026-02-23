@@ -41,16 +41,6 @@ jobs:
         id: gitversion # step id used as a reference for output values
         uses: ./gitversion/execute
 
-      - name: Publish To Azure Marketplace
-        id: publish-azure
-        uses: ./.github/actions/publish-azure
-        with:
-          mode: 'test'
-          major: ${{ steps.gitversion.outputs.major }}
-          minor: ${{ steps.gitversion.outputs.minor }}
-          patch: ${{ steps.gitversion.outputs.patch }}
-          token: ${{ steps.op-load-secret.outputs.tfx_token }}
-
       - name: Load secrets from 1Password
         id: op-load-secret
         uses: 1password/load-secrets-action@v3
@@ -61,6 +51,16 @@ jobs:
           gh_app_id: op://gittools/actions/gh_app_id
           gh_app_private_key: op://gittools/actions/gh_app_private_key.pem
           tfx_token: op://gittools/actions/tfx_token
+
+      - name: Publish To Azure Marketplace
+        id: publish-azure
+        uses: ./.github/actions/publish-azure
+        with:
+          mode: 'test'
+          major: ${{ steps.gitversion.outputs.major }}
+          minor: ${{ steps.gitversion.outputs.minor }}
+          patch: ${{ steps.gitversion.outputs.patch }}
+          token: ${{ steps.op-load-secret.outputs.tfx_token }}
 
       - name: Generate GitHub App Release Token
         id: release-token
