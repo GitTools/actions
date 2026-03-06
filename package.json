@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@stylistic/eslint-plugin": "5.9.0",
+    "@stylistic/eslint-plugin": "5.10.0",
     "@types/eslint__js": "9.14.0",
     "@types/node": "25.3.0",
     "@types/semver": "7.7.1",
