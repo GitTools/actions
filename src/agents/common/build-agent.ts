@@ -1,4 +1,4 @@
-import { exec as execNonPromise, ExecOptions } from 'node:child_process'
+import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
 import * as path from 'node:path'
@@ -251,24 +251,28 @@ export abstract class BuildAgentBase implements IBuildAgent {
     }
 
     async exec(cmd: string, args: string[]): Promise<ExecResult> {
-        const exec = util.promisify(execNonPromise)
+        const execFile = util.promisify(execFileNonPromise)
 
         try {
-            const commandOptions: ExecOptions = { maxBuffer: 1024 * 1024 * 10 } // 10MB
-            const { stdout, stderr } = await exec(`${cmd} ${args.join(' ')}`, commandOptions)
+            const commandOptions: ExecFileOptions = { maxBuffer: 1024 * 1024 * 10 } // 10MB
+            const { stdout, stderr } = await execFile(cmd, args, commandOptions)
+            const normalizedStdout = typeof stdout === 'string' ? stdout : stdout?.toString()
+            const normalizedStderr = typeof stderr === 'string' ? stderr : stderr?.toString()
             return {
                 code: 0,
                 error: null,
-                stderr,
-                stdout
+                stderr: normalizedStderr,
+                stdout: normalizedStdout
             }
         } catch (e) {
-            const error = e as Error & { code: number; stderr: string; stdout: string }
+            const error = e as Error & { code: number; stderr?: string | Buffer; stdout?: string | Buffer }
+            const normalizedStdout = typeof error.stdout === 'string' ? error.stdout : error.stdout?.toString()
+            const normalizedStderr = typeof error.stderr === 'string' ? error.stderr : error.stderr?.toString()
             return {
                 code: error.code,
                 error,
-                stderr: error.stderr,
-                stdout: error.stdout
+                stderr: normalizedStderr,
+                stdout: normalizedStdout
             }
         }
     }
