@@ -270,7 +270,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
             const normalizedStderr =
                 typeof error.stderr === 'string'
                     ? error.stderr
-                    : error.stderr?.toString() ?? error.message
+                    : (error.stderr?.toString() ?? error.message)
             const exitCode = typeof error.code === 'number' ? error.code : -1
             return {
                 code: exitCode,
