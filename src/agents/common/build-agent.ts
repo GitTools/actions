@@ -265,11 +265,15 @@ export abstract class BuildAgentBase implements IBuildAgent {
                 stdout: normalizedStdout
             }
         } catch (e) {
-            const error = e as Error & { code: number; stderr?: string | Buffer; stdout?: string | Buffer }
+            const error = e as Error & { code?: number | string; stderr?: string | Buffer; stdout?: string | Buffer }
             const normalizedStdout = typeof error.stdout === 'string' ? error.stdout : error.stdout?.toString()
-            const normalizedStderr = typeof error.stderr === 'string' ? error.stderr : error.stderr?.toString()
+            const normalizedStderr =
+                typeof error.stderr === 'string'
+                    ? error.stderr
+                    : error.stderr?.toString() ?? error.message
+            const exitCode = typeof error.code === 'number' ? error.code : -1
             return {
-                code: error.code,
+                code: exitCode,
                 error,
                 stderr: normalizedStderr,
                 stdout: normalizedStdout
