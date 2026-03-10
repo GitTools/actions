@@ -243,7 +243,7 @@ export abstract class DotnetTool implements IDotnetTool {
 
         const response = await fetch(downloadPath)
 
-        if (!response || !response.ok) {
+        if (!response?.ok) {
             this.buildAgent.info(`failed to query latest version for ${toolName} from ${downloadPath}. Status code: ${response ? response.status : 'unknown'}`)
             return null
         }
@@ -251,7 +251,7 @@ export abstract class DotnetTool implements IDotnetTool {
         const { data } = (await response.json()) as NugetVersions
 
         const versions = data[0].versions.map(x => x.version)
-        if (!versions || !versions.length) {
+        if (!versions?.length) {
             return null
         }
 

@@ -97,7 +97,7 @@ function escapeProperty(s: string | object): string {
     return toCommandValue(s).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').replace(/:/g, '%3A').replace(/,/g, '%2C')
 }
 
-export function toCommandValue(input: string | object): string {
+export function toCommandValue(input: string | object | undefined): string {
     if (input === null || input === undefined) {
         return ''
     } else if (typeof input === 'string' || input instanceof String) {
@@ -106,13 +106,13 @@ export function toCommandValue(input: string | object): string {
     return JSON.stringify(input)
 }
 
-export function prepareKeyValueMessage(key: string, value: string | object): string {
+export function prepareKeyValueMessage(key: string, value: string | object | undefined): string {
     const uuid = crypto.randomUUID()
     const delimiter = `ghadelimiter_${uuid}`
     const convertedValue = toCommandValue(value)
 
     // These should realistically never happen, but just in case someone finds a
-    // way to exploit uuid generation let's not allow keys or values that contain
+    // way to exploit uuid generation, let's not allow keys or values that contain
     // the delimiter.
     if (key.includes(delimiter)) {
         throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`)

@@ -39,7 +39,7 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
         this.error(message)
     }
 
-    setOutput = (name: string, value: string): void => {
+    setOutput = (name: string, value: string | undefined): void => {
         const filePath = process.env['GITHUB_OUTPUT'] || ''
         if (filePath) {
             return issueFileCommand('OUTPUT', prepareKeyValueMessage(name, value))
@@ -49,7 +49,7 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
         issueCommand('set-output', { name }, toCommandValue(value))
     }
 
-    setVariable = (name: string, value: string): void => {
+    setVariable = (name: string, value: string | undefined): void => {
         const convertedVal = toCommandValue(value)
         process.env[name] = convertedVal
 

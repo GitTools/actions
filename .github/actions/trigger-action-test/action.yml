@@ -25,10 +25,12 @@ runs:
     - name: Get tags
       id: get-tags
       shell: pwsh
+      env:
+        MajorMinorPatch: ${{ inputs.majorMinorPatch }}
       run: |
         # Finding the version from release tag
 
-        $newTag = "${{ inputs.majorMinorPatch }}"
+        $newTag = $env:MajorMinorPatch
         $oldTag = cat package.json | ConvertFrom-Json | Select-Object -ExpandProperty version
         echo "Old tag: $oldTag"
         echo "New tag: $newTag"
@@ -36,10 +38,14 @@ runs:
         "oldTag=$oldTag" >> $env:GITHUB_OUTPUT
         "newTag=$newTag" >> $env:GITHUB_OUTPUT
 
-    - uses: peter-evans/repository-dispatch@v3
+    - uses: peter-evans/repository-dispatch@v4
       name: Trigger Update Examples version (actions-test)
       with:
         token: ${{ inputs.token }}
         repository: ${{ github.repository_owner }}/actions-test
         event-type: update-examples-${{ inputs.mode }}
-        client-payload: '{"oldTag": "${{ steps.get-tags.outputs.oldTag }}", "newTag": "${{ steps.get-tags.outputs.newTag }}"}'
+        client-payload: |-
+          {
+            "oldTag": "${{ steps.get-tags.outputs.oldTag }}",
+            "newTag": "${{ steps.get-tags.outputs.newTag }}"
+          }

@@ -30,9 +30,9 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
 
     setFailed = (message: string, done?: boolean): void => this.error(`setFailed - ${message} - ${done}`)
 
-    setOutput = (name: string, value: string): void => this.debug(`setOutput - ${name} - ${value}`)
+    setOutput = (name: string, value: string | undefined): void => this.debug(`setOutput - ${name} - ${value}`)
 
-    setVariable(name: string, value: string): void {
+    setVariable(name: string, value: string | undefined): void {
         this.debug(`setVariable - ${name} - ${value}`)
         process.env[name] = value
     }

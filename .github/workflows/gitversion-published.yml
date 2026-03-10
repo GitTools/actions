@@ -1,6 +1,7 @@
 name: Update GitVersion version
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   repository_dispatch:
@@ -15,16 +16,19 @@ jobs:
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - name: Auth and Checkout
+        id: auth_and_checkout
+        uses: gittools/cicd/auth-checkout@main
         with:
-          token: ${{ secrets.PUSH_GITHUB_TOKEN }}
+          op-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          fetch-depth: 0
+
       - run: |
           $newTag = "${{ github.event.client_payload.tag }}"
-
           echo "Updating GitVersion version to $newTag"
-          git add --verbose .
-          git config user.name 'gittools-bot'
-          git config user.email 'gittoolsbot@outlook.com'
-          git commit -m "update GitVersion version to $newTag" --allow-empty
-          git push --force
         name: Update GitVersion version
+
+      - uses: gittools/cicd/git-commit-push@main
+        with:
+          message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
+        name: Commit and push updated GitVersion version

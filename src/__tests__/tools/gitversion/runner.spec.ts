@@ -16,7 +16,7 @@ describe('GitVersion Runner', () => {
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = '6.4.x'
+    const versionSpec = '6.6.x'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -273,6 +273,9 @@ function createGitVersionFixture(params: {
         BuildMetaData: buildMetaData,
         CommitDate: commitDate,
         CommitsSinceVersionSource: buildMetaData,
+        VersionSourceSemVer: '1.2.3',
+        VersionSourceDistance: buildMetaData,
+        VersionSourceIncrement: 'Patch',
         EscapedBranchName: escapedBranchName,
         FullBuildMetaData: fullBuildMetaData,
         FullSemVer: fullSemVer,

@@ -1,6 +1,7 @@
 name: checkout-path
 
-permissions: read-all
+permissions:
+  contents: read
 
 on:
   push:
@@ -22,6 +23,7 @@ jobs:
 
     runs-on: ubuntu-24.04
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v6
         with:
@@ -31,7 +33,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@main
         with:
-          versionSpec: '6.4.x'
+          versionSpec: '6.6.x'
 
       - name: Determine version
         id: gitversion
