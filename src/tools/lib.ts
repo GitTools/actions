@@ -10,14 +10,20 @@ type CliArgs = {
 }
 
 export async function getAgent(buildAgent: string | undefined): Promise<IBuildAgent> {
-    const agent = `./${buildAgent}/agent.mjs`
+    if (!buildAgent || !/^[a-z0-9-]+$/i.test(buildAgent)) {
+        throw new Error(`Invalid build agent: ${buildAgent}`)
+    }
+    const agent = `./tools/${buildAgent}/agent.mjs`
     const module = (await import(agent)) as { BuildAgent: new () => IBuildAgent }
     return new module.BuildAgent()
 }
 
 export async function getToolRunner(buildAgent: string | undefined, tool: string | undefined): Promise<IRunner> {
+    if (!tool || !/^[a-z0-9-]+$/i.test(tool)) {
+        throw new Error(`Invalid tool: ${tool}`)
+    }
     const agent = await getAgent(buildAgent)
-    const toolRunner = `./libs/${tool}.mjs`
+    const toolRunner = `./tools/libs/${tool}.mjs`
     const module = (await import(toolRunner)) as { Runner: new (buildAgent: IBuildAgent) => IRunner }
     return new module.Runner(agent)
 }

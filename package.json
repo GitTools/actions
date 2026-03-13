@@ -20,30 +20,23 @@
     "format:fix": "prettier --write \"src/**/*.ts\"",
     "mdlint:check": "markdownlint docs dist",
     "mdlint:fix": "markdownlint --fix docs dist",
-
     "build:tools": "vite build --config src/tools/vite.config.mts",
     "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
-
     "build:agent:local": "vite build --config src/agents/vite.config.mts --mode local-agent",
     "build:agent:azure": "vite build --config src/agents/vite.config.mts --mode azure",
     "build:agent:github": "vite build --config src/agents/vite.config.mts --mode github",
-
     "run:local:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent local",
     "run:azure:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent azure",
     "run:github:gitversion": "node dist/tools/cli.mjs --tool gitversion --agent github",
-
     "run:local:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent local",
     "run:azure:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent azure",
     "run:github:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent github",
-
     "test:ci": "vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
     "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
-
     "publish:prepare": "./dist/azure/updateTasks.mjs",
     "publish:azure:local": "tfx extension create --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs",
     "publish:azure:marketplace": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --auth-type pat",
-
     "prepare": "husky"
   },
   "devDependencies": {
@@ -70,7 +63,6 @@
     "typescript-eslint": "8.57.0",
     "vite": "8.0.0",
     "vite-node": "6.0.0",
-    "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.0"
   },
   "dependencies": {
@@ -80,7 +72,12 @@
     "minimatch": "10.2.1"
   },
   "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write"],
-    "*.md": ["markdownlint --fix"]
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "markdownlint --fix"
+    ]
   }
 }
