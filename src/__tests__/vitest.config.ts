@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 const config = defineConfig({
     root: resolve(__dirname, '../..'),
     esbuild: {
-        target: 'node20'
+        target: 'node24'
     },
     plugins: [
         tsconfigPaths({
