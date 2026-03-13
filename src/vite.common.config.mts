@@ -7,7 +7,7 @@ export function viteConfig(entry: Record<string, string>, manualChunks: (id: str
     return defineConfig({
         root: resolve(__dirname, '..'),
         esbuild: {
-            target: 'node20'
+            target: 'node24'
         },
         plugins: [
             tsconfigPaths({

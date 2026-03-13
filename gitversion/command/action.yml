@@ -5,7 +5,7 @@ branding:
   color: gray-dark
   icon: git-pull-request
 runs:
-  using: node20
+  using: node24
   main: main.mjs
 inputs:
   targetPath:
