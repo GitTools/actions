@@ -52,10 +52,12 @@ module.exports = (env) => {
             ...gitversion.map(task => ({ path: '../tools/azure', packagePath: `${task.path}/tools/azure` })),
             ...gitversion.map(task => ({ path: '../tools/libs', packagePath: `${task.path}/tools/libs` })),
             ...gitversion.map(task => ({ path: '../tools/lib.mjs', packagePath: `${task.path}/tools/lib.mjs` })),
+            ...gitversion.map(task => ({ path: '../rolldown-runtime.mjs', packagePath: `${task.path}/rolldown-runtime.mjs` })),
             ...gitreleasemanager.map(task => ({ path: task.path, packagePath: `${task.path}` })),
             ...gitreleasemanager.map(task => ({ path: '../tools/azure', packagePath: `${task.path}/tools/azure` })),
             ...gitreleasemanager.map(task => ({ path: '../tools/libs', packagePath: `${task.path}/tools/libs` })),
             ...gitreleasemanager.map(task => ({ path: '../tools/lib.mjs', packagePath: `${task.path}/tools/lib.mjs` })),
+            ...gitreleasemanager.map(task => ({ path: '../rolldown-runtime.mjs', packagePath: `${task.path}/rolldown-runtime.mjs` })),
         ],
         categories: [
             'Azure Pipelines'

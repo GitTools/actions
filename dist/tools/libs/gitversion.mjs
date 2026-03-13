@@ -1,6 +1,6 @@
 import "./semver.mjs";
 import { a as ArgumentsBuilder, i as DotnetTool, n as keysOf, r as SettingsProvider, t as RunnerBase } from "./tools.mjs";
-import { t as allIndexesOf } from "../../lib.mjs";
+import { allIndexesOf } from "../lib.mjs";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as crypto from "node:crypto";

@@ -11,8 +11,7 @@ const config = (): UserConfig => {
 
     const entry = {
         ...tools,
-        ['tools/lib']: resolve(__dirname, 'lib.ts'),
-        ['tools/cli']: resolve(__dirname, 'cli.ts')
+        ['tools/lib']: resolve(__dirname, 'lib.ts')
     }
 
     const manualChunks = (id: string): string | undefined => {
