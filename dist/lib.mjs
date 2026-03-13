@@ -1,11 +1,13 @@
 import { parseArgs } from "node:util";
 //#region src/tools/lib.ts
 async function getAgent(buildAgent) {
-	return new (await (import(`./${buildAgent}/agent.mjs`))).BuildAgent();
+	if (!buildAgent || !/^[a-z0-9-]+$/i.test(buildAgent)) throw new Error(`Invalid build agent: ${buildAgent}`);
+	return new (await (import(`./tools/${buildAgent}/agent.mjs`))).BuildAgent();
 }
 async function getToolRunner(buildAgent, tool) {
+	if (!tool || !/^[a-z0-9-]+$/i.test(tool)) throw new Error(`Invalid tool: ${tool}`);
 	const agent = await getAgent(buildAgent);
-	return new (await (import(`./libs/${tool}.mjs`))).Runner(agent);
+	return new (await (import(`./tools/libs/${tool}.mjs`))).Runner(agent);
 }
 function parseCliArgs() {
 	return parseArgs({ options: {
