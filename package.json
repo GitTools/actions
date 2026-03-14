@@ -21,7 +21,9 @@
     "mdlint:check": "markdownlint docs dist",
     "mdlint:fix": "markdownlint --fix docs dist",
 
-    "build:tools": "vite build --config src/tools/vite.config.mts",
+    "build:tools": "run-s build:tools:lib build:tools:cli",
+    "build:tools:lib": "vite build --config src/tools/vite.config.mts",
+    "build:tools:cli": "vite build --config src/tools/vite.config.cli.mts",
     "build:agents": "run-p build:agent:local build:agent:azure build:agent:github",
 
     "build:agent:local": "vite build --config src/agents/vite.config.mts --mode local-agent",
