@@ -24,22 +24,16 @@ defaults:
 
 jobs:
   build:
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ windows-2025, ubuntu-24.04, macos-26 ]
       fail-fast: false
     steps:
-      - name: Auth and Checkout
-        id: auth_and_checkout
-        uses: gittools/cicd/auth-checkout@main
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        with:
-          op-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          fetch-depth: 0
-
-      - uses: actions/checkout@v6
-        if: github.event_name == 'pull_request'
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
