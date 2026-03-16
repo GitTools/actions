@@ -1,9 +1,8 @@
-import * as path from 'path';
+import * as path from 'node:path';
 import { S as SettingsProvider, D as DotnetTool, A as ArgumentsBuilder, R as RunnerBase } from './tools.mjs';
 import 'node:crypto';
 import 'node:fs/promises';
 import 'node:os';
-import 'node:path';
 import './semver.mjs';
 
 class GitReleaseManagerSettingsProvider extends SettingsProvider {

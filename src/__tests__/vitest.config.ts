@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 const config = defineConfig({
