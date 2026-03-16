@@ -6,14 +6,13 @@ import { s as semverExports } from './semver.mjs';
 
 class ArgumentsBuilder {
   args = [];
-  isWindows = os.platform() === "win32";
   /**
    * Adds a simple argument without a key
    * @param value The argument value
    */
   addArgument(value) {
     if (value) {
-      this.args.push(this.escapeArgument(value));
+      this.args.push(value);
     }
     return this;
   }
@@ -44,8 +43,7 @@ class ArgumentsBuilder {
    */
   addKeyValue(key, value) {
     if (key && value !== void 0 && value !== null) {
-      this.args.push(`--${key}`);
-      this.args.push(this.escapeArgument(value));
+      this.args.push(`--${key}`, value);
     }
     return this;
   }
@@ -56,7 +54,7 @@ class ArgumentsBuilder {
    */
   addKeyValueEquals(key, value) {
     if (key && value !== void 0 && value !== null) {
-      this.args.push(`--${key}=${this.escapeArgument(value)}`);
+      this.args.push(`--${key}=${value}`);
     }
     return this;
   }
@@ -67,38 +65,9 @@ class ArgumentsBuilder {
    */
   addCommaList(key, values) {
     if (key && values && values.length > 0) {
-      const escapedValues = values.map((v) => this.escapeArgument(v));
-      this.args.push(`--${key}`);
-      this.args.push(escapedValues.join(","));
+      this.args.push(`--${key}`, values.join(","));
     }
     return this;
-  }
-  /**
-   * Escapes an argument value based on the current OS
-   * @param value The argument value to escape
-   * @returns The escaped argument value
-   */
-  escapeArgument(value) {
-    if (!value) return value;
-    if (!this.needsEscaping(value)) return value;
-    if (this.isWindows) {
-      return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-    } else {
-      return `'${value.replace(/'/g, "'\\''")}'`;
-    }
-  }
-  /**
-   * Determines if a value needs to be escaped
-   * @param value The value to check
-   * @returns True if the value needs escaping
-   */
-  needsEscaping(value) {
-    const windowsNeedsEscaping = /[\s&|<>^(){}[\]"']/;
-    const unixNeedsEscaping = /[\s$\\`&|<>(){}[\]"']/;
-    if (this.isWindows) {
-      return windowsNeedsEscaping.test(value);
-    }
-    return unixNeedsEscaping.test(value);
   }
   /**
    * Returns the built argument array
