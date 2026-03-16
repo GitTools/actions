@@ -52,3 +52,19 @@ function publish-vsix()
 
     echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
 }
+
+function extract-version()
+{
+    $filePath = ".github/workflows/ci.yml"
+    if (Test-Path $filePath) {
+        $content = Get-Content $filePath -Raw
+        if ($content -match "versionSpec:\s*'([^']+)'") {
+            $version = $Matches[1]
+            Write-Output $version
+        } else {
+            Write-Error "Could not find versionSpec in $filePath"
+        }
+    } else {
+        Write-Error "File not found: $filePath"
+    }
+}

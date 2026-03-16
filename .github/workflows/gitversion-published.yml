@@ -24,9 +24,21 @@ jobs:
           fetch-depth: 1
 
       - run: |
-          $newTag = "${{ github.event.client_payload.tag }}"
-          $newTag = "${{ github.event.client_payload.newTag }}"
+          . ./utilities.ps1 # Import the functions
+
+          $version = "${{ github.event.client_payload.newTag }}"
+
+          $oldTag = extract-version
+          $newTag = ($version -split '\.')[0,1] -join '.' | % { "$_.x" }
+
           echo "Updating GitVersion version to $newTag"
+          echo "Old version: $oldTag"
+          echo "New version: $newTag"
+
+          dir -r .\docs\**\*.md   | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .github\**\*.yml | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .azure\**\*.yml  | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+
         name: Update GitVersion version
 
       - uses: gittools/cicd/git-commit-push@main
