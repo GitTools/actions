@@ -13,16 +13,19 @@ defaults:
 
 jobs:
   update-gitversion-version:
-    permissions:
-      contents: write
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Auth and Checkout
+        id: auth_and_checkout
+        uses: gittools/cicd/auth-checkout@main
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          fetch-depth: 1
 
       - run: |
           $newTag = "${{ github.event.client_payload.tag }}"
+          $newTag = "${{ github.event.client_payload.newTag }}"
           echo "Updating GitVersion version to $newTag"
         name: Update GitVersion version
 
