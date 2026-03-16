@@ -13,19 +13,25 @@ defaults:
 
 jobs:
   update-examples-version:
-    permissions:
-      contents: write
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Auth and Checkout
+        id: auth_and_checkout
+        uses: gittools/cicd/auth-checkout@main
+        with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          fetch-depth: 1
 
       - run: |
+          . .\utilities.ps1 # Import the functions
+
           $oldTag = "${{ github.event.client_payload.oldTag }}"
           $newTag = "${{ github.event.client_payload.newTag }}"
+          echo "Updating examples version to $newTag"
+          echo "Old version: $oldTag"
+          echo "New version: $newTag"
 
-          . .\utilities.ps1 # Import the functions
           dir -r .\package.json   | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
           dir -r .\docs\**\*.md   | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
           dir -r .github\**\*.yml | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
