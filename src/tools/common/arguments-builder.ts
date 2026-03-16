@@ -1,8 +1,5 @@
-import * as os from 'node:os'
-
 export class ArgumentsBuilder {
     private readonly args: string[] = []
-    private readonly isWindows: boolean = os.platform() === 'win32'
 
     /**
      * Adds a simple argument without a key
@@ -10,7 +7,7 @@ export class ArgumentsBuilder {
      */
     addArgument(value: string): this {
         if (value) {
-            this.args.push(this.escapeArgument(value))
+            this.args.push(value)
         }
         return this
     }
@@ -44,8 +41,7 @@ export class ArgumentsBuilder {
      */
     addKeyValue(key: string, value?: string | null): this {
         if (key && value !== undefined && value !== null) {
-            this.args.push(`--${key}`)
-            this.args.push(this.escapeArgument(value))
+            this.args.push(`--${key}`, value)
         }
         return this
     }
@@ -57,7 +53,7 @@ export class ArgumentsBuilder {
      */
     addKeyValueEquals(key: string, value?: string | null): this {
         if (key && value !== undefined && value !== null) {
-            this.args.push(`--${key}=${this.escapeArgument(value)}`)
+            this.args.push(`--${key}=${value}`)
         }
         return this
     }
@@ -69,46 +65,9 @@ export class ArgumentsBuilder {
      */
     addCommaList(key: string, values?: string[]): this {
         if (key && values && values.length > 0) {
-            const escapedValues = values.map(v => this.escapeArgument(v))
-            this.args.push(`--${key}`)
-            this.args.push(escapedValues.join(','))
+            this.args.push(`--${key}`, values.join(','))
         }
         return this
-    }
-
-    /**
-     * Escapes an argument value based on the current OS
-     * @param value The argument value to escape
-     * @returns The escaped argument value
-     */
-    private escapeArgument(value: string): string {
-        if (!value) return value
-
-        // No need to escape if it doesn't contain spaces or special chars
-        if (!this.needsEscaping(value)) return value
-
-        if (this.isWindows) {
-            // On Windows, wrap in double quotes and escape inner double quotes with backslash
-            return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
-        } else {
-            // On Unix, wrap in single quotes and escape inner single quotes
-            // Escaping single quotes in bash requires closing the quote, adding an escaped quote, and reopening
-            return `'${value.replace(/'/g, "'\\''")}'`
-        }
-    }
-
-    /**
-     * Determines if a value needs to be escaped
-     * @param value The value to check
-     * @returns True if the value needs escaping
-     */
-    private needsEscaping(value: string): boolean {
-        const windowsNeedsEscaping = /[\s&|<>^(){}[\]"']/
-        const unixNeedsEscaping = /[\s$\\`&|<>(){}[\]"']/
-        if (this.isWindows) {
-            return windowsNeedsEscaping.test(value)
-        }
-        return unixNeedsEscaping.test(value)
     }
 
     /**
