@@ -290,7 +290,7 @@ class DotnetTool {
     if (!toolPath) {
       toolPath = await this.buildAgent.which(this.toolName, true);
     }
-    args = ["--roll-forward Major", ...args];
+    args = [`--roll-forward`, `Major`, ...args];
     return await this.execute(toolPath, args);
   }
   async isValidInputFile(workDir, file) {
