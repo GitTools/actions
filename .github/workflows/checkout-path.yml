@@ -31,13 +31,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@main
+        uses: gittools/actions/gitversion/setup@v1
         with:
           versionSpec: '6.6.x'
 
       - name: Determine version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@main
+        uses: gittools/actions/gitversion/execute@v1
         with:
           targetPath: gv-repo
 

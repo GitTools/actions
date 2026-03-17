@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Auth and Checkout
         id: auth_and_checkout
-        uses: gittools/cicd/auth-checkout@main
+        uses: gittools/cicd/auth-checkout@v1
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 1
@@ -41,7 +41,7 @@ jobs:
 
         name: Update GitVersion version
 
-      - uses: gittools/cicd/git-commit-push@main
+      - uses: gittools/cicd/git-commit-push@v1
         with:
           message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
         name: Commit and push updated GitVersion version
