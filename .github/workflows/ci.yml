@@ -33,17 +33,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
-        if: github.repository_owner == 'GitTools'
-        id: auth_and_checkout
-        uses: gittools/cicd/auth-checkout@v1
+        uses: gittools/cicd/checkout@v1
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          fetch-depth: 0
-
-      - name: Checkout
-        if: github.repository_owner != 'GitTools'
-        uses: actions/checkout@v6
-        with:
           fetch-depth: 0
 
       - run: |
