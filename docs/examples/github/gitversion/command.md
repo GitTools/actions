@@ -8,7 +8,7 @@ You must also run the GitVersion Setup step before the Command step:
 ```yaml
 steps:
   - name: Checkout
-    uses: actions/checkout@v4
+    uses: actions/checkout@v6
     with:
       fetch-depth: 0
 

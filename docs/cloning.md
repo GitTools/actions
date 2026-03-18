@@ -8,7 +8,7 @@ In order for the GitVersion to properly work you need to clone the repository wi
 steps:
   -
     name: Checkout
-    uses: actions/checkout@v4
+    uses: actions/checkout@v6
     with:
       fetch-depth: 0
 ```
