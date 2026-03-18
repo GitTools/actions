@@ -6,15 +6,15 @@ permissions:
 on:
   push:
     branches:
-    - main
-    - vnext
-    - 'fix/*'
-    - 'feature/*'
+      - main
+      - vnext
+      - 'fix/*'
+      - 'feature/*'
 
   pull_request:
     branches:
-    - main
-    - vnext
+      - main
+      - vnext
 
   workflow_dispatch:
 
