@@ -47,13 +47,13 @@ jobs:
 
       - name: Load TFX credentials
         id: tfx-creds
-        uses: gittools/cicd/tfx-creds@main
+        uses: gittools/cicd/tfx-creds@v1
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Load GitHub App credentials
-        id: gh-app-creds
-        uses: gittools/cicd/gh-app-creds@main
+        id: github-app-creds
+        uses: gittools/cicd/github-app-creds@v1
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
@@ -65,8 +65,8 @@ jobs:
           repositories: |
             actions
             actions-test
-          app-id: ${{ steps.gh-app-creds.outputs.gh_app_id }}
-          private-key: ${{ steps.gh-app-creds.outputs.gh_app_private_key }}
+          app-id: ${{ steps.github-app-creds.outputs.gh_app_id }}
+          private-key: ${{ steps.github-app-creds.outputs.gh_app_private_key }}
           permission-actions: write
           permission-contents: write
           permission-issues: write
