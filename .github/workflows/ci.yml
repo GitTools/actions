@@ -33,8 +33,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: gittools/cicd/checkout@v1
         with:
+          op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 0
 
       - run: |
@@ -111,14 +112,8 @@ jobs:
           echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
         name: Use variables and output
 
-      - name: Check for changes
-        if: matrix.os == 'ubuntu-24.04' && github.event_name == 'push'
-        id: status
-        run: |
-          if ($null -ne (git status --porcelain)) { echo "has_changes=1"; echo "has_changes=1" >> $env:GITHUB_OUTPUT }
-
-      - uses: gittools/cicd/git-commit-push@main
+      - uses: gittools/cicd/git-commit-push@v1
+        if: matrix.os == 'ubuntu-24.04'
         with:
           message: 'dist update'
-        if: steps.status.outputs.has_changes == '1'
         name: Rebuild dist and push
