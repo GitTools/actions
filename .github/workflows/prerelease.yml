@@ -33,7 +33,7 @@ jobs:
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.6.x'
+          versionSpec: '6.7.x'
 
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values

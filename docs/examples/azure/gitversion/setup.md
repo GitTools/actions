@@ -52,7 +52,7 @@ steps:
   - task: gitversion-setup@4.4.2
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.6.x'
+      versionSpec: '6.7.x'
 ```
 
 ### Example 2
@@ -76,7 +76,7 @@ steps:
   - task: gitversion-setup@4.4.2
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.6.x'
+      versionSpec: '6.7.x'
       includePrerelease: true
 ```
 
@@ -89,7 +89,7 @@ steps:
   - task: gitversion-setup@4.4.2
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.6.x'
+      versionSpec: '6.7.x'
       preferLatestVersion: true
 ```
 
@@ -102,6 +102,6 @@ steps:
   - task: gitversion-setup@4.4.2
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.6.x'
+      versionSpec: '6.7.x'
       nugetConfigPath: '$(Build.SourcesDirectory)/nuget.config'
 ```

@@ -13,7 +13,7 @@ steps:
   - task: gitversion-setup@4.4.2
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.6.x'
+      versionSpec: '6.7.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -298,7 +298,7 @@ jobs:
       - task: gitversion-setup@4.4.2
         displayName: Install GitVersion
         inputs:
-          versionSpec: '6.6.x'
+          versionSpec: '6.7.x'
 
       - task: gitversion-execute@4.4.2
         displayName: Determine Version
@@ -368,7 +368,7 @@ jobs:
       - task: gitversion-setup@4.4.2
         displayName: Install GitVersion
         inputs:
-          versionSpec: '6.6.x'
+          versionSpec: '6.7.x'
 
       - task: gitversion-execute@4.4.2
         displayName: Determine Version
@@ -459,7 +459,7 @@ stages:
           - task: gitversion-setup@4.4.2
             displayName: Install GitVersion
             inputs:
-              versionSpec: '6.6.x'
+              versionSpec: '6.7.x'
 
           - task: gitversion-execute@4.4.2
             displayName: Determine Version

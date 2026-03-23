@@ -65,7 +65,7 @@ jobs:
       - name: gitversion/setup
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.6.x'
+          versionSpec: '6.7.x'
           nugetConfigPath: '${{ github.workspace }}/nuget.config'
 
       - name: gitversion/command (showvariable)
