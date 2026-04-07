@@ -75,6 +75,9 @@ jobs:
           permission-contents: write
           permission-workflows: write
 
+      - name: Delay before triggering update examples (actions-test)
+        run: Start-Sleep -Seconds 30
+
       - name: Trigger Update Examples version (actions-test)
         id: get-tags
         uses: ./.github/actions/trigger-action-test
