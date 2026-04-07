@@ -1,5 +1,5 @@
 import { __commonJSMin, __toESM } from "../rolldown-runtime.mjs";
-import * as process$2 from "node:process";
+import * as process$1 from "node:process";
 import { execFile } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -1373,7 +1373,7 @@ var access = async (filePath) => {
 * @return {Promise<string>} Resolves the absolute file path just checked, or undefined.
 */
 var isExecutable = async (absPath, options = {}) => {
-	const extension = ((options.env || process$2.env).PATHEXT || "").split(path.delimiter).concat("");
+	const extension = ((options.env || process$1.env).PATHEXT || "").split(path.delimiter).concat("");
 	return (await Promise.all(extension.map(async (ext) => access(absPath + ext.toLowerCase())))).find((bin) => !!bin);
 };
 /**
@@ -1384,7 +1384,7 @@ var isExecutable = async (absPath, options = {}) => {
 * @return {string[]} Directories to dig into.
 */
 var getDirsToWalkThrough = (options) => {
-	return ((options.env || process$2.env)[process$2.platform === "win32" ? "Path" : "PATH"] || "").split(path.delimiter).concat(options.include || []).filter((p) => !(options.exclude || []).includes(p));
+	return ((options.env || process$1.env)[process$1.platform === "win32" ? "Path" : "PATH"] || "").split(path.delimiter).concat(options.include || []).filter((p) => !(options.exclude || []).includes(p));
 };
 /**
 * Returns async promise with absolute file path of given command,
@@ -1412,12 +1412,12 @@ var BuildAgentBase = class {
 		return this.getVariableAsPath(this.cacheDirVariable);
 	}
 	addPath(inputPath) {
-		const envName = process$2.platform === "win32" ? "Path" : "PATH";
-		const newPath = inputPath + path.delimiter + process$2.env[envName];
+		const envName = process$1.platform === "win32" ? "Path" : "PATH";
+		const newPath = inputPath + path.delimiter + process$1.env[envName];
 		this.debug(`new Path: ${newPath}`);
-		process$2.env[envName] = newPath;
-		process$2.env.Path = newPath;
-		this.info(`Updated PATH: ${process$2.env[envName]}`);
+		process$1.env[envName] = newPath;
+		process$1.env.Path = newPath;
+		this.info(`Updated PATH: ${process$1.env[envName]}`);
 	}
 	getInput(input, required) {
 		const inputProp = input.replace(/ /g, "_").toUpperCase();
@@ -1437,7 +1437,7 @@ var BuildAgentBase = class {
 		return this.getDelimitedInput(input, "\n", required);
 	}
 	getVariable(name) {
-		const value = (process$2.env[name] || "").trim();
+		const value = (process$1.env[name] || "").trim();
 		this.debug(`getVariable - ${name}: ${value}`);
 		return value.trim();
 	}
@@ -1455,7 +1455,7 @@ var BuildAgentBase = class {
 	getExpandedString(pattern) {
 		const expanded = pattern.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*|{([a-zA-Z_][a-zA-Z0-9_]*)})/g, (_, whole, braced) => {
 			const name = braced ?? whole;
-			const value = process$2.env[name.toUpperCase()];
+			const value = process$1.env[name.toUpperCase()];
 			return value !== void 0 ? value : "";
 		});
 		this.debug(`getExpandedString - ${pattern}: ${expanded}`);
