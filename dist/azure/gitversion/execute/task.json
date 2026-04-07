@@ -114,6 +114,14 @@
       "helpMarkDown": "Whether to update versions in the project files"
     },
     {
+      "name": "updateWixVersionFile",
+      "type": "boolean",
+      "label": "Update WiX version file",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to update the WiX version file"
+    },
+    {
       "name": "buildNumberFormat",
       "type": "string",
       "label": "Build Number Format",

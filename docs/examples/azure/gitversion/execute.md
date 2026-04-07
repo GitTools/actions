@@ -64,6 +64,10 @@ updateProjectFiles:
   description: Whether to update versions in all project files
   required: false
   default: 'false'
+updateWixVersionFile:
+  description: Whether to update the WiX version file
+  required: false
+  default: 'false'
 buildNumberFormat:
   description: |
     Optional build number format. This is used to set the build number in Azure DevOps. If not specified, the build number is not set. Example:
@@ -254,6 +258,24 @@ steps:
 </details>
 
 ### Example 8
+
+<details>
+  <summary>Calculate the version for the build. Update the WiX version file.</summary>
+
+```yaml
+steps:
+  # gitversion-setup@4.4.2 task omitted for brevity.
+
+  - task: gitversion-execute@4.4.2
+    displayName: Determine Version
+    name: version_step # step id used as a reference for output values
+    inputs:
+      updateWixVersionFile: true
+```
+
+</details>
+
+### Example 9
 
 <details>
   <summary>Calculate the version for the build. Set the build number using a format.</summary>

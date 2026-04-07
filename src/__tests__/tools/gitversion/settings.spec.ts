@@ -15,6 +15,7 @@ describe('GitVersion settings', () => {
             updateAssemblyInfo: true,
             updateAssemblyInfoFilename: 'path',
             updateProjectFiles: true,
+            updateWixVersionFile: true,
             buildNumberFormat: 'format'
         }
 

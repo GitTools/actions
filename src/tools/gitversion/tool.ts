@@ -104,7 +104,8 @@ export class GitVersionTool extends DotnetTool {
             overrideConfig,
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
-            updateProjectFiles
+            updateProjectFiles,
+            updateWixVersionFile
             //
         } = options
 
@@ -148,6 +149,10 @@ export class GitVersionTool extends DotnetTool {
 
         if (updateProjectFiles) {
             builder.addArgument('/updateprojectfiles')
+        }
+
+        if (updateWixVersionFile) {
+            builder.addArgument('/updatewixversionfile')
         }
 
         return builder.build()

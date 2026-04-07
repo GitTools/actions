@@ -66,6 +66,10 @@ updateProjectFiles:
   description: Whether to update versions in the project files
   required: false
   default: 'false'
+updateWixVersionFile:
+  description: Whether to update the WiX version file
+  required: false
+  default: 'false'
 ```
 
 ## Outputs
@@ -241,6 +245,24 @@ steps:
     uses: gittools/actions/gitversion/execute@v4.4.2
     with:
       updateProjectFiles: true
+```
+
+</details>
+
+### Example 8
+
+<details>
+  <summary>Calculate the version for the build. Update the WiX version file.</summary>
+
+```yaml
+steps:
+  # gittools/actions/gitversion/setup@v4.4.2 action omitted for brevity.
+
+  - name: Determine Version
+    id: version_step # step id used as a reference for output values
+    uses: gittools/actions/gitversion/execute@v4.4.2
+    with:
+      updateWixVersionFile: true
 ```
 
 </details>
