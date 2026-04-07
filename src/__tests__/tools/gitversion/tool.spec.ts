@@ -269,7 +269,7 @@ describe('GitVersionTool', () => {
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateprojectfiles'])
         })
 
-        it('should return correct arguments for settings with wix version file', async () => {
+        it('should return correct arguments for settings with WiX version file', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {
                 updateWixVersionFile: true
