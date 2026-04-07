@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
-        uses: gittools/cicd/checkout@v1
+        uses: gittools/cicd/checkout@v2
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 0
@@ -112,7 +112,7 @@ jobs:
           echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
         name: Use variables and output
 
-      - uses: gittools/cicd/git-commit-push@v1
+      - uses: gittools/cicd/git-commit-push@v2
         if: matrix.os == 'ubuntu-24.04'
         with:
           message: 'dist update'
