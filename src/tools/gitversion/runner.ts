@@ -67,8 +67,10 @@ export class Runner extends RunnerBase {
         }
 
         if (gitVersionOutput === null) {
-            const stdout = result.stdout?.trim()
-            const message = stdout ? `GitVersion output is not valid JSON\n${stdout}` : 'GitVersion output is not valid JSON, see output details'
+            const gitVersionStdout = result.stdout?.trim()
+            const message = gitVersionStdout
+                ? `GitVersion output is not valid JSON\n${gitVersionStdout}`
+                : 'GitVersion output is not valid JSON, see output details'
             return this.handleOutputError(message)
         }
 
