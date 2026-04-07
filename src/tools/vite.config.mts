@@ -9,16 +9,18 @@ const config = (): UserConfig => {
         }))
         .reduce((acc, cur) => ({ ...acc, ...cur }), {})
 
-    const entry = {
-        ...tools,
-        ['tools/lib']: resolve(__dirname, 'lib.ts'),
-        ['tools/cli']: resolve(__dirname, 'cli.ts')
-    }
-
     const manualChunks = (id: string): string | undefined => {
+        if (id.includes('src/tools/lib.ts')) {
+            return 'tools/lib'
+        }
         if (id.includes('tools/common')) {
             return `tools/libs/tools`
         }
+    }
+
+    const entry = {
+        ...tools,
+        ['tools/cli']: resolve(__dirname, 'cli.ts')
     }
 
     return viteConfig(entry, manualChunks)

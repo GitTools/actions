@@ -1,17 +1,13 @@
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'node:path'
-import tsconfigPaths from 'vite-tsconfig-paths'
-
 const config = defineConfig({
     root: resolve(__dirname, '../..'),
-    esbuild: {
+    oxc: {
         target: 'node24'
     },
-    plugins: [
-        tsconfigPaths({
-            root: '../..'
-        })
-    ],
+    resolve: {
+        tsconfigPaths: true
+    },
     test: {
         globals: true,
         include: ['**/__tests__/**/*.spec.[tj]s'],

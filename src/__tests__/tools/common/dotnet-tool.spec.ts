@@ -5,7 +5,6 @@ import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
 import { DotnetTool, ISettingsProvider } from '@tools/common'
 import { IBuildAgent } from '@agents/common'
-import { Dirent } from 'node:fs'
 
 // Mock modules
 vi.mock('node:os')
@@ -187,9 +186,9 @@ describe('DotnetTool', () => {
             buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
 
             vi.mocked(fs.readdir).mockResolvedValue([
-                { name: 'custom-dir', isDirectory: () => true } as unknown as Dirent,
-                { name: 'not-a-dir', isDirectory: () => false } as unknown as Dirent
-            ])
+                { name: 'custom-dir', isDirectory: () => true },
+                { name: 'not-a-dir', isDirectory: () => false }
+            ] as unknown as never)
 
             const result = await tool.testFindToolExecutable(basePath)
 
@@ -301,7 +300,7 @@ describe('DotnetTool', () => {
             tool = new TestDotnetTool(buildAgent)
 
             const resolvedPath = path.join(process.cwd(), wrongDir)
-            await expect(tool.getRepoPath(wrongDir)).rejects.toThrowError(`Directory not found at ${resolvedPath}`)
+            await expect(tool.getRepoPath(wrongDir)).rejects.toThrow(`Directory not found at ${resolvedPath}`)
         })
     })
 })
