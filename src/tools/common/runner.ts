@@ -32,8 +32,13 @@ export abstract class RunnerBase implements IRunner {
                 return result
             } else {
                 this.buildAgent.debug(`${this.tool.toolName} failed`)
-                this.buildAgent.error(result.stderr as string)
-                this.buildAgent.setFailed(result.stderr as string, true)
+                if (result.stderr) {
+                    this.buildAgent.error(result.stderr)
+                    this.buildAgent.setFailed(result.stderr, true)
+                } else if (result.error) {
+                    this.buildAgent.error(result.error.message)
+                    this.buildAgent.setFailed(result.error.message, true)
+                }
                 return result
             }
         } catch (error) {

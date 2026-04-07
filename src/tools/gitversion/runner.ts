@@ -67,7 +67,9 @@ export class Runner extends RunnerBase {
         }
 
         if (gitVersionOutput === null) {
-            return this.handleOutputError('GitVersion output is not valid JSON, see output details')
+            const stdout = result.stdout?.trim()
+            const message = stdout ? `GitVersion output is not valid JSON\n${stdout}` : 'GitVersion output is not valid JSON, see output details'
+            return this.handleOutputError(message)
         }
 
         this.tool.writeGitVersionToAgent(gitVersionOutput)
@@ -82,10 +84,10 @@ export class Runner extends RunnerBase {
 
     private handleOutputError(message: string): ExecResult {
         this.buildAgent.debug(message)
-        this.buildAgent.setFailed(message, true)
         return {
             code: -1,
-            error: new Error(message)
+            error: new Error(message),
+            stderr: message
         }
     }
 

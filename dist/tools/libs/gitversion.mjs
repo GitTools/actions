@@ -250,7 +250,10 @@ class Runner extends RunnerBase {
       gitVersionOutput = this.extractGitVersionOutput(stdout);
     }
     if (gitVersionOutput === null) {
-      return this.handleOutputError("GitVersion output is not valid JSON, see output details");
+      const stdout = result.stdout?.trim();
+      const message = stdout ? `GitVersion output is not valid JSON
+${stdout}` : "GitVersion output is not valid JSON, see output details";
+      return this.handleOutputError(message);
     }
     this.tool.writeGitVersionToAgent(gitVersionOutput);
     this.tool.updateBuildNumber();
@@ -262,10 +265,10 @@ class Runner extends RunnerBase {
   }
   handleOutputError(message) {
     this.buildAgent.debug(message);
-    this.buildAgent.setFailed(message, true);
     return {
       code: -1,
-      error: new Error(message)
+      error: new Error(message),
+      stderr: message
     };
   }
   /**
