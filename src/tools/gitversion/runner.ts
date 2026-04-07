@@ -73,8 +73,9 @@ export class Runner extends RunnerBase {
                 this.buildAgent.info('-------------------')
                 this.buildAgent.info(gitVersionStdout)
                 this.buildAgent.info('-------------------')
-                const { truncated, wasTruncated, totalLines } = this.truncateOutput(gitVersionStdout)
-                const truncationNote = wasTruncated ? ` (showing last 20 of ${totalLines} lines)` : ''
+                const maxLines = 20
+                const { truncated, wasTruncated, totalLines } = this.truncateOutput(gitVersionStdout, maxLines)
+                const truncationNote = wasTruncated ? ` (showing last ${maxLines} of ${totalLines} lines)` : ''
                 return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}\n${truncated}`)
             }
             return this.handleOutputError('GitVersion output is not valid JSON, see output details')
@@ -91,9 +92,9 @@ export class Runner extends RunnerBase {
     }
 
     private truncateOutput(output: string, maxLines = 20): { truncated: string; wasTruncated: boolean; totalLines: number } {
-        const lines = output.split('\n')
+        const lines = output.split(/\r?\n/)
         if (lines.length <= maxLines) {
-            return { truncated: output, wasTruncated: false, totalLines: lines.length }
+            return { truncated: lines.join('\n'), wasTruncated: false, totalLines: lines.length }
         }
         return { truncated: lines.slice(-maxLines).join('\n'), wasTruncated: true, totalLines: lines.length }
     }
