@@ -23,6 +23,8 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const updateProjectFiles = this.buildAgent.getBooleanInput<ExecuteSettings>('updateProjectFiles')
 
+        const updateWixVersionFile = this.buildAgent.getBooleanInput<ExecuteSettings>('updateWixVersionFile')
+
         const buildNumberFormat = this.buildAgent.getInput<ExecuteSettings>('buildNumberFormat', false)
 
         return {
@@ -35,6 +37,7 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
             updateProjectFiles,
+            updateWixVersionFile,
             buildNumberFormat
         }
     }

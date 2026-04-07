@@ -10,6 +10,7 @@ export type ExecuteSettings = {
     updateAssemblyInfo: boolean
     updateAssemblyInfoFilename?: string
     updateProjectFiles: boolean
+    updateWixVersionFile: boolean
     buildNumberFormat?: string
 }
 

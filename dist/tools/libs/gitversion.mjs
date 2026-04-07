@@ -17,6 +17,7 @@ class GitVersionSettingsProvider extends SettingsProvider {
     const updateAssemblyInfo = this.buildAgent.getBooleanInput("updateAssemblyInfo");
     const updateAssemblyInfoFilename = this.buildAgent.getInput("updateAssemblyInfoFilename");
     const updateProjectFiles = this.buildAgent.getBooleanInput("updateProjectFiles");
+    const updateWixVersionFile = this.buildAgent.getBooleanInput("updateWixVersionFile");
     const buildNumberFormat = this.buildAgent.getInput("buildNumberFormat", false);
     return {
       targetPath,
@@ -28,6 +29,7 @@ class GitVersionSettingsProvider extends SettingsProvider {
       updateAssemblyInfo,
       updateAssemblyInfoFilename,
       updateProjectFiles,
+      updateWixVersionFile,
       buildNumberFormat
     };
   }
@@ -122,7 +124,8 @@ class GitVersionTool extends DotnetTool {
       overrideConfig,
       updateAssemblyInfo,
       updateAssemblyInfoFilename,
-      updateProjectFiles
+      updateProjectFiles,
+      updateWixVersionFile
       //
     } = options;
     if (disableCache) {
@@ -158,6 +161,9 @@ class GitVersionTool extends DotnetTool {
     }
     if (updateProjectFiles) {
       builder.addArgument("/updateprojectfiles");
+    }
+    if (updateWixVersionFile) {
+      builder.addArgument("/updatewixversionfile");
     }
     return builder.build();
   }

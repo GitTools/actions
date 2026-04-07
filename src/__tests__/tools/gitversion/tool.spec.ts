@@ -269,6 +269,14 @@ describe('GitVersionTool', () => {
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateprojectfiles'])
         })
 
+        it('should return correct arguments for settings with wix version file', async () => {
+            tool.init(true)
+            const args = await tool.getExecuteArguments('workdir', {
+                updateWixVersionFile: true
+            } as ExecuteSettings)
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updatewixversionfile'])
+        })
+
         it('should include outputfile argument when output file is provided', async () => {
             const outputFile = '/tmp/gitversion-123.json'
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings, outputFile)
