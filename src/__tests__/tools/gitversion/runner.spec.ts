@@ -227,6 +227,40 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
 
             expect(result).toBeNull()
         })
+
+        it.sequential('processGitVersionOutput returns non-zero result with stdout snippet when output is not valid JSON', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            const stdout = 'INFO line 1\nINFO line 2\nERROR Something went wrong'
+            const result = await runner['processGitVersionOutput']({ code: 0, stdout })
+
+            expect(result.code).toBe(-1)
+            expect(result.stderr).toContain('GitVersion output is not valid JSON')
+            expect(result.stderr).toContain('ERROR Something went wrong')
+        })
+
+        it.sequential('processGitVersionOutput truncates long stdout and notes total line count in error message', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            const lines = Array.from({ length: 30 }, (_, i) => `INFO line ${i + 1}`)
+            const stdout = lines.join('\n')
+            const result = await runner['processGitVersionOutput']({ code: 0, stdout })
+
+            expect(result.code).toBe(-1)
+            expect(result.stderr).toContain('GitVersion output is not valid JSON')
+            expect(result.stderr).toContain('showing last 20 of 30 lines')
+            expect(result.stderr).not.toContain('INFO line 1\n')
+            expect(result.stderr).toContain('INFO line 11')
+        })
+
+        it.sequential('processGitVersionOutput uses fallback message when stdout is empty', async () => {
+            setEnv(toolPathVariable, toolPath)
+
+            const result = await runner['processGitVersionOutput']({ code: 0, stdout: '' })
+
+            expect(result.code).toBe(-1)
+            expect(result.stderr).toBe('GitVersion output is not valid JSON, see output details')
+        })
     }
 
     describe('Local Agent', () => {

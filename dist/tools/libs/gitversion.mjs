@@ -251,9 +251,17 @@ class Runner extends RunnerBase {
     }
     if (gitVersionOutput === null) {
       const gitVersionStdout = result.stdout?.trim();
-      const message = gitVersionStdout ? `GitVersion output is not valid JSON
-${gitVersionStdout}` : "GitVersion output is not valid JSON, see output details";
-      return this.handleOutputError(message);
+      if (gitVersionStdout) {
+        this.buildAgent.info(`${this.tool.toolName} Output:`);
+        this.buildAgent.info("-------------------");
+        this.buildAgent.info(gitVersionStdout);
+        this.buildAgent.info("-------------------");
+        const { truncated, wasTruncated, totalLines } = this.truncateOutput(gitVersionStdout);
+        const truncationNote = wasTruncated ? ` (showing last 20 of ${totalLines} lines)` : "";
+        return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}
+${truncated}`);
+      }
+      return this.handleOutputError("GitVersion output is not valid JSON, see output details");
     }
     this.tool.writeGitVersionToAgent(gitVersionOutput);
     this.tool.updateBuildNumber();
@@ -262,6 +270,13 @@ ${gitVersionStdout}` : "GitVersion output is not valid JSON, see output details"
   }
   getErrorMessage(error) {
     return error instanceof Error ? error.message : String(error);
+  }
+  truncateOutput(output, maxLines = 20) {
+    const lines = output.split("\n");
+    if (lines.length <= maxLines) {
+      return { truncated: output, wasTruncated: false, totalLines: lines.length };
+    }
+    return { truncated: lines.slice(-maxLines).join("\n"), wasTruncated: true, totalLines: lines.length };
   }
   handleOutputError(message) {
     this.buildAgent.debug(message);
