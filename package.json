@@ -66,7 +66,7 @@
     "simple-git": "3.35.2",
     "tfx-cli": "0.23.1",
     "typescript": "6.0.2",
-    "typescript-eslint": "8.58.0",
+    "typescript-eslint": "8.58.1",
     "vite": "8.0.7",
     "vite-node": "6.0.0",
     "vitest": "4.1.3"
