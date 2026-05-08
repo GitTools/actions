@@ -96,7 +96,7 @@ describe('DotnetTool', () => {
             mockFileExists.mockImplementation((path: string) => {
                 return path === filePath
             })
-            buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
+            buildAgent.fileExists = mockFileExists
         }
 
         it('should return tool path when executable exists in base path', async () => {
@@ -183,7 +183,7 @@ describe('DotnetTool', () => {
                 return filePath === customDirPath
             })
 
-            buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
+            buildAgent.fileExists = mockFileExists
 
             vi.mocked(fs.readdir).mockResolvedValue([
                 { name: 'custom-dir', isDirectory: () => true },
@@ -204,7 +204,7 @@ describe('DotnetTool', () => {
             const mockFileExists = vi.fn().mockResolvedValue(false)
             const mockDebug = vi.fn()
 
-            buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
+            buildAgent.fileExists = mockFileExists
             buildAgent.debug = mockDebug
 
             vi.mocked(fs.readdir).mockRejectedValue(new Error('Permission denied'))
@@ -221,7 +221,7 @@ describe('DotnetTool', () => {
             const basePath = '/tools/test-tool'
 
             const mockFileExists = vi.fn().mockResolvedValue(false)
-            buildAgent.fileExists = mockFileExists as unknown as typeof buildAgent.fileExists
+            buildAgent.fileExists = mockFileExists
 
             vi.mocked(fs.readdir).mockResolvedValue([])
 

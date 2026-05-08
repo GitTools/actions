@@ -80,12 +80,12 @@ describe('GitReleaseManagerTool', () => {
     })
 
     describe('getArguments', () => {
-        const commonSettings = {
+        const commonSettings: CommonSettings = {
             repository: 'owner/repo',
             token: 'token',
             targetDirectory: '/targetDirectory',
             logFilePath: './logFilePath'
-        } as CommonSettings
+        }
 
         beforeEach(() => {
             tool = new TestGitReleaseManagerTool({
@@ -108,7 +108,7 @@ describe('GitReleaseManagerTool', () => {
 
                 const args = await tool.getCommonArguments({
                     ...commonSettings
-                } as CommonSettings)
+                })
 
                 expect(args).toEqual([
                     '--owner',
@@ -136,7 +136,7 @@ describe('GitReleaseManagerTool', () => {
                     isPreRelease: true,
                     assets: ['asset1', 'asset2'],
                     logFilePath: './createLogFilePath'
-                } as CreateSettings)
+                })
 
                 expect(args).toEqual([
                     'create',
@@ -170,7 +170,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getDiscardArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as DiscardSettings)
+                })
 
                 expect(args).toEqual([
                     'discard',
@@ -195,7 +195,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getOpenArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as OpenSettings)
+                })
 
                 expect(args).toEqual([
                     'open',
@@ -220,7 +220,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getCloseArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as CloseSettings)
+                })
 
                 expect(args).toEqual([
                     'close',
@@ -245,7 +245,7 @@ describe('GitReleaseManagerTool', () => {
                 const args = await tool.getPublishArguments({
                     ...commonSettings,
                     milestone: 'milestone'
-                } as PublishSettings)
+                })
 
                 expect(args).toEqual([
                     'publish',
@@ -271,7 +271,7 @@ describe('GitReleaseManagerTool', () => {
                     ...commonSettings,
                     milestone: 'milestone',
                     assets: ['asset1', 'asset2']
-                } as AddAssetSettings)
+                })
 
                 expect(args).toEqual([
                     'addasset',
