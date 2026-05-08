@@ -80,12 +80,12 @@ describe('GitReleaseManagerTool', () => {
     })
 
     describe('getArguments', () => {
-        const commonSettings: CommonSettings = {
+        const commonSettings = {
             repository: 'owner/repo',
             token: 'token',
             targetDirectory: '/targetDirectory',
             logFilePath: './logFilePath'
-        }
+        } satisfies CommonSettings
 
         beforeEach(() => {
             tool = new TestGitReleaseManagerTool({
