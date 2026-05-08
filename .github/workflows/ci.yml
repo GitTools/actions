@@ -57,7 +57,7 @@ jobs:
         name: Run tests
 
       - name: Test Summary
-        uses: test-summary/action@v2.4
+        uses: test-summary/action@v2.6
         if: always()
         with:
           paths: junit-report.xml
