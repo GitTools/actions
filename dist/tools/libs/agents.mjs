@@ -583,6 +583,39 @@ var require_coerce = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = coerce;
 }));
 //#endregion
+//#region node_modules/semver/functions/truncate.js
+var require_truncate = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var parse = require_parse();
+	var constants = require_constants();
+	var SemVer = require_semver$1();
+	var truncate = (version, truncation, options) => {
+		if (!constants.RELEASE_TYPES.includes(truncation)) return null;
+		const clonedVersion = cloneInputVersion(version, options);
+		return clonedVersion && doTruncation(clonedVersion, truncation);
+	};
+	var cloneInputVersion = (version, options) => {
+		return parse(version instanceof SemVer ? version.version : version, options);
+	};
+	var doTruncation = (version, truncation) => {
+		if (isPrerelease(truncation)) return version.version;
+		version.prerelease = [];
+		switch (truncation) {
+			case "major":
+				version.minor = 0;
+				version.patch = 0;
+				break;
+			case "minor":
+				version.patch = 0;
+				break;
+		}
+		return version.format();
+	};
+	var isPrerelease = (type) => {
+		return type.startsWith("pre");
+	};
+	module.exports = truncate;
+}));
+//#endregion
 //#region node_modules/semver/internal/lrucache.js
 var require_lrucache = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var LRUCache = class {
@@ -1317,6 +1350,7 @@ var import_semver = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exp
 		lte: require_lte(),
 		cmp: require_cmp(),
 		coerce: require_coerce(),
+		truncate: require_truncate(),
 		Comparator: require_comparator(),
 		Range: require_range(),
 		satisfies: require_satisfies(),
