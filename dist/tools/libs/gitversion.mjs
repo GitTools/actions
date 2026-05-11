@@ -147,6 +147,7 @@ var GitVersionTool = class extends DotnetTool {
 //#endregion
 //#region src/tools/gitversion/runner.ts
 var Runner = class extends RunnerBase {
+	buildAgent;
 	tool;
 	constructor(buildAgent) {
 		super(buildAgent);

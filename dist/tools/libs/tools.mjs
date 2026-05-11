@@ -115,6 +115,7 @@ var ArgumentsBuilder = class {
 //#endregion
 //#region src/tools/common/dotnet-tool.ts
 var DotnetTool = class DotnetTool {
+	buildAgent;
 	static nugetRoot = "https://azuresearch-usnc.nuget.org/query";
 	constructor(buildAgent) {
 		this.buildAgent = buildAgent;
@@ -304,6 +305,7 @@ var DotnetTool = class DotnetTool {
 //#endregion
 //#region src/tools/common/settings.ts
 var SettingsProvider = class {
+	buildAgent;
 	constructor(buildAgent) {
 		this.buildAgent = buildAgent;
 	}
@@ -323,6 +325,7 @@ var keysOf = Object.keys;
 //#endregion
 //#region src/tools/common/runner.ts
 var RunnerBase = class {
+	buildAgent;
 	constructor(buildAgent) {
 		this.buildAgent = buildAgent;
 	}

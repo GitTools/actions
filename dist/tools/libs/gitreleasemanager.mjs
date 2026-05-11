@@ -160,6 +160,7 @@ var GitReleaseManagerTool = class extends DotnetTool {
 //#endregion
 //#region src/tools/gitreleasemanager/runner.ts
 var Runner = class extends RunnerBase {
+	buildAgent;
 	tool;
 	constructor(buildAgent) {
 		super(buildAgent);
