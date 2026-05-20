@@ -17,14 +17,16 @@ var GitVersionSettingsProvider = class extends SettingsProvider {
 			updateAssemblyInfoFilename: this.buildAgent.getInput("updateAssemblyInfoFilename"),
 			updateProjectFiles: this.buildAgent.getBooleanInput("updateProjectFiles"),
 			updateWixVersionFile: this.buildAgent.getBooleanInput("updateWixVersionFile"),
-			buildNumberFormat: this.buildAgent.getInput("buildNumberFormat", false)
+			buildNumberFormat: this.buildAgent.getInput("buildNumberFormat", false),
+			verbosity: this.buildAgent.getInput("verbosity", false)
 		};
 	}
 	getCommandSettings() {
 		return {
 			targetPath: this.buildAgent.getInput("targetPath"),
 			disableShallowCloneCheck: this.buildAgent.getBooleanInput("disableShallowCloneCheck"),
-			arguments: this.buildAgent.getInput("arguments")
+			arguments: this.buildAgent.getInput("arguments"),
+			verbosity: this.buildAgent.getInput("verbosity", false)
 		};
 	}
 };
@@ -97,7 +99,7 @@ var GitVersionTool = class extends DotnetTool {
 		if (outputFile) builder.addArgument("/output").addArgument("file").addArgument("/outputfile").addArgument(outputFile);
 		else builder.addArgument("/output").addArgument("json");
 		builder.addArgument("/l").addArgument("console");
-		const { disableCache, disableNormalization, configFilePath, overrideConfig, updateAssemblyInfo, updateAssemblyInfoFilename, updateProjectFiles, updateWixVersionFile } = options;
+		const { disableCache, disableNormalization, configFilePath, overrideConfig, updateAssemblyInfo, updateAssemblyInfoFilename, updateProjectFiles, updateWixVersionFile, verbosity } = options;
 		if (disableCache) builder.addArgument("/nocache");
 		if (disableNormalization) builder.addArgument("/nonormalize");
 		if (configFilePath) if (await this.isValidInputFile(workDir, configFilePath)) builder.addArgument("/config").addArgument(configFilePath);
@@ -113,11 +115,13 @@ var GitVersionTool = class extends DotnetTool {
 		}
 		if (updateProjectFiles) builder.addArgument("/updateprojectfiles");
 		if (updateWixVersionFile) builder.addArgument("/updatewixversionfile");
+		if (verbosity) builder.addArgument("/verbosity").addArgument(verbosity);
 		return builder.build();
 	}
 	getCommandArguments(workDir, options) {
 		const builder = new ArgumentsBuilder().addArgument(workDir);
 		if (options.arguments) builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments));
+		if (options.verbosity) builder.addArgument("/verbosity").addArgument(options.verbosity);
 		return builder.build();
 	}
 	async checkShallowClone(settings, workDir) {

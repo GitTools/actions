@@ -37,6 +37,10 @@ arguments:
   description: Arguments to send to GitVersion
   required: true
   default: ''
+verbosity:
+  description: Verbosity for the GitVersion process (quiet, minimal, normal, verbose, diagnostic)
+  required: false
+  default: 'normal'
 ```
 
 ---
@@ -90,6 +94,24 @@ steps:
     displayName: Output the formatted version
     inputs:
       arguments: '/format {Major}.{Minor}' # any Output Variable can be used here
+```
+
+</details>
+
+### Example 4
+
+<details>
+  <summary>Show the effective configuration with reduced verbosity to avoid <b>stdout maxBuffer length exceeded</b> errors on large repositories.</summary>
+
+```yaml
+steps:
+  # gitversion-setup@4.5.0 task omitted for brevity.
+
+  - task: gitversion-command@4.5.0
+    displayName: Display GitVersion config
+    inputs:
+      arguments: '/showConfig'
+      verbosity: 'minimal'
 ```
 
 </details>

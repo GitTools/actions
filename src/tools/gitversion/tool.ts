@@ -105,7 +105,8 @@ export class GitVersionTool extends DotnetTool {
             updateAssemblyInfo,
             updateAssemblyInfoFilename,
             updateProjectFiles,
-            updateWixVersionFile
+            updateWixVersionFile,
+            verbosity
             //
         } = options
 
@@ -155,6 +156,10 @@ export class GitVersionTool extends DotnetTool {
             builder.addArgument('/updatewixversionfile')
         }
 
+        if (verbosity) {
+            builder.addArgument('/verbosity').addArgument(verbosity)
+        }
+
         return builder.build()
     }
 
@@ -163,6 +168,10 @@ export class GitVersionTool extends DotnetTool {
 
         if (options.arguments) {
             builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
+        }
+
+        if (options.verbosity) {
+            builder.addArgument('/verbosity').addArgument(options.verbosity)
         }
 
         return builder.build()

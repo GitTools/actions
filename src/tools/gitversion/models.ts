@@ -1,5 +1,7 @@
 export type Commands = 'setup' | 'execute' | 'command'
 
+export type GitVersionVerbosity = 'quiet' | 'minimal' | 'normal' | 'verbose' | 'diagnostic'
+
 export type ExecuteSettings = {
     targetPath: string
     disableCache: boolean
@@ -12,12 +14,14 @@ export type ExecuteSettings = {
     updateProjectFiles: boolean
     updateWixVersionFile: boolean
     buildNumberFormat?: string
+    verbosity?: GitVersionVerbosity
 }
 
 export type CommandSettings = {
     targetPath: string
     disableShallowCloneCheck: boolean
     arguments: string
+    verbosity?: GitVersionVerbosity
 }
 
 export type GitVersionOutput = {

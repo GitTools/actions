@@ -20,3 +20,7 @@ inputs:
     description: Arguments to send to GitVersion
     required: true
     default: ''
+  verbosity:
+    description: Verbosity for the GitVersion process (quiet, minimal, normal, verbose, diagnostic)
+    required: false
+    default: 'normal'
