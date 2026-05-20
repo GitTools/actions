@@ -16,7 +16,8 @@ describe('GitVersion settings', () => {
             updateAssemblyInfoFilename: 'path',
             updateProjectFiles: true,
             updateWixVersionFile: true,
-            buildNumberFormat: 'format'
+            buildNumberFormat: 'format',
+            verbosity: 'verbose'
         }
 
         const buildAgent = {
@@ -36,7 +37,8 @@ describe('GitVersion settings', () => {
         const settings: CommandSettings = {
             targetPath: 'path',
             disableShallowCloneCheck: true,
-            arguments: 'args'
+            arguments: 'args',
+            verbosity: 'diagnostic'
         }
 
         const buildAgent = {

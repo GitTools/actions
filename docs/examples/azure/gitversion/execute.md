@@ -74,6 +74,10 @@ buildNumberFormat:
     v${GitVersion_MajorMinorPatch} or v$GitVersion_FullSemVer
   required: false
   default: ''
+verbosity:
+  description: Verbosity for the GitVersion process (quiet, minimal, normal, verbose, diagnostic)
+  required: false
+  default: 'normal'
 ```
 
 ## Outputs
@@ -289,6 +293,24 @@ steps:
     name: version_step # step id used as a reference for output values
     inputs:
       buildNumberFormat: 'v${GitVersion_MajorMinorPatch}'
+```
+
+</details>
+
+### Example 10
+
+<details>
+  <summary>Calculate the version for the build. Reduce verbosity to avoid <b>stdout maxBuffer length exceeded</b> errors on large repositories.</summary>
+
+```yaml
+steps:
+  # gitversion-setup@4.5.0 task omitted for brevity.
+
+  - task: gitversion-execute@4.5.0
+    displayName: Determine Version
+    name: version_step # step id used as a reference for output values
+    inputs:
+      verbosity: 'minimal'
 ```
 
 </details>

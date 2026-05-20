@@ -277,6 +277,28 @@ describe('GitVersionTool', () => {
             expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updatewixversionfile'])
         })
 
+        it('should return correct arguments for settings with verbosity', async () => {
+            const args = await tool.getExecuteArguments('workdir', {
+                verbosity: 'verbose'
+            } as ExecuteSettings)
+            console.log('dotnet-gitversion', args.join(' '))
+            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/verbosity', 'verbose'])
+        })
+
+        it('should return correct arguments for each verbosity level', async () => {
+            for (const level of ['quiet', 'minimal', 'normal', 'verbose', 'diagnostic'] as const) {
+                const args = await tool.getExecuteArguments('workdir', { verbosity: level } as ExecuteSettings)
+                console.log('dotnet-gitversion', args.join(' '))
+                expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/verbosity', level])
+            }
+        })
+
+        it('should not include verbosity argument when verbosity is not set', async () => {
+            const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
+            console.log('dotnet-gitversion', args.join(' '))
+            expect(args).not.toContain('/verbosity')
+        })
+
         it('should include outputfile argument when output file is provided', async () => {
             const outputFile = '/tmp/gitversion-123.json'
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings, outputFile)
@@ -363,6 +385,27 @@ describe('GitVersionTool', () => {
                 arguments: '--some-arg --another-arg'
             } as CommandSettings)
             expect(args).toEqual(['workdir', '--some-arg', '--another-arg'])
+        })
+
+        it('should return correct arguments for settings with verbosity', () => {
+            const args = tool.getCommandArguments('workdir', {
+                verbosity: 'diagnostic'
+            } as CommandSettings)
+            expect(args).toEqual(['workdir', '/verbosity', 'diagnostic'])
+        })
+
+        it('should return correct arguments for settings with arguments and verbosity', () => {
+            const args = tool.getCommandArguments('workdir', {
+                arguments: '--some-arg',
+                verbosity: 'minimal'
+            } as CommandSettings)
+            expect(args).toEqual(['workdir', '--some-arg', '/verbosity', 'minimal'])
+        })
+
+        it('should not include verbosity argument when verbosity is not set', () => {
+            const args = tool.getCommandArguments('workdir', {} as CommandSettings)
+            console.log('dotnet-gitversion', args.join(' '))
+            expect(args).not.toContain('/verbosity')
         })
     })
 })

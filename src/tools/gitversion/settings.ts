@@ -1,5 +1,5 @@
 import { type ISettingsProvider, SettingsProvider } from '@tools/common'
-import { type CommandSettings, type ExecuteSettings } from './models'
+import { type CommandSettings, type ExecuteSettings, type GitVersionVerbosity } from './models'
 
 export interface IGitVersionSettingsProvider extends ISettingsProvider {
     getExecuteSettings(): ExecuteSettings
@@ -27,6 +27,8 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
 
         const buildNumberFormat = this.buildAgent.getInput<ExecuteSettings>('buildNumberFormat', false)
 
+        const verbosity = this.buildAgent.getInput<ExecuteSettings>('verbosity', false) as GitVersionVerbosity | undefined
+
         return {
             targetPath,
             disableCache,
@@ -38,7 +40,8 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
             updateAssemblyInfoFilename,
             updateProjectFiles,
             updateWixVersionFile,
-            buildNumberFormat
+            buildNumberFormat,
+            verbosity
         }
     }
 
@@ -47,10 +50,13 @@ export class GitVersionSettingsProvider extends SettingsProvider implements IGit
         const disableShallowCloneCheck = this.buildAgent.getBooleanInput<CommandSettings>('disableShallowCloneCheck')
         const args = this.buildAgent.getInput<CommandSettings>('arguments')
 
+        const verbosity = this.buildAgent.getInput<CommandSettings>('verbosity', false) as GitVersionVerbosity | undefined
+
         return {
             targetPath,
             disableShallowCloneCheck,
-            arguments: args
+            arguments: args,
+            verbosity
         }
     }
 }

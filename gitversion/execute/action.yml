@@ -50,6 +50,10 @@ inputs:
     description: Whether to update the WiX version file
     required: false
     default: 'false'
+  verbosity:
+    description: Verbosity for the GitVersion process (quiet, minimal, normal, verbose, diagnostic)
+    required: false
+    default: 'normal'
 outputs:
   major: # id of output
     description: 'The Major value'
