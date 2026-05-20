@@ -69,7 +69,7 @@
     "typescript-eslint": "8.59.4",
     "vite": "8.0.13",
     "vite-node": "6.0.0",
-    "vitest": "4.1.6"
+    "vitest": "4.1.7"
   },
   "dependencies": {
     "semver": "7.8.0"
