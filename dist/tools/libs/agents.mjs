@@ -703,6 +703,7 @@ var require_range = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this.range;
 		}
 		parseRange(range) {
+			range = range.replace(BUILDSTRIPRE, "");
 			const memoKey = ((this.options.includePrerelease && FLAG_INCLUDE_PRERELEASE) | (this.options.loose && FLAG_LOOSE)) + ":" + range;
 			const cached = cache.get(memoKey);
 			if (cached) return cached;
@@ -761,8 +762,9 @@ var require_range = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var Comparator = require_comparator();
 	var debug = require_debug();
 	var SemVer = require_semver$1();
-	var { safeRe: re, t, comparatorTrimReplace, tildeTrimReplace, caretTrimReplace } = require_re();
+	var { safeRe: re, src, t, comparatorTrimReplace, tildeTrimReplace, caretTrimReplace } = require_re();
 	var { FLAG_INCLUDE_PRERELEASE, FLAG_LOOSE } = require_constants();
+	var BUILDSTRIPRE = new RegExp(src[t.BUILD], "g");
 	var isNullSet = (c) => c.value === "<0.0.0-0";
 	var isAny = (c) => c.value === "";
 	var isSatisfiable = (comparators, options) => {
@@ -1289,7 +1291,7 @@ var require_subset = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				if (c.operator === ">" || c.operator === ">=") {
 					higher = higherGT(gt, c, options);
 					if (higher === c && higher !== gt) return false;
-				} else if (gt.operator === ">=" && !satisfies(gt.semver, String(c), options)) return false;
+				} else if (gt.operator === ">=" && !c.test(gt.semver)) return false;
 			}
 			if (lt) {
 				if (needDomLTPre) {
@@ -1298,7 +1300,7 @@ var require_subset = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				if (c.operator === "<" || c.operator === "<=") {
 					lower = lowerLT(lt, c, options);
 					if (lower === c && lower !== lt) return false;
-				} else if (lt.operator === "<=" && !satisfies(lt.semver, String(c), options)) return false;
+				} else if (lt.operator === "<=" && !c.test(lt.semver)) return false;
 			}
 			if (!c.operator && (lt || gt) && gtltComp !== 0) return false;
 		}
