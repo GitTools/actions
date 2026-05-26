@@ -32,8 +32,13 @@ jobs:
         os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
       fail-fast: false
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: gittools/cicd/checkout@v5
+        uses: gittools/cicd/checkout@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 0
@@ -57,7 +62,7 @@ jobs:
         name: Run tests
 
       - name: Test Summary
-        uses: test-summary/action@v2.6
+        uses: test-summary/action@37b508cfee6d4d080eedd00b5bb240a6a784a6a5 # v2.6
         if: always()
         with:
           paths: junit-report.xml
@@ -112,7 +117,7 @@ jobs:
           echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
         name: Use variables and output
 
-      - uses: gittools/cicd/git-commit-push@v5
+      - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         if: matrix.os == 'ubuntu-24.04'
         with:
           message: 'dist update'

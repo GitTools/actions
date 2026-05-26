@@ -43,3 +43,8 @@ updates:
       interval: cron
       cronjob: "0 12 * * *"
     open-pull-requests-limit: 10
+
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: daily
