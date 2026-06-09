@@ -62,7 +62,7 @@
     "lint-staged": "17.0.7",
     "markdownlint-cli": "0.48.0",
     "npm-run-all2": "9.0.1",
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "simple-git": "3.36.0",
     "tfx-cli": "0.23.1",
     "typescript": "6.0.3",
