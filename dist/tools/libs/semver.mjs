@@ -801,12 +801,13 @@ var require_range = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	var replaceTilde = (comp, options) => {
 		const r = options.loose ? re[t.TILDELOOSE] : re[t.TILDE];
+		const z = options.includePrerelease ? "-0" : "";
 		return comp.replace(r, (_, M, m, p, pr) => {
 			debug("tilde", comp, _, M, m, p, pr);
 			let ret;
 			if (isX(M)) ret = "";
-			else if (isX(m)) ret = `>=${M}.0.0 <${+M + 1}.0.0-0`;
-			else if (isX(p)) ret = `>=${M}.${m}.0 <${M}.${+m + 1}.0-0`;
+			else if (isX(m)) ret = `>=${M}.0.0${z} <${+M + 1}.0.0-0`;
+			else if (isX(p)) ret = `>=${M}.${m}.0${z} <${M}.${+m + 1}.0-0`;
 			else if (pr) {
 				debug("replaceTilde pr", pr);
 				ret = `>=${M}.${m}.${p}-${pr} <${M}.${+m + 1}.0-0`;
