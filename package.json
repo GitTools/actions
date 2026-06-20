@@ -72,7 +72,7 @@
     "vitest": "4.1.9"
   },
   "dependencies": {
-    "semver": "7.8.4"
+    "semver": "7.8.5"
   },
   "overrides": {
     "minimatch": "10.2.3",
