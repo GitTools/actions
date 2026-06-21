@@ -38,7 +38,7 @@ runs:
         "oldTag=$oldTag" >> $env:GITHUB_OUTPUT
         "newTag=$newTag" >> $env:GITHUB_OUTPUT
 
-    - uses: peter-evans/repository-dispatch@v4
+    - uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
       name: Trigger Update Examples version (actions-test)
       with:
         token: ${{ inputs.token }}

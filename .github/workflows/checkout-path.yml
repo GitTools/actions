@@ -24,20 +24,25 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
 
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           path: gv-repo
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@main
+        uses: gittools/actions/gitversion/setup@b363333801d871dc6b539d336dd18c7a52d23580 # main
         with:
           versionSpec: '6.7.x'
 
       - name: Determine version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@main
+        uses: gittools/actions/gitversion/execute@b363333801d871dc6b539d336dd18c7a52d23580 # main
         with:
           targetPath: gv-repo
 
