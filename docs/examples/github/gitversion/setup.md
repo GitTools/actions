@@ -51,7 +51,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.5.0
     with:
-      versionSpec: '6.7.x'
+      versionSpec: '6.8.x'
 ```
 
 ### Example 2
@@ -75,7 +75,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.5.0
     with:
-      versionSpec: '6.7.x'
+      versionSpec: '6.8.x'
       includePrerelease: true
 ```
 
@@ -88,7 +88,7 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.5.0
     with:
-      versionSpec: '6.7.x'
+      versionSpec: '6.8.x'
       preferLatestVersion: true
 ```
 
@@ -101,6 +101,6 @@ steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v4.5.0
     with:
-      versionSpec: '6.7.x'
+      versionSpec: '6.8.x'
       nugetConfigPath: '${{ github.workspace }}/nuget.config'
 ```
