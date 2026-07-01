@@ -2,7 +2,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     labels:
-      - "dependencies (github-actions)"
+      - "dependencies"
     commit-message:
       prefix: "(github-actions)"
     directory: "/"
@@ -16,7 +16,7 @@ updates:
 
   - package-ecosystem: npm
     labels:
-      - "dependencies (npm)"
+      - "dependencies"
     commit-message:
       prefix: "(npm)"
     groups:
