@@ -1,6 +1,6 @@
 # GitTools actions
 
-![GitTools](docs/icon.png "GitTools")
+![GitTools](docs/icon.png 'GitTools')
 
 GitHub Actions that allow the setup and use of the [GitVersion](https://github.com/GitTools/GitVersion) and [GitReleaseManager](https://github.com/GitTools/GitReleaseManager) tools.
 
@@ -30,11 +30,8 @@ Examples for usage of **GitReleaseManager**:
 - [Azure Pipelines tasks](docs/examples/azure/gitreleasemanager/index.md)
 
 [gh-actions]: https://github.com/marketplace/actions/gittools
-
 [gh-actions-badge]: https://img.shields.io/badge/marketplace-gittools-blue?logo=github
-
 [az-pipeline-task]: https://marketplace.visualstudio.com/items?itemName=gittools.gittools
-
 [az-pipeline-task-badge]: https://img.shields.io/badge/marketplace-gittools-blue?logo=data:application/pdf;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAABJlJREFUWIXFVk1sVFUU/u6dNzOd6fx2ftoGFNIfNa1prCW4ALHsGolIYmjQGH/CwmUXBl2gK0OihoUYE5G40GAEQ7QJ0IobQSEkLYLFH4QabSpUptPpTDs/773pzLvHRTvDm3lvpjOtxpOcTN69557vu+eec+YwIsL/KdK/4aRzz8WupubA4xKDrRZ7LS8yYxPZ4/RDX27dBLa8PLGnu7fjKxBYPee2ijgH8PG6CGwZvOptfbD1pNDqAwcAboUbWOcTeDb4R8CYfS1ZJLTl3zUT2Lr/xkvhVt82Ekb4TSGG9o12OOwc0cQSfp3OQVZLgySwDgLtg1e9nR0tR02w0bPZgofbXcVvt9OKjWGBr8cXIavcwIBjDbKhxTcCMLsgQK92K6GrzQUilKhN4ujeZCuxNUSg8/kxj1coq5aRsAdeCLUEtpm1D4+TVczGkM8Govy9BQYqEuh78WKPx2a9TmioCs4ZRyDYhErNS1YJlfqarGol58RKCCQAWNJYu8Sq5zJjDI3uAAioCJKQgWhCRchvvMjkXypKcmalCviycwuVv2e5Wi0OcHtDVRshGL77SUE0oRbfXxOEa5MpTEVLbQsiAUBeA6pFwMIscPgCFW+ul7TKMHpFQdClQJIYFtMEJWfMDEMSmpXUcnQApzsIgJkSaHJzLGQ0CKEDIYa5ZNGDqd98Lq/qCOQhhHlFNthcsNjsECYMgz4JPncj/F6BqZk08lrNPZEW4okLRQJCWAjceNjCOBzeJtPoNPuscLud0AhgxOF2cswntdWRibKxO9F9M9/03ywSAPEY9DUKAIzB5Q4CbKVgdRLySnC5HCi04WRaQawGcDWTvRyfS+2aGu5bKMIUavOBfZeGALxX2LBZHPAEmw1OQn4LvK5GEJZfN5mWEU3kDXZ6EUS5ZDQxdONkz4fle0zfHNr2fv8qZ+wwANgtjXCHwgZwXxn47CrgWVkej0eiA9NntyfM9ll5V2vbe+ktgN5gYLccDf5Jp8/zFACE/ZLh5rOJXEVgIkJ6fuHAbyd6DlcjaEj9P09tfxOE19Ss49FfjnfvlhfTX4R8ZeApGZF4zvCnU9AlRUE8cgdJFv+kanjMIlAuTx+c6gmGAtcz2XvglW5ORMgkYlCzGRAj5HMiNHO6P1bNf9V5YODgdGtvR/AKGEMkQZiNpRGp8OZLiozUQgyi0ORrbAkcAD44m3royHDq7SNfJh/Tb547tOnu3zH5MxKUi8bme/+Yip8QgqBXTRBSsSgW4rPIUx6CqKg1EyANnYzjdWblveUGnx5o3v/zzdv3jxzaPHHr8+7nMsnkGVq54JKiYP7ubWSyaQiQIRdqkZpGspF3uyIAwAZP2VqV8H25jAJihCWRqTqNS5JzVRp1zYRhJbxLI3pE0TIrK3VP4wapayacPfPEsBD0iv6dq2kyubrP0ggQnn3/dLp0KSd+HHrGM1b4nhvdeSzw5Hkw4KN6yNdGALQDhB0lS5y9A2BMvzQ/uvNY08AFDpCht+ulQZOzNREQsjLOnY7dZgbcit/N1uPn+o96B769BkLAbJ/Ap+Ln+9Nme3pZtRP+1/IPO814AQ1WwqwAAAAASUVORK5CYII=
 
 ### Versioning and Compatibility
@@ -57,27 +54,55 @@ If developing on Windows, please consider using WSL as it's likely you will run 
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/GitTools/actions.git
-   cd actions
-   ```
+    ```bash
+    git clone https://github.com/GitTools/actions.git
+    cd actions
+    ```
 
 2. Install dependencies:
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. Build the project:
-   - For local development: `npm run build:local`
-   - For Azure Pipelines: `npm run build:azure`
-   - For GitHub Actions: `npm run build:github`
+    - Build everything: `npm run build`
+    - Build tool bundles only: `npm run build:tools`
+    - Build all agent bundles: `npm run build:agents`
+    - Build a single agent bundle: `npm run build:agent:local`, `npm run build:agent:azure`, or `npm run build:agent:github`
 
 4. Test the project:
 
-   ```bash
-   npm run test
-   ```
+    ```bash
+    npm run test
+    ```
+
+    Useful scoped commands:
+
+    ```bash
+    npm run test:tools
+    npm run test:agents
+    npx vitest --run src/__tests__/tools/gitversion/runner.spec.ts --config src/__tests__/vitest.config.ts
+    ```
+
+5. Check code quality:
+
+    ```bash
+    npm run lint:check
+    npm run typecheck
+    npm run format:check
+    npm run mdlint:check
+    ```
+
+6. Run a built tool locally:
+
+    ```bash
+    npm run run:local:gitversion -- --command execute
+    ```
+
+### Generated Output
+
+This repository commits generated `.mjs` bundles in `dist/` and the repo-root action folders because those are the published artifacts. After changing `src/`, run `npm run build` and include the generated output in your commit. Do not edit generated `.mjs` files by hand.
 
 ### Required Knowledge
 
@@ -99,45 +124,44 @@ If developing on Windows, please consider using WSL as it's likely you will run 
 When contributing to this project, please follow these guidelines for creating pull requests:
 
 1. **Fork and Clone**
-   - Fork the repository to your GitHub account
-   - Clone your fork locally: `git clone https://github.com/YOUR-USERNAME/actions.git`
-   - Add upstream remote: `git remote add upstream https://github.com/GitTools/actions.git`
+    - Fork the repository to your GitHub account
+    - Clone your fork locally: `git clone https://github.com/YOUR-USERNAME/actions.git`
+    - Add upstream remote: `git remote add upstream https://github.com/GitTools/actions.git`
 
 2. **Create a Feature Branch**
-   - Create a branch from main: `git checkout -b feature/your-feature-name`
-   - Use descriptive branch names (e.g., `feature/add-new-version-format`, `fix/issue-123`)
+    - Create a branch from main: `git checkout -b feature/your-feature-name`
+    - Use descriptive branch names (e.g., `feature/add-new-version-format`, `fix/issue-123`)
 
 3. **Keep Your Branch Updated**
-   - Fetch upstream changes: `git fetch upstream`
-   - Rebase your branch on upstream main:
+    - Fetch upstream changes: `git fetch upstream`
+    - Rebase your branch on upstream main:
 
-     ```bash
-     git checkout main
-     git rebase upstream/main
-     git checkout your-branch
-     git rebase main
-     ```
+        ```bash
+        git checkout main
+        git rebase upstream/main
+        git checkout your-branch
+        git rebase main
+        ```
 
-   - Always use rebase instead of merge to maintain a clean history
+    - Always use rebase instead of merge to maintain a clean history
 
 4. **Make Your Changes**
-   - Make commits with clear, descriptive messages
-   - Follow the project's code style and conventions
-   - Add tests for new features or bug fixes
-   - Run tests locally to ensure everything passes
+    - Make commits with clear, descriptive messages
+    - Follow the project's code style and conventions
+    - Add tests for new features or bug fixes
+    - Run tests locally to ensure everything passes
 
 5. **Submit the Pull Request**
-   - Push your changes to your fork: `git push origin your-branch`
-   - Go to the original repository on GitHub
-   - Click "New Pull Request" and select your feature branch
-   - Link any related issues
+    - Push your changes to your fork: `git push origin your-branch`
+    - Go to the original repository on GitHub
+    - Click "New Pull Request" and select your feature branch
+    - Link any related issues
 
 6. **PR Guidelines**
-   - Keep PRs focused and single-purpose
-   - Include tests and documentation updates
-   - Ensure CI checks pass
+    - Keep PRs focused and single-purpose
+    - Include tests and documentation updates
+    - Ensure CI checks pass
 
 7. **After PR is Merged**
-   - Delete your feature branch locally and remotely
-   - Update your main branch with the upstream changes
-   - Celebrate your contribution! 🎉
+    - Delete your feature branch locally and remotely
+    - Update your main branch with the upstream changes
