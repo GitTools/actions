@@ -43,9 +43,9 @@ jobs:
         name: Install dependencies
 
       - run: |
-          npm run lint:check
-          npm run typecheck
-          npm run format:check
+          npm run lint:check &&
+          npm run typecheck &&
+          npm run format:check &&
           npm run mdlint:check
         name: Check code quality
 
