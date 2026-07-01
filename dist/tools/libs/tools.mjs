@@ -92,8 +92,8 @@ var ArgumentsBuilder = class {
 				continue;
 			} else lastCharWasSpace = false;
 			if (c === "\"") {
-				if (!escaped) inQuotes = !inQuotes;
-				else append(c);
+				if (escaped) append(c);
+				else inQuotes = !inQuotes;
 				continue;
 			}
 			if (c === "\\" && escaped) {
@@ -240,12 +240,11 @@ var DotnetTool = class DotnetTool {
 	async getRepoPath(targetPath) {
 		const srcDir = this.buildAgent.sourceDir || ".";
 		let workDir;
-		if (!targetPath) workDir = srcDir;
-		else {
+		if (targetPath) {
 			if (!path.isAbsolute(targetPath)) targetPath = path.resolve(targetPath);
 			if (await this.buildAgent.directoryExists(targetPath)) workDir = targetPath;
 			else throw new Error(`Directory not found at ${targetPath}`);
-		}
+		} else workDir = srcDir;
 		return path.normalize(workDir);
 	}
 	async queryLatestMatch(toolName, versionSpec, includePrerelease) {

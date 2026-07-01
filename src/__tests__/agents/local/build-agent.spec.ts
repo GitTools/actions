@@ -99,4 +99,21 @@ describe('build-agent/local', () => {
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith('updateBuildNumber - test')
     })
+
+    it('should expand both braced and unbraced environment variables', () => {
+        process.env['GITVERSION_SEMVER'] = '1.2.3'
+        process.env['GITVERSION_FULLSEMVER'] = '1.2.3-beta.1'
+
+        const expanded = agent.getExpandedString('v$GITVERSION_SEMVER (${GitVersion_FullSemVer})')
+
+        expect(expanded).toBe('v1.2.3 (1.2.3-beta.1)')
+    })
+
+    it('should ignore invalid or missing environment variable placeholders', () => {
+        process.env['VALID_NAME_1'] = 'present'
+
+        const expanded = agent.getExpandedString('$VALID_NAME_1 ${} $1INVALID $MISSING')
+
+        expect(expanded).toBe('present ${} $1INVALID ')
+    })
 })

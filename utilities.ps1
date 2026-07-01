@@ -13,10 +13,13 @@ function update-files()
         [System.String]
         $newVersion
     )
-    $file = Resolve-Path $file
-    Write-Host "Update file $file version from $oldVersion to $newVersion"
 
-    ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
+    process {
+        $file = Resolve-Path $file
+        Write-Output "Update file $file version from $oldVersion to $newVersion"
+
+        ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
+    }
 }
 
 # example: publish-vsix -mode "test" -major 4 -minor 3 -patch 0 -token $token
@@ -43,14 +46,14 @@ function publish-vsix()
     $version = "$major.$minor.$patch.$date"
     $vsix = "dist/gittools.gittools-$version.vsix"
 
-    echo "Release mode: $mode"
-    echo "Version: $version"
+    Write-Output "Release mode: $mode"
+    Write-Output "Version: $version"
 
     npm run publish:prepare -- --mode $mode --version $version
     npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
     npm run publish:azure:marketplace -- --token $token --env mode=$mode version=$version
 
-    echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
+    Write-Output "vsix=$vsix" >> $env:GITHUB_OUTPUT
 }
 
 function extract-version()

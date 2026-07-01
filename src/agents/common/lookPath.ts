@@ -20,12 +20,10 @@ const isFilePath = (cmd: string): string | undefined => {
  * @return {Promise<string>} Resolves absolute path or empty string.
  */
 const access = async (filePath: string): Promise<string | undefined> => {
-    try {
-        await fs.access(filePath)
-        return filePath
-    } catch (_error) {
-        return undefined
-    }
+    return fs.access(filePath).then(
+        () => filePath,
+        () => undefined
+    )
 }
 
 /**

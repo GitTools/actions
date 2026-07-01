@@ -37,7 +37,7 @@ var Command = class {
 		let cmdStr = CMD_PREFIX + this.command;
 		if (this.properties && Object.keys(this.properties).length > 0) {
 			cmdStr += " ";
-			for (const key in this.properties) if (Object.prototype.hasOwnProperty.call(this.properties, key)) {
+			for (const key in this.properties) if (Object.hasOwn(this.properties, key)) {
 				const val = this.properties[key];
 				if (val) cmdStr += `${key}=${escapeProperty(`${val || ""}`)};`;
 			}
@@ -49,14 +49,14 @@ var Command = class {
 	}
 };
 function escapeData(s) {
-	return toCommandValue(s).replace(/%/g, "%AZP25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+	return toCommandValue(s).replaceAll("%", "%AZP25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
 }
 function escapeProperty(s) {
-	return toCommandValue(s).replace(/%/g, "%AZP25").replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/]/g, "%5D").replace(/;/g, "%3B");
+	return toCommandValue(s).replaceAll("%", "%AZP25").replaceAll("\r", "%0D").replaceAll("\n", "%0A").replaceAll("]", "%5D").replaceAll(";", "%3B");
 }
 function toCommandValue(input) {
 	if (input === null || input === void 0) return "";
-	else if (typeof input === "string" || input instanceof String) return input;
+	else if (typeof input === "string" || Object.prototype.toString.call(input) === "[object String]") return input;
 	return JSON.stringify(input);
 }
 //#endregion
@@ -105,7 +105,7 @@ var BuildAgent = class extends BuildAgentBase {
 		}, varValue);
 	}
 	_getVariableKey(name) {
-		return name.replace(/\./g, "_").replace(/ /g, "_").toUpperCase();
+		return name.replaceAll(".", "_").replaceAll(" ", "_").toUpperCase();
 	}
 };
 //#endregion

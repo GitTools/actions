@@ -66,8 +66,9 @@ export class GitVersionTool extends DotnetTool {
                 this.buildAgent.setOutput(`GitVersion_${property}`, value)
                 this.buildAgent.setVariable(name, value)
                 this.buildAgent.setVariable(`GitVersion_${property}`, value)
-            } catch (_error) {
-                this.buildAgent.error(`Unable to set output/variable for ${property}`)
+            } catch (error) {
+                const message = error instanceof Error ? error.message : String(error)
+                this.buildAgent.error(`Unable to set output/variable for ${property}: ${message}`)
             }
         }
     }
@@ -127,9 +128,10 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (overrideConfig) {
+            const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[A-Za-z0-9 .:'-]*$/
             for (let config of overrideConfig) {
                 config = config.trim()
-                if (config.match(/([a-zA-Z0-9]+(-[a-zA-Z]+)*=[a-zA-Z0-9\- :.']*)/)) {
+                if (overrideConfigPattern.exec(config)) {
                     builder.addArgument('/overrideconfig').addArgument(config)
                 }
             }

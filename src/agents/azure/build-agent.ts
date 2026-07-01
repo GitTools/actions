@@ -75,6 +75,6 @@ export class BuildAgent extends BuildAgentBase implements IBuildAgent {
     }
 
     private _getVariableKey(name: string): string {
-        return name.replace(/\./g, '_').replace(/ /g, '_').toUpperCase()
+        return name.replaceAll('.', '_').replaceAll(' ', '_').toUpperCase()
     }
 }
