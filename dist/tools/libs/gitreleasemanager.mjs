@@ -18,16 +18,16 @@ var GitReleaseManagerSettingsProvider = class extends SettingsProvider {
 		};
 	}
 	getDiscardSettings() {
-		return { ...this.getCommonSettings() };
+		return this.getSettingsWithCommonValues();
 	}
 	getCloseSettings() {
-		return { ...this.getCommonSettings() };
+		return this.getSettingsWithCommonValues();
 	}
 	getOpenSettings() {
-		return { ...this.getCommonSettings() };
+		return this.getSettingsWithCommonValues();
 	}
 	getPublishSettings() {
-		return { ...this.getCommonSettings() };
+		return this.getSettingsWithCommonValues();
 	}
 	getAddAssetSettings() {
 		const assets = this.buildAgent.getListInput("assets");
@@ -45,6 +45,9 @@ var GitReleaseManagerSettingsProvider = class extends SettingsProvider {
 			milestone,
 			logFilePath: this.buildAgent.getInput("logFilePath")
 		};
+	}
+	getSettingsWithCommonValues() {
+		return { ...this.getCommonSettings() };
 	}
 };
 //#endregion

@@ -44,31 +44,19 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
     }
 
     getDiscardSettings(): DiscardSettings {
-        const commonSettings = this.getCommonSettings()
-        return {
-            ...commonSettings
-        }
+        return this.getSettingsWithCommonValues<DiscardSettings>()
     }
 
     getCloseSettings(): CloseSettings {
-        const commonSettings = this.getCommonSettings()
-        return {
-            ...commonSettings
-        }
+        return this.getSettingsWithCommonValues<CloseSettings>()
     }
 
     getOpenSettings(): OpenSettings {
-        const commonSettings = this.getCommonSettings()
-        return {
-            ...commonSettings
-        }
+        return this.getSettingsWithCommonValues<OpenSettings>()
     }
 
     getPublishSettings(): PublishSettings {
-        const commonSettings = this.getCommonSettings()
-        return {
-            ...commonSettings
-        }
+        return this.getSettingsWithCommonValues<PublishSettings>()
     }
 
     getAddAssetSettings(): AddAssetSettings {
@@ -95,5 +83,9 @@ export class GitReleaseManagerSettingsProvider extends SettingsProvider implemen
             milestone,
             logFilePath
         }
+    }
+
+    private getSettingsWithCommonValues<T extends CommonSettings>(): T {
+        return { ...this.getCommonSettings() } as T
     }
 }
