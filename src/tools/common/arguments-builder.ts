@@ -116,27 +116,20 @@ export class ArgumentsBuilder {
 
             lastCharWasSpace = false
 
-            if (c === '"') {
-                if (escaped) {
-                    append(c)
-                } else {
-                    inQuotes = !inQuotes
-                }
+            const quoteResult = this.processQuotedCharacter(c, escaped, inQuotes, append)
+            escaped = quoteResult.escaped
+            inQuotes = quoteResult.inQuotes
+            if (quoteResult.handled) {
                 continue
             }
 
-            if (c === '\\') {
-                if (escaped) {
-                    // Double backslash becomes a single backslash
-                    arg += '\\'
-                    escaped = false
-                    continue
-                }
-
-                if (inQuotes) {
-                    escaped = true
-                    continue
-                }
+            const backslashResult = this.processBackslashCharacter(c, escaped, inQuotes)
+            escaped = backslashResult.escaped
+            if (backslashResult.appendBackslash) {
+                arg += '\\'
+            }
+            if (backslashResult.handled) {
+                continue
             }
 
             append(c)
@@ -147,5 +140,44 @@ export class ArgumentsBuilder {
         }
 
         return args
+    }
+
+    private static processQuotedCharacter(
+        c: string,
+        escaped: boolean,
+        inQuotes: boolean,
+        append: (c: string) => void
+    ): { handled: boolean; escaped: boolean; inQuotes: boolean } {
+        if (c !== '"') {
+            return { handled: false, escaped, inQuotes }
+        }
+
+        if (escaped) {
+            append(c)
+            return { handled: true, escaped: false, inQuotes }
+        }
+
+        return { handled: true, escaped: false, inQuotes: !inQuotes }
+    }
+
+    private static processBackslashCharacter(c: string, escaped: boolean, inQuotes: boolean): { handled: boolean; escaped: boolean; appendBackslash: boolean } {
+        if (c !== '\\') {
+            return { handled: false, escaped, appendBackslash: false }
+        }
+
+        if (escaped) {
+            return {
+                // Double backslash becomes a single backslash
+                handled: true,
+                escaped: false,
+                appendBackslash: true
+            }
+        }
+
+        if (inQuotes) {
+            return { handled: true, escaped: true, appendBackslash: false }
+        }
+
+        return { handled: false, escaped, appendBackslash: false }
     }
 }

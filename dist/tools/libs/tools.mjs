@@ -94,26 +94,60 @@ var ArgumentsBuilder = class {
 				continue;
 			}
 			lastCharWasSpace = false;
-			if (c === "\"") {
-				if (escaped) append(c);
-				else inQuotes = !inQuotes;
-				continue;
-			}
-			if (c === "\\") {
-				if (escaped) {
-					arg += "\\";
-					escaped = false;
-					continue;
-				}
-				if (inQuotes) {
-					escaped = true;
-					continue;
-				}
-			}
+			const quoteResult = this.processQuotedCharacter(c, escaped, inQuotes, append);
+			escaped = quoteResult.escaped;
+			inQuotes = quoteResult.inQuotes;
+			if (quoteResult.handled) continue;
+			const backslashResult = this.processBackslashCharacter(c, escaped, inQuotes);
+			escaped = backslashResult.escaped;
+			if (backslashResult.appendBackslash) arg += "\\";
+			if (backslashResult.handled) continue;
 			append(c);
 		}
 		if (!lastCharWasSpace) args.push(arg.trim());
 		return args;
+	}
+	static processQuotedCharacter(c, escaped, inQuotes, append) {
+		if (c !== "\"") return {
+			handled: false,
+			escaped,
+			inQuotes
+		};
+		if (escaped) {
+			append(c);
+			return {
+				handled: true,
+				escaped: false,
+				inQuotes
+			};
+		}
+		return {
+			handled: true,
+			escaped: false,
+			inQuotes: !inQuotes
+		};
+	}
+	static processBackslashCharacter(c, escaped, inQuotes) {
+		if (c !== "\\") return {
+			handled: false,
+			escaped,
+			appendBackslash: false
+		};
+		if (escaped) return {
+			handled: true,
+			escaped: false,
+			appendBackslash: true
+		};
+		if (inQuotes) return {
+			handled: true,
+			escaped: true,
+			appendBackslash: false
+		};
+		return {
+			handled: false,
+			escaped,
+			appendBackslash: false
+		};
 	}
 };
 //#endregion
