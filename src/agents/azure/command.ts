@@ -52,7 +52,7 @@ class Command {
                     if (val) {
                         // safely append the val - avoid blowing up when attempting to
                         // call .replace() if message is not a string for some reason
-                        cmdStr += `${key}=${escapeProperty(`${val || ''}`)};`
+                        cmdStr += `${key}=${escapeProperty(String(val))};`
                     }
                 }
             }

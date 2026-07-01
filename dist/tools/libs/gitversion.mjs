@@ -146,7 +146,7 @@ var GitVersionTool = class extends DotnetTool {
 		return output;
 	}
 	toCamelCase(input) {
-		return input.replace(/^\w|[A-Z]|\b\w|\s+/g, function(match, index) {
+		return input.replace(/(^\w)|([A-Z]|\b\w)|(\s+)/g, function(match, start, letter, whitespace, index) {
 			if (+match === 0) return "";
 			return index === 0 ? match.toLowerCase() : match.toUpperCase();
 		});
