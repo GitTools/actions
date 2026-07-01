@@ -39,7 +39,7 @@ var Command = class {
 			cmdStr += " ";
 			for (const key in this.properties) if (Object.hasOwn(this.properties, key)) {
 				const val = this.properties[key];
-				if (val) cmdStr += `${key}=${escapeProperty(`${val || ""}`)};`;
+				if (val) cmdStr += `${key}=${escapeProperty(String(val))};`;
 			}
 		}
 		cmdStr += "]";
