@@ -233,9 +233,9 @@ export abstract class DotnetTool implements IDotnetTool {
     }
 
     private async queryLatestMatch(toolName: string, versionSpec: string, includePrerelease: boolean): Promise<string | null> {
-        this.buildAgent.info(
-            `Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ''} ${includePrerelease ? 'including pre-releases' : ''}`
-        )
+        const versionSuffix = versionSpec ? `@${versionSpec}` : ''
+        const prereleaseSuffix = includePrerelease ? 'including pre-releases' : ''
+        this.buildAgent.info(`Querying tool versions for ${toolName}${versionSuffix} ${prereleaseSuffix}`)
 
         const toolNameParam = encodeURIComponent(toolName.toLowerCase())
         const prereleaseParam = includePrerelease ? 'true' : 'false'

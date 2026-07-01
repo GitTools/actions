@@ -247,7 +247,9 @@ var DotnetTool = class DotnetTool {
 		return path.normalize(workDir);
 	}
 	async queryLatestMatch(toolName, versionSpec, includePrerelease) {
-		this.buildAgent.info(`Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
+		const versionSuffix = versionSpec ? `@${versionSpec}` : "";
+		const prereleaseSuffix = includePrerelease ? "including pre-releases" : "";
+		this.buildAgent.info(`Querying tool versions for ${toolName}${versionSuffix} ${prereleaseSuffix}`);
 		const toolNameParam = encodeURIComponent(toolName.toLowerCase());
 		const prereleaseParam = includePrerelease ? "true" : "false";
 		const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
