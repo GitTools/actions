@@ -81,32 +81,36 @@ var ArgumentsBuilder = class {
 			arg += c;
 			escaped = false;
 		};
-		for (let i = 0; i < argString.length; i++) {
-			const c = argString.charAt(i);
+		const flushArg = () => {
+			if (!lastCharWasSpace) {
+				args.push(arg);
+				arg = "";
+			}
+			lastCharWasSpace = true;
+		};
+		for (const c of argString) {
 			if (c === " " && !inQuotes) {
-				if (!lastCharWasSpace) {
-					args.push(arg);
-					arg = "";
-				}
-				lastCharWasSpace = true;
+				flushArg();
 				continue;
-			} else lastCharWasSpace = false;
+			}
+			lastCharWasSpace = false;
 			if (c === "\"") {
 				if (escaped) append(c);
 				else inQuotes = !inQuotes;
 				continue;
 			}
-			if (c === "\\" && escaped) {
-				arg += "\\";
-				escaped = false;
-				continue;
-			}
-			if (c === "\\" && inQuotes) {
-				escaped = true;
-				continue;
+			if (c === "\\") {
+				if (escaped) {
+					arg += "\\";
+					escaped = false;
+					continue;
+				}
+				if (inQuotes) {
+					escaped = true;
+					continue;
+				}
 			}
 			append(c);
-			lastCharWasSpace = false;
 		}
 		if (!lastCharWasSpace) args.push(arg.trim());
 		return args;
@@ -170,30 +174,12 @@ var DotnetTool = class DotnetTool {
 		const toolName = os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName;
 		const toolPath = path.join(toolBasePath, toolName);
 		if (await this.buildAgent.fileExists(toolPath)) return toolPath;
-		const arch = os.arch();
-		this.buildAgent.debug(`Current system architecture: ${arch}`);
-		const archPaths = [];
-		if (arch === "x64") archPaths.push(path.join(toolBasePath, "x64", toolName));
-		else if (arch === "arm64") archPaths.push(path.join(toolBasePath, "arm64", toolName));
-		if (os.platform() === "darwin" && arch === "arm64") archPaths.push(path.join(toolBasePath, "osx-arm64", toolName));
-		else if (os.platform() === "darwin" && arch === "x64") archPaths.push(path.join(toolBasePath, "osx-x64", toolName));
+		const archPaths = this.getArchitecturePaths(toolBasePath, toolName);
 		for (const archPath of archPaths) if (await this.buildAgent.fileExists(archPath)) {
 			this.buildAgent.debug(`Found tool in architecture-specific directory: ${archPath}`);
 			return archPath;
 		}
-		try {
-			const entries = await fs.readdir(toolBasePath, { withFileTypes: true });
-			for (const entry of entries) if (entry.isDirectory()) {
-				const nestedPath = path.join(toolBasePath, entry.name, toolName);
-				if (await this.buildAgent.fileExists(nestedPath)) {
-					this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`);
-					return nestedPath;
-				}
-			}
-		} catch (error) {
-			if (error instanceof Error) this.buildAgent.debug(`Error reading subdirectories: ${error.message}`);
-		}
-		return null;
+		return await this.findToolExecutableInSubdirectories(toolBasePath, toolName);
 	}
 	async setDotnetRoot() {
 		if (os.platform() !== "win32" && !this.buildAgent.getVariable("DOTNET_ROOT")) {
@@ -248,7 +234,9 @@ var DotnetTool = class DotnetTool {
 		return path.normalize(workDir);
 	}
 	async queryLatestMatch(toolName, versionSpec, includePrerelease) {
-		this.buildAgent.info(`Querying tool versions for ${toolName}${versionSpec ? `@${versionSpec}` : ""} ${includePrerelease ? "including pre-releases" : ""}`);
+		const versionSuffix = versionSpec ? `@${versionSpec}` : "";
+		const prereleaseSuffix = includePrerelease ? "including pre-releases" : "";
+		this.buildAgent.info(`Querying tool versions for ${toolName}${versionSuffix} ${prereleaseSuffix}`);
 		const toolNameParam = encodeURIComponent(toolName.toLowerCase());
 		const prereleaseParam = includePrerelease ? "true" : "false";
 		const downloadPath = `${DotnetTool.nugetRoot}?q=${toolNameParam}&prerelease=${prereleaseParam}&semVerLevel=2.0.0&take=1`;
@@ -284,6 +272,40 @@ var DotnetTool = class DotnetTool {
 		this.buildAgent.debug(`Cleaning up temp directory: ${tempDirectory}`);
 		await this.buildAgent.removeDirectory(tempDirectory);
 		return toolPath;
+	}
+	getArchitecturePaths(toolBasePath, toolName) {
+		const arch = os.arch();
+		const platform = os.platform();
+		this.buildAgent.debug(`Current system architecture: ${arch}`);
+		const primaryArchitectureDirs = {
+			x64: "x64",
+			arm64: "arm64"
+		};
+		const platformArchitectureDirs = {
+			"darwin:arm64": "osx-arm64",
+			"darwin:x64": "osx-x64"
+		};
+		const architectureDirs = [];
+		const primaryArchitectureDir = primaryArchitectureDirs[arch];
+		const platformArchitectureDir = platformArchitectureDirs[`${platform}:${arch}`];
+		if (primaryArchitectureDir) architectureDirs.push(primaryArchitectureDir);
+		if (platformArchitectureDir) architectureDirs.push(platformArchitectureDir);
+		return architectureDirs.map((dir) => path.join(toolBasePath, dir, toolName));
+	}
+	async findToolExecutableInSubdirectories(toolBasePath, toolName) {
+		try {
+			const entries = await fs.readdir(toolBasePath, { withFileTypes: true });
+			for (const entry of entries.filter((entry) => entry.isDirectory())) {
+				const nestedPath = path.join(toolBasePath, entry.name, toolName);
+				if (await this.buildAgent.fileExists(nestedPath)) {
+					this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`);
+					return nestedPath;
+				}
+			}
+		} catch (error) {
+			if (error instanceof Error) this.buildAgent.debug(`Error reading subdirectories: ${error.message}`);
+		}
+		return null;
 	}
 	async createTempDirectory() {
 		const tempRootDir = this.buildAgent.tempDir;

@@ -100,19 +100,21 @@ export class ArgumentsBuilder {
             escaped = false
         }
 
-        for (let i = 0; i < argString.length; i++) {
-            const c = argString.charAt(i)
-
-            if (c === ' ' && !inQuotes) {
-                if (!lastCharWasSpace) {
-                    args.push(arg)
-                    arg = ''
-                }
-                lastCharWasSpace = true
-                continue
-            } else {
-                lastCharWasSpace = false
+        const flushArg = (): void => {
+            if (!lastCharWasSpace) {
+                args.push(arg)
+                arg = ''
             }
+            lastCharWasSpace = true
+        }
+
+        for (const c of argString) {
+            if (c === ' ' && !inQuotes) {
+                flushArg()
+                continue
+            }
+
+            lastCharWasSpace = false
 
             if (c === '"') {
                 if (escaped) {
@@ -123,20 +125,21 @@ export class ArgumentsBuilder {
                 continue
             }
 
-            if (c === '\\' && escaped) {
-                // Double backslash becomes a single backslash
-                arg += '\\'
-                escaped = false
-                continue
-            }
+            if (c === '\\') {
+                if (escaped) {
+                    // Double backslash becomes a single backslash
+                    arg += '\\'
+                    escaped = false
+                    continue
+                }
 
-            if (c === '\\' && inQuotes) {
-                escaped = true
-                continue
+                if (inQuotes) {
+                    escaped = true
+                    continue
+                }
             }
 
             append(c)
-            lastCharWasSpace = false
         }
 
         if (!lastCharWasSpace) {
