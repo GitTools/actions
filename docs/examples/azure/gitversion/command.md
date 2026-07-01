@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion-setup@4.5.0
+  - task: gitversion-setup@4.6.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.8.x'
@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _4.5.0_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _4.6.0_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -54,9 +54,9 @@ verbosity:
 
 ```yaml
 steps:
-  # gitversion-setup@4.5.0 task omitted for brevity.
+  # gitversion-setup@4.6.0 task omitted for brevity.
 
-  - task: gitversion-command@4.5.0
+  - task: gitversion-command@4.6.0
     displayName: Display GitVersion config
     inputs:
       arguments: '/showConfig'
@@ -71,9 +71,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.5.0 task omitted for brevity.
+  # gitversion-setup@4.6.0 task omitted for brevity.
 
-  - task: gitversion-command@4.5.0
+  - task: gitversion-command@4.6.0
     displayName: Output the FullSemVer variable
     inputs:
       arguments: '/showvariable FullSemVer'
@@ -88,9 +88,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.5.0 task omitted for brevity.
+  # gitversion-setup@4.6.0 task omitted for brevity.
 
-  - task: gitversion-command@4.5.0
+  - task: gitversion-command@4.6.0
     displayName: Output the formatted version
     inputs:
       arguments: '/format {Major}.{Minor}' # any Output Variable can be used here
@@ -105,9 +105,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.5.0 task omitted for brevity.
+  # gitversion-setup@4.6.0 task omitted for brevity.
 
-  - task: gitversion-command@4.5.0
+  - task: gitversion-command@4.6.0
     displayName: Display GitVersion config
     inputs:
       arguments: '/showConfig'
