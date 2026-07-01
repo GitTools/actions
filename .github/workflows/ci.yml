@@ -50,9 +50,7 @@ jobs:
         name: Check code quality
 
       - run: |
-          npm run build:tools &&
-          npm run build:agent:github &&
-          npm run build:agent:azure
+          npm run build
         name: Build code
 
       - run: |
