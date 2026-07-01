@@ -16,6 +16,7 @@
     "test": "run-p test:tools test:agents",
     "lint:check": "eslint src",
     "lint:fix": "eslint src --fix",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\"",
     "mdlint:check": "markdownlint docs dist",
