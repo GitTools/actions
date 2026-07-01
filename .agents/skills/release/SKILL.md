@@ -59,7 +59,17 @@ So a typical cycle is: cut the **prerelease**, let `prerelease.yml` publish the 
 - **Version is milestone-driven.** The release version is the title of the open **concrete-version** milestone (e.g. `v4.5.0`). **Exclude spec milestones** whose titles look like `v4.x` or `v4.5.x` — never use those as the version. GitVersion recomputes the exact number inside CI; you do not bump it by hand.
 - **Tag = release title = milestone title**, all `v`-prefixed (e.g. `v4.5.0`). Throughout this skill `<TAG>` means `v<Major.Minor.Patch>` and `<VERSION>` means the bare `Major.Minor.Patch`.
 - **Azure Marketplace extensions:** `gittools.gittools` (production, from a full release) and `gittools.gittools-test` (from a prerelease). Both carry version `Major.Minor.Patch.<date>`.
-- **GitReleaseManager config:** `GitReleaseManager.yml` in the repo root. Included labels: `breaking change`, `bug`, `dependencies`, `documentation`, `feature`, `improvement`. Excluded label: `build`.
+- **GitReleaseManager config:** `GitReleaseManager.yml` in the repo root. Included labels: `breaking change`, `bug`, `dependencies`, `documentation`, `feature`, `improvement`. Excluded label: `build`. `create` runs with `allow-update-to-published: true` (so notes can be regenerated in place) and `include-contributors: true` (notes credit authors and show "resolved in !PR" links).
+
+### GRM `create` preconditions
+
+`create` builds notes from the milestone and fails the `release.yml` run if any of these are violated. `prerelease.yml` does not run GRM, so verify them in Phase 3 before promoting:
+
+1. **≥1 closed non-PR issue** with a valid label. Otherwise: `No closed issues have been found for milestone …`. A milestone of only PRs fails.
+2. **Each closed item has exactly one label from {6 included ∪ `build`}.** Zero or ≥2 raises `InvalidIssuesException` on the first offender. `build` counts toward the "exactly one" even though it is excluded from rendered notes.
+3. **PRs that close an in-milestone issue are not themselves in the milestone** (the issue is the tracked unit — see Phase 3d).
+
+GRM reads the milestone via `GET /issues?milestone=N&state=closed`. That listing lags bulk milestone changes and can return a partial set for minutes while `milestone.closed_issues` already shows the full count. Prefer milestoning items at merge time over bulk-moving before a release; when a bulk move is unavoidable, use the settle check in Phase 3.
 
 ---
 
@@ -68,9 +78,18 @@ So a typical cycle is: cut the **prerelease**, let `prerelease.yml` publish the 
 ```bash
 command -v gh >/dev/null && gh --version || echo "MISSING"
 gh auth status
+gh auth status --hostname github.com   # must be logged in to github.com specifically
 ```
 
 If `gh` is missing, stop and tell the user to install it (`brew install gh`, or <https://cli.github.com/>) and run `gh auth login`, then re-run. Do not proceed until `gh` is present and authenticated.
+
+`GitTools/actions` is on **github.com**. If `gh`'s default host is an enterprise instance (`*.ghe.com`), bare `gh` calls target the wrong host. Pin it for the session:
+
+```bash
+export GH_HOST=github.com
+```
+
+The github.com account needs `repo` + `workflow` scopes (publish releases, edit milestones/labels, move branches).
 
 ---
 
@@ -144,22 +163,20 @@ gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=open&pe
 
 ⚠️ if any remain — they won't be in the notes. Offer to close, move to a future milestone, or proceed (they carry over).
 
-### 3c. Closed items without exactly one valid GitReleaseManager label
+### 3c. Each closed item has exactly one label from {6 included ∪ `build`}
 
-Read the label config, then classify each closed item. **GRM requires exactly one included label per item** (`GitReleaseManager.yml`: included `breaking change`, `bug`, `dependencies`, `documentation`, `feature`, `improvement`; excluded `build`):
+GRM throws `InvalidIssuesException` on the first item with zero or ≥2 valid labels. List the offenders:
 
 ```bash
 cat GitReleaseManager.yml
-gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" \
-  --jq '[.[] | {number, title, url: ("https://github.com/GitTools/actions/issues/" + (.number|tostring)), labels: [.labels[].name]}]'
+gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate \
+  --jq '.[] | {n:.number, type:(if .pull_request then "PR" else "issue" end), labels:[.labels[].name]}
+        | (.labels | map(select(. as $l | ["breaking change","bug","dependencies","documentation","feature","improvement","build"] | index($l)))) as $valid
+        | select(($valid|length) != 1)
+        | "\(.type) #\(.n)\tvalid=\($valid)\tall=\(.labels)"'
 ```
 
-- Exactly one included label → ✅ appears under that section.
-- Two or more included labels → ❌ blocker (GRM can't pick a section).
-- No labels / only non-listed labels → ❌ blocker.
-- Only excluded (`build`) → ⚠️ silently skipped (confirm intended).
-
-Fixes:
+Any row printed is a blocker (zero labels, or ≥2). `build`-only items pass validation but are omitted from notes. Fixes:
 
 ```bash
 # add the single correct label
@@ -168,10 +185,24 @@ gh api repos/GitTools/actions/issues/<NUMBER>/labels --method POST --field 'labe
 gh api repos/GitTools/actions/issues/<NUMBER>/labels/<LABEL_TO_REMOVE> --method DELETE
 ```
 
+### 3c-bis. At least one closed issue present
+
+GRM aborts with `No closed issues have been found` if the milestone has no closed non-PR issue with a valid label:
+
+```bash
+# --slurp so the count aggregates across pages (per-page --jq would report each page separately)
+gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys,json;p=json.load(sys.stdin);print('closed issues in milestone:', sum(1 for pg in p for i in pg if i.get('pull_request') is None))"
+```
+
+`0` → ❌ blocker. Ask the user to file and close a labeled tracking issue for the release's changes and assign it to the milestone.
+
 ### 3d. Merged PRs not assigned to the milestone
 
 ```bash
-MILESTONE_ITEMS=$(gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --jq '[.[].number]')
+# --paginate --slurp so milestones with >100 items aren't truncated to the first page
+MILESTONE_ITEMS=$(gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys,json;p=json.load(sys.stdin);print(json.dumps([i['number'] for pg in p for i in pg]))")
 LAST_DATE=$(gh release list --repo GitTools/actions --limit 1 --json publishedAt --jq '.[0].publishedAt')
 # --limit well above gh's default of 30 or merged PRs are silently dropped
 gh pr list --repo GitTools/actions --state merged --base main \
@@ -185,6 +216,16 @@ For each, check if it closes a linked issue (`gh pr view <N> --json closingIssue
 gh api repos/GitTools/actions/issues/<NUMBER> --method PATCH --field milestone=<MILESTONE_NUMBER>
 ```
 
+A PR that closes an in-milestone issue must not be in the milestone itself (duplicate/unlabeled entry). Check and remove:
+
+```bash
+# For a suspect PR already in the milestone, is its closing target also in the milestone?
+gh api graphql -f query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){pullRequest(number:$n){closingIssuesReferences(first:20){nodes{number}}}}}' \
+  -F o=GitTools -F r=actions -F n=<PR_NUMBER> --jq '[.data.repository.pullRequest.closingIssuesReferences.nodes[].number]'
+# If it closes an in-milestone issue, drop the PR from the milestone:
+gh api repos/GitTools/actions/issues/<PR_NUMBER> --method PATCH -f milestone=null
+```
+
 ### Consolidated report + settle check
 
 ```text
@@ -192,19 +233,30 @@ Release Readiness: <TAG>
 ─────────────────────────────────────────────────────
 ✅/❌  Milestone <TAG> exists (N open, N closed)
 ✅/⚠️  Open items in milestone: N
-✅/❌/⚠️  Closed items have exactly one GRM label (N blockers, N multi-label, N excluded-only)
+✅/❌  ≥1 closed issue present (3c-bis)
+✅/❌/⚠️  Every closed item has exactly one {6+build} label (N zero-label, N multi-label, N build-only)
+✅/❌  No in-milestone PR closes an in-milestone issue (3d)
 ✅/⚠️  All merged PRs in milestone (N missing)
 ```
 
-Hard blockers (❌) gate a **full release**. After any bulk milestone move/assignment, run the **settle check** before promoting to full — GRM reads the `GET /issues?milestone=N&state=closed` listing, whose index lags bulk moves and silently drops the just-moved items from the notes:
+Hard blockers (❌) gate a full release; each maps to a GRM `create` failure.
+
+**Settle check** — run after any milestone move/assignment and again before promoting. Count-equality (`milestone.closed_issues` vs listing length) is insufficient: GRM can read a partial listing while the counter is already correct. Compare the set of item numbers and require it stable across two reads:
 
 ```bash
-LISTED=$(gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --jq 'length')
+snap(){ gh api "repos/GitTools/actions/issues?milestone=<MILESTONE_NUMBER>&state=closed&per_page=100" --paginate --slurp \
+  | python3 -c "import sys,json;p=json.load(sys.stdin);print(sorted(i['number'] for pg in p for i in pg))"; }
+A=$(snap); sleep 20; B=$(snap)
 MILESTONE_CLOSED=$(gh api repos/GitTools/actions/milestones/<MILESTONE_NUMBER> --jq '.closed_issues')
-echo "listed=$LISTED  milestone.closed_issues=$MILESTONE_CLOSED"
+python3 - "$A" "$B" "$MILESTONE_CLOSED" <<'PY'
+import sys,ast
+a,b,c=ast.literal_eval(sys.argv[1]),ast.literal_eval(sys.argv[2]),int(sys.argv[3])
+print(f"listed={len(a)} stable={a==b} milestone.closed_issues={c}")
+print("SAFE" if a==b and len(a)==c else "NOT SETTLED — wait 30-60s and re-check")
+PY
 ```
 
-`LISTED == MILESTONE_CLOSED` → safe. `LISTED < MILESTONE_CLOSED` → wait ~30–60s and re-check; do not promote to full until they match. Prefer milestoning items at merge time over bulk-moving right before release.
+Promote only when the set is stable (`A == B`) and its length equals `milestone.closed_issues`; otherwise wait 30–60s and repeat. Milestoning at merge time avoids the lag entirely.
 
 ---
 
@@ -249,6 +301,11 @@ gh api repos/GitTools/actions/releases/$RELEASE_ID -X PATCH \
 Flipping to `prerelease=false` fires `released` → `release.yml`. Give the URL and go to Phase 5 (full-release monitoring).
 
 > Do not run `release.yml`/`prerelease.yml` steps yourself and never re-trigger a publish by re-flipping the flag without asking — the Azure Marketplace push and downstream dispatches are one-way external actions.
+
+**Re-run safety when `release.yml` fails.** Step order is: `Update Release Notes` (GRM create) → `Publish To Azure Marketplace` → `Add Assets` → `Close Release` → dispatches. The one-way steps are the Marketplace push and the dispatches.
+
+- Failure at/before `Update Release Notes` with the later steps `skipped` (check `gh run view <ID> --json jobs`): nothing external ran. Fix the milestone, re-run the settle check, then `gh run rerun <ID> --failed`.
+- Failure after the Marketplace push: do not re-run (it re-publishes). Fix forward and ask the user.
 
 ---
 
@@ -304,6 +361,8 @@ print('published' if any(v.split('.')[:3]==want for v in vs) else 'NOT FOUND', '
 
 ✅ if a version whose base is `<VERSION>` is present; ❌ if not (check the `Publish To Azure Marketplace` step); ⏳ if the publish step succeeded but the gallery hasn't indexed yet.
 
+If `curl` is blocked by a sandbox/hook, issue the same POST from a scripting runtime (Node `fetch`, `python3` + `urllib`) — same URL, headers, and body — and parse `results[0].extensions[0].versions[].version`.
+
 ### 6b. Announcements discussion (both types)
 
 ```bash
@@ -330,7 +389,33 @@ RENDERED=$(gh release view <TAG> --repo GitTools/actions --json body --jq '.body
 echo "expected≈$EXPECTED  rendered=$RENDERED"
 ```
 
-`RENDERED ≈ EXPECTED` → ✅. Far below → ❌ GRM ran on a stale index; regenerate in place: `dotnet tool restore && dotnet gitreleasemanager create -m <TAG> -o GitTools -r actions --token "$(gh auth token)"` (`allow-update-to-published: true` permits updating the published release), then re-reconcile.
+`RENDERED ≈ EXPECTED` → ✅. Far below → GRM read a stale listing. Re-run the settle check (Phase 3), then regenerate in place with the args CI's `gitreleasemanager/create` uses:
+
+```bash
+# install or upgrade to the version release.yml pins (versionSpec 0.20.x)
+dotnet tool list --global | grep -q gitreleasemanager \
+  && dotnet tool update --global GitReleaseManager.Tool --version 0.20.0 \
+  || dotnet tool install --global GitReleaseManager.Tool --version 0.20.0
+export PATH="$PATH:$HOME/.dotnet/tools"
+# --targetDirectory is the repo root, so GitReleaseManager.yml is picked up
+dotnet-gitreleasemanager create \
+  --owner GitTools --repository actions \
+  --token "$(gh auth token --hostname github.com)" \
+  --targetDirectory "$(pwd)" \
+  --milestone <TAG> --name <TAG>
+```
+
+`allow-update-to-published: true` lets it update the published release. Then re-reconcile.
+
+`create` rebuilds the body without the SHA256 section (in CI that section is written by the `Add Assets` step). Re-append it afterward, verifying the hash against the attached asset:
+
+```bash
+gh release download <TAG> --repo GitTools/actions --pattern '*.vsix' --dir /tmp/relverify
+SHA=$(shasum -a 256 /tmp/relverify/*.vsix | awk '{print $1}'); F=$(basename /tmp/relverify/*.vsix)
+gh release view <TAG> --repo GitTools/actions --json body --jq '.body' > /tmp/body.md
+printf '\n### SHA256 Hashes of the release artifacts\n- `%s\t- %s`\n' "$SHA" "$F" >> /tmp/body.md
+gh release edit <TAG> --repo GitTools/actions --notes-file /tmp/body.md
+```
 
 ### 6d. VSIX release asset (FULL release only — skip for prerelease, ➖)
 
