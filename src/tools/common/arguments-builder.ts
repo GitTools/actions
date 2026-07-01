@@ -136,7 +136,6 @@ export class ArgumentsBuilder {
             }
 
             append(c)
-            lastCharWasSpace = false
         }
 
         if (!lastCharWasSpace) {
