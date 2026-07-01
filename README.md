@@ -6,6 +6,7 @@ GitHub Actions that allow the setup and use of the [GitVersion](https://github.c
 
 [![CI Build Status](https://github.com/GitTools/actions/workflows/CI/badge.svg)](https://github.com/GitTools/actions/actions)
 [![Release Build Status](https://github.com/GitTools/actions/workflows/release/badge.svg)](https://github.com/GitTools/actions/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GitTools_actions&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=GitTools_actions)
 
 [![GitHub Release](https://img.shields.io/github/v/release/gittools/actions?logo=github&sort=semver)](https://github.com/GitTools/actions/releases/latest)
 

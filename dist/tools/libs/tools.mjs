@@ -106,7 +106,6 @@ var ArgumentsBuilder = class {
 				continue;
 			}
 			append(c);
-			lastCharWasSpace = false;
 		}
 		if (!lastCharWasSpace) args.push(arg.trim());
 		return args;
