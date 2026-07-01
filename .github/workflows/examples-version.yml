@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: gittools/cicd/checkout@v5
+        uses: gittools/cicd/checkout@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 1
@@ -39,7 +39,7 @@ jobs:
           npm install --ignore-scripts
         name: Update examples version
 
-      - uses: gittools/cicd/git-commit-push@v5
+      - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           message: "update examples version to ${{ github.event.client_payload.newTag }}"
         name: Commit and push updated examples version

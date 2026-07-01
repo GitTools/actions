@@ -47,13 +47,13 @@ jobs:
 
       - name: Load TFX credentials
         id: tfx-creds
-        uses: gittools/cicd/tfx-creds@v5
+        uses: gittools/cicd/tfx-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
       - name: Load GitHub App credentials
         id: github-app-creds
-        uses: gittools/cicd/github-app-creds@v5
+        uses: gittools/cicd/github-app-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
