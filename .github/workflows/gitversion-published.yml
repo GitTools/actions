@@ -16,11 +16,29 @@ jobs:
     if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: gittools/cicd/checkout@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
+      - name: Load GitHub App credentials
+        id: github-app-creds
+        uses: gittools/cicd/github-app-creds@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          fetch-depth: 1
+
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          owner: gittools
+          repositories: actions
+          app-id: ${{ steps.github-app-creds.outputs.gh_app_id }}
+          private-key: ${{ steps.github-app-creds.outputs.gh_app_private_key }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - run: |
           . ./utilities.ps1 # Import the functions
@@ -40,7 +58,20 @@ jobs:
 
         name: Update GitVersion version
 
-      - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
-          message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
-        name: Commit and push updated GitVersion version
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
+          author: 'gittools-bot <gittoolsbot@outlook.com>'
+          committer: 'gittools-bot <gittoolsbot@outlook.com>'
+          branch: "update/gitversion-${{ github.event.client_payload.newTag }}"
+          base: main
+          delete-branch: true
+          labels: dependencies
+          title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
+          body: |
+            Updates the GitVersion version references in `docs`, `.github`, and `.azure`
+            following the publication of GitVersion `${{ github.event.client_payload.newTag }}`.
+
+            Triggered by the `gitversion-release-published` repository dispatch.
