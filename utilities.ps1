@@ -13,10 +13,13 @@ function update-files()
         [System.String]
         $newVersion
     )
-    $file = Resolve-Path $file
-    Write-Host "Update file $file version from $oldVersion to $newVersion"
 
-    ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
+    process {
+        $file = Resolve-Path $file
+        Write-Output "Update file $file version from $oldVersion to $newVersion"
+
+        ((Get-Content $file -Raw) -replace $oldVersion, $newVersion) | Set-Content $file -NoNewline
+    }
 }
 
 # example: publish-vsix -mode "test" -major 4 -minor 3 -patch 0 -token $token
