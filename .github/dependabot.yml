@@ -1,6 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    milestone: 32 # Corresponds to 4.x
     labels:
       - "dependencies"
     commit-message:
@@ -15,6 +16,7 @@ updates:
       - dependency-name: "gittools/actions/gitversion/command"
 
   - package-ecosystem: npm
+    milestone: 32 # Corresponds to 4.x
     labels:
       - "dependencies"
     commit-message:
