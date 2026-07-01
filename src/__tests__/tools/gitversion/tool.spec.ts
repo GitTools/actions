@@ -231,6 +231,24 @@ describe('GitVersionTool', () => {
             ])
         })
 
+        it('should skip invalid override config values', async () => {
+            const args = await tool.getExecuteArguments('workdir', {
+                overrideConfig: ['tag-prefix=release-', 'invalid value', 'major-version-bump=Minor', 'next_version=1.0.0']
+            } as ExecuteSettings)
+
+            expect(args).toEqual([
+                'workdir',
+                '/output',
+                'json',
+                '/l',
+                'console',
+                '/overrideconfig',
+                'tag-prefix=release-',
+                '/overrideconfig',
+                'major-version-bump=Minor'
+            ])
+        })
+
         it('should return correct arguments for settings with assembly info', async () => {
             tool.init(true)
             const args = await tool.getExecuteArguments('workdir', {

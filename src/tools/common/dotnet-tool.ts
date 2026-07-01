@@ -217,9 +217,7 @@ export abstract class DotnetTool implements IDotnetTool {
     protected async getRepoPath(targetPath: string): Promise<string> {
         const srcDir = this.buildAgent.sourceDir || '.'
         let workDir: string
-        if (!targetPath) {
-            workDir = srcDir
-        } else {
+        if (targetPath) {
             if (!path.isAbsolute(targetPath)) {
                 targetPath = path.resolve(targetPath)
             }
@@ -228,6 +226,8 @@ export abstract class DotnetTool implements IDotnetTool {
             } else {
                 throw new Error(`Directory not found at ${targetPath}`)
             }
+        } else {
+            workDir = srcDir
         }
         return path.normalize(workDir)
     }

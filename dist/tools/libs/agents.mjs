@@ -1426,12 +1426,7 @@ var isFilePath = (cmd) => {
 * @return {Promise<string>} Resolves absolute path or empty string.
 */
 var access = async (filePath) => {
-	try {
-		await fs.access(filePath);
-		return filePath;
-	} catch (_error) {
-		return;
-	}
+	return fs.access(filePath).then(() => filePath, () => void 0);
 };
 /**
 * Resolves if the given file is executable or not, regarding "PATHEXT" to be applied.
@@ -1471,7 +1466,7 @@ async function lookPath(command, opt = {}) {
 //#region src/agents/common/build-agent.ts
 var BuildAgentBase = class {
 	get sourceDir() {
-		return this.getVariableAsPath(this.sourceDirVariable)?.replace(/\\/g, "/");
+		return this.getVariableAsPath(this.sourceDirVariable)?.replaceAll("\\", "/");
 	}
 	get tempDir() {
 		return this.getVariableAsPath(this.tempDirVariable);
@@ -1488,7 +1483,7 @@ var BuildAgentBase = class {
 		this.info(`Updated PATH: ${process$1.env[envName]}`);
 	}
 	getInput(input, required) {
-		const inputProp = input.replace(/ /g, "_").toUpperCase();
+		const inputProp = input.replaceAll(" ", "_").toUpperCase();
 		const val = this.getVariable(`INPUT_${inputProp}`);
 		if (required && !val) throw new Error(`Input required and not supplied: ${inputProp}`);
 		return val.trim();
@@ -1521,21 +1516,16 @@ var BuildAgentBase = class {
 	* @returns The string with env variables expanded.
 	*/
 	getExpandedString(pattern) {
-		const expanded = pattern.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*|{([a-zA-Z_][a-zA-Z0-9_]*)})/g, (_, whole, braced) => {
+		const expanded = pattern.replace(/\$([A-Za-z_]\w*|{([A-Za-z_]\w*)})/g, (_, whole, braced) => {
 			const name = braced ?? whole;
 			const value = process$1.env[name.toUpperCase()];
-			return value !== void 0 ? value : "";
+			return value === void 0 ? "" : value;
 		});
 		this.debug(`getExpandedString - ${pattern}: ${expanded}`);
 		return expanded;
 	}
 	async directoryExists(dir) {
-		try {
-			await fs.access(dir);
-			return (await fs.stat(dir)).isDirectory();
-		} catch (_error) {
-			return false;
-		}
+		return fs.stat(dir).then((stats) => stats.isDirectory(), () => false);
 	}
 	async removeDirectory(dir) {
 		await fs.rm(dir, {
@@ -1546,12 +1536,7 @@ var BuildAgentBase = class {
 		});
 	}
 	async fileExists(file) {
-		try {
-			await fs.access(file);
-			return (await fs.stat(file)).isFile();
-		} catch (_error) {
-			return false;
-		}
+		return fs.stat(file).then((stats) => stats.isFile(), () => false);
 	}
 	async cacheToolDirectory(sourceDir, tool, version) {
 		if (!tool) throw new Error("tool is a required parameter");
@@ -1588,11 +1573,13 @@ var BuildAgentBase = class {
 		versionSpec = import_semver.clean(versionSpec) || versionSpec;
 		this.info(`Looking for local tool ${toolName}@${versionSpec}`);
 		const toolPath = path.join(cacheRoot, toolName, versionSpec);
-		if (!await this.directoryExists(toolPath)) {
+		if (await this.directoryExists(toolPath)) {
+			this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`);
+			return toolPath;
+		} else {
 			this.info(`Directory ${toolPath} not found`);
 			return null;
-		} else this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`);
-		return toolPath;
+		}
 	}
 	async exec(cmd, args) {
 		const execFile$1 = util.promisify(execFile);

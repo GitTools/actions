@@ -93,7 +93,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
     abstract updateBuildNumber: (version: string) => void
 
     get sourceDir(): string {
-        return this.getVariableAsPath(this.sourceDirVariable)?.replace(/\\/g, '/')
+        return this.getVariableAsPath(this.sourceDirVariable)?.replaceAll('\\', '/')
     }
 
     get tempDir(): string {
@@ -114,7 +114,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
     }
 
     getInput<T>(input: Extract<keyof T, string>, required?: boolean): string {
-        const inputProp = input.replace(/ /g, '_').toUpperCase()
+        const inputProp = input.replaceAll(' ', '_').toUpperCase()
         const val = this.getVariable(`INPUT_${inputProp}`)
         if (required && !val) {
             throw new Error(`Input required and not supplied: ${inputProp}`)
@@ -160,22 +160,20 @@ export abstract class BuildAgentBase implements IBuildAgent {
      * @returns The string with env variables expanded.
      */
     getExpandedString(pattern: string): string {
-        const expanded = pattern.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*|{([a-zA-Z_][a-zA-Z0-9_]*)})/g, (_, whole: string, braced?: string) => {
+        const expanded = pattern.replace(/\$([A-Za-z_]\w*|{([A-Za-z_]\w*)})/g, (_, whole: string, braced?: string) => {
             const name = braced ?? whole
             const value = process.env[name.toUpperCase()]
-            return value !== undefined ? value : ''
+            return value === undefined ? '' : value
         })
         this.debug(`getExpandedString - ${pattern}: ${expanded}`)
         return expanded
     }
 
     async directoryExists(dir: string): Promise<boolean> {
-        try {
-            await fs.access(dir)
-            return (await fs.stat(dir)).isDirectory()
-        } catch (_error) {
-            return false
-        }
+        return fs.stat(dir).then(
+            stats => stats.isDirectory(),
+            () => false
+        )
     }
 
     async removeDirectory(dir: string): Promise<void> {
@@ -183,12 +181,10 @@ export abstract class BuildAgentBase implements IBuildAgent {
     }
 
     async fileExists(file: string): Promise<boolean> {
-        try {
-            await fs.access(file)
-            return (await fs.stat(file)).isFile()
-        } catch (_error) {
-            return false
-        }
+        return fs.stat(file).then(
+            stats => stats.isFile(),
+            () => false
+        )
     }
 
     async cacheToolDirectory(sourceDir: string, tool: string, version: string): Promise<string> {
@@ -240,14 +236,13 @@ export abstract class BuildAgentBase implements IBuildAgent {
         versionSpec = semver.clean(versionSpec) || versionSpec
         this.info(`Looking for local tool ${toolName}@${versionSpec}`)
         const toolPath = path.join(cacheRoot, toolName, versionSpec)
-        if (!(await this.directoryExists(toolPath))) {
+        if (await this.directoryExists(toolPath)) {
+            this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`)
+            return toolPath
+        } else {
             this.info(`Directory ${toolPath} not found`)
             return null
-        } else {
-            this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`)
         }
-
-        return toolPath
     }
 
     async exec(cmd: string, args: string[]): Promise<ExecResult> {

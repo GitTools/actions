@@ -16,13 +16,13 @@ export type CreateSettings = CommonSettings & {
     assets?: string[]
 }
 
-export type DiscardSettings = CommonSettings & {}
+export type DiscardSettings = CommonSettings & {} // NOSONAR
 
-export type CloseSettings = CommonSettings & {}
+export type CloseSettings = CommonSettings & {} // NOSONAR
 
-export type OpenSettings = CommonSettings & {}
+export type OpenSettings = CommonSettings & {} // NOSONAR
 
-export type PublishSettings = CommonSettings & {}
+export type PublishSettings = CommonSettings & {} // NOSONAR
 
 export type AddAssetSettings = CommonSettings & {
     assets: string[]

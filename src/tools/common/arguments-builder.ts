@@ -115,10 +115,10 @@ export class ArgumentsBuilder {
             }
 
             if (c === '"') {
-                if (!escaped) {
-                    inQuotes = !inQuotes
-                } else {
+                if (escaped) {
                     append(c)
+                } else {
+                    inQuotes = !inQuotes
                 }
                 continue
             }

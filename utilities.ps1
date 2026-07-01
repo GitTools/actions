@@ -43,14 +43,14 @@ function publish-vsix()
     $version = "$major.$minor.$patch.$date"
     $vsix = "dist/gittools.gittools-$version.vsix"
 
-    echo "Release mode: $mode"
-    echo "Version: $version"
+    Write-Output "Release mode: $mode"
+    Write-Output "Version: $version"
 
     npm run publish:prepare -- --mode $mode --version $version
     npm run publish:azure:local -- --env mode=$mode version=$version --output-path $vsix
     npm run publish:azure:marketplace -- --token $token --env mode=$mode version=$version
 
-    echo "vsix=$vsix" >> $env:GITHUB_OUTPUT
+    Write-Output "vsix=$vsix" >> $env:GITHUB_OUTPUT
 }
 
 function extract-version()

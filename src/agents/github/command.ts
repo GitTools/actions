@@ -69,7 +69,7 @@ class Command {
             cmdStr += ' '
             let first = true
             for (const key in this.properties) {
-                if (Object.prototype.hasOwnProperty.call(this.properties, key)) {
+                if (Object.hasOwn(this.properties, key)) {
                     const val = this.properties[key]
                     if (val) {
                         if (first) {
@@ -90,17 +90,17 @@ class Command {
 }
 
 function escapeData(s: string | object): string {
-    return toCommandValue(s).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')
+    return toCommandValue(s).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A')
 }
 
 function escapeProperty(s: string | object): string {
-    return toCommandValue(s).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A').replace(/:/g, '%3A').replace(/,/g, '%2C')
+    return toCommandValue(s).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A').replaceAll(':', '%3A').replaceAll(',', '%2C')
 }
 
 export function toCommandValue(input: string | object | undefined): string {
     if (input === null || input === undefined) {
         return ''
-    } else if (typeof input === 'string' || input instanceof String) {
+    } else if (typeof input === 'string' || Object.prototype.toString.call(input) === '[object String]') {
         return input as string
     }
     return JSON.stringify(input)
