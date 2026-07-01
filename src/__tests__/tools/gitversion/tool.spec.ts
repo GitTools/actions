@@ -426,4 +426,10 @@ describe('GitVersionTool', () => {
             expect(args).not.toContain('/verbosity')
         })
     })
+
+    describe('toCamelCase', () => {
+        it('should normalize whitespace and capitalize word boundaries explicitly', () => {
+            expect((tool as unknown as { toCamelCase(input: string): string }).toCamelCase('Full Sem Ver')).toBe('fullSemVer')
+        })
+    })
 })
