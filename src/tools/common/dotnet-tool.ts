@@ -110,26 +110,7 @@ export abstract class DotnetTool implements IDotnetTool {
             return toolPath
         }
 
-        // Get current system architecture
-        const arch = os.arch()
-        this.buildAgent.debug(`Current system architecture: ${arch}`)
-
-        // Map node's architecture names to .NET's architecture folders
-        const archPaths = []
-
-        // Add primary architecture path based on current architecture
-        if (arch === 'x64') {
-            archPaths.push(path.join(toolBasePath, 'x64', toolName))
-        } else if (arch === 'arm64') {
-            archPaths.push(path.join(toolBasePath, 'arm64', toolName))
-        }
-
-        // Add platform-specific architecture paths
-        if (os.platform() === 'darwin' && arch === 'arm64') {
-            archPaths.push(path.join(toolBasePath, 'osx-arm64', toolName))
-        } else if (os.platform() === 'darwin' && arch === 'x64') {
-            archPaths.push(path.join(toolBasePath, 'osx-x64', toolName))
-        }
+        const archPaths = this.getArchitecturePaths(toolBasePath, toolName)
 
         // Try each architecture-specific path
         for (const archPath of archPaths) {
@@ -139,25 +120,7 @@ export abstract class DotnetTool implements IDotnetTool {
             }
         }
 
-        // Check in any other subdirectory as a fallback
-        try {
-            const entries = await fs.readdir(toolBasePath, { withFileTypes: true })
-            for (const entry of entries) {
-                if (entry.isDirectory()) {
-                    const nestedPath = path.join(toolBasePath, entry.name, toolName)
-                    if (await this.buildAgent.fileExists(nestedPath)) {
-                        this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`)
-                        return nestedPath
-                    }
-                }
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                this.buildAgent.debug(`Error reading subdirectories: ${error.message}`)
-            }
-        }
-
-        return null
+        return await this.findToolExecutableInSubdirectories(toolBasePath, toolName)
     }
 
     protected async setDotnetRoot(): Promise<void> {
@@ -310,6 +273,54 @@ export abstract class DotnetTool implements IDotnetTool {
         await this.buildAgent.removeDirectory(tempDirectory)
 
         return toolPath
+    }
+
+    private getArchitecturePaths(toolBasePath: string, toolName: string): string[] {
+        const arch = os.arch()
+        const platform = os.platform()
+        this.buildAgent.debug(`Current system architecture: ${arch}`)
+
+        const primaryArchitectureDirs = {
+            x64: 'x64',
+            arm64: 'arm64'
+        } as const
+
+        const platformArchitectureDirs = {
+            'darwin:arm64': 'osx-arm64',
+            'darwin:x64': 'osx-x64'
+        } as const
+
+        const architectureDirs: string[] = []
+        const primaryArchitectureDir = primaryArchitectureDirs[arch as keyof typeof primaryArchitectureDirs]
+        const platformArchitectureDir = platformArchitectureDirs[`${platform}:${arch}` as keyof typeof platformArchitectureDirs]
+
+        if (primaryArchitectureDir) {
+            architectureDirs.push(primaryArchitectureDir)
+        }
+        if (platformArchitectureDir) {
+            architectureDirs.push(platformArchitectureDir)
+        }
+
+        return architectureDirs.map(dir => path.join(toolBasePath, dir, toolName))
+    }
+
+    private async findToolExecutableInSubdirectories(toolBasePath: string, toolName: string): Promise<string | null> {
+        try {
+            const entries = await fs.readdir(toolBasePath, { withFileTypes: true })
+            for (const entry of entries.filter(entry => entry.isDirectory())) {
+                const nestedPath = path.join(toolBasePath, entry.name, toolName)
+                if (await this.buildAgent.fileExists(nestedPath)) {
+                    this.buildAgent.debug(`Found tool in subdirectory: ${entry.name}`)
+                    return nestedPath
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                this.buildAgent.debug(`Error reading subdirectories: ${error.message}`)
+            }
+        }
+
+        return null
     }
 
     async createTempDirectory(): Promise<string> {

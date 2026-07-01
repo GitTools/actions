@@ -49,16 +49,8 @@ var Command = class {
 	toString() {
 		let cmdStr = CMD_STRING + this.command;
 		if (this.properties && Object.keys(this.properties).length > 0) {
-			cmdStr += " ";
-			let first = true;
-			for (const key in this.properties) if (Object.hasOwn(this.properties, key)) {
-				const val = this.properties[key];
-				if (val) {
-					if (first) first = false;
-					else cmdStr += ",";
-					cmdStr += `${key}=${escapeProperty(val)}`;
-				}
-			}
+			const properties = Object.entries(this.properties).filter(([, value]) => !!value).map(([key, value]) => `${key}=${escapeProperty(value)}`);
+			if (properties.length > 0) cmdStr += ` ${properties.join(",")}`;
 		}
 		cmdStr += `${CMD_STRING}${escapeData(this.message)}`;
 		return cmdStr;
