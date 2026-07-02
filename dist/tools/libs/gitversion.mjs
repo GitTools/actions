@@ -43,7 +43,7 @@ var GitVersionTool = class extends DotnetTool {
 		return "GITVERSION_PATH";
 	}
 	get versionRange() {
-		return ">=6.1.0 <7.0.0";
+		return ">=6.2.0 <7.0.0";
 	}
 	get settingsProvider() {
 		return new GitVersionSettingsProvider(this.buildAgent);
