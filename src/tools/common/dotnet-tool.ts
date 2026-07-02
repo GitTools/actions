@@ -158,8 +158,6 @@ export abstract class DotnetTool implements IDotnetTool {
         if (!toolPath) {
             toolPath = await this.buildAgent.which(this.toolName, true)
         }
-
-        args = [`--roll-forward`, `Major`, ...args]
         return await this.execute(toolPath, args)
     }
 
