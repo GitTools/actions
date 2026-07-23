@@ -231,6 +231,23 @@ describe('GitVersionTool', () => {
             ])
         })
 
+        it('should include override config values with regex characters', async () => {
+            const args = await tool.getExecuteArguments('workdir', {
+                overrideConfig: ['tag-prefix=some.prefix-[vV]?', 'next-version=0.1.0']
+            } as ExecuteSettings)
+            expect(args).toEqual([
+                'workdir',
+                '/output',
+                'json',
+                '/l',
+                'console',
+                '/overrideconfig',
+                'tag-prefix=some.prefix-[vV]?',
+                '/overrideconfig',
+                'next-version=0.1.0'
+            ])
+        })
+
         it('should skip invalid override config values', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 overrideConfig: ['tag-prefix=release-', 'invalid value', 'major-version-bump=Minor', 'next_version=1.0.0']

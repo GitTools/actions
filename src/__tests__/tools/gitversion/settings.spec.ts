@@ -1,9 +1,15 @@
-import { describe, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import process from 'node:process'
 import { type IBuildAgent } from '@agents/common'
+import { BuildAgent } from '@agents/local'
 import { type CommandSettings, type ExecuteSettings, GitVersionSettingsProvider } from '@tools/gitversion'
 import { expectValidSettings } from '../common/utils'
 
 describe('GitVersion settings', () => {
+    afterEach(() => {
+        vi.unstubAllEnvs()
+    })
+
     it('should return ExecuteSettings', () => {
         const settings: ExecuteSettings = {
             targetPath: 'path',
@@ -51,5 +57,16 @@ describe('GitVersion settings', () => {
         const commandSettings = settingsProvider.getCommandSettings()
 
         expectValidSettings(settings, commandSettings)
+    })
+
+    it('should read multiline overrideConfig input values', () => {
+        vi.stubEnv('INPUT_OVERRIDECONFIG', 'tag-prefix=some.prefix-[vV]?\nnext-version=0.1.0')
+
+        const settingsProvider = new GitVersionSettingsProvider(new BuildAgent())
+
+        const executeSettings = settingsProvider.getExecuteSettings()
+
+        expect(executeSettings.overrideConfig).toEqual(['tag-prefix=some.prefix-[vV]?', 'next-version=0.1.0'])
+        expect(process.env['INPUT_OVERRIDECONFIG']).toBe('tag-prefix=some.prefix-[vV]?\nnext-version=0.1.0')
     })
 })
