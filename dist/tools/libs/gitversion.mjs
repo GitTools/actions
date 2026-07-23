@@ -106,7 +106,7 @@ var GitVersionTool = class extends DotnetTool {
 		if (configFilePath) if (await this.isValidInputFile(workDir, configFilePath)) builder.addArgument("/config").addArgument(configFilePath);
 		else throw new Error(`GitVersion configuration file not found at ${configFilePath}`);
 		if (overrideConfig) {
-			const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[A-Za-z0-9 .:'-]*$/;
+			const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[^\r\n]+$/;
 			for (let config of overrideConfig) {
 				config = config.trim();
 				if (overrideConfigPattern.exec(config)) builder.addArgument("/overrideconfig").addArgument(config);

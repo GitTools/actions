@@ -128,7 +128,7 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (overrideConfig) {
-            const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[A-Za-z0-9 .:'-]*$/
+            const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[^\r\n]+$/
             for (let config of overrideConfig) {
                 config = config.trim()
                 if (overrideConfigPattern.exec(config)) {
