@@ -1,14 +1,12 @@
 import { __commonJSMin } from "../rolldown-runtime.mjs";
 //#region node_modules/semver/internal/constants.js
 var require_constants = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var SEMVER_SPEC_VERSION = "2.0.0";
-	var MAX_LENGTH = 256;
-	var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 	module.exports = {
-		MAX_LENGTH,
+		MAX_LENGTH: 256,
 		MAX_SAFE_COMPONENT_LENGTH: 16,
-		MAX_SAFE_BUILD_LENGTH: MAX_LENGTH - 6,
-		MAX_SAFE_INTEGER,
+		MAX_SAFE_BUILD_LENGTH: 250,
+		MAX_SAFE_INTEGER: Number.MAX_SAFE_INTEGER || 
+		/* istanbul ignore next */ 9007199254740991,
 		RELEASE_TYPES: [
 			"major",
 			"premajor",
@@ -18,7 +16,7 @@ var require_constants = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			"prepatch",
 			"prerelease"
 		],
-		SEMVER_SPEC_VERSION,
+		SEMVER_SPEC_VERSION: "2.0.0",
 		FLAG_INCLUDE_PRERELEASE: 1,
 		FLAG_LOOSE: 2
 	};
@@ -606,9 +604,7 @@ var require_truncate = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				version.minor = 0;
 				version.patch = 0;
 				break;
-			case "minor":
-				version.patch = 0;
-				break;
+			case "minor": version.patch = 0;
 		}
 		return version.format();
 	};
