@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import * as fs from 'node:fs'
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { simpleGit } from 'simple-git'
@@ -9,7 +8,7 @@ import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, expectToolSetup, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
@@ -45,7 +44,7 @@ describe('GitVersion Runner', () => {
             resetEnv(agent, '')
         })
 
-        it.sequential('should run setup GitVersion', async () => {
+        it('should run setup GitVersion', { concurrent: false }, async () => {
             setInputs({
                 versionSpec: versionSpec,
                 includePrerelease: false,
@@ -56,21 +55,10 @@ describe('GitVersion Runner', () => {
             const result = await runner.run('setup')
 
             expect(result.code).toBe(0)
-            expect(result.error).toBeUndefined()
-            expect(result.stdout).toBeUndefined()
-            expect(result.stderr).toBeUndefined()
-
-            expect(fs.existsSync(path.resolve(baseDir))).toBe(true)
-            expect(fs.existsSync(path.resolve(baseDir, 'tools'))).toBe(true)
-            expect(fs.existsSync(toolPath)).toBe(true)
-
-            expect(getEnv(toolPathVariable)).toBe(toolPath)
-
-            const foundToolPath = await agent.which(toolName, true)
-            expect(foundToolPath).contain(toolPath)
+            await expectToolSetup(result, agent, { baseDir, toolPath, toolPathVariable, toolName })
         })
 
-        it.sequential('should execute GitVersion', async () => {
+        it('should execute GitVersion', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             const result = await runner.run('execute')
@@ -89,7 +77,7 @@ describe('GitVersion Runner', () => {
             expect(getEnv('patch')).toBeDefined()
         })
 
-        it.sequential('should execute GitVersion with build number update', async () => {
+        it('should execute GitVersion with build number update', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
             setInputs({
                 buildNumberFormat: 'v${GitVersion_SemVer}'
@@ -114,7 +102,7 @@ describe('GitVersion Runner', () => {
             expect(updateBuildNumberSpy).toHaveBeenCalledWith('v1.2.3')
         })
 
-        it.sequential('should output Sha variable', async () => {
+        it('should output Sha variable', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
@@ -130,7 +118,7 @@ describe('GitVersion Runner', () => {
             expect(result.stdout).toContain(shaHash)
         })
 
-        it.sequential('should output formatted version', async () => {
+        it('should output formatted version', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
@@ -146,7 +134,7 @@ describe('GitVersion Runner', () => {
             expect(result.stdout).toContain(shaHash)
         })
 
-        it.sequential('git version output extractor with no {} in branch name should return valid output', () => {
+        it('git version output extractor with no {} in branch name should return valid output', { concurrent: false }, () => {
             setEnv(toolPathVariable, toolPath)
 
             const gitVersionFixture = createGitVersionFixture({
@@ -167,7 +155,7 @@ describe('GitVersion Runner', () => {
             expect(result).toEqual(gitVersionFixture.expected)
         })
 
-        it.sequential('git version output extractor with {} in branch name should return valid output', () => {
+        it('git version output extractor with {} in branch name should return valid output', { concurrent: false }, () => {
             setEnv(toolPathVariable, toolPath)
 
             const gitVersionFixture = createGitVersionFixture({
@@ -188,7 +176,7 @@ describe('GitVersion Runner', () => {
             expect(result).toEqual(gitVersionFixture.expected)
         })
 
-        it.sequential('git version output is malformed, extractor should return null', () => {
+        it('git version output is malformed, extractor should return null', { concurrent: false }, () => {
             setEnv(toolPathVariable, toolPath)
 
             // Example GitVersion logs with an error
@@ -228,7 +216,7 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
             expect(result).toBeNull()
         })
 
-        it.sequential('processGitVersionOutput returns non-zero result with stdout snippet when output is not valid JSON', async () => {
+        it('processGitVersionOutput returns non-zero result with stdout snippet when output is not valid JSON', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             const stdout = 'INFO line 1\nINFO line 2\nERROR Something went wrong'
@@ -239,7 +227,7 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
             expect(result.stderr).toContain('ERROR Something went wrong')
         })
 
-        it.sequential('processGitVersionOutput truncates long stdout and notes total line count in error message', async () => {
+        it('processGitVersionOutput truncates long stdout and notes total line count in error message', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             const lines = Array.from({ length: 30 }, (_, i) => `INFO line ${i + 1}`)
@@ -253,7 +241,7 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
             expect(result.stderr).toContain('INFO line 11')
         })
 
-        it.sequential('processGitVersionOutput uses fallback message when stdout is empty', async () => {
+        it('processGitVersionOutput uses fallback message when stdout is empty', { concurrent: false }, async () => {
             setEnv(toolPathVariable, toolPath)
 
             const result = await runner['processGitVersionOutput']({ code: 0, stdout: '' })
@@ -267,11 +255,11 @@ ERROR [25-10-14 19:24:57:67] Output is malformed!
         testOnAgent(new LocalBuildAgent())
     })
 
-    describe.skipIf(isGitHubActionsAgent()).sequential('GitHub Actions Agent', () => {
+    describe.skipIf(isGitHubActionsAgent())('GitHub Actions Agent', { concurrent: false }, () => {
         testOnAgent(new GitHubActionsAgent())
     })
 
-    describe.skipIf(isAzurePipelinesAgent()).sequential('Azure Pipelines Agent', () => {
+    describe.skipIf(isAzurePipelinesAgent())('Azure Pipelines Agent', { concurrent: false }, () => {
         testOnAgent(new AzurePipelinesAgent())
     })
 })

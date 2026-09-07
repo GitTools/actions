@@ -1,7 +1,9 @@
 import process from 'node:process'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import { expect } from 'vitest'
 import { keysOf } from '@tools/common'
-import { type IBuildAgent } from '@agents/common'
+import { type ExecResult, type IBuildAgent } from '@agents/common'
 import * as semver from 'semver'
 
 export function setEnv(key: string, value: string): void {
@@ -48,4 +50,23 @@ export async function getLatestVersion(toolName: string, versionSpec: string): P
     const json = (await response.json()) as { versions: string[] }
     const filteredVersions = json.versions.filter(v => semver.satisfies(v, versionSpec))
     return filteredVersions.reverse()[0]
+}
+
+export async function expectToolSetup(
+    result: ExecResult,
+    agent: IBuildAgent,
+    paths: { baseDir: string; toolPath: string; toolPathVariable: string; toolName: string }
+): Promise<void> {
+    expect(result.error).toBeUndefined()
+    expect(result.stdout).toBeUndefined()
+    expect(result.stderr).toBeUndefined()
+
+    expect(fs.existsSync(path.resolve(paths.baseDir))).toBe(true)
+    expect(fs.existsSync(path.resolve(paths.baseDir, 'tools'))).toBe(true)
+    expect(fs.existsSync(paths.toolPath)).toBe(true)
+
+    expect(getEnv(paths.toolPathVariable)).toBe(paths.toolPath)
+
+    const foundToolPath = await agent.which(paths.toolName, true)
+    expect(foundToolPath).contain(paths.toolPath)
 }
