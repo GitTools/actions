@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import * as fs from 'node:fs'
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { simpleGit } from 'simple-git'
@@ -9,7 +8,7 @@ import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, expectToolSetup, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
@@ -56,18 +55,7 @@ describe('GitVersion Runner', () => {
             const result = await runner.run('setup')
 
             expect(result.code).toBe(0)
-            expect(result.error).toBeUndefined()
-            expect(result.stdout).toBeUndefined()
-            expect(result.stderr).toBeUndefined()
-
-            expect(fs.existsSync(path.resolve(baseDir))).toBe(true)
-            expect(fs.existsSync(path.resolve(baseDir, 'tools'))).toBe(true)
-            expect(fs.existsSync(toolPath)).toBe(true)
-
-            expect(getEnv(toolPathVariable)).toBe(toolPath)
-
-            const foundToolPath = await agent.which(toolName, true)
-            expect(foundToolPath).contain(toolPath)
+            await expectToolSetup(result, agent, { baseDir, toolPath, toolPathVariable, toolName })
         })
 
         it('should execute GitVersion', { concurrent: false }, async () => {
