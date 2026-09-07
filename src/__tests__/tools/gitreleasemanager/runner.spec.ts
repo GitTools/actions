@@ -47,7 +47,7 @@ describe('GitReleaseManager Runner', () => {
             resetEnv(agent, '')
         })
 
-        it.sequential('should run setup GitReleaseManager', async () => {
+        it('should run setup GitReleaseManager', { concurrent: false }, async () => {
             setInputs({
                 versionSpec: versionSpec,
                 includePrerelease: false,
@@ -73,15 +73,15 @@ describe('GitReleaseManager Runner', () => {
         })
     }
 
-    describe.sequential('Local Agent', () => {
+    describe('Local Agent', { concurrent: false }, () => {
         testOnAgent(new LocalBuildAgent())
     })
 
-    describe.skipIf(isGitHubActionsAgent()).sequential('GitHub Actions Agent', () => {
+    describe.skipIf(isGitHubActionsAgent())('GitHub Actions Agent', { concurrent: false }, () => {
         testOnAgent(new GitHubActionsAgent())
     })
 
-    describe.skipIf(isAzurePipelinesAgent()).sequential('Azure Pipelines Agent', () => {
+    describe.skipIf(isAzurePipelinesAgent())('Azure Pipelines Agent', { concurrent: false }, () => {
         testOnAgent(new AzurePipelinesAgent())
     })
 })

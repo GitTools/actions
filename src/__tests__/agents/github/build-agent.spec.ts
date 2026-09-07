@@ -6,6 +6,9 @@ import * as crypto from 'node:crypto'
 import * as os from 'node:os'
 import { isGitHubActionsAgent } from '../../tools/common/utils.ts'
 
+vi.mock('fs')
+vi.mock('crypto')
+
 describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
     let agent: BuildAgent
 
@@ -88,9 +91,6 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
         expect(spy).toHaveBeenCalledTimes(2)
         expect(spy).toHaveBeenCalledWith(`::set-output name=name::value${os.EOL}`)
 
-        vi.mock('fs')
-        vi.mock('crypto')
-
         const existsSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(true)
         const appendFileSyncSpy = vi.spyOn(fs, 'appendFileSync')
 
@@ -120,9 +120,6 @@ describe.skipIf(isGitHubActionsAgent())('build-agent/github', () => {
         expect(process.env['name']).toBe('value')
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy).toHaveBeenCalledWith(`::set-env name=name::value${os.EOL}`)
-
-        vi.mock('fs')
-        vi.mock('crypto')
 
         const existsSpy = vi.spyOn(fs, 'existsSync').mockReturnValue(true)
         const appendFileSyncSpy = vi.spyOn(fs, 'appendFileSync')
