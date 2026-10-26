@@ -20,7 +20,7 @@ jobs:
         os: [ ubuntu-24.04 ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
@@ -59,7 +59,7 @@ jobs:
 
       - name: Generate GitHub App Release Token
         id: release-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
         with:
           owner: gittools
           repositories: |
