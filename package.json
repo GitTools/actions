@@ -52,7 +52,7 @@
     "@stylistic/eslint-plugin": "5.10.0",
     "@types/node": "26.6.5",
     "@types/semver": "7.8.0",
-    "@vitest/eslint-plugin": "1.6.27",
+    "@vitest/eslint-plugin": "1.6.28",
     "dotenv": "18.0.8",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
