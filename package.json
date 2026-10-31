@@ -57,7 +57,7 @@
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.7",
-    "glob": "13.0.6",
+    "glob": "14.0.3",
     "globals": "17.13.0",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
@@ -78,7 +78,7 @@
   "overrides": {
     "brace-expansion": "5.0.12",
     "minimatch": "10.2.3",
-    "glob": "13.0.6",
+    "glob": "14.0.3",
     "lodash": "4.18.1",
     "uuid": "13.0.1",
     "markdownlint-cli": {
