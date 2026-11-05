@@ -121,3 +121,69 @@ outputs:
     description: "Compatibility alias for CommitCountSourceSha."
   weightedPreReleaseNumber:
     description: "A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches."
+  GitVersion_AssemblySemFileVer:
+    description: "Alias of assemblySemFileVer"
+  GitVersion_AssemblySemVer:
+    description: "Alias of assemblySemVer"
+  GitVersion_BranchName:
+    description: "Alias of branchName"
+  GitVersion_BuildMetaData:
+    description: "Alias of buildMetaData"
+  GitVersion_CommitCountSourceDistance:
+    description: "Alias of commitCountSourceDistance"
+  GitVersion_CommitCountSourceSha:
+    description: "Alias of commitCountSourceSha"
+  GitVersion_CommitDate:
+    description: "Alias of commitDate"
+  GitVersion_CustomVersion:
+    description: "Alias of customVersion"
+  GitVersion_EscapedBranchName:
+    description: "Alias of escapedBranchName"
+  GitVersion_FullBuildMetaData:
+    description: "Alias of fullBuildMetaData"
+  GitVersion_FullSemVer:
+    description: "Alias of fullSemVer"
+  GitVersion_InformationalVersion:
+    description: "Alias of informationalVersion"
+  GitVersion_Major:
+    description: "Alias of major"
+  GitVersion_MajorMinorPatch:
+    description: "Alias of majorMinorPatch"
+  GitVersion_Minor:
+    description: "Alias of minor"
+  GitVersion_Patch:
+    description: "Alias of patch"
+  GitVersion_PreReleaseLabel:
+    description: "Alias of preReleaseLabel"
+  GitVersion_PreReleaseLabelName:
+    description: "Alias of preReleaseLabelName"
+  GitVersion_PreReleaseLabelNameWithDash:
+    description: "Alias of preReleaseLabelNameWithDash"
+  GitVersion_PreReleaseLabelWithDash:
+    description: "Alias of preReleaseLabelWithDash"
+  GitVersion_PreReleaseNumber:
+    description: "Alias of preReleaseNumber"
+  GitVersion_SemVer:
+    description: "Alias of semVer"
+  GitVersion_SemVerSourceIncrement:
+    description: "Alias of semVerSourceIncrement"
+  GitVersion_SemVerSourceSemVer:
+    description: "Alias of semVerSourceSemVer"
+  GitVersion_SemVerSourceSha:
+    description: "Alias of semVerSourceSha"
+  GitVersion_Sha:
+    description: "Alias of sha"
+  GitVersion_ShortSha:
+    description: "Alias of shortSha"
+  GitVersion_UncommittedChanges:
+    description: "Alias of uncommittedChanges"
+  GitVersion_VersionSourceDistance:
+    description: "Alias of versionSourceDistance"
+  GitVersion_VersionSourceIncrement:
+    description: "Alias of versionSourceIncrement"
+  GitVersion_VersionSourceSemVer:
+    description: "Alias of versionSourceSemVer"
+  GitVersion_VersionSourceSha:
+    description: "Alias of versionSourceSha"
+  GitVersion_WeightedPreReleaseNumber:
+    description: "Alias of weightedPreReleaseNumber"

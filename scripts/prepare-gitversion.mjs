@@ -60,6 +60,10 @@ if (process.env.TF_BUILD) {
     console.log(`##vso[task.setvariable variable=GITVERSION_TEST_VERSION]${published || baseline.version}`)
     console.log(`##vso[task.setvariable variable=GITVERSION_TEST_NUGET_CONFIG]${config}`)
 }
-console.log(`GitVersion source rehearsal: ${baseline.commit} / ${baseline.version} / ${rid}`)
-console.log(`Local package source: ${packages}`)
-console.log(published ? `Published package validation: ${published}` : 'This does not validate a published release package.')
+if (published) {
+    console.log(`Published package validation: ${published} / ${rid}`)
+} else {
+    console.log(`GitVersion source rehearsal: ${baseline.commit} / ${baseline.version} / ${rid}`)
+    console.log(`Local package source: ${packages}`)
+    console.log('This does not validate a published release package.')
+}
