@@ -120,6 +120,25 @@ describe('DotnetTool', () => {
             expect(result).toBe(toolPath)
         })
 
+        it('resolves the SDK Windows command launcher to its packaged executable without a shell', async () => {
+            vi.mocked(os.platform).mockReturnValue('win32')
+            const basePath = 'C:\\tools with spaces\\test-tool'
+            const target = 'C:\\tools with spaces\\test-tool\\.store\\package\\tool.exe'
+            vi.mocked(fs.readFile).mockResolvedValue('@echo off\r\n"%~dp0.store\\package\\tool.exe" %*\r\n')
+            buildAgent.fileExists = vi.fn().mockImplementation((file: string) => file.endsWith('test-tool.cmd') || file === target)
+            await expect(tool.testFindToolExecutable(basePath)).resolves.toBe(target)
+        })
+
+        it.each([
+            { Name: 'arbitrary script', content: '@echo off\r\necho unexpected\r\n', error: 'Unsupported .NET tool command launcher' },
+            { Name: 'target outside installation', content: '@echo off\r\n"%~dp0..\\outside.exe" %*\r\n', error: 'points outside its installation' }
+        ])('rejects unsafe Windows command launchers: $Name', async ({ content, error }) => {
+            vi.mocked(os.platform).mockReturnValue('win32')
+            vi.mocked(fs.readFile).mockResolvedValue(content)
+            buildAgent.fileExists = vi.fn().mockImplementation((file: string) => file.endsWith('test-tool.cmd'))
+            await expect(tool.testFindToolExecutable('C:\\tools\\test-tool')).rejects.toThrow(error)
+        })
+
         it('should check architecture-specific paths for x64', async () => {
             vi.mocked(os.arch).mockReturnValue('x64')
             vi.mocked(os.platform).mockReturnValue('linux')

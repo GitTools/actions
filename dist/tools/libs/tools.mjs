@@ -209,12 +209,23 @@ var DotnetTool = class DotnetTool {
 		const toolName = os.platform() === "win32" ? `${this.toolName}.exe` : this.toolName;
 		const toolPath = path.join(toolBasePath, toolName);
 		if (await this.buildAgent.fileExists(toolPath)) return toolPath;
+		if (os.platform() === "win32" && await this.buildAgent.fileExists(path.join(toolBasePath, `${this.toolName}.cmd`))) return await this.resolveWindowsCommandShim(toolBasePath);
 		const archPaths = this.getArchitecturePaths(toolBasePath, toolName);
 		for (const archPath of archPaths) if (await this.buildAgent.fileExists(archPath)) {
 			this.buildAgent.debug(`Found tool in architecture-specific directory: ${archPath}`);
 			return archPath;
 		}
 		return await this.findToolExecutableInSubdirectories(toolBasePath, toolName);
+	}
+	async resolveWindowsCommandShim(toolBasePath) {
+		const shimPath = path.join(toolBasePath, `${this.toolName}.cmd`);
+		const content = await fs.readFile(shimPath, "utf8");
+		const match = /^@echo off\r?\n"%~dp0([^"\r\n]+\.exe)" %\*\r?\n?$/i.exec(content);
+		if (!match) throw new Error(`Unsupported .NET tool command launcher: ${shimPath}`);
+		const target = path.win32.resolve(toolBasePath, match[1]);
+		const relative = path.win32.relative(path.win32.resolve(toolBasePath), target);
+		if (relative === ".." || relative.startsWith("..\\") || path.win32.isAbsolute(relative)) throw new Error(`The .NET tool command launcher points outside its installation: ${shimPath}`);
+		return await this.buildAgent.fileExists(target) ? target : null;
 	}
 	async setDotnetRoot() {
 		if (os.platform() !== "win32" && !this.buildAgent.getVariable("DOTNET_ROOT")) {
@@ -237,7 +248,14 @@ var DotnetTool = class DotnetTool {
 				this.buildAgent.debug(`Defaulting to expected tool path: ${toolPath}`);
 			}
 		}
-		if (!toolPath) toolPath = await this.buildAgent.which(this.toolName, true);
+		if (!toolPath) {
+			toolPath = await this.buildAgent.which(this.toolName, true);
+			if (os.platform() === "win32" && path.extname(toolPath).toLowerCase() === ".cmd") {
+				const executable = await this.resolveWindowsCommandShim(path.dirname(toolPath));
+				if (!executable) throw new Error("The .NET tool command launcher target was not found");
+				toolPath = executable;
+			}
+		}
 		args = [
 			`--roll-forward`,
 			`Major`,
