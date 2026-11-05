@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { setTimeout as delay } from 'node:timers/promises'
+import { lock } from 'proper-lockfile'
 import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
@@ -10,20 +10,15 @@ import { lookPath } from './lookPath'
 import { type ExecResult } from './models'
 
 async function acquireToolCacheLock(directory: string): Promise<() => Promise<void>> {
-    const lock = `${directory}.lock`
     await fs.mkdir(path.dirname(directory), { recursive: true })
-    for (let attempt = 0; ; attempt++) {
-        try {
-            await fs.mkdir(lock)
-            return async () => {
-                await fs.rm(lock, { recursive: true, force: true })
-            }
-        } catch (error) {
-            if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
-            if (attempt >= 480) throw new Error(`Timed out waiting for tool cache lock: ${lock}`, { cause: error })
-            await delay(250) // NOSONAR: Lock retries must be sequential; parallel attempts can acquire and orphan the same lock.
-        }
-    }
+    // Heartbeats preserve live owners, including on shared hosts where PIDs are not unique.
+    // A killed owner stops updating the lock, allowing recovery after 30 seconds.
+    return await lock(directory, {
+        realpath: false,
+        stale: 30000,
+        update: 1000,
+        retries: { retries: 480, minTimeout: 250, maxTimeout: 250, factor: 1, randomize: false }
+    })
 }
 
 export interface IBuildAgent {
@@ -218,6 +213,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         const directory = this.getToolCachePath(tool, version)
         const release = await acquireToolCacheLock(directory)
         try {
+            await this.restoreToolCacheBackup(directory)
             const complete = await this.fileExists(path.join(directory, '.complete'))
             if (complete && !replaceExisting) return directory
             const backup = complete ? `${directory}.backup-${randomUUID()}` : undefined
@@ -236,6 +232,27 @@ export abstract class BuildAgentBase implements IBuildAgent {
             return directory
         } finally {
             await release()
+        }
+    }
+
+    private async restoreToolCacheBackup(directory: string): Promise<void> {
+        if (await this.fileExists(path.join(directory, '.complete'))) return
+        const parent = path.dirname(directory)
+        const prefix = `${path.basename(directory)}.backup-`
+        const entries = await fs.readdir(parent, { withFileTypes: true })
+        const candidates = await Promise.all(
+            entries
+                .filter(entry => entry.isDirectory() && entry.name.startsWith(prefix))
+                .map(async entry => {
+                    const backup = path.join(parent, entry.name)
+                    if (!(await this.fileExists(path.join(backup, '.complete')))) return null
+                    return { backup, modified: (await fs.stat(backup)).mtimeMs }
+                })
+        )
+        const latest = candidates.filter(candidate => candidate !== null).sort((a, b) => b.modified - a.modified)[0]
+        if (latest) {
+            await fs.rm(directory, { recursive: true, force: true })
+            await fs.rename(latest.backup, directory)
         }
     }
 

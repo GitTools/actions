@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _4.7.0_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _5_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 

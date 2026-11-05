@@ -45,6 +45,7 @@
     "@eslint/js": "10.0.1",
     "@stylistic/eslint-plugin": "5.10.0",
     "@types/node": "26.6.6",
+    "@types/proper-lockfile": "4.1.4",
     "@types/semver": "7.8.0",
     "@vitest/eslint-plugin": "1.6.28",
     "dotenv": "18.0.9",
@@ -67,6 +68,7 @@
     "vitest": "5.0.5"
   },
   "dependencies": {
+    "proper-lockfile": "4.1.2",
     "semver": "7.8.5"
   },
   "overrides": {
