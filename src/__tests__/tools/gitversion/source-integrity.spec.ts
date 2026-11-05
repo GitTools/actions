@@ -6,9 +6,10 @@ import { spawnSync } from 'node:child_process'
 import { simpleGit } from 'simple-git'
 
 it.each([
-    { Name: 'working tree', staged: false },
-    { Name: 'index', staged: true }
-])('rejects modified pinned source before packing: $Name', async ({ staged }) => {
+    { Name: 'working tree', staged: false, restored: false },
+    { Name: 'index', staged: true, restored: false },
+    { Name: 'index with restored working tree', staged: true, restored: true }
+])('rejects modified pinned source before packing: $Name', async ({ staged, restored }) => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-source-'))
     try {
         const source = path.join(root, 'source')
@@ -26,6 +27,7 @@ it.each([
         const commit = await git.revparse(['HEAD'])
         await fs.writeFile(file, 'modified')
         if (staged) await git.add('tracked.txt')
+        if (restored) await fs.writeFile(file, 'original')
         const script = path.join(scripts, 'prepare-gitversion.mjs')
         await fs.copyFile(path.resolve('scripts/prepare-gitversion.mjs'), script)
         await fs.writeFile(path.join(scripts, 'gitversion-test.json'), JSON.stringify({ commit, version: '7.0.0-alpha.test' }))
@@ -41,7 +43,7 @@ it.each([
         })
         expect(result.status).not.toBe(0)
         expect(result.stderr).toContain('Pinned GitVersion source has tracked modifications')
-        expect(await fs.readFile(file, 'utf8')).toBe('modified')
+        expect(await fs.readFile(file, 'utf8')).toBe(restored ? 'original' : 'modified')
         expect(await git.revparse(['HEAD'])).toBe(commit)
     } finally {
         await fs.rm(root, { recursive: true, force: true })

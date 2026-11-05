@@ -38,7 +38,8 @@ if (!existsSync(marker)) {
     const actual = execFileSync(git, ['rev-parse', 'HEAD'], { cwd: source, encoding: 'utf8' }).trim()
     if (actual !== baseline.commit) throw new Error(`GitVersion test source must be pinned to ${baseline.commit}`)
     try {
-        run(git, ['diff', '--exit-code', '--quiet', 'HEAD', '--'], source)
+        run(git, ['diff', '--exit-code', '--quiet', '--'], source)
+        run(git, ['diff', '--cached', '--exit-code', '--quiet', '--'], source)
     } catch (cause) {
         throw new Error('Pinned GitVersion source has tracked modifications', { cause })
     }
