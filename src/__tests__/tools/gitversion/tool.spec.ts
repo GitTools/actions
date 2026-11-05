@@ -44,7 +44,46 @@ describe('GitVersionTool', () => {
     })
 
     it('should return correct version range', () => {
-        expect(tool.versionRange).toBe('>=6.2.0 <7.0.0')
+        expect(tool.versionRange).toBe('>=7.0.0-0 <8.0.0-0')
+    })
+
+    it.each([
+        { Name: 'v6 stable', version: '6.8.2', prerelease: false, accepted: false },
+        { Name: 'v7 stable', version: '7.0.0', prerelease: false, accepted: true },
+        { Name: 'v7 minor', version: '7.1.0', prerelease: false, accepted: true },
+        { Name: 'v7 preview opt out', version: '7.0.0-rc.1', prerelease: false, accepted: false },
+        { Name: 'v7 preview opt in', version: '7.0.0-rc.1', prerelease: true, accepted: true },
+        { Name: 'v8 preview', version: '8.0.0-alpha.1', prerelease: true, accepted: false },
+        { Name: 'v8 stable', version: '8.0.0', prerelease: false, accepted: false }
+    ])('supports only the v7 release line: $Name', async ({ version, prerelease, accepted }) => {
+        const addPath = vi.fn()
+        const exec = vi.fn()
+        const agent = {
+            which: vi.fn().mockResolvedValue('/dotnet'),
+            debug: vi.fn(),
+            info: vi.fn(),
+            getVariable: vi.fn().mockReturnValue('/dotnet'),
+            findLocalTool: vi.fn().mockResolvedValue('/cached'),
+            addPath,
+            setVariable: vi.fn(),
+            setSucceeded: vi.fn(),
+            exec
+        } as unknown as IBuildAgent
+        tool = new TestGitVersionTool(agent)
+        vi.spyOn(tool, 'settingsProvider', 'get').mockReturnValue({
+            getSetupSettings: () => ({ versionSpec: version, includePrerelease: prerelease, preferLatestVersion: false, ignoreFailedSources: false })
+        } as IGitVersionSettingsProvider)
+        const result = await tool.install().then(
+            installedPath => ({ installedPath, error: null }),
+            (error: Error) => ({ installedPath: null, error: error.message })
+        )
+        expect(result.installedPath).toBe(accepted ? '/cached' : null)
+        const errorMatcher: unknown = expect.stringContaining(
+            prerelease || version !== '7.0.0-rc.1' ? 'does not satisfy the range' : 'Prerelease tool versions require includePrerelease: true.'
+        )
+        expect(result.error).toEqual(accepted ? null : errorMatcher)
+        expect(addPath).toHaveBeenCalledTimes(accepted ? 1 : 0)
+        expect(exec).not.toHaveBeenCalled()
     })
 
     it('should have settings provider defined', () => {
@@ -170,21 +209,21 @@ describe('GitVersionTool', () => {
     describe('getExecuteArguments', () => {
         it('should return correct arguments for empty settings', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console'])
         })
 
         it('should return correct arguments for settings with cache', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableCache: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/nocache'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--no-cache'])
         })
 
         it('should return correct arguments for settings with normalization', async () => {
             const args = await tool.getExecuteArguments('workdir', {
                 disableNormalization: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/nonormalize'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--no-normalize'])
         })
 
         it('should return correct arguments for settings with config', async () => {
@@ -192,7 +231,7 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 configFilePath: 'workdir/GitVersion.yml'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--config', 'workdir/GitVersion.yml'])
         })
 
         it('should return correct arguments for settings with wrong config file', async () => {
@@ -211,58 +250,80 @@ describe('GitVersionTool', () => {
                 tool.getExecuteArguments('workdir', {
                     configFilePath: undefined
                 } as ExecuteSettings)
-            ).resolves.toEqual(['workdir', '/output', 'json', '/l', 'console'])
+            ).resolves.toEqual(['workdir', '--output', 'json', '--log-file', 'console'])
         })
 
         it('should return correct arguments for settings with override config', async () => {
             const args = await tool.getExecuteArguments('workdir', {
-                overrideConfig: ['tag-prefix=release-', 'next-version=1.0.0']
+                overrideConfig: ['calculation.tag-prefix=release-', 'calculation.next-version=1.0.0']
             } as ExecuteSettings)
             expect(args).toEqual([
                 'workdir',
-                '/output',
+                '--output',
                 'json',
-                '/l',
+                '--log-file',
                 'console',
-                '/overrideconfig',
-                'tag-prefix=release-',
-                '/overrideconfig',
-                'next-version=1.0.0'
+                '--override-config',
+                'calculation.tag-prefix=release-',
+                '--override-config',
+                'calculation.next-version=1.0.0'
             ])
         })
 
         it('should include override config values with regex characters', async () => {
             const args = await tool.getExecuteArguments('workdir', {
-                overrideConfig: ['tag-prefix=some.prefix-[vV]?', 'next-version=0.1.0']
+                overrideConfig: ['calculation.tag-prefix=some.prefix-[vV]?', 'calculation.next-version=0.1.0']
             } as ExecuteSettings)
             expect(args).toEqual([
                 'workdir',
-                '/output',
+                '--output',
                 'json',
-                '/l',
+                '--log-file',
                 'console',
-                '/overrideconfig',
-                'tag-prefix=some.prefix-[vV]?',
-                '/overrideconfig',
-                'next-version=0.1.0'
+                '--override-config',
+                'calculation.tag-prefix=some.prefix-[vV]?',
+                '--override-config',
+                'calculation.next-version=0.1.0'
             ])
         })
 
-        it('should skip invalid override config values', async () => {
-            const args = await tool.getExecuteArguments('workdir', {
-                overrideConfig: ['tag-prefix=release-', 'invalid value', 'major-version-bump=Minor', 'next_version=1.0.0']
-            } as ExecuteSettings)
+        it.each([
+            { Name: 'missing separator', value: 'invalid value' },
+            { Name: 'missing key', value: '=secret' },
+            { Name: 'whitespace in key', value: 'calculation.tag prefix=secret' },
+            { Name: 'embedded newline', value: 'calculation.label=secret\nsecond' }
+        ])('rejects malformed overrides without disclosing values: $Name', async ({ value }) => {
+            await expect(tool.getExecuteArguments('workdir', { overrideConfig: [value] } as ExecuteSettings)).rejects.toThrow(
+                'Invalid overrideConfig entry at position 1. Expected key=value with no whitespace in the key or line breaks in the value.'
+            )
+        })
 
+        it('preserves nested branch paths, empty values and equals signs', async () => {
+            const args = await tool.getExecuteArguments(
+                'work dir',
+                {
+                    overrideConfig: [
+                        ' calculation.branches.main.increment=Patch ',
+                        'calculation.tag-prefix=',
+                        'output.custom-version-format={env:VALUE ?? "a=b"}'
+                    ]
+                } as ExecuteSettings,
+                'output file.json'
+            )
             expect(args).toEqual([
-                'workdir',
-                '/output',
-                'json',
-                '/l',
+                'work dir',
+                '--output',
+                'file',
+                '--output-file',
+                'output file.json',
+                '--log-file',
                 'console',
-                '/overrideconfig',
-                'tag-prefix=release-',
-                '/overrideconfig',
-                'major-version-bump=Minor'
+                '--override-config',
+                'calculation.branches.main.increment=Patch',
+                '--override-config',
+                'calculation.tag-prefix=',
+                '--override-config',
+                'output.custom-version-format={env:VALUE ?? "a=b"}'
             ])
         })
 
@@ -272,7 +333,7 @@ describe('GitVersionTool', () => {
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateassemblyinfo', 'AssemblyInfo.cs'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--update-assembly-info', 'AssemblyInfo.cs'])
         })
 
         it('should return correct arguments for settings with wrong assembly info', async () => {
@@ -293,7 +354,17 @@ describe('GitVersionTool', () => {
                 updateAssemblyInfo: true,
                 updateAssemblyInfoFilename: 'AssemblyInfo.cs'
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/config', 'workdir/GitVersion.yml', '/updateassemblyinfo', 'AssemblyInfo.cs'])
+            expect(args).toEqual([
+                'workdir',
+                '--output',
+                'json',
+                '--log-file',
+                'console',
+                '--config',
+                'workdir/GitVersion.yml',
+                '--update-assembly-info',
+                'AssemblyInfo.cs'
+            ])
         })
 
         it('should return correct arguments for settings with project files', async () => {
@@ -301,7 +372,7 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 updateProjectFiles: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updateprojectfiles'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--update-project-files'])
         })
 
         it('should return correct arguments for settings with WiX version file', async () => {
@@ -309,7 +380,7 @@ describe('GitVersionTool', () => {
             const args = await tool.getExecuteArguments('workdir', {
                 updateWixVersionFile: true
             } as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/updatewixversionfile'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--update-wix-version-file'])
         })
 
         it('should return correct arguments for settings with verbosity', async () => {
@@ -317,32 +388,32 @@ describe('GitVersionTool', () => {
                 verbosity: 'verbose'
             } as ExecuteSettings)
             console.log('dotnet-gitversion', args.join(' '))
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/verbosity', 'verbose'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--verbosity', 'verbose'])
         })
 
         it('should return correct arguments for each verbosity level', async () => {
             for (const level of ['quiet', 'minimal', 'normal', 'verbose', 'diagnostic'] as const) {
                 const args = await tool.getExecuteArguments('workdir', { verbosity: level } as ExecuteSettings)
                 console.log('dotnet-gitversion', args.join(' '))
-                expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console', '/verbosity', level])
+                expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console', '--verbosity', level])
             }
         })
 
         it('should not include verbosity argument when verbosity is not set', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
             console.log('dotnet-gitversion', args.join(' '))
-            expect(args).not.toContain('/verbosity')
+            expect(args).not.toContain('--verbosity')
         })
 
         it('should include outputfile argument when output file is provided', async () => {
             const outputFile = '/tmp/gitversion-123.json'
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings, outputFile)
-            expect(args).toEqual(['workdir', '/output', 'file', '/outputfile', outputFile, '/l', 'console'])
+            expect(args).toEqual(['workdir', '--output', 'file', '--output-file', outputFile, '--log-file', 'console'])
         })
 
         it('should not include outputfile argument when output file is not provided', async () => {
             const args = await tool.getExecuteArguments('workdir', {} as ExecuteSettings)
-            expect(args).toEqual(['workdir', '/output', 'json', '/l', 'console'])
+            expect(args).toEqual(['workdir', '--output', 'json', '--log-file', 'console'])
         })
 
         it('should include outputfile with other settings', async () => {
@@ -356,7 +427,18 @@ describe('GitVersionTool', () => {
                 } as ExecuteSettings,
                 outputFile
             )
-            expect(args).toEqual(['workdir', '/output', 'file', '/outputfile', outputFile, '/l', 'console', '/nocache', '/config', 'workdir/GitVersion.yml'])
+            expect(args).toEqual([
+                'workdir',
+                '--output',
+                'file',
+                '--output-file',
+                outputFile,
+                '--log-file',
+                'console',
+                '--no-cache',
+                '--config',
+                'workdir/GitVersion.yml'
+            ])
         })
     })
 
@@ -426,7 +508,7 @@ describe('GitVersionTool', () => {
             const args = tool.getCommandArguments('workdir', {
                 verbosity: 'diagnostic'
             } as CommandSettings)
-            expect(args).toEqual(['workdir', '/verbosity', 'diagnostic'])
+            expect(args).toEqual(['workdir', '--verbosity', 'diagnostic'])
         })
 
         it('should return correct arguments for settings with arguments and verbosity', () => {
@@ -434,13 +516,13 @@ describe('GitVersionTool', () => {
                 arguments: '--some-arg',
                 verbosity: 'minimal'
             } as CommandSettings)
-            expect(args).toEqual(['workdir', '--some-arg', '/verbosity', 'minimal'])
+            expect(args).toEqual(['workdir', '--some-arg', '--verbosity', 'minimal'])
         })
 
         it('should not include verbosity argument when verbosity is not set', () => {
             const args = tool.getCommandArguments('workdir', {} as CommandSettings)
             console.log('dotnet-gitversion', args.join(' '))
-            expect(args).not.toContain('/verbosity')
+            expect(args).not.toContain('--verbosity')
         })
     })
 

@@ -10,7 +10,7 @@ The Setup GitVersion task accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.8.x or exact version like 6.8.0.
+  description: Required version in the form of 7.0.x or exact version like 7.0.0.
   required: true
   default: ''
 includePrerelease:
@@ -49,10 +49,10 @@ Install the latest GitVersion 6 version.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 ### Example 2
@@ -61,7 +61,7 @@ Install GitVersion 6.0.0.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
       versionSpec: '6.0.0'
@@ -73,10 +73,10 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       includePrerelease: true
 ```
 
@@ -86,10 +86,10 @@ Install the latest GitVersion 6 version even if there is a cached version matchi
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       preferLatestVersion: true
 ```
 
@@ -99,9 +99,9 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       nugetConfigPath: '$(Build.SourcesDirectory)/nuget.config'
 ```

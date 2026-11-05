@@ -35,7 +35,7 @@ jobs:
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
       - name: Install GitReleaseManager
         uses: ./gitreleasemanager/setup

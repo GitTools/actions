@@ -176,6 +176,7 @@ var DotnetTool = class DotnetTool {
 			version = await this.queryLatestMatch(this.packageName, version, setupSettings.includePrerelease);
 			if (!version) throw new Error(`Unable to find ${this.packageName} version '${version}'.`);
 		}
+		if (!setupSettings.includePrerelease && import_semver.prerelease(version)) throw new Error("Prerelease tool versions require includePrerelease: true.");
 		if (this.versionRange && !import_semver.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) throw new Error(`Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${this.versionRange}'.See https://github.com/GitTools/actions/blob/main/docs/versions.md for more information.`);
 		let toolPath = null;
 		if (!setupSettings.preferLatestVersion) {

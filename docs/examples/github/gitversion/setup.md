@@ -10,7 +10,7 @@ The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.8.x or exact version like 6.8.0.
+  description: Required version in the form of 7.0.x or exact version like 7.0.0.
   required: true
   default: ''
 includePrerelease:
@@ -49,9 +49,9 @@ Install the latest GitVersion 6 version.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 ### Example 2
@@ -61,7 +61,7 @@ Install GitVersion 6.0.0.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
       versionSpec: '6.0.0'
 ```
@@ -73,9 +73,9 @@ Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       includePrerelease: true
 ```
 
@@ -86,9 +86,9 @@ Install the latest GitVersion 6 version even if there is a cached version matchi
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       preferLatestVersion: true
 ```
 
@@ -99,8 +99,8 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       nugetConfigPath: '${{ github.workspace }}/nuget.config'
 ```

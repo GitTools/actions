@@ -1566,7 +1566,8 @@ var BuildAgentBase = class {
 		await fs.mkdir(destPath, { recursive: true });
 		await fs.cp(sourceDir, destPath, {
 			recursive: true,
-			force: true
+			force: true,
+			verbatimSymlinks: true
 		});
 		this.debug(`Caching ${tool}@${version} from ${sourceDir}`);
 		return destPath;

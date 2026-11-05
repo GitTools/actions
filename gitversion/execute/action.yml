@@ -30,8 +30,8 @@ inputs:
   overrideConfig:
     description: |
         Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-        semantic-version-format=Loose
-        next-version=1.0.0
+        calculation.semantic-version-format=Loose
+        calculation.next-version=1.0.0
     required: false
     default: ''
   updateAssemblyInfo:

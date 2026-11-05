@@ -10,10 +10,10 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -48,8 +48,8 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    semantic-version-format=Loose
-    next-version=4.7.0
+    calculation.semantic-version-format=Loose
+    calculation.next-version=4.7.0
   required: false
   default: ''
 updateAssemblyInfo:
@@ -131,9 +131,9 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
@@ -147,9 +147,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as reference for output values
 
@@ -175,9 +175,9 @@ branches:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -193,9 +193,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -212,9 +212,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -230,15 +230,15 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
       overrideConfig: |
-        semantic-version-format=Loose
-        next-version=4.7.0
+        calculation.semantic-version-format=Loose
+        calculation.next-version=4.7.0
 ```
 
 </details>
@@ -250,9 +250,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -268,9 +268,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -286,9 +286,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -304,9 +304,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-execute@4.7.0
+  - task: gitversion-execute@5
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -339,17 +339,17 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@4.7.0
+      - task: gitversion-setup@5
         displayName: Install GitVersion
         inputs:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
-      - task: gitversion-execute@4.7.0
+      - task: gitversion-execute@5
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            semantic-version-format=Loose
+            calculation.semantic-version-format=Loose
 
       - pwsh: |
           echo "FullSemVer (fullSemVer)            : $(fullSemVer)"
@@ -409,17 +409,17 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@4.7.0
+      - task: gitversion-setup@5
         displayName: Install GitVersion
         inputs:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
-      - task: gitversion-execute@4.7.0
+      - task: gitversion-execute@5
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
-            semantic-version-format=Loose
+            calculation.semantic-version-format=Loose
 
   - job: GitVersion_v6_cross_job_consumer_without_prefix
     displayName: GitVersion v6 (cross job consumer) - without prefix
@@ -500,17 +500,17 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion-setup@4.7.0
+          - task: gitversion-setup@5
             displayName: Install GitVersion
             inputs:
-              versionSpec: '6.8.x'
+              versionSpec: '7.0.x'
 
-          - task: gitversion-execute@4.7.0
+          - task: gitversion-execute@5
             displayName: Determine Version
             name: version_step # step id used as a reference for output values
             inputs:
               overrideConfig: |
-                semantic-version-format=Loose
+                calculation.semantic-version-format=Loose
   - stage: GitVersion_v6_cross_stage_consumer_without_prefix
     displayName: GitVersion v6 (cross stage consumer) - without prefix
     dependsOn: GitVersion_v6_cross_stage
