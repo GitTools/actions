@@ -1,3 +1,4 @@
+import * as os from 'node:os'
 import { randomUUID } from 'node:crypto'
 import { lock } from 'proper-lockfile'
 import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
@@ -206,7 +207,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
     }
 
     getToolCachePath(tool: string, version: string): string {
-        return path.join(this.cacheDir, tool, semver.clean(version) || version)
+        return path.join(this.cacheDir, tool, semver.clean(version) || version, `${os.platform()}-${os.arch()}`)
     }
 
     async installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting = false): Promise<string> {

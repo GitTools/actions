@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   update-gitversion-version:
-    if: ${{ github.event_name == 'repository_dispatch' }}
+    if: github.event_name == 'repository_dispatch' && startsWith(github.event.client_payload.newTag, '7.')
     runs-on: ubuntu-24.04
     steps:
       - name: Load GitHub App credentials
@@ -41,23 +41,10 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - run: |
-          . ./utilities.ps1 # Import the functions
-
-          $version = "${{ github.event.client_payload.newTag }}"
-
-          $oldTag = extract-version
-          $newTag = ($version -split '\.')[0,1] -join '.' | % { "$_.x" }
-
-          echo "Updating GitVersion version to $newTag"
-          echo "Old version: $oldTag"
-          echo "New version: $newTag"
-
-          dir -r .\docs\**\*.md   | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
-          dir -r .github\**\*.yml | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
-          dir -r .azure\**\*.yml  | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
-
-        name: Update GitVersion version
+      - name: Select the published GitVersion 7 test baseline
+        env:
+          GITVERSION_RELEASE_TAG: ${{ github.event.client_payload.newTag }}
+        run: node scripts/update-gitversion-version.mjs
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -72,7 +59,7 @@ jobs:
           labels: dependencies
           title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
           body: |
-            Updates the GitVersion version references in `docs`, `.github`, and `.azure`
-            following the publication of GitVersion `${{ github.event.client_payload.newTag }}`.
+            Updates the published-package validation baseline in `scripts/gitversion-test.json`
+            following publication of GitVersion `${{ github.event.client_payload.newTag }}`.
 
             Triggered by the `gitversion-release-published` repository dispatch.

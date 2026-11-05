@@ -26,8 +26,10 @@ const run = (command, args, cwd) => {
     // NOSONAR: Executables are resolved to absolute paths above; arguments never run through a shell.
     return execFileSync(command, args, { cwd, stdio: 'inherit' })
 }
+const published = process.env.GITVERSION_TEST_MODE === 'source' ? null : process.env.GITVERSION_TEST_VERSION || baseline.publishedVersion
+if (published && (published.trim() !== published || !/^7\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(published))) throw new Error('Published rehearsal version must be an exact GitVersion 7 version')
 const marker = join(packages, `GitVersion.Tool.${rid}.${baseline.version}.nupkg`)
-if (!existsSync(marker)) {
+if (!published && !existsSync(marker)) {
     mkdirSync(packages, { recursive: true })
     if (!existsSync(source)) {
         mkdirSync(source, { recursive: true })
@@ -48,9 +50,16 @@ if (!existsSync(marker)) {
         '-p:DisableAnalyzers=true', '-p:DisableApiAnalyzers=true', '-p:BuildInParallel=false', '--output', packages, '--nologo', '-v', 'quiet'], source)
 }
 const escapeXml = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+mkdirSync(join(root, '.test'), { recursive: true })
 const config = join(root, '.test', 'gitversion.nuget.config')
-writeFileSync(config, `<?xml version="1.0" encoding="utf-8"?>\n<configuration><packageSources><clear/><add key="rehearsal" value="${escapeXml(packages)}"/><add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></packageSources></configuration>\n`)
-if (process.env.GITHUB_ENV) appendFileSync(process.env.GITHUB_ENV, `GITVERSION_TEST_VERSION=${baseline.version}\nGITVERSION_TEST_NUGET_CONFIG=${config}\n`)
+const localSource = published ? '' : `<add key="rehearsal" value="${escapeXml(packages)}"/>`
+writeFileSync(config, `<?xml version="1.0" encoding="utf-8"?>\n<configuration><packageSources><clear/>${localSource}<add key="nuget.org" value="https://api.nuget.org/v3/index.json"/></packageSources></configuration>\n`)
+if (process.env.GITHUB_ENV) appendFileSync(process.env.GITHUB_ENV, `GITVERSION_TEST_MODE=${published ? 'published' : 'source'}\nGITVERSION_TEST_VERSION=${published || baseline.version}\nGITVERSION_TEST_NUGET_CONFIG=${config}\n`)
+if (process.env.TF_BUILD) {
+    console.log(`##vso[task.setvariable variable=GITVERSION_TEST_MODE]${published ? 'published' : 'source'}`)
+    console.log(`##vso[task.setvariable variable=GITVERSION_TEST_VERSION]${published || baseline.version}`)
+    console.log(`##vso[task.setvariable variable=GITVERSION_TEST_NUGET_CONFIG]${config}`)
+}
 console.log(`GitVersion source rehearsal: ${baseline.commit} / ${baseline.version} / ${rid}`)
 console.log(`Local package source: ${packages}`)
-console.log('This does not validate a published release package.')
+console.log(published ? `Published package validation: ${published}` : 'This does not validate a published release package.')

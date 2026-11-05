@@ -32,6 +32,10 @@ export abstract class DotnetTool implements IDotnetTool {
 
     abstract get settingsProvider(): ISettingsProvider
 
+    protected get installFramework(): string | undefined {
+        return undefined
+    }
+
     disableTelemetry(): void {
         this.buildAgent.info('Disable Telemetry')
         this.buildAgent.setVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
@@ -284,6 +288,7 @@ export abstract class DotnetTool implements IDotnetTool {
                     .addArgument(toolName)
                     .addKeyValue('tool-path', toolPath)
                     .addKeyValue('version', semverVersion)
+                if (this.installFramework) builder.addKeyValue('framework', this.installFramework)
                 if (ignoreFailedSources) builder.addFlag('ignore-failed-sources')
                 if (nugetConfigPath) builder.addKeyValue('configfile', nugetConfigPath)
                 const result = await this.execute('dotnet', builder.build())

@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion-setup** task using the examples below.
 
-> The examples use version _5_ of the GitVersion Setup task.  It is recommended to use the latest released version in your own workflows.
+> The examples use upcoming version _5.x_ of the GitVersion Setup task.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
 
 ## Inputs
 

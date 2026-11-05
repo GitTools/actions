@@ -189,3 +189,23 @@ it('preserves a completed cache and ignores incomplete backups', async () => {
         await fs.rm(root, { recursive: true, force: true })
     }
 })
+
+it('ignores another platform cache and incomplete installations', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-cache-key-'))
+    try {
+        const agent = new BuildAgent()
+        vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(root)
+        const otherPlatform = path.join(root, 'GitVersion.Tool', '7.0.0', 'other-platform')
+        await fs.mkdir(otherPlatform, { recursive: true })
+        await fs.writeFile(path.join(otherPlatform, '.complete'), '')
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBeNull()
+        const native = path.join(root, 'GitVersion.Tool', '7.0.0', `${os.platform()}-${os.arch()}`)
+        await fs.mkdir(native, { recursive: true })
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBeNull()
+        await fs.writeFile(path.join(native, '.complete'), '')
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBe(native)
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})

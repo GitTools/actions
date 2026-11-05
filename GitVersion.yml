@@ -1,0 +1,3 @@
+workflow: GitHubFlow/v1
+calculation:
+  next-version: 5.0.0

@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import * as os from "node:os";
 import * as process$2 from "node:process";
 import { randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
@@ -2919,7 +2920,7 @@ var BuildAgentBase = class {
 		return fs.stat(file).then((stats) => stats.isFile(), () => false);
 	}
 	getToolCachePath(tool, version) {
-		return path.join(this.cacheDir, tool, import_semver.clean(version) || version);
+		return path.join(this.cacheDir, tool, import_semver.clean(version) || version, `${os.platform()}-${os.arch()}`);
 	}
 	async installToolInCache(tool, version, install, replaceExisting = false) {
 		const directory = this.getToolCachePath(tool, version);

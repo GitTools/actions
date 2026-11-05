@@ -45,6 +45,13 @@ var GitVersionTool = class extends DotnetTool {
 	get versionRange() {
 		return ">=7.0.0-0 <8.0.0-0";
 	}
+	get installFramework() {
+		return "net10.0";
+	}
+	disableTelemetry() {
+		super.disableTelemetry();
+		this.buildAgent.setVariable("GITVERSION_TELEMETRY_OPTOUT", "true");
+	}
 	get settingsProvider() {
 		return new GitVersionSettingsProvider(this.buildAgent);
 	}
