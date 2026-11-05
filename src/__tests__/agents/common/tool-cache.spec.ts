@@ -22,3 +22,63 @@ it.skipIf(process.platform === 'win32')('keeps a relative tool symlink executabl
         await fs.rm(root, { recursive: true, force: true })
     }
 })
+
+it('restores a completed cache when a forced reinstall fails', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-rollback-'))
+    const agent = new BuildAgent()
+    vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(root)
+    try {
+        const directory = await agent.installToolInCache('tool', '1.0.0', async dir => {
+            await fs.writeFile(path.join(dir, 'payload'), 'original')
+        })
+        await expect(
+            agent.installToolInCache(
+                'tool',
+                '1.0.0',
+                async dir => {
+                    await fs.writeFile(path.join(dir, 'payload'), 'partial')
+                    throw new Error('offline')
+                },
+                true
+            )
+        ).rejects.toThrow('offline')
+        expect(await fs.readFile(path.join(directory, 'payload'), 'utf8')).toBe('original')
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBe(directory)
+        expect(await agent.directoryExists(`${directory}.lock`)).toBe(false)
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})
+
+it('serializes concurrent installs of the same tool version', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-concurrent-'))
+    const agent = new BuildAgent()
+    vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(root)
+    let active = 0
+    let maxActive = 0
+    try {
+        const paths = await Promise.all(
+            [1, 2, 3].map(async index =>
+                agent.installToolInCache(
+                    'tool',
+                    '1.0.0',
+                    async dir => {
+                        active++
+                        maxActive = Math.max(maxActive, active)
+                        await fs.writeFile(path.join(dir, 'payload'), String(index))
+                        expect(await fs.readFile(path.join(dir, 'payload'), 'utf8')).toBe(String(index))
+                        active--
+                    },
+                    true
+                )
+            )
+        )
+        expect(maxActive).toBe(1)
+        expect(new Set(paths).size).toBe(1)
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBe(paths[0])
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})

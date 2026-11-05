@@ -50,7 +50,7 @@ verbosity:
 ### Example 1
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command.</summary>
+  <summary>Show the effective configuration for GitVersion by running the <b>--show-config</b> command.</summary>
 
 ```yaml
 steps:
@@ -59,7 +59,7 @@ steps:
   - task: gitversion-command@5
     displayName: Display GitVersion config
     inputs:
-      arguments: '/showConfig'
+      arguments: '--show-config'
 ```
 
 </details>
@@ -110,7 +110,7 @@ steps:
   - task: gitversion-command@5
     displayName: Display GitVersion config
     inputs:
-      arguments: '/showConfig'
+      arguments: '--show-config'
       verbosity: 'minimal'
 ```
 

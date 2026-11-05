@@ -37,6 +37,11 @@ if (!existsSync(marker)) {
     }
     const actual = execFileSync(git, ['rev-parse', 'HEAD'], { cwd: source, encoding: 'utf8' }).trim()
     if (actual !== baseline.commit) throw new Error(`GitVersion test source must be pinned to ${baseline.commit}`)
+    try {
+        run(git, ['diff', '--exit-code', '--quiet', 'HEAD', '--'], source)
+    } catch (cause) {
+        throw new Error('Pinned GitVersion source has tracked modifications', { cause })
+    }
     run(dotnet, ['pack', 'src/GitVersion.App/GitVersion.App.csproj', '-p:PackAsTool=true',
         `-p:PackageVersion=${baseline.version}`, `-p:RuntimeIdentifiers=${rid}`, `-p:ToolPackageRuntimeIdentifiers=${rid}`,
         '-p:DisableAnalyzers=true', '-p:DisableApiAnalyzers=true', '-p:BuildInParallel=false', '--output', packages, '--nologo', '-v', 'quiet'], source)

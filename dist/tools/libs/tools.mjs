@@ -188,7 +188,7 @@ var DotnetTool = class DotnetTool {
 			}
 		}
 		if (!toolPath) {
-			toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources, setupSettings.nugetConfigPath);
+			toolPath = await this.installTool(this.packageName, version, setupSettings.ignoreFailedSources, setupSettings.nugetConfigPath, setupSettings.preferLatestVersion);
 			this.buildAgent.info("--------------------------");
 			this.buildAgent.info(`${this.packageName} version: ${version} installed.`);
 			this.buildAgent.info("--------------------------");
@@ -236,7 +236,7 @@ var DotnetTool = class DotnetTool {
 		}
 	}
 	async executeTool(args) {
-		const variablePath = this.buildAgent.getVariableAsPath(this.toolPathVariable);
+		const variablePath = this.buildAgent.getVariable(this.toolPathVariable) ? this.buildAgent.getVariableAsPath(this.toolPathVariable) : "";
 		let toolPath;
 		if (variablePath) {
 			const foundExecutable = await this.findToolExecutable(variablePath);
@@ -307,30 +307,16 @@ var DotnetTool = class DotnetTool {
 		else this.buildAgent.info("match not found");
 		return version;
 	}
-	async installTool(toolName, version, ignoreFailedSources, nugetConfigPath) {
+	async installTool(toolName, version, ignoreFailedSources, nugetConfigPath, replaceExisting = false) {
 		const semverVersion = import_semver.clean(version);
 		if (!semverVersion) throw new Error(`Invalid version spec: ${version}`);
-		const tempDirectory = await this.createTempDirectory();
-		if (!tempDirectory) throw new Error("Unable to create temp directory");
-		const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion);
-		if (!toolPath) throw new Error("Unable to resolve the tool cache directory");
-		const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", toolPath).addKeyValue("version", semverVersion);
-		if (ignoreFailedSources) builder.addFlag("ignore-failed-sources");
-		if (nugetConfigPath) builder.addKeyValue("configfile", nugetConfigPath);
-		try {
+		return await this.buildAgent.installToolInCache(toolName, semverVersion, async (toolPath) => {
+			const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", toolPath).addKeyValue("version", semverVersion);
+			if (ignoreFailedSources) builder.addFlag("ignore-failed-sources");
+			if (nugetConfigPath) builder.addKeyValue("configfile", nugetConfigPath);
 			const result = await this.execute("dotnet", builder.build());
-			const status = result.code === 0 ? "success" : "failure";
-			const message = result.code === 0 ? result.stdout : result.stderr;
-			this.buildAgent.debug(`Tool install result: ${status} ${message}`);
-			if (result.code !== 0) {
-				await this.buildAgent.removeDirectory(toolPath);
-				throw new Error(message);
-			}
-			await fs.writeFile(path.join(toolPath, ".complete"), "");
-			return toolPath;
-		} finally {
-			await this.buildAgent.removeDirectory(tempDirectory);
-		}
+			if (result.code !== 0) throw new Error(result.stderr || result.error?.message || "Tool installation failed");
+		}, replaceExisting);
 	}
 	getArchitecturePaths(toolBasePath, toolName) {
 		const arch = os.arch();

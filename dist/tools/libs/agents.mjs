@@ -1,4 +1,6 @@
 import * as process$2 from "node:process";
+import { randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 import { execFile } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
@@ -1473,6 +1475,23 @@ async function lookPath(command, opt = {}) {
 }
 //#endregion
 //#region src/agents/common/build-agent.ts
+async function acquireToolCacheLock(directory) {
+	const lock = `${directory}.lock`;
+	await fs.mkdir(path.dirname(directory), { recursive: true });
+	for (let attempt = 0;; attempt++) try {
+		await fs.mkdir(lock);
+		return async () => {
+			await fs.rm(lock, {
+				recursive: true,
+				force: true
+			});
+		};
+	} catch (error) {
+		if (error.code !== "EEXIST") throw error;
+		if (attempt >= 480) throw new Error(`Timed out waiting for tool cache lock: ${lock}`, { cause: error });
+		await setTimeout(250);
+	}
+}
 var BuildAgentBase = class {
 	get sourceDir() {
 		return this.getVariableAsPath(this.sourceDirVariable)?.replaceAll("\\", "/");
@@ -1547,17 +1566,52 @@ var BuildAgentBase = class {
 	async fileExists(file) {
 		return fs.stat(file).then((stats) => stats.isFile(), () => false);
 	}
+	getToolCachePath(tool, version) {
+		return path.join(this.cacheDir, tool, import_semver.clean(version) || version);
+	}
+	async installToolInCache(tool, version, install, replaceExisting = false) {
+		const directory = this.getToolCachePath(tool, version);
+		const release = await acquireToolCacheLock(directory);
+		try {
+			const complete = await this.fileExists(path.join(directory, ".complete"));
+			if (complete && !replaceExisting) return directory;
+			const backup = complete ? `${directory}.backup-${randomUUID()}` : void 0;
+			if (backup) await fs.rename(directory, backup);
+			else await fs.rm(directory, {
+				recursive: true,
+				force: true
+			});
+			try {
+				await fs.mkdir(directory, { recursive: true });
+				await install(directory);
+				await fs.writeFile(path.join(directory, ".complete"), "");
+			} catch (error) {
+				await fs.rm(directory, {
+					recursive: true,
+					force: true
+				});
+				if (backup) await fs.rename(backup, directory);
+				throw error;
+			}
+			if (backup) await fs.rm(backup, {
+				recursive: true,
+				force: true
+			});
+			return directory;
+		} finally {
+			await release();
+		}
+	}
 	async cacheToolDirectory(sourceDir, tool, version) {
 		if (!tool) throw new Error("tool is a required parameter");
 		if (!version) throw new Error("version is a required parameter");
 		if (!sourceDir) throw new Error("sourceDir is a required parameter");
-		const cacheRoot = this.cacheDir;
-		if (!cacheRoot) {
+		if (!this.cacheDir) {
 			this.debug("cache root not set");
 			return "";
 		}
 		version = import_semver.clean(version) || version;
-		const destPath = path.join(cacheRoot, tool, version);
+		const destPath = this.getToolCachePath(tool, version);
 		if (await this.directoryExists(destPath)) {
 			this.debug(`Destination directory ${destPath} already exists, removing`);
 			await this.removeDirectory(destPath);
@@ -1575,14 +1629,13 @@ var BuildAgentBase = class {
 	async findLocalTool(toolName, versionSpec) {
 		if (!toolName) throw new Error("toolName is a required parameter");
 		if (!versionSpec) throw new Error("versionSpec is a required parameter");
-		const cacheRoot = this.cacheDir;
-		if (!cacheRoot) {
+		if (!this.cacheDir) {
 			this.debug("cache root not set");
 			return null;
 		}
 		versionSpec = import_semver.clean(versionSpec) || versionSpec;
 		this.info(`Looking for local tool ${toolName}@${versionSpec}`);
-		const toolPath = path.join(cacheRoot, toolName, versionSpec);
+		const toolPath = this.getToolCachePath(toolName, versionSpec);
 		if (await this.directoryExists(toolPath) && await this.fileExists(path.join(toolPath, ".complete"))) {
 			this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`);
 			return toolPath;

@@ -43,6 +43,10 @@ class TestDotnetTool extends DotnetTool {
         }
     }
 
+    async testExecuteTool(args: string[]): Promise<import('@agents/common').ExecResult> {
+        return this.executeTool(args)
+    }
+
     // Expose protected methods for testing
     async testFindToolExecutable(toolBasePath: string): Promise<string | null> {
         return this.findToolExecutable(toolBasePath)
@@ -248,6 +252,17 @@ describe('DotnetTool', () => {
 
             expect(result).toBeNull()
         })
+    })
+
+    it('uses PATH when the tool path variable is unset', async () => {
+        vi.mocked(os.platform).mockReturnValue('linux')
+        const getPath = vi.spyOn(buildAgent, 'getVariableAsPath').mockReturnValue('/wrong/cwd')
+        const which = vi.spyOn(buildAgent, 'which').mockResolvedValue('/tools/test-tool')
+        const exec = vi.spyOn(buildAgent, 'exec')
+        await tool.testExecuteTool(['--version'])
+        expect(which).toHaveBeenCalledWith('test-tool', true)
+        expect(exec).toHaveBeenCalledWith('/tools/test-tool', ['--roll-forward', 'Major', '--version'])
+        expect(getPath.mock.calls).toEqual([])
     })
 
     describe('disableTelemetry', () => {
