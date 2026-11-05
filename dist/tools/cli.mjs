@@ -3,5 +3,6 @@ import { parseCliArgs, run } from "./lib.mjs";
 var { agent, tool, command } = parseCliArgs();
 await run(agent, tool, command);
 //#endregion
+export {};
 
 //# sourceMappingURL=cli.mjs.map

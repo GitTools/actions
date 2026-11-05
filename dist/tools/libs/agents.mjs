@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import * as process$2 from "node:process";
 import { randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
@@ -26,10 +27,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 	value: mod,
 	enumerable: true
 }) : target, mod));
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, { get: (a, b) => (typeof require !== "undefined" ? require : a)[b] }) : x)(function(x) {
-	if (typeof require !== "undefined") return require.apply(this, arguments);
-	throw Error("Calling `require` for \"" + x + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
-});
+var __require = /* #__PURE__ */ (() => createRequire(import.meta.url))();
 //#endregion
 //#region node_modules/graceful-fs/polyfills.js
 var require_polyfills = /* @__PURE__ */ __commonJSMin(((exports, module) => {
