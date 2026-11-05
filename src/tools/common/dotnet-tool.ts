@@ -114,6 +114,10 @@ export abstract class DotnetTool implements IDotnetTool {
             return toolPath
         }
 
+        if (os.platform() === 'win32' && (await this.buildAgent.fileExists(path.join(toolBasePath, `${this.toolName}.cmd`)))) {
+            return await this.resolveWindowsCommandShim(toolBasePath)
+        }
+
         const archPaths = this.getArchitecturePaths(toolBasePath, toolName)
 
         // Try each architecture-specific path
@@ -125,6 +129,20 @@ export abstract class DotnetTool implements IDotnetTool {
         }
 
         return await this.findToolExecutableInSubdirectories(toolBasePath, toolName)
+    }
+
+    private async resolveWindowsCommandShim(toolBasePath: string): Promise<string | null> {
+        const shimPath = path.join(toolBasePath, `${this.toolName}.cmd`)
+        const content = await fs.readFile(shimPath, 'utf8')
+        // SDK executable-tool shims have this fixed form. Resolve their target instead of invoking cmd.exe.
+        const match = /^@echo off\r?\n"%~dp0([^"\r\n]+\.exe)" %\*\r?\n?$/i.exec(content)
+        if (!match) throw new Error(`Unsupported .NET tool command launcher: ${shimPath}`)
+        const target = path.win32.resolve(toolBasePath, match[1])
+        const relative = path.win32.relative(path.win32.resolve(toolBasePath), target)
+        if (relative === '..' || relative.startsWith('..\\') || path.win32.isAbsolute(relative)) {
+            throw new Error(`The .NET tool command launcher points outside its installation: ${shimPath}`)
+        }
+        return (await this.buildAgent.fileExists(target)) ? target : null
     }
 
     protected async setDotnetRoot(): Promise<void> {
@@ -161,6 +179,11 @@ export abstract class DotnetTool implements IDotnetTool {
         // If we still don't have a path, try to find it in PATH
         if (!toolPath) {
             toolPath = await this.buildAgent.which(this.toolName, true)
+            if (os.platform() === 'win32' && path.extname(toolPath).toLowerCase() === '.cmd') {
+                const executable = await this.resolveWindowsCommandShim(path.dirname(toolPath))
+                if (!executable) throw new Error('The .NET tool command launcher target was not found')
+                toolPath = executable
+            }
         }
 
         args = [`--roll-forward`, `Major`, ...args]
