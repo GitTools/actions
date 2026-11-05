@@ -1,6 +1,7 @@
 import * as os from 'node:os'
 import { randomUUID } from 'node:crypto'
 import { lock } from 'proper-lockfile'
+import { familySync, GLIBC, MUSL } from 'detect-libc'
 import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
@@ -207,7 +208,13 @@ export abstract class BuildAgentBase implements IBuildAgent {
     }
 
     getToolCachePath(tool: string, version: string): string {
-        return path.join(this.cacheDir, tool, semver.clean(version) || version, `${os.platform()}-${os.arch()}`)
+        let platform: string = os.platform()
+        if (platform === 'linux') {
+            const libc = familySync()
+            if (libc !== GLIBC && libc !== MUSL) throw new Error('Unable to identify the Linux libc for the tool cache')
+            if (libc === MUSL) platform = 'linux-musl'
+        }
+        return path.join(this.cacheDir, tool, semver.clean(version) || version, `${platform}-${os.arch()}`)
     }
 
     async installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting = false): Promise<string> {
