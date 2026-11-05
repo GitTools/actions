@@ -1,4 +1,5 @@
 import * as path from 'node:path'
+import * as os from 'node:os'
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { type IBuildAgent } from '@agents/common'
@@ -22,7 +23,7 @@ describe('GitReleaseManager Runner', () => {
 
         beforeAll(async () => {
             version = await getLatestVersion('GitReleaseManager.Tool', versionSpec)
-            toolPath = path.resolve(baseDir, 'tools', 'GitReleaseManager.Tool', version)
+            toolPath = path.resolve(baseDir, 'tools', 'GitReleaseManager.Tool', version, `${os.platform()}-${os.arch()}`)
             runner = new Runner(agent)
         })
 
