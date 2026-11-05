@@ -52,6 +52,7 @@ var GitVersionTool = class extends DotnetTool {
 		const settings = this.settingsProvider.getExecuteSettings();
 		const workDir = await this.getRepoDir(settings);
 		await this.checkShallowClone(settings, workDir);
+		await fs.mkdir(this.buildAgent.tempDir, { recursive: true });
 		const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`);
 		this.buildAgent.debug(`Writing GitVersion variables to file: ${outputFile}`);
 		const args = await this.getExecuteArguments(workDir, settings, outputFile);

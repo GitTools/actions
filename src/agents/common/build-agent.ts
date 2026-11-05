@@ -21,7 +21,7 @@ async function acquireToolCacheLock(directory: string): Promise<() => Promise<vo
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
             if (attempt >= 480) throw new Error(`Timed out waiting for tool cache lock: ${lock}`, { cause: error })
-            await delay(250)
+            await delay(250) // NOSONAR: Lock retries must be sequential; parallel attempts can acquire and orphan the same lock.
         }
     }
 }
