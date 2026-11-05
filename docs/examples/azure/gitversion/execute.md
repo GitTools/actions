@@ -93,12 +93,12 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - preReleaseNumber
 - weightedPreReleaseNumber
 - buildMetaData
-- buildMetaDataPadded (removed in 7.0.0)
+- buildMetaDataPadded (removed in 6.0.0)
 - fullBuildMetaData
 - majorMinorPatch
 - semVer
-- legacySemVer (removed in 7.0.0)
-- legacySemVerPadded (removed in 7.0.0)
+- legacySemVer (removed in 6.0.0)
+- legacySemVerPadded (removed in 6.0.0)
 - assemblySemVer
 - assemblySemFileVer
 - fullSemVer
@@ -107,13 +107,13 @@ The Execute GitVersion task creates the following job-scoped variables and multi
 - escapedBranchName (since 5.2.0)
 - sha
 - shortSha
-- nuGetVersionV2 (removed in 7.0.0)
-- nuGetVersion (removed in 7.0.0)
-- nuGetPreReleaseTagV2 (removed in 7.0.0)
-- nuGetPreReleaseTag (removed in 7.0.0)
+- nuGetVersionV2 (removed in 6.0.0)
+- nuGetVersion (removed in 6.0.0)
+- nuGetPreReleaseTagV2 (removed in 6.0.0)
+- nuGetPreReleaseTag (removed in 6.0.0)
 - versionSourceSha
 - commitsSinceVersionSource (deprecated in 6.6.0, use versionSourceDistance instead; will be removed in v7.0.0)
-- commitsSinceVersionSourcePadded (since 5.2.0, removed in 7.0.0)
+- commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
 - versionSourceSemVer (since 6.6.0)
 - versionSourceDistance (since 6.6.0)
 - versionSourceIncrement (since 6.6.0)
