@@ -1,7 +1,7 @@
 // Build an unpublished, pinned GitVersion 7 tool for compatibility tests only.
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
-import { resolve, join } from 'node:path'
+import { mkdirSync, existsSync, readFileSync, writeFileSync, appendFileSync, realpathSync } from 'node:fs'
+import { resolve, join, delimiter, isAbsolute } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
@@ -12,18 +12,30 @@ if (!['win-x64', 'win-arm64', 'osx-arm64', 'linux-x64', 'linux-arm64'].includes(
     throw new Error(`Unsupported source-rehearsal RID: ${rid}`)
 }
 const packages = join(root, '.test', 'packages', baseline.commit, rid)
-const dotnet = process.env.DOTNET_HOST_PATH || 'dotnet'
-const run = (command, args, cwd) => execFileSync(command, args, { cwd, stdio: 'inherit' })
+const executable = name => {
+    const filename = process.platform === 'win32' ? `${name}.exe` : name
+    const candidate = (process.env.PATH || '').split(delimiter).filter(isAbsolute)
+        .map(directory => join(directory, filename)).find(existsSync)
+    if (!candidate) throw new Error(`Required executable not found: ${name}`)
+    return realpathSync(candidate)
+}
+const dotnet = process.env.DOTNET_HOST_PATH ? realpathSync(process.env.DOTNET_HOST_PATH) : executable('dotnet')
+const git = executable('git')
+const run = (command, args, cwd) => {
+    if (!isAbsolute(command)) throw new Error('Test commands must use an absolute executable path')
+    // NOSONAR: Executables are resolved to absolute paths above; arguments never run through a shell.
+    return execFileSync(command, args, { cwd, stdio: 'inherit' })
+}
 const marker = join(packages, `GitVersion.Tool.${rid}.${baseline.version}.nupkg`)
 if (!existsSync(marker)) {
     mkdirSync(packages, { recursive: true })
     if (!existsSync(source)) {
         mkdirSync(source, { recursive: true })
-        run('git', ['init'], source)
-        run('git', ['fetch', '--depth', '1', baseline.repository, baseline.commit], source)
-        run('git', ['checkout', '--detach', 'FETCH_HEAD'], source)
+        run(git, ['init'], source)
+        run(git, ['fetch', '--depth', '1', baseline.repository, baseline.commit], source)
+        run(git, ['checkout', '--detach', 'FETCH_HEAD'], source)
     }
-    const actual = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: source, encoding: 'utf8' }).trim()
+    const actual = execFileSync(git, ['rev-parse', 'HEAD'], { cwd: source, encoding: 'utf8' }).trim()
     if (actual !== baseline.commit) throw new Error(`GitVersion test source must be pinned to ${baseline.commit}`)
     run(dotnet, ['pack', 'src/GitVersion.App/GitVersion.App.csproj', '-p:PackAsTool=true',
         `-p:PackageVersion=${baseline.version}`, `-p:RuntimeIdentifiers=${rid}`, `-p:ToolPackageRuntimeIdentifiers=${rid}`,
