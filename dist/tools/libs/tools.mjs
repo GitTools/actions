@@ -294,19 +294,25 @@ var DotnetTool = class DotnetTool {
 		if (!semverVersion) throw new Error(`Invalid version spec: ${version}`);
 		const tempDirectory = await this.createTempDirectory();
 		if (!tempDirectory) throw new Error("Unable to create temp directory");
-		const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", tempDirectory).addKeyValue("version", semverVersion);
+		const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion);
+		if (!toolPath) throw new Error("Unable to resolve the tool cache directory");
+		const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", toolPath).addKeyValue("version", semverVersion);
 		if (ignoreFailedSources) builder.addFlag("ignore-failed-sources");
 		if (nugetConfigPath) builder.addKeyValue("configfile", nugetConfigPath);
-		const result = await this.execute("dotnet", builder.build());
-		const status = result.code === 0 ? "success" : "failure";
-		const message = result.code === 0 ? result.stdout : result.stderr;
-		this.buildAgent.debug(`Tool install result: ${status} ${message}`);
-		if (result.code !== 0) throw new Error(message);
-		const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion);
-		this.buildAgent.debug(`Cached tool path: ${toolPath}`);
-		this.buildAgent.debug(`Cleaning up temp directory: ${tempDirectory}`);
-		await this.buildAgent.removeDirectory(tempDirectory);
-		return toolPath;
+		try {
+			const result = await this.execute("dotnet", builder.build());
+			const status = result.code === 0 ? "success" : "failure";
+			const message = result.code === 0 ? result.stdout : result.stderr;
+			this.buildAgent.debug(`Tool install result: ${status} ${message}`);
+			if (result.code !== 0) {
+				await this.buildAgent.removeDirectory(toolPath);
+				throw new Error(message);
+			}
+			await fs.writeFile(path.join(toolPath, ".complete"), "");
+			return toolPath;
+		} finally {
+			await this.buildAgent.removeDirectory(tempDirectory);
+		}
 	}
 	getArchitecturePaths(toolBasePath, toolName) {
 		const arch = os.arch();

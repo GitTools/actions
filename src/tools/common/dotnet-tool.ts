@@ -246,11 +246,15 @@ export abstract class DotnetTool implements IDotnetTool {
             throw new Error('Unable to create temp directory')
         }
 
+        // Install at the final location: RID tool launchers can embed absolute paths.
+        const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion)
+        if (!toolPath) throw new Error('Unable to resolve the tool cache directory')
+
         const builder = new ArgumentsBuilder()
             .addArgument('tool')
             .addArgument('install')
             .addArgument(toolName)
-            .addKeyValue('tool-path', tempDirectory)
+            .addKeyValue('tool-path', toolPath)
             .addKeyValue('version', semverVersion)
 
         if (ignoreFailedSources) {
@@ -261,22 +265,20 @@ export abstract class DotnetTool implements IDotnetTool {
             builder.addKeyValue('configfile', nugetConfigPath)
         }
 
-        const result = await this.execute('dotnet', builder.build())
-        const status = result.code === 0 ? 'success' : 'failure'
-        const message = result.code === 0 ? result.stdout : result.stderr
-
-        this.buildAgent.debug(`Tool install result: ${status} ${message}`)
-
-        if (result.code !== 0) {
-            throw new Error(message)
+        try {
+            const result = await this.execute('dotnet', builder.build())
+            const status = result.code === 0 ? 'success' : 'failure'
+            const message = result.code === 0 ? result.stdout : result.stderr
+            this.buildAgent.debug(`Tool install result: ${status} ${message}`)
+            if (result.code !== 0) {
+                await this.buildAgent.removeDirectory(toolPath)
+                throw new Error(message)
+            }
+            await fs.writeFile(path.join(toolPath, '.complete'), '')
+            return toolPath
+        } finally {
+            await this.buildAgent.removeDirectory(tempDirectory)
         }
-
-        const toolPath = await this.buildAgent.cacheToolDirectory(tempDirectory, toolName, semverVersion)
-        this.buildAgent.debug(`Cached tool path: ${toolPath}`)
-        this.buildAgent.debug(`Cleaning up temp directory: ${tempDirectory}`)
-        await this.buildAgent.removeDirectory(tempDirectory)
-
-        return toolPath
     }
 
     private getArchitecturePaths(toolBasePath: string, toolName: string): string[] {

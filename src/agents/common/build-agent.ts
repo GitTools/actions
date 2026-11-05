@@ -236,7 +236,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         versionSpec = semver.clean(versionSpec) || versionSpec
         this.info(`Looking for local tool ${toolName}@${versionSpec}`)
         const toolPath = path.join(cacheRoot, toolName, versionSpec)
-        if (await this.directoryExists(toolPath)) {
+        if ((await this.directoryExists(toolPath)) && (await this.fileExists(path.join(toolPath, '.complete')))) {
             this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`)
             return toolPath
         } else {
