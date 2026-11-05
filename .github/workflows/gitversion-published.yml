@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   update-gitversion-version:
-    if: github.event_name == 'repository_dispatch' && startsWith(github.event.client_payload.newTag, '7.')
+    if: github.event_name == 'repository_dispatch' && startsWith(github.event.client_payload.newTag, '7.') && !contains(github.event.client_payload.newTag, '-') && !contains(github.event.client_payload.newTag, '+')
     runs-on: ubuntu-24.04
     steps:
       - name: Load GitHub App credentials
