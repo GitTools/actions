@@ -44,7 +44,7 @@ steps:
 
 ### Example 1
 
-Install the latest GitVersion 6 version.
+Install the latest GitVersion 7 version.
 
 ```yaml
 steps:
@@ -56,19 +56,19 @@ steps:
 
 ### Example 2
 
-Install GitVersion 6.0.0.
+Install GitVersion 7.0.0.
 
 ```yaml
 steps:
   - name: Install GitVersion
     uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.0.0'
+      versionSpec: '7.0.0'
 ```
 
 ### Example 3
 
-Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6**.
+Install the latest GitVersion 7 pre-release version.  For example **7.0.0-beta.6**.
 
 ```yaml
 steps:
@@ -81,7 +81,7 @@ steps:
 
 ### Example 4
 
-Install the latest GitVersion 6 version even if there is a cached version matching the versionSpec.
+Install the latest GitVersion 7 version even if there is a cached version matching the versionSpec.
 
 ```yaml
 steps:

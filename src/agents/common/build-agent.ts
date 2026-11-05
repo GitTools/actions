@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+import { setTimeout as delay } from 'node:timers/promises'
 import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
@@ -6,6 +8,23 @@ import * as util from 'node:util'
 import * as semver from 'semver'
 import { lookPath } from './lookPath'
 import { type ExecResult } from './models'
+
+async function acquireToolCacheLock(directory: string): Promise<() => Promise<void>> {
+    const lock = `${directory}.lock`
+    await fs.mkdir(path.dirname(directory), { recursive: true })
+    for (let attempt = 0; ; attempt++) {
+        try {
+            await fs.mkdir(lock)
+            return async () => {
+                await fs.rm(lock, { recursive: true, force: true })
+            }
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
+            if (attempt >= 480) throw new Error(`Timed out waiting for tool cache lock: ${lock}`, { cause: error })
+            await delay(250)
+        }
+    }
+}
 
 export interface IBuildAgent {
     agentName: string
@@ -28,6 +47,10 @@ export interface IBuildAgent {
     error(message: string): void
 
     exec(exec: string, args: string[]): Promise<ExecResult>
+
+    getToolCachePath(tool: string, version: string): string
+
+    installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting?: boolean): Promise<string>
 
     cacheToolDirectory(sourceDir: string, tool: string, version: string): Promise<string>
 
@@ -187,6 +210,35 @@ export abstract class BuildAgentBase implements IBuildAgent {
         )
     }
 
+    getToolCachePath(tool: string, version: string): string {
+        return path.join(this.cacheDir, tool, semver.clean(version) || version)
+    }
+
+    async installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting = false): Promise<string> {
+        const directory = this.getToolCachePath(tool, version)
+        const release = await acquireToolCacheLock(directory)
+        try {
+            const complete = await this.fileExists(path.join(directory, '.complete'))
+            if (complete && !replaceExisting) return directory
+            const backup = complete ? `${directory}.backup-${randomUUID()}` : undefined
+            if (backup) await fs.rename(directory, backup)
+            else await fs.rm(directory, { recursive: true, force: true })
+            try {
+                await fs.mkdir(directory, { recursive: true })
+                await install(directory)
+                await fs.writeFile(path.join(directory, '.complete'), '')
+            } catch (error) {
+                await fs.rm(directory, { recursive: true, force: true })
+                if (backup) await fs.rename(backup, directory)
+                throw error
+            }
+            if (backup) await fs.rm(backup, { recursive: true, force: true })
+            return directory
+        } finally {
+            await release()
+        }
+    }
+
     async cacheToolDirectory(sourceDir: string, tool: string, version: string): Promise<string> {
         if (!tool) {
             throw new Error('tool is a required parameter')
@@ -205,7 +257,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         }
 
         version = semver.clean(version) || version
-        const destPath = path.join(cacheRoot, tool, version)
+        const destPath = this.getToolCachePath(tool, version)
         if (await this.directoryExists(destPath)) {
             this.debug(`Destination directory ${destPath} already exists, removing`)
             await this.removeDirectory(destPath)
@@ -235,7 +287,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
         versionSpec = semver.clean(versionSpec) || versionSpec
         this.info(`Looking for local tool ${toolName}@${versionSpec}`)
-        const toolPath = path.join(cacheRoot, toolName, versionSpec)
+        const toolPath = this.getToolCachePath(toolName, versionSpec)
         if ((await this.directoryExists(toolPath)) && (await this.fileExists(path.join(toolPath, '.complete')))) {
             this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`)
             return toolPath
