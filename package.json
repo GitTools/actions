@@ -32,13 +32,14 @@
     "run:local:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent local",
     "run:azure:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent azure",
     "run:github:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent github",
-    "test:ci": "vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
-    "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
+    "test:ci": "node scripts/prepare-gitversion.mjs && vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
+    "test:tools": "node scripts/prepare-gitversion.mjs && vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
     "publish:prepare": "./dist/azure/updateTasks.mjs",
     "publish:azure:local": "tfx extension create --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs",
     "publish:azure:marketplace": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --auth-type pat",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prepare:gitversion": "node scripts/prepare-gitversion.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -84,12 +85,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.md": [
-      "markdownlint --fix"
-    ]
+    "*.ts": ["eslint --fix", "prettier --write"],
+    "*.md": ["markdownlint --fix"]
   }
 }

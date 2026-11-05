@@ -8,22 +8,22 @@ import { Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, expectToolSetup, getLatestVersion, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, expectToolSetup, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = '6.8.x'
+    const versionSpec = process.env.GITVERSION_TEST_VERSION || '7.0.0-alpha.actions.1'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
         let runner: Runner
 
-        beforeAll(async () => {
-            version = await getLatestVersion('GitVersion.Tool', versionSpec)
+        beforeAll(() => {
+            version = versionSpec
             toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
         })
@@ -47,7 +47,8 @@ describe('GitVersion Runner', () => {
         it('should run setup GitVersion', { concurrent: false }, async () => {
             setInputs({
                 versionSpec: versionSpec,
-                includePrerelease: false,
+                includePrerelease: true,
+                nugetConfigPath: process.env.GITVERSION_TEST_NUGET_CONFIG || path.resolve(baseDir, 'gitversion.nuget.config'),
                 ignoreFailedSources: false,
                 preferLatestVersion: true
             })
@@ -106,7 +107,7 @@ describe('GitVersion Runner', () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
-                arguments: '/showvariable Sha'
+                arguments: '--show-variable Sha'
             })
 
             const shaHash = await simpleGit().revparse(['HEAD'])
@@ -122,7 +123,7 @@ describe('GitVersion Runner', () => {
             setEnv(toolPathVariable, toolPath)
 
             setInputs({
-                arguments: '/format {Sha}'
+                arguments: '--format {Sha}'
             })
 
             const shaHash = await simpleGit().revparse(['HEAD'])

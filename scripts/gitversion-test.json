@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/GitTools/GitVersion.git",
+  "commit": "14d222235b7dabb7033473528a76fd18478a9217",
+  "sdk": "11.0.100-rc.3.26522.148",
+  "version": "7.0.0-alpha.actions.1"
+}

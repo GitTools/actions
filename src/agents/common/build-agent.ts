@@ -213,7 +213,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
         this.debug(`Copying ${sourceDir} to ${destPath}`)
         await fs.mkdir(destPath, { recursive: true })
-        await fs.cp(sourceDir, destPath, { recursive: true, force: true })
+        await fs.cp(sourceDir, destPath, { recursive: true, force: true, verbatimSymlinks: true })
 
         this.debug(`Caching ${tool}@${version} from ${sourceDir}`)
         return destPath

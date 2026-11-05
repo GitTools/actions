@@ -57,6 +57,10 @@ export abstract class DotnetTool implements IDotnetTool {
             }
         }
 
+        if (!setupSettings.includePrerelease && semver.prerelease(version)) {
+            throw new Error('Prerelease tool versions require includePrerelease: true.')
+        }
+
         if (this.versionRange && !semver.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) {
             throw new Error(
                 `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${this.versionRange}'.` +
