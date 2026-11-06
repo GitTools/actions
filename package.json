@@ -70,7 +70,7 @@
     "typescript-eslint": "8.72.1",
     "vite": "8.3.5",
     "vite-node": "6.0.0",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   },
   "dependencies": {
     "semver": "7.8.5"
