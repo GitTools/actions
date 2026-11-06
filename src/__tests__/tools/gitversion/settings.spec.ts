@@ -60,13 +60,13 @@ describe('GitVersion settings', () => {
     })
 
     it('should read multiline overrideConfig input values', () => {
-        vi.stubEnv('INPUT_OVERRIDECONFIG', 'tag-prefix=some.prefix-[vV]?\nnext-version=0.1.0')
+        vi.stubEnv('INPUT_OVERRIDECONFIG', 'calculation.tag-prefix=some.prefix-[vV]?\ncalculation.next-version=0.1.0')
 
         const settingsProvider = new GitVersionSettingsProvider(new BuildAgent())
 
         const executeSettings = settingsProvider.getExecuteSettings()
 
-        expect(executeSettings.overrideConfig).toEqual(['tag-prefix=some.prefix-[vV]?', 'next-version=0.1.0'])
-        expect(process.env['INPUT_OVERRIDECONFIG']).toBe('tag-prefix=some.prefix-[vV]?\nnext-version=0.1.0')
+        expect(executeSettings.overrideConfig).toEqual(['calculation.tag-prefix=some.prefix-[vV]?', 'calculation.next-version=0.1.0'])
+        expect(process.env['INPUT_OVERRIDECONFIG']).toBe('calculation.tag-prefix=some.prefix-[vV]?\ncalculation.next-version=0.1.0')
     })
 })

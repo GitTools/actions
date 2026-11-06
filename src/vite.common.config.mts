@@ -18,6 +18,7 @@ export function viteConfig(entry: Record<string, string>, manualChunks: (id: str
                 entry
             },
             rollupOptions: {
+                platform: 'node',
                 external: [...builtinModules, ...builtinModules.map(module => `node:${module}`)],
                 output: {
                     entryFileNames: '[name].mjs',

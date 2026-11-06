@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+import { lock } from 'proper-lockfile'
 import { execFile as execFileNonPromise, ExecFileOptions } from 'node:child_process'
 import * as fs from 'node:fs/promises'
 import * as process from 'node:process'
@@ -6,6 +8,18 @@ import * as util from 'node:util'
 import * as semver from 'semver'
 import { lookPath } from './lookPath'
 import { type ExecResult } from './models'
+
+async function acquireToolCacheLock(directory: string): Promise<() => Promise<void>> {
+    await fs.mkdir(path.dirname(directory), { recursive: true })
+    // Heartbeats preserve live owners, including on shared hosts where PIDs are not unique.
+    // A killed owner stops updating the lock, allowing recovery after 30 seconds.
+    return await lock(directory, {
+        realpath: false,
+        stale: 30000,
+        update: 1000,
+        retries: { retries: 480, minTimeout: 250, maxTimeout: 250, factor: 1, randomize: false }
+    })
+}
 
 export interface IBuildAgent {
     agentName: string
@@ -28,6 +42,10 @@ export interface IBuildAgent {
     error(message: string): void
 
     exec(exec: string, args: string[]): Promise<ExecResult>
+
+    getToolCachePath(tool: string, version: string): string
+
+    installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting?: boolean): Promise<string>
 
     cacheToolDirectory(sourceDir: string, tool: string, version: string): Promise<string>
 
@@ -187,6 +205,57 @@ export abstract class BuildAgentBase implements IBuildAgent {
         )
     }
 
+    getToolCachePath(tool: string, version: string): string {
+        return path.join(this.cacheDir, tool, semver.clean(version) || version)
+    }
+
+    async installToolInCache(tool: string, version: string, install: (directory: string) => Promise<void>, replaceExisting = false): Promise<string> {
+        const directory = this.getToolCachePath(tool, version)
+        const release = await acquireToolCacheLock(directory)
+        try {
+            await this.restoreToolCacheBackup(directory)
+            const complete = await this.fileExists(path.join(directory, '.complete'))
+            if (complete && !replaceExisting) return directory
+            const backup = complete ? `${directory}.backup-${randomUUID()}` : undefined
+            if (backup) await fs.rename(directory, backup)
+            else await fs.rm(directory, { recursive: true, force: true })
+            try {
+                await fs.mkdir(directory, { recursive: true })
+                await install(directory)
+                await fs.writeFile(path.join(directory, '.complete'), '')
+            } catch (error) {
+                await fs.rm(directory, { recursive: true, force: true })
+                if (backup) await fs.rename(backup, directory)
+                throw error
+            }
+            if (backup) await fs.rm(backup, { recursive: true, force: true })
+            return directory
+        } finally {
+            await release()
+        }
+    }
+
+    private async restoreToolCacheBackup(directory: string): Promise<void> {
+        if (await this.fileExists(path.join(directory, '.complete'))) return
+        const parent = path.dirname(directory)
+        const prefix = `${path.basename(directory)}.backup-`
+        const entries = await fs.readdir(parent, { withFileTypes: true })
+        const candidates = await Promise.all(
+            entries
+                .filter(entry => entry.isDirectory() && entry.name.startsWith(prefix))
+                .map(async entry => {
+                    const backup = path.join(parent, entry.name)
+                    if (!(await this.fileExists(path.join(backup, '.complete')))) return null
+                    return { backup, modified: (await fs.stat(backup)).mtimeMs }
+                })
+        )
+        const latest = candidates.filter(candidate => candidate !== null).sort((a, b) => b.modified - a.modified)[0]
+        if (latest) {
+            await fs.rm(directory, { recursive: true, force: true })
+            await fs.rename(latest.backup, directory)
+        }
+    }
+
     async cacheToolDirectory(sourceDir: string, tool: string, version: string): Promise<string> {
         if (!tool) {
             throw new Error('tool is a required parameter')
@@ -205,7 +274,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
         }
 
         version = semver.clean(version) || version
-        const destPath = path.join(cacheRoot, tool, version)
+        const destPath = this.getToolCachePath(tool, version)
         if (await this.directoryExists(destPath)) {
             this.debug(`Destination directory ${destPath} already exists, removing`)
             await this.removeDirectory(destPath)
@@ -213,7 +282,7 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
         this.debug(`Copying ${sourceDir} to ${destPath}`)
         await fs.mkdir(destPath, { recursive: true })
-        await fs.cp(sourceDir, destPath, { recursive: true, force: true })
+        await fs.cp(sourceDir, destPath, { recursive: true, force: true, verbatimSymlinks: true })
 
         this.debug(`Caching ${tool}@${version} from ${sourceDir}`)
         return destPath
@@ -235,8 +304,8 @@ export abstract class BuildAgentBase implements IBuildAgent {
 
         versionSpec = semver.clean(versionSpec) || versionSpec
         this.info(`Looking for local tool ${toolName}@${versionSpec}`)
-        const toolPath = path.join(cacheRoot, toolName, versionSpec)
-        if (await this.directoryExists(toolPath)) {
+        const toolPath = this.getToolCachePath(toolName, versionSpec)
+        if ((await this.directoryExists(toolPath)) && (await this.fileExists(path.join(toolPath, '.complete')))) {
             this.info(`Found tool ${toolName}@${versionSpec} at ${toolPath}`)
             return toolPath
         } else {

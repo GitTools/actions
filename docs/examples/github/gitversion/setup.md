@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** action using the examples below.
 
-> The examples use version _4.7.0_ of the GitVersion Setup action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _5_ of the GitVersion Setup action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -10,7 +10,7 @@ The Setup GitVersion action accepts the following inputs:
 
 ```yaml
 versionSpec:
-  description: Required version in the form of 6.8.x or exact version like 6.8.0.
+  description: Required version in the form of 7.0.x or exact version like 7.0.0.
   required: true
   default: ''
 includePrerelease:
@@ -44,51 +44,51 @@ steps:
 
 ### Example 1
 
-Install the latest GitVersion 6 version.
+Install the latest GitVersion 7 version.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 ### Example 2
 
-Install GitVersion 6.0.0.
+Install GitVersion 7.0.0.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.0.0'
+      versionSpec: '7.0.0'
 ```
 
 ### Example 3
 
-Install the latest GitVersion 6 pre-release version.  For example **6.0.0-beta.6**.
+Install the latest GitVersion 7 pre-release version.  For example **7.0.0-beta.6**.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       includePrerelease: true
 ```
 
 ### Example 4
 
-Install the latest GitVersion 6 version even if there is a cached version matching the versionSpec.
+Install the latest GitVersion 7 version even if there is a cached version matching the versionSpec.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       preferLatestVersion: true
 ```
 
@@ -99,8 +99,8 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
       nugetConfigPath: '${{ github.workspace }}/nuget.config'
 ```

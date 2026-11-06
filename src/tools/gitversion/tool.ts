@@ -20,7 +20,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '>=6.2.0 <7.0.0'
+        return '>=7.0.0-0 <8.0.0-0'
     }
 
     get settingsProvider(): IGitVersionSettingsProvider {
@@ -33,6 +33,7 @@ export class GitVersionTool extends DotnetTool {
 
         await this.checkShallowClone(settings, workDir)
 
+        await fs.mkdir(this.buildAgent.tempDir, { recursive: true })
         const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`)
         this.buildAgent.debug(`Writing GitVersion variables to file: ${outputFile}`)
         const args = await this.getExecuteArguments(workDir, settings, outputFile)
@@ -91,12 +92,12 @@ export class GitVersionTool extends DotnetTool {
         const builder = new ArgumentsBuilder().addArgument(workDir)
 
         if (outputFile) {
-            builder.addArgument('/output').addArgument('file').addArgument('/outputfile').addArgument(outputFile)
+            builder.addArgument('--output').addArgument('file').addArgument('--output-file').addArgument(outputFile)
         } else {
-            builder.addArgument('/output').addArgument('json')
+            builder.addArgument('--output').addArgument('json')
         }
 
-        builder.addArgument('/l').addArgument('console')
+        builder.addArgument('--log-file').addArgument('console')
 
         const {
             disableCache,
@@ -112,33 +113,36 @@ export class GitVersionTool extends DotnetTool {
         } = options
 
         if (disableCache) {
-            builder.addArgument('/nocache')
+            builder.addArgument('--no-cache')
         }
 
         if (disableNormalization) {
-            builder.addArgument('/nonormalize')
+            builder.addArgument('--no-normalize')
         }
 
         if (configFilePath) {
             if (await this.isValidInputFile(workDir, configFilePath)) {
-                builder.addArgument('/config').addArgument(configFilePath)
+                builder.addArgument('--config').addArgument(configFilePath)
             } else {
                 throw new Error(`GitVersion configuration file not found at ${configFilePath}`)
             }
         }
 
         if (overrideConfig) {
-            const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[^\r\n]+$/
-            for (let config of overrideConfig) {
-                config = config.trim()
-                if (overrideConfigPattern.exec(config)) {
-                    builder.addArgument('/overrideconfig').addArgument(config)
+            for (const [index, entry] of overrideConfig.entries()) {
+                const config = entry.trim()
+                if (!/^[^\s=]+=[^\r\n]*$/.test(config)) {
+                    throw new Error(
+                        `Invalid overrideConfig entry at position ${index + 1}. Expected key=value with no whitespace in the key or line breaks in the value.`
+                    )
                 }
+                // GitVersion validates the public path and value for the selected configuration layout.
+                builder.addArgument('--override-config').addArgument(config)
             }
         }
 
         if (updateAssemblyInfo) {
-            builder.addArgument('/updateassemblyinfo')
+            builder.addArgument('--update-assembly-info')
 
             // You can specify 'updateAssemblyInfo' without 'updateAssemblyInfoFilename'.
             if (updateAssemblyInfoFilename) {
@@ -151,15 +155,15 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (updateProjectFiles) {
-            builder.addArgument('/updateprojectfiles')
+            builder.addArgument('--update-project-files')
         }
 
         if (updateWixVersionFile) {
-            builder.addArgument('/updatewixversionfile')
+            builder.addArgument('--update-wix-version-file')
         }
 
         if (verbosity) {
-            builder.addArgument('/verbosity').addArgument(verbosity)
+            builder.addArgument('--verbosity').addArgument(verbosity)
         }
 
         return builder.build()
@@ -173,7 +177,7 @@ export class GitVersionTool extends DotnetTool {
         }
 
         if (options.verbosity) {
-            builder.addArgument('/verbosity').addArgument(options.verbosity)
+            builder.addArgument('--verbosity').addArgument(options.verbosity)
         }
 
         return builder.build()

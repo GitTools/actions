@@ -13,14 +13,14 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _4.7.0_ of the GitVersion Command action.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _5_ of the GitVersion Command action.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -52,16 +52,16 @@ verbosity:
 ### Example 1
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command.</summary>
+  <summary>Show the effective configuration for GitVersion by running the <b>--show-config</b> command.</summary>
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/command@v4.7.0
+    uses: gittools/actions/gitversion/command@v5
     with:
-      arguments: '/showConfig'
+      arguments: '--show-config'
 ```
 
 </details>
@@ -69,16 +69,16 @@ steps:
 ### Example 2
 
 <details>
-  <summary>Outputs the <i>FullSemVer</i> variable by running the <b>/showvariable FullSemVer</b> command.</summary>
+  <summary>Outputs the <i>FullSemVer</i> variable by running the <b>--show-variable FullSemVer</b> command.</summary>
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Output the FullSemVer variable
-    uses: gittools/actions/gitversion/command@v4.7.0
+    uses: gittools/actions/gitversion/command@v5
     with:
-      arguments: '/showvariable FullSemVer'
+      arguments: '--show-variable FullSemVer'
 ```
 
 </details>
@@ -86,16 +86,16 @@ steps:
 ### Example 3
 
 <details>
-  <summary>Outputs the formatted version by running the <b>/format {Major}.{Minor}</b> command.</summary>
+  <summary>Outputs the formatted version by running the <b>--format {Major}.{Minor}</b> command.</summary>
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Output the formatted version
-    uses: gittools/actions/gitversion/command@v4.7.0
+    uses: gittools/actions/gitversion/command@v5
     with:
-      arguments: '/format {Major}.{Minor}' # any Output Variable can be used here
+      arguments: '--format {Major}.{Minor}' # any Output Variable can be used here
 ```
 
 </details>
@@ -107,12 +107,12 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/command@v4.7.0
+    uses: gittools/actions/gitversion/command@v5
     with:
-      arguments: '/showConfig'
+      arguments: '--show-config'
       verbosity: 'minimal'
 ```
 

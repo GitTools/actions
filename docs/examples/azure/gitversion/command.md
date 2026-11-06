@@ -10,15 +10,15 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion-setup@4.7.0
+  - task: gitversion-setup@5
     displayName: Install GitVersion
     inputs:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _4.7.0_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
+> The examples use version _5_ of the GitVersion Command task.  It is recommended to use the latest released version in your own workflows.
 
 ## Inputs
 
@@ -50,16 +50,16 @@ verbosity:
 ### Example 1
 
 <details>
-  <summary>Show the effective configuration for GitVersion by running the <b>/showConfig</b> command.</summary>
+  <summary>Show the effective configuration for GitVersion by running the <b>--show-config</b> command.</summary>
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-command@4.7.0
+  - task: gitversion-command@5
     displayName: Display GitVersion config
     inputs:
-      arguments: '/showConfig'
+      arguments: '--show-config'
 ```
 
 </details>
@@ -67,16 +67,16 @@ steps:
 ### Example 2
 
 <details>
-  <summary>Outputs the <i>FullSemVer</i> variable by running the <b>/showvariable FullSemVer</b> command.</summary>
+  <summary>Outputs the <i>FullSemVer</i> variable by running the <b>--show-variable FullSemVer</b> command.</summary>
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-command@4.7.0
+  - task: gitversion-command@5
     displayName: Output the FullSemVer variable
     inputs:
-      arguments: '/showvariable FullSemVer'
+      arguments: '--show-variable FullSemVer'
 ```
 
 </details>
@@ -84,16 +84,16 @@ steps:
 ### Example 3
 
 <details>
-  <summary>Outputs the formatted version by running the <b>/format {Major}.{Minor}</b> command.</summary>
+  <summary>Outputs the formatted version by running the <b>--format {Major}.{Minor}</b> command.</summary>
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-command@4.7.0
+  - task: gitversion-command@5
     displayName: Output the formatted version
     inputs:
-      arguments: '/format {Major}.{Minor}' # any Output Variable can be used here
+      arguments: '--format {Major}.{Minor}' # any Output Variable can be used here
 ```
 
 </details>
@@ -105,12 +105,12 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@4.7.0 task omitted for brevity.
+  # gitversion-setup@5 task omitted for brevity.
 
-  - task: gitversion-command@4.7.0
+  - task: gitversion-command@5
     displayName: Display GitVersion config
     inputs:
-      arguments: '/showConfig'
+      arguments: '--show-config'
       verbosity: 'minimal'
 ```
 

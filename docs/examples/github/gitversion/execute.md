@@ -13,9 +13,9 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v4.7.0
+    uses: gittools/actions/gitversion/setup@v5
     with:
-      versionSpec: '6.8.x'
+      versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
@@ -50,8 +50,8 @@ configFilePath:
 overrideConfig:
   description: |
     Optional override for the configuration file. This should be newline-separated key-value pairs, e.g.:
-    semantic-version-format=Loose
-    next-version=4.7.0
+    calculation.semantic-version-format=Loose
+    calculation.next-version=4.7.0
   required: false
   default: ''
 updateAssemblyInfo:
@@ -127,11 +127,11 @@ The Execute GitVersion action creates the following outputs:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
 ```
 
 </details>
@@ -145,18 +145,19 @@ steps:
 steps:
   - name: Determine Version
     id: version_step # step id used as reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
 ```
 
 Example contents of **GitVersion.yml**:
 
 ```yaml
-mode: ContinuousDelivery
-branches:
-  master:
-    regex: ^latest$
-  pull-request:
-    tag: pr
+calculation:
+  mode: ContinuousDelivery
+  branches:
+    main:
+      regex: ^latest$
+    pull-request:
+      label: pr
 ```
 
 </details>
@@ -168,11 +169,11 @@ branches:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       configFilePath: VersionConfig.yml
 ```
@@ -186,11 +187,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       disableCache: true
       disableNormalization: true
@@ -205,10 +206,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       updateAssemblyInfo: true
 ```
@@ -222,15 +223,15 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       overrideConfig: |
-        semantic-version-format=Loose
-        next-version=4.7.0
+        calculation.semantic-version-format=Loose
+        calculation.next-version=4.7.0
 ```
 
 </details>
@@ -242,11 +243,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       updateProjectFiles: true
 ```
@@ -260,11 +261,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       updateWixVersionFile: true
 ```
@@ -278,11 +279,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v4.7.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v4.7.0
+    uses: gittools/actions/gitversion/execute@v5
     with:
       verbosity: 'minimal'
 ```
@@ -313,13 +314,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.7.0
+        uses: gittools/actions/gitversion/setup@v5
         with:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v4.7.0
+        uses: gittools/actions/gitversion/execute@v5
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
@@ -403,13 +404,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.7.0
+        uses: gittools/actions/gitversion/setup@v5
         with:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v4.7.0
+        uses: gittools/actions/gitversion/execute@v5
 
   GitVersion_v6_cross_job_consumer_without_prefix:
     name: GitVersion v6 (cross job consumer) - without prefix

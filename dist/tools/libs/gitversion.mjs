@@ -43,7 +43,7 @@ var GitVersionTool = class extends DotnetTool {
 		return "GITVERSION_PATH";
 	}
 	get versionRange() {
-		return ">=6.2.0 <7.0.0";
+		return ">=7.0.0-0 <8.0.0-0";
 	}
 	get settingsProvider() {
 		return new GitVersionSettingsProvider(this.buildAgent);
@@ -52,6 +52,7 @@ var GitVersionTool = class extends DotnetTool {
 		const settings = this.settingsProvider.getExecuteSettings();
 		const workDir = await this.getRepoDir(settings);
 		await this.checkShallowClone(settings, workDir);
+		await fs.mkdir(this.buildAgent.tempDir, { recursive: true });
 		const outputFile = path.join(this.buildAgent.tempDir, `gitversion-${crypto.randomUUID()}.json`);
 		this.buildAgent.debug(`Writing GitVersion variables to file: ${outputFile}`);
 		const args = await this.getExecuteArguments(workDir, settings, outputFile);
@@ -97,39 +98,37 @@ var GitVersionTool = class extends DotnetTool {
 	}
 	async getExecuteArguments(workDir, options, outputFile) {
 		const builder = new ArgumentsBuilder().addArgument(workDir);
-		if (outputFile) builder.addArgument("/output").addArgument("file").addArgument("/outputfile").addArgument(outputFile);
-		else builder.addArgument("/output").addArgument("json");
-		builder.addArgument("/l").addArgument("console");
+		if (outputFile) builder.addArgument("--output").addArgument("file").addArgument("--output-file").addArgument(outputFile);
+		else builder.addArgument("--output").addArgument("json");
+		builder.addArgument("--log-file").addArgument("console");
 		const { disableCache, disableNormalization, configFilePath, overrideConfig, updateAssemblyInfo, updateAssemblyInfoFilename, updateProjectFiles, updateWixVersionFile, verbosity } = options;
-		if (disableCache) builder.addArgument("/nocache");
-		if (disableNormalization) builder.addArgument("/nonormalize");
+		if (disableCache) builder.addArgument("--no-cache");
+		if (disableNormalization) builder.addArgument("--no-normalize");
 		if (configFilePath) {
-			if (await this.isValidInputFile(workDir, configFilePath)) builder.addArgument("/config").addArgument(configFilePath);
+			if (await this.isValidInputFile(workDir, configFilePath)) builder.addArgument("--config").addArgument(configFilePath);
 			else throw new Error(`GitVersion configuration file not found at ${configFilePath}`);
 		}
-		if (overrideConfig) {
-			const overrideConfigPattern = /^[A-Za-z0-9]+(?:-[A-Za-z]+)*=[^\r\n]+$/;
-			for (let config of overrideConfig) {
-				config = config.trim();
-				if (overrideConfigPattern.exec(config)) builder.addArgument("/overrideconfig").addArgument(config);
-			}
+		if (overrideConfig) for (const [index, entry] of overrideConfig.entries()) {
+			const config = entry.trim();
+			if (!/^[^\s=]+=[^\r\n]*$/.test(config)) throw new Error(`Invalid overrideConfig entry at position ${index + 1}. Expected key=value with no whitespace in the key or line breaks in the value.`);
+			builder.addArgument("--override-config").addArgument(config);
 		}
 		if (updateAssemblyInfo) {
-			builder.addArgument("/updateassemblyinfo");
+			builder.addArgument("--update-assembly-info");
 			if (updateAssemblyInfoFilename) {
 				if (await this.isValidInputFile(workDir, updateAssemblyInfoFilename)) builder.addArgument(updateAssemblyInfoFilename);
 				else throw new Error(`AssemblyInfoFilename file not found at ${updateAssemblyInfoFilename}`);
 			}
 		}
-		if (updateProjectFiles) builder.addArgument("/updateprojectfiles");
-		if (updateWixVersionFile) builder.addArgument("/updatewixversionfile");
-		if (verbosity) builder.addArgument("/verbosity").addArgument(verbosity);
+		if (updateProjectFiles) builder.addArgument("--update-project-files");
+		if (updateWixVersionFile) builder.addArgument("--update-wix-version-file");
+		if (verbosity) builder.addArgument("--verbosity").addArgument(verbosity);
 		return builder.build();
 	}
 	getCommandArguments(workDir, options) {
 		const builder = new ArgumentsBuilder().addArgument(workDir);
 		if (options.arguments) builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments));
-		if (options.verbosity) builder.addArgument("/verbosity").addArgument(options.verbosity);
+		if (options.verbosity) builder.addArgument("--verbosity").addArgument(options.verbosity);
 		return builder.build();
 	}
 	async checkShallowClone(settings, workDir) {

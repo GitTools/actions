@@ -15,6 +15,7 @@ on:
     branches:
       - main
       - vnext
+      - 'codex/actions-v5-*'
 
   workflow_dispatch:
 
@@ -37,6 +38,21 @@ jobs:
         with:
           op_service_account_token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.x'
+
+      - name: Install .NET SDKs for the pinned GitVersion rehearsal
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.100-rc.3.26522.148
+
+      - name: Prepare GitVersion 7 source packages
+        run: node scripts/prepare-gitversion.mjs
 
       - run: |
           npm install --ignore-scripts
@@ -66,20 +82,21 @@ jobs:
       - name: gitversion/setup
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.8.x'
-          nugetConfigPath: '${{ github.workspace }}/nuget.config'
+          versionSpec: '${{ env.GITVERSION_TEST_VERSION }}'
+          includePrerelease: true
+          nugetConfigPath: '${{ env.GITVERSION_TEST_NUGET_CONFIG }}'
 
       - name: gitversion/command (showvariable)
         uses: ./gitversion/command
         with:
           targetPath: './'
-          arguments: '/showvariable FullSemVer'
+          arguments: '--show-variable FullSemVer'
 
       - name: gitversion/command (format)
         uses: ./gitversion/command
         with:
           targetPath: './'
-          arguments: '/format {Major}.{Minor}'
+          arguments: '--format {Major}.{Minor}'
 
       - name: gitversion/execute
         id: gitversion # step id used as a reference for output values
@@ -89,7 +106,7 @@ jobs:
           disableCache: true
           disableNormalization: false
           overrideConfig: |
-            semantic-version-format=Loose
+            calculation.semantic-version-format=Loose
 
       - run: |
           echo "Major      (env.major)                                      : ${{ env.major }}"
@@ -114,7 +131,7 @@ jobs:
         name: Use variables and output
 
       - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
-        if: matrix.os == 'ubuntu-24.04'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-24.04'
         with:
           message: 'dist update'
         name: Rebuild dist and push
