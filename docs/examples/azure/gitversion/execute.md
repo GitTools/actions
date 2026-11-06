@@ -84,41 +84,46 @@ verbosity:
 
 The Execute GitVersion task creates the following job-scoped variables and multi-job output variables:
 
-- major
-- minor
-- patch
-- preReleaseTag
-- preReleaseTagWithDash
-- preReleaseLabel
-- preReleaseNumber
-- weightedPreReleaseNumber
-- buildMetaData
-- buildMetaDataPadded (removed in 6.0.0)
-- fullBuildMetaData
-- majorMinorPatch
-- semVer
-- legacySemVer (removed in 6.0.0)
-- legacySemVerPadded (removed in 6.0.0)
-- assemblySemVer
 - assemblySemFileVer
+- assemblySemVer
+- branchName
+- buildMetaData
+- commitCountSourceDistance
+- commitCountSourceSha
+- commitDate
+- customVersion
+- escapedBranchName
+- fullBuildMetaData
 - fullSemVer
 - informationalVersion
-- branchName
-- escapedBranchName (since 5.2.0)
+- major
+- majorMinorPatch
+- minor
+- patch
+- preReleaseLabel
+- preReleaseLabelName
+- preReleaseLabelNameWithDash
+- preReleaseLabelWithDash
+- preReleaseNumber
+- semVer
+- semVerSourceIncrement
+- semVerSourceSemVer
+- semVerSourceSha
 - sha
 - shortSha
-- nuGetVersionV2 (removed in 6.0.0)
-- nuGetVersion (removed in 6.0.0)
-- nuGetPreReleaseTagV2 (removed in 6.0.0)
-- nuGetPreReleaseTag (removed in 6.0.0)
+- uncommittedChanges
+- versionSourceDistance
+- versionSourceIncrement
+- versionSourceSemVer
 - versionSourceSha
-- commitsSinceVersionSource (deprecated in 6.6.0, use versionSourceDistance instead; will be removed in v7.0.0)
-- commitsSinceVersionSourcePadded (since 5.2.0, removed in 6.0.0)
-- versionSourceSemVer (since 6.6.0)
-- versionSourceDistance (since 6.6.0)
-- versionSourceIncrement (since 6.6.0)
-- uncommittedChanges (since 5.5.0)
-- commitDate
+- weightedPreReleaseNumber
+
+GitVersion 7 uses `preReleaseLabel` for the full label, for example `beta.99`,
+and `preReleaseLabelName` for its name, for example `beta`. Numeric zero is
+preserved; nullable source values are exported as empty strings. The removed
+`commitsSinceVersionSource` output is replaced by `versionSourceDistance`.
+Both camel-case and `GitVersion_`-prefixed output and environment names remain
+available. See [the v5 migration guide](../../../migration-v5.md).
 
 ---
 

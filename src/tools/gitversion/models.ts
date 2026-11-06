@@ -25,31 +25,37 @@ export type CommandSettings = {
 }
 
 export type GitVersionOutput = {
-    Major: number
-    Minor: number
-    Patch: number
-    PreReleaseTag: string
-    PreReleaseTagWithDash: string
-    PreReleaseLabel: string
-    PreReleaseNumber: number
-    WeightedPreReleaseNumber: number
-    BuildMetaData: number
-    FullBuildMetaData: string
-    MajorMinorPatch: string
-    SemVer: string
-    AssemblySemVer: string
-    AssemblySemFileVer: string
-    FullSemVer: string
-    InformationalVersion: string
-    BranchName: string
-    EscapedBranchName: string
-    Sha: string
-    ShortSha: string
-    VersionSourceSha: string
-    CommitsSinceVersionSource: number
-    VersionSourceSemVer?: string
-    VersionSourceDistance?: number
-    VersionSourceIncrement?: string
-    UncommittedChanges: number
-    CommitDate: string
+    AssemblySemFileVer: string | null
+    AssemblySemVer: string | null
+    BranchName: string | null
+    BuildMetaData: number | null
+    CommitCountSourceDistance: number | null
+    CommitCountSourceSha: string | null
+    CommitDate: string | null
+    CustomVersion: string | null
+    EscapedBranchName: string | null
+    FullBuildMetaData: string | null
+    FullSemVer: string | null
+    InformationalVersion: string | null
+    Major: number | null
+    MajorMinorPatch: string | null
+    Minor: number | null
+    Patch: number | null
+    PreReleaseLabel: string | null
+    PreReleaseLabelName: string | null
+    PreReleaseLabelNameWithDash: string | null
+    PreReleaseLabelWithDash: string | null
+    PreReleaseNumber: number | null
+    SemVer: string | null
+    SemVerSourceIncrement: string | null
+    SemVerSourceSemVer: string | null
+    SemVerSourceSha: string | null
+    Sha: string | null
+    ShortSha: string | null
+    UncommittedChanges: number | null
+    VersionSourceDistance: number | null
+    VersionSourceIncrement: string | null
+    VersionSourceSemVer: string | null
+    VersionSourceSha: string | null
+    WeightedPreReleaseNumber: number | null
 }

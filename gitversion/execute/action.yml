@@ -55,57 +55,69 @@ inputs:
     required: false
     default: 'normal'
 outputs:
-  major: # id of output
-    description: 'The Major value'
-  minor:
-    description: 'The Minor value'
-  patch:
-    description: 'The Patch value'
-  preReleaseTag:
-    description: 'The PreReleaseTag value'
-  preReleaseTagWithDash:
-    description: 'The PreReleaseTagWithDash value'
-  preReleaseLabel:
-    description: 'The PreReleaseLabel value'
-  preReleaseNumber:
-    description: 'The PreReleaseNumber value'
-  weightedPreReleaseNumber:
-    description: 'The WeightedPreReleaseNumber value'
-  buildMetaData:
-    description: 'The BuildMetaData value'
-  fullBuildMetaData:
-    description: 'The FullBuildMetaData value'
-  majorMinorPatch:
-    description: 'The MajorMinorPatch value'
-  semVer:
-    description: 'The SemVer value'
-  assemblySemVer:
-    description: 'The AssemblySemVer value'
   assemblySemFileVer:
-    description: 'The AssemblySemFileVer value'
-  fullSemVer:
-    description: 'The FullSemVer value'
-  informationalVersion:
-    description: 'The InformationalVersion value'
+    description: "Suitable for .NET AssemblyFileVersion. Defaults to Major.Minor.Patch.0."
+  assemblySemVer:
+    description: "Suitable for .NET AssemblyVersion. Defaults to Major.Minor.0.0"
   branchName:
-    description: 'The BranchName value'
-  escapedBranchName:
-    description: 'The EscapedBranchName value'
-  sha:
-    description: 'The Sha value'
-  shortSha:
-    description: 'The ShortSha value'
-  versionSourceSha:
-    description: 'The VersionSourceSha value'
-  commitsSinceVersionSource:
-    description: 'The CommitsSinceVersionSource value (deprecated in 6.6.0, use versionSourceDistance instead; will be removed in v7.0.0)'
-  versionSourceSemVer:
-    description: 'The VersionSourceSemVer value (since 6.6.0)'
-  versionSourceDistance:
-    description: 'The VersionSourceDistance value (since 6.6.0)'
-  versionSourceIncrement:
-    description: 'The VersionSourceIncrement value (since 6.6.0)'
-  uncommittedChanges:
-    description: 'The UncommittedChanges value'
+    description: "The name of the checked out Git branch."
+  buildMetaData:
+    description: "The build metadata, usually representing number of commits since the CommitCountSourceSha."
+  commitCountSourceDistance:
+    description: "The number of non-ignored commits reachable from HEAD but not from the counting anchor."
+  commitCountSourceSha:
+    description: "The commit used as the counting anchor, or null when counting all reachable history."
   commitDate:
-    description: 'The CommitDate value'
+    description: "The ISO-8601 formatted date of the commit identified by Sha."
+  customVersion:
+    description: "A custom version computed from custom-version-format when configured."
+  escapedBranchName:
+    description: "Equal to BranchName, but with / replaced with -."
+  fullBuildMetaData:
+    description: "The BuildMetaData suffixed with BranchName and Sha."
+  fullSemVer:
+    description: "The full, SemVer 2.0 compliant version number."
+  informationalVersion:
+    description: "Suitable for .NET AssemblyInformationalVersion. Defaults to FullSemVer suffixed by FullBuildMetaData."
+  major:
+    description: "The major version. Should be incremented on breaking changes."
+  majorMinorPatch:
+    description: "Major, Minor and Patch joined together, separated by '.'."
+  minor:
+    description: "The minor version. Should be incremented on new features."
+  patch:
+    description: "The patch version. Should be incremented on bug fixes."
+  preReleaseLabel:
+    description: "The full pre-release label, including the PreReleaseNumber when present."
+  preReleaseLabelName:
+    description: "The name of the pre-release label, without the PreReleaseNumber."
+  preReleaseLabelNameWithDash:
+    description: "The pre-release label name prefixed with a dash."
+  preReleaseLabelWithDash:
+    description: "The pre-release label prefixed with a dash."
+  preReleaseNumber:
+    description: "The pre-release number is the number of commits since the last version bump."
+  semVer:
+    description: "The semantic version number, including PreReleaseLabelWithDash for pre-release version numbers."
+  semVerSourceIncrement:
+    description: "The final increment relative to the semantic baseline: None, Patch, Minor or Major."
+  semVerSourceSemVer:
+    description: "The semantic baseline supplied by the selected artifact or derivation."
+  semVerSourceSha:
+    description: "The semantic source commit SHA, or null for external sources such as configuration or a branch name."
+  sha:
+    description: "The SHA of the Git commit."
+  shortSha:
+    description: "The Sha limited to 7 characters."
+  uncommittedChanges:
+    description: "The number of uncommitted changes present in the repository."
+  versionSourceDistance:
+    description: "Compatibility alias for CommitCountSourceDistance."
+  versionSourceIncrement:
+    description: "The increment strategy used for the version calculation. Possible values: None, Patch, Minor, Major."
+  versionSourceSemVer:
+    description: "Legacy semantic baseline; it need not come from VersionSourceSha. Prefer SemVerSourceSemVer."
+  versionSourceSha:
+    description: "Compatibility alias for CommitCountSourceSha."
+  weightedPreReleaseNumber:
+    description: "A summation of branch specific pre-release-weight and the PreReleaseNumber. Can be used to obtain a monotonically increasing version number across the branches."
