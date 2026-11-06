@@ -90,6 +90,15 @@ describe('GitVersionTool', () => {
         expect(tool.settingsProvider).toBeDefined()
     })
 
+    it('opts out of both SDK and GitVersion telemetry', () => {
+        const setVariable = vi.fn()
+        const tool = new TestGitVersionTool({ info: vi.fn(), setVariable } as unknown as IBuildAgent)
+        tool.disableTelemetry()
+        expect(setVariable).toHaveBeenCalledWith('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
+        expect(setVariable).toHaveBeenCalledWith('GITVERSION_TELEMETRY_OPTOUT', 'true')
+        expect(setVariable).not.toHaveBeenCalledWith('GITVERSION_INTERNAL_CALLER', expect.anything())
+    })
+
     describe('writeGitVersionToAgent', () => {
         it('should write correct output and variables to agent', () => {
             const outputs = new Map<string, string>()

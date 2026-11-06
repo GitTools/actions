@@ -18,6 +18,14 @@ on:
       - 'codex/actions-v5-*'
 
   workflow_dispatch:
+    inputs:
+      gitversion-version:
+        description: 'Exact published v7 package to validate (blank builds pinned source)'
+        required: false
+        default: ''
+
+env:
+  GITVERSION_TEST_VERSION: ${{ inputs.gitversion-version || '' }}
 
 defaults:
   run:
@@ -30,7 +38,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
+        os: [ windows-2025-vs2026, ubuntu-24.04, ubuntu-24.04-arm, macos-26 ]
       fail-fast: false
     steps:
       - name: Checkout

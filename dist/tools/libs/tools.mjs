@@ -158,6 +158,7 @@ var DotnetTool = class DotnetTool {
 	constructor(buildAgent) {
 		this.buildAgent = buildAgent;
 	}
+	get installFramework() {}
 	disableTelemetry() {
 		this.buildAgent.info("Disable Telemetry");
 		this.buildAgent.setVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "true");
@@ -312,6 +313,7 @@ var DotnetTool = class DotnetTool {
 		if (!semverVersion) throw new Error(`Invalid version spec: ${version}`);
 		return await this.buildAgent.installToolInCache(toolName, semverVersion, async (toolPath) => {
 			const builder = new ArgumentsBuilder().addArgument("tool").addArgument("install").addArgument(toolName).addKeyValue("tool-path", toolPath).addKeyValue("version", semverVersion);
+			if (this.installFramework) builder.addKeyValue("framework", this.installFramework);
 			if (ignoreFailedSources) builder.addFlag("ignore-failed-sources");
 			if (nugetConfigPath) builder.addKeyValue("configfile", nugetConfigPath);
 			const result = await this.execute("dotnet", builder.build());

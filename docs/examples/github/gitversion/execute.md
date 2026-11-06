@@ -20,7 +20,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _4.7.0_ of the GitVersion Execute action.  It is recommended to use the latest released version in your own workflows.
+> The examples use upcoming version _5.x_ of the GitVersion Execute action.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
 
 ## Inputs
 

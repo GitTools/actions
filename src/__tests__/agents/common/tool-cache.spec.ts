@@ -2,7 +2,11 @@ import { it, expect, vi } from 'vitest'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import * as os from 'node:os'
+import * as libc from 'detect-libc'
 import { BuildAgent } from '@agents/local'
+
+vi.mock('node:os', { spy: true })
+vi.mock('detect-libc', { spy: true })
 
 it.skipIf(process.platform === 'win32')('keeps a relative tool symlink executable after the installation directory is removed', async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-cache-'))
@@ -187,5 +191,79 @@ it('preserves a completed cache and ignores incomplete backups', async () => {
     } finally {
         vi.restoreAllMocks()
         await fs.rm(root, { recursive: true, force: true })
+    }
+})
+
+it('ignores another platform cache and incomplete installations', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-cache-key-'))
+    try {
+        const agent = new BuildAgent()
+        vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(root)
+        const otherPlatform = path.join(root, 'GitVersion.Tool', '7.0.0', 'other-platform')
+        await fs.mkdir(otherPlatform, { recursive: true })
+        await fs.writeFile(path.join(otherPlatform, '.complete'), '')
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBeNull()
+        const native = agent.getToolCachePath('GitVersion.Tool', '7.0.0')
+        await fs.mkdir(native, { recursive: true })
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBeNull()
+        await fs.writeFile(path.join(native, '.complete'), '')
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBe(native)
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})
+
+it.each(['x64', 'arm64'] as const)('isolates completed glibc and musl tool installations on Linux %s', async architecture => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-libc-'))
+    const agent = new BuildAgent()
+    vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(root)
+    vi.spyOn(os, 'platform').mockReturnValue('linux')
+    vi.spyOn(os, 'arch').mockReturnValue(architecture)
+    const family = vi.spyOn(libc, 'familySync').mockReturnValue(libc.GLIBC)
+    try {
+        const glibc = await agent.installToolInCache('tool', '1.0.0', async dir => {
+            await fs.writeFile(path.join(dir, 'payload'), 'glibc binary')
+        })
+        expect(glibc).toBe(path.join(root, 'tool', '1.0.0', `linux-${architecture}`))
+        family.mockReturnValue(libc.MUSL)
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBeNull()
+        const musl = await agent.installToolInCache('tool', '1.0.0', async dir => {
+            await fs.writeFile(path.join(dir, 'payload'), 'musl binary')
+        })
+        expect(musl).toBe(path.join(root, 'tool', '1.0.0', `linux-musl-${architecture}`))
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBe(musl)
+        family.mockReturnValue(libc.GLIBC)
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBe(glibc)
+        expect(await fs.readFile(path.join(glibc, 'payload'), 'utf8')).toBe('glibc binary')
+        expect(await fs.readFile(path.join(musl, 'payload'), 'utf8')).toBe('musl binary')
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})
+
+it.each(['win32', 'darwin'] as const)('preserves the existing cache identity on %s', platform => {
+    const agent = new BuildAgent()
+    vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue('cache')
+    vi.spyOn(os, 'platform').mockReturnValue(platform)
+    vi.spyOn(os, 'arch').mockReturnValue('arm64')
+    const family = vi.spyOn(libc, 'familySync')
+    try {
+        expect(agent.getToolCachePath('tool', '1.0.0')).toBe(path.join('cache', 'tool', '1.0.0', `${platform}-arm64`))
+        expect(family).not.toHaveBeenCalled()
+    } finally {
+        vi.restoreAllMocks()
+    }
+})
+
+it('rejects an unknown Linux libc instead of sharing a potentially incompatible cache', () => {
+    const agent = new BuildAgent()
+    vi.spyOn(os, 'platform').mockReturnValue('linux')
+    vi.spyOn(libc, 'familySync').mockReturnValue(null)
+    try {
+        expect(() => agent.getToolCachePath('tool', '1.0.0')).toThrow('Unable to identify the Linux libc for the tool cache')
+    } finally {
+        vi.restoreAllMocks()
     }
 })

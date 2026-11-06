@@ -1,10 +1,12 @@
 import * as path from 'node:path'
+import * as os from 'node:os'
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitversion'
+import baseline from '../../../../scripts/gitversion-test.json'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
@@ -15,7 +17,7 @@ describe('GitVersion Runner', () => {
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = process.env.GITVERSION_TEST_VERSION || '7.0.0-alpha.actions.1'
+    const versionSpec = process.env.GITVERSION_TEST_VERSION || baseline.publishedVersion || baseline.version
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -24,7 +26,7 @@ describe('GitVersion Runner', () => {
 
         beforeAll(() => {
             version = versionSpec
-            toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
+            toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version, `${os.platform()}-${os.arch()}`)
             runner = new Runner(agent)
         })
 

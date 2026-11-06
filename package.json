@@ -1,6 +1,6 @@
 {
   "name": "gittools-actions",
-  "version": "4.7.0",
+  "version": "5.0.0-alpha.0",
   "description": "Easy Semantic Versioning (https://semver.org) for projects using Git",
   "repository": {
     "type": "git",
@@ -68,6 +68,7 @@
     "vitest": "5.1.0"
   },
   "dependencies": {
+    "detect-libc": "2.1.2",
     "proper-lockfile": "4.1.2",
     "semver": "7.8.5"
   },

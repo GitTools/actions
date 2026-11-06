@@ -23,6 +23,15 @@ export class GitVersionTool extends DotnetTool {
         return '>=7.0.0-0 <8.0.0-0'
     }
 
+    protected get installFramework(): string {
+        return 'net10.0'
+    }
+
+    override disableTelemetry(): void {
+        super.disableTelemetry()
+        this.buildAgent.setVariable('GITVERSION_TELEMETRY_OPTOUT', 'true')
+    }
+
     get settingsProvider(): IGitVersionSettingsProvider {
         return new GitVersionSettingsProvider(this.buildAgent)
     }
