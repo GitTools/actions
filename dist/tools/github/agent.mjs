@@ -3,7 +3,7 @@ import * as os from "node:os";
 import process$1 from "node:process";
 import * as crypto from "node:crypto";
 import * as fs from "node:fs";
-//#region src/agents/github/command.ts
+// src/agents/github/command.ts
 var CMD_STRING = "::";
 /**
 * Commands
@@ -74,8 +74,7 @@ function prepareKeyValueMessage(key, value) {
 	if (convertedValue.includes(delimiter)) throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
 	return `${key}<<${delimiter}${os.EOL}${convertedValue}${os.EOL}${delimiter}`;
 }
-//#endregion
-//#region src/agents/github/build-agent.ts
+// src/agents/github/build-agent.ts
 var BuildAgent = class extends BuildAgentBase {
 	agentName = "GitHub Actions";
 	sourceDirVariable = "GITHUB_WORKSPACE";
@@ -112,7 +111,6 @@ var BuildAgent = class extends BuildAgentBase {
 	};
 	updateBuildNumber = (version) => this.debug(`updateBuildNumber - ${version}`);
 };
-//#endregion
 export { BuildAgent };
 
 //# sourceMappingURL=agent.mjs.map

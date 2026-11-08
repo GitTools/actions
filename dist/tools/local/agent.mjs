@@ -1,7 +1,7 @@
 import { BuildAgentBase } from "../libs/agents.mjs";
 import * as process from "node:process";
 import os from "node:os";
-//#region src/agents/local/build-agent.ts
+// src/agents/local/build-agent.ts
 var BuildAgent = class extends BuildAgentBase {
 	agentName = "Local";
 	sourceDirVariable = "AGENT_SOURCE_DIR";
@@ -28,7 +28,6 @@ var BuildAgent = class extends BuildAgentBase {
 	}
 	updateBuildNumber = (version) => this.debug(`updateBuildNumber - ${version}`);
 };
-//#endregion
 export { BuildAgent };
 
 //# sourceMappingURL=agent.mjs.map

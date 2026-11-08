@@ -3,7 +3,7 @@ import { allIndexesOf } from "../lib.mjs";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as crypto from "node:crypto";
-//#region src/tools/gitversion/settings.ts
+// src/tools/gitversion/settings.ts
 var GitVersionSettingsProvider = class extends SettingsProvider {
 	getExecuteSettings() {
 		return {
@@ -30,8 +30,7 @@ var GitVersionSettingsProvider = class extends SettingsProvider {
 		};
 	}
 };
-//#endregion
-//#region src/tools/gitversion/tool.ts
+// src/tools/gitversion/tool.ts
 var GitVersionTool = class extends DotnetTool {
 	get packageName() {
 		return "GitVersion.Tool";
@@ -156,8 +155,7 @@ var GitVersionTool = class extends DotnetTool {
 		});
 	}
 };
-//#endregion
-//#region src/tools/gitversion/runner.ts
+// src/tools/gitversion/runner.ts
 var Runner = class extends RunnerBase {
 	buildAgent;
 	tool;
@@ -286,7 +284,6 @@ var Runner = class extends RunnerBase {
 		return resultJson;
 	}
 };
-//#endregion
 export { Runner };
 
 //# sourceMappingURL=gitversion.mjs.map

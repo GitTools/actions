@@ -4,7 +4,7 @@ import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as crypto from "node:crypto";
 import * as os from "node:os";
-//#region src/tools/common/arguments-builder.ts
+// src/tools/common/arguments-builder.ts
 var import_semver = /* @__PURE__ */ __toESM(require_semver(), 1);
 var ArgumentsBuilder = class ArgumentsBuilder {
 	args = [];
@@ -150,8 +150,7 @@ var ArgumentsBuilder = class ArgumentsBuilder {
 		};
 	}
 };
-//#endregion
-//#region src/tools/common/dotnet-tool.ts
+// src/tools/common/dotnet-tool.ts
 var DotnetTool = class DotnetTool {
 	buildAgent;
 	static nugetRoot = "https://azuresearch-usnc.nuget.org/query";
@@ -357,8 +356,7 @@ var DotnetTool = class DotnetTool {
 		return valid;
 	}
 };
-//#endregion
-//#region src/tools/common/settings.ts
+// src/tools/common/settings.ts
 var SettingsProvider = class {
 	buildAgent;
 	constructor(buildAgent) {
@@ -374,11 +372,9 @@ var SettingsProvider = class {
 		};
 	}
 };
-//#endregion
-//#region src/tools/common/index.ts
+// src/tools/common/index.ts
 var keysOf = Object.keys;
-//#endregion
-//#region src/tools/common/runner.ts
+// src/tools/common/runner.ts
 var RunnerBase = class {
 	buildAgent;
 	constructor(buildAgent) {
@@ -427,7 +423,6 @@ var RunnerBase = class {
 		}
 	}
 };
-//#endregion
 export { ArgumentsBuilder, DotnetTool, RunnerBase, SettingsProvider, keysOf };
 
 //# sourceMappingURL=tools.mjs.map

@@ -1,7 +1,7 @@
 import { BuildAgentBase } from "../libs/agents.mjs";
 import * as os from "node:os";
 import * as process from "node:process";
-//#region src/agents/azure/command.ts
+// src/agents/azure/command.ts
 var CMD_PREFIX = "##vso[";
 var TaskResult = /* @__PURE__ */ function(TaskResult) {
 	TaskResult[TaskResult["Succeeded"] = 0] = "Succeeded";
@@ -59,8 +59,7 @@ function toCommandValue(input) {
 	else if (typeof input === "string" || Object.prototype.toString.call(input) === "[object String]") return input;
 	return JSON.stringify(input);
 }
-//#endregion
-//#region src/agents/azure/build-agent.ts
+// src/agents/azure/build-agent.ts
 var BuildAgent = class extends BuildAgentBase {
 	agentName = "Azure Pipelines";
 	sourceDirVariable = "BUILD_SOURCESDIRECTORY";
@@ -108,7 +107,6 @@ var BuildAgent = class extends BuildAgentBase {
 		return name.replaceAll(".", "_").replaceAll(" ", "_").toUpperCase();
 	}
 };
-//#endregion
 export { BuildAgent };
 
 //# sourceMappingURL=agent.mjs.map

@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-//#region src/tools/lib.ts
+// src/tools/lib.ts
 async function getAgent(buildAgent) {
 	return new (await (import(`./${buildAgent}/agent.mjs`))).BuildAgent();
 }
@@ -43,7 +43,6 @@ function allIndexesOf(searchString, indexOf) {
 	for (let i = 0; i < searchString.length; i++) if (searchString[i] === indexOf) resultArray.push(i);
 	return resultArray;
 }
-//#endregion
 export { allIndexesOf, parseCliArgs, run };
 
 //# sourceMappingURL=lib.mjs.map

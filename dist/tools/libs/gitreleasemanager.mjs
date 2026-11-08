@@ -1,6 +1,6 @@
 import { ArgumentsBuilder, DotnetTool, RunnerBase, SettingsProvider } from "./tools.mjs";
 import * as path from "node:path";
-//#region src/tools/gitreleasemanager/settings.ts
+// src/tools/gitreleasemanager/settings.ts
 var GitReleaseManagerSettingsProvider = class extends SettingsProvider {
 	getCreateSettings() {
 		const name = this.buildAgent.getInput("name");
@@ -50,8 +50,7 @@ var GitReleaseManagerSettingsProvider = class extends SettingsProvider {
 		return { ...this.getCommonSettings() };
 	}
 };
-//#endregion
-//#region src/tools/gitreleasemanager/tool.ts
+// src/tools/gitreleasemanager/tool.ts
 var GitReleaseManagerTool = class extends DotnetTool {
 	get packageName() {
 		return "GitReleaseManager.Tool";
@@ -162,8 +161,7 @@ var GitReleaseManagerTool = class extends DotnetTool {
 		return await this.getRepoPath(settings.targetDirectory);
 	}
 };
-//#endregion
-//#region src/tools/gitreleasemanager/runner.ts
+// src/tools/gitreleasemanager/runner.ts
 var Runner = class extends RunnerBase {
 	buildAgent;
 	tool;
@@ -208,7 +206,6 @@ var Runner = class extends RunnerBase {
 		return this.safeExecute(async () => await this.tool.addAsset(), "GitReleaseManager added assets to release successfully");
 	}
 };
-//#endregion
 export { Runner };
 
 //# sourceMappingURL=gitreleasemanager.mjs.map
