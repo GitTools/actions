@@ -55,7 +55,7 @@ describe('installed GitVersion 7 compatibility', () => {
         cachedSetupCode = (await runner.run('setup')).code
         cacheInstallCalls = exec.mock.calls.length
         exec.mockRestore()
-    })
+    }, 120000) // Published-package installation includes network restore on cold CI agents.
 
     beforeEach(async () => {
         for (const name of inputNames) vi.stubEnv(`INPUT_${name.toUpperCase()}`, '')
