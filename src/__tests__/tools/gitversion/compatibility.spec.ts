@@ -7,6 +7,7 @@ import { simpleGit } from 'simple-git'
 import { BuildAgent } from '@agents/local'
 import { Runner } from '@tools/gitversion'
 import baseline from '../../../../scripts/gitversion-test.json'
+import { selectTestVersion } from './test-version'
 
 describe('installed GitVersion 7 compatibility', () => {
     let root: string
@@ -37,7 +38,7 @@ describe('installed GitVersion 7 compatibility', () => {
         const agent = new BuildAgent()
         vi.spyOn(agent, 'tempDir', 'get').mockReturnValue(path.join(root, 'temp'))
         vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(path.join(root, 'cache'))
-        const version = process.env.GITVERSION_TEST_VERSION || baseline.publishedVersion || baseline.version
+        const version = selectTestVersion(baseline)
         vi.stubEnv('INPUT_VERSIONSPEC', version)
         vi.stubEnv('INPUT_INCLUDEPRERELEASE', 'true')
         vi.stubEnv('INPUT_NUGETCONFIGPATH', path.resolve('.test/gitversion.nuget.config'))
