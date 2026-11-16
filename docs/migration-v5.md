@@ -66,7 +66,7 @@ GitVersion 7 packages tools per RID. Windows and Linux x64/ARM64, Linux musl
 variants, and Apple Silicon macOS are upstream targets. Intel macOS users should
 remain on Actions v4 and GitVersion 6. CI currently exercises Windows x64, Linux
 x64/ARM64 and Apple Silicon macOS; Windows ARM64 and musl remain release checks.
-Tool caches are separated by OS/process architecture. Incomplete installations
+Tool caches are separated by OS/process architecture and Linux libc family. Incomplete installations
 are not reused. Installation happens at the final cache path because RID tool
 launchers can depend on that location.
 
@@ -138,16 +138,21 @@ steps:
 
 ## Validation and release order
 
-The default test baseline builds RID-specific packages from the immutable
-upstream commit in `scripts/gitversion-test.json`. Run `npm run test:ci` with the
-SDKs required by that baseline. This source rehearsal is not published-package
-validation. CI tests the built GitHub entrypoints and the Azure adapter; Azure CI
+The default test baseline installs the exact published GitVersion 7 beta selected
+by `publishedVersion` in `scripts/gitversion-test.json`. Run `npm run test:ci` to
+validate it. CI tests the built GitHub entrypoints and the Azure adapter; Azure CI
 also packages and executes the local VSIX without publishing it.
+
+Set `GITVERSION_TEST_MODE=source` to build RID-specific packages from the immutable
+upstream commit retained in that manifest, using its required SDKs. This optional
+source rehearsal is not published-package validation.
 
 Use the CI workflow's `gitversion-version` input to validate an exact published
 v7 prerelease or stable version. Locally set `GITVERSION_TEST_VERSION` before
-`npm run test:ci` to select that route. It uses NuGet rather than the local source
-package feed and must pass before declaring release compatibility.
+`npm run test:ci` to override the manifest baseline. Published-package validation
+uses NuGet rather than the local source package feed. Passing the beta validates
+that exact beta; repeat against the final RC and exact stable package before
+declaring stable-release compatibility.
 
 The release notification workflow accepts stable GitVersion 7 updates only. It
 opens a PR updating the published test baseline; it does not implement
