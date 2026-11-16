@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       gitversion-version:
-        description: 'Exact published v7 package to validate (blank builds pinned source)'
+        description: 'Exact published v7 package to validate (blank uses the manifest baseline)'
         required: false
         default: ''
 
@@ -59,7 +59,7 @@ jobs:
             10.0.x
             11.0.100-rc.3.26522.148
 
-      - name: Prepare GitVersion 7 source packages
+      - name: Prepare GitVersion 7 test package settings
         run: node scripts/prepare-gitversion.mjs
 
       - run: |
