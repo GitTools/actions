@@ -6,7 +6,6 @@ import { pathToFileURL } from 'node:url'
 import { simpleGit } from 'simple-git'
 import { BuildAgent } from '@agents/local'
 import { Runner } from '@tools/gitversion'
-import baseline from '../../../../scripts/gitversion-test.json'
 import { selectTestVersion } from './test-version'
 
 describe('installed GitVersion 7 compatibility', () => {
@@ -38,10 +37,10 @@ describe('installed GitVersion 7 compatibility', () => {
         const agent = new BuildAgent()
         vi.spyOn(agent, 'tempDir', 'get').mockReturnValue(path.join(root, 'temp'))
         vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(path.join(root, 'cache'))
-        const version = selectTestVersion(baseline)
+        const version = selectTestVersion()
         vi.stubEnv('INPUT_VERSIONSPEC', version)
         vi.stubEnv('INPUT_INCLUDEPRERELEASE', 'true')
-        vi.stubEnv('INPUT_NUGETCONFIGPATH', path.resolve('.test/gitversion.nuget.config'))
+        vi.stubEnv('INPUT_NUGETCONFIGPATH', path.resolve('nuget.config'))
         vi.stubEnv('INPUT_PREFERLATESTVERSION', 'true')
         vi.stubEnv('GITVERSION_PATH', '')
         runner = new Runner(agent)
@@ -63,6 +62,9 @@ describe('installed GitVersion 7 compatibility', () => {
         for (const name of [
             'GIT_BRANCH',
             'Git_Branch',
+            // Fixture repositories must not inherit the enclosing CI checkout's branch.
+            'GITHUB_REF',
+            'BUILD_SOURCEBRANCH',
             'GITVERSION_CONFIGURATION_VERSION',
             'GITVERSION_ARGUMENT_PARSER_VERSION',
             'GITVERSION_USE_V6_ARGUMENT_PARSER',

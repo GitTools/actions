@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       gitversion-version:
-        description: 'Exact published v7 package to validate (blank uses the manifest baseline)'
+        description: 'Exact published v7 package to validate (blank uses the package.json baseline)'
         required: false
         default: ''
 
@@ -52,15 +52,19 @@ jobs:
         with:
           node-version: '24.x'
 
-      - name: Install .NET SDKs for the pinned GitVersion rehearsal
+      - name: Install .NET SDKs
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: |
             10.0.x
-            11.0.100-rc.3.26522.148
+            11.0.x
 
-      - name: Prepare GitVersion 7 test package settings
-        run: node scripts/prepare-gitversion.mjs
+      - name: Select GitVersion test version
+        run: |
+          if (!$env:GITVERSION_TEST_VERSION) {
+            $version = (Get-Content package.json -Raw | ConvertFrom-Json).config.gitversionVersion
+            "GITVERSION_TEST_VERSION=$version" >> $env:GITHUB_ENV
+          }
 
       - run: |
           npm ci --ignore-scripts
@@ -92,7 +96,7 @@ jobs:
         with:
           versionSpec: '${{ env.GITVERSION_TEST_VERSION }}'
           includePrerelease: true
-          nugetConfigPath: '${{ env.GITVERSION_TEST_NUGET_CONFIG }}'
+          nugetConfigPath: '${{ github.workspace }}/nuget.config'
 
       - name: gitversion/command (showvariable)
         uses: ./gitversion/command

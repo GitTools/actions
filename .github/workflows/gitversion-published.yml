@@ -59,7 +59,7 @@ jobs:
           labels: dependencies
           title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
           body: |
-            Updates the published-package validation baseline in `scripts/gitversion-test.json`
+            Updates the published-package validation baseline in `package.json` (`config.gitversionVersion`)
             following publication of GitVersion `${{ github.event.client_payload.newTag }}`.
 
             Triggered by the `gitversion-release-published` repository dispatch.

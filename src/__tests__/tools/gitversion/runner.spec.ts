@@ -5,7 +5,6 @@ import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitversion'
-import baseline from '../../../../scripts/gitversion-test.json'
 import { selectTestVersion } from './test-version'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
@@ -17,7 +16,7 @@ describe('GitVersion Runner', () => {
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = selectTestVersion(baseline)
+    const versionSpec = selectTestVersion()
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -50,7 +49,7 @@ describe('GitVersion Runner', () => {
             setInputs({
                 versionSpec: versionSpec,
                 includePrerelease: true,
-                nugetConfigPath: process.env.GITVERSION_TEST_NUGET_CONFIG || path.resolve(baseDir, 'gitversion.nuget.config'),
+                nugetConfigPath: path.resolve('nuget.config'),
                 ignoreFailedSources: false,
                 preferLatestVersion: true
             })

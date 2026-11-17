@@ -57,17 +57,12 @@ scheduled for removal in GitVersion 7.1. V5 uses v7 behavior directly.
 
 Install the .NET 10 SDK before setup. V5 requests the tool's `net10.0` target,
 including when a newer SDK is installed, so a cached tool does not unexpectedly
-require a .NET 11 runtime. Execution retains major runtime roll-forward. The
-pinned source rehearsal currently also needs its exact .NET 11 preview SDK to
-build upstream; that is a test-build prerequisite, not a requirement imposed on
-all v5 consumers.
+require a .NET 11 runtime. Execution retains major runtime roll-forward.
 
-GitVersion 7 packages tools per RID. Windows and Linux x64/ARM64, Linux musl
-variants, and Apple Silicon macOS are upstream targets. Intel macOS users should
-remain on Actions v4 and GitVersion 6. CI currently exercises Windows x64, Linux
-x64/ARM64 and Apple Silicon macOS; Windows ARM64 and musl remain release checks.
-Tool caches are separated by OS/process architecture and Linux libc family. Incomplete installations
-are not reused. Installation happens at the final cache path because RID tool
+GitVersion 7 provides RID-specific tool packages for Windows and Linux x64/ARM64,
+Linux musl variants, and Intel/Apple Silicon macOS. Tool caches are separated by
+OS/process architecture and Linux libc family. Incomplete installations are not
+reused. Installation happens at the final cache path because RID tool
 launchers can depend on that location.
 
 Keep Git on PATH for shallow-clone checks, normalization, dynamic repositories
@@ -139,19 +134,15 @@ steps:
 ## Validation and release order
 
 The default test baseline installs the exact published GitVersion 7 beta selected
-by `publishedVersion` in `scripts/gitversion-test.json`. Run `npm run test:ci` to
+by `config.gitversionVersion` in `package.json`. Run `npm run test:ci` to
 validate it. CI tests the built GitHub entrypoints and the Azure adapter; Azure CI
 also packages and executes the local VSIX without publishing it.
 
-Set `GITVERSION_TEST_MODE=source` to build RID-specific packages from the immutable
-upstream commit retained in that manifest, using its required SDKs. This optional
-source rehearsal is not published-package validation.
-
 Use the CI workflow's `gitversion-version` input to validate an exact published
 v7 prerelease or stable version. Locally set `GITVERSION_TEST_VERSION` before
-`npm run test:ci` to override the manifest baseline. Published-package validation
-uses NuGet rather than the local source package feed. Passing the beta validates
-that exact beta; repeat against the final RC and exact stable package before
+`npm run test:ci` to override the package baseline. Published-package validation
+uses NuGet. Passing the beta validates that exact beta; repeat against the final
+RC and exact stable package before
 declaring stable-release compatibility.
 
 The release notification workflow accepts stable GitVersion 7 updates only. It
