@@ -20,7 +20,13 @@ export class GitVersionTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '7.x'
+        return '>=7.0.0 <8.0.0'
+    }
+
+    protected override satisfiesVersionRange(version: string, includePrerelease: boolean): boolean {
+        // Compare the release version so 7.0.0 previews count as v7 and 8.0.0 previews count as v8.
+        const releaseVersion = includePrerelease ? version.split('-', 1)[0] : version
+        return super.satisfiesVersionRange(releaseVersion, includePrerelease)
     }
 
     protected get installFramework(): string {
