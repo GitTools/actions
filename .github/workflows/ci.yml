@@ -15,17 +15,8 @@ on:
     branches:
       - main
       - vnext
-      - 'codex/actions-v5-*'
 
   workflow_dispatch:
-    inputs:
-      gitversion-version:
-        description: 'Exact published v7 package to validate (blank uses the package.json baseline)'
-        required: false
-        default: ''
-
-env:
-  GITVERSION_TEST_VERSION: ${{ inputs.gitversion-version || '' }}
 
 defaults:
   run:
@@ -51,20 +42,6 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24.x'
-
-      - name: Install .NET SDKs
-        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
-        with:
-          dotnet-version: |
-            10.0.x
-            11.0.x
-
-      - name: Select GitVersion test version
-        run: |
-          if (!$env:GITVERSION_TEST_VERSION) {
-            $version = (Get-Content package.json -Raw | ConvertFrom-Json).config.gitversionVersion
-            "GITVERSION_TEST_VERSION=$version" >> $env:GITHUB_ENV
-          }
 
       - run: |
           npm ci --ignore-scripts
@@ -94,7 +71,7 @@ jobs:
       - name: gitversion/setup
         uses: ./gitversion/setup
         with:
-          versionSpec: '${{ env.GITVERSION_TEST_VERSION }}'
+          versionSpec: '7.0.x'
           includePrerelease: true
           nugetConfigPath: '${{ github.workspace }}/nuget.config'
 
@@ -143,7 +120,7 @@ jobs:
         name: Use variables and output
 
       - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-26.04'
+        if: matrix.os == 'ubuntu-26.04'
         with:
           message: 'dist update'
         name: Rebuild dist and push

@@ -25,16 +25,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Install Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: '24.x'
-
-      - name: Install .NET SDK
-        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
-        with:
-          dotnet-version: '10.0.x'
-
       - run: |
           npm ci --ignore-scripts
           npm run build:tools

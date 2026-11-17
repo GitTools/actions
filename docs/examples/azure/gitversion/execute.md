@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion-setup@5
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use upcoming version _5.x_ of the GitVersion Execute task.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
+> The examples use version _5.0.0_ of the GitVersion Execute task.  Use v4 with GitVersion 6.
 
 ## Inputs
 
@@ -136,9 +136,9 @@ available. See [the v5 migration guide](../../../migration-v5.md).
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
@@ -152,9 +152,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as reference for output values
 
@@ -181,9 +181,9 @@ calculation:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -199,9 +199,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -218,9 +218,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -236,9 +236,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -256,9 +256,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -274,9 +274,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -292,9 +292,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -310,9 +310,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@5.0.0 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@5.0.0
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -345,12 +345,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@5
+      - task: gitversion-setup@5.0.0
         displayName: Install GitVersion
         inputs:
           versionSpec: '7.0.x'
 
-      - task: gitversion-execute@5
+      - task: gitversion-execute@5.0.0
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -415,12 +415,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@5
+      - task: gitversion-setup@5.0.0
         displayName: Install GitVersion
         inputs:
           versionSpec: '7.0.x'
 
-      - task: gitversion-execute@5
+      - task: gitversion-execute@5.0.0
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -506,12 +506,12 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion-setup@5
+          - task: gitversion-setup@5.0.0
             displayName: Install GitVersion
             inputs:
               versionSpec: '7.0.x'
 
-          - task: gitversion-execute@5
+          - task: gitversion-execute@5.0.0
             displayName: Determine Version
             name: version_step # step id used as a reference for output values
             inputs:

@@ -41,10 +41,18 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Select the published GitVersion 7 test baseline
+      - name: Update GitVersion version references
         env:
           GITVERSION_RELEASE_TAG: ${{ github.event.client_payload.newTag }}
-        run: node scripts/update-gitversion-version.mjs
+        run: |
+          . ./utilities.ps1
+          $oldTag = extract-version
+          $newTag = $env:GITVERSION_RELEASE_TAG
+          if ($newTag -notmatch '^7\.\d+\.\d+$') { throw 'Expected a stable GitVersion 7 release tag.' }
+          $newTag = $newTag -replace '\.\d+$', '.x'
+          Get-ChildItem .github/workflows, .azure, src/__tests__/tools/gitversion -Recurse -File |
+            Where-Object { $_.Extension -in '.yml', '.yaml', '.ts' } |
+            ForEach-Object { update-files $_.FullName -OldVersion ([regex]::Escape($oldTag)) -NewVersion $newTag }
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
@@ -59,7 +67,7 @@ jobs:
           labels: dependencies
           title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
           body: |
-            Updates the published-package validation baseline in `package.json` (`config.gitversionVersion`)
+            Updates explicit GitVersion version references in CI workflows and integration tests
             following publication of GitVersion `${{ github.event.client_payload.newTag }}`.
 
             Triggered by the `gitversion-release-published` repository dispatch.

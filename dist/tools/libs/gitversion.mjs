@@ -42,7 +42,7 @@ var GitVersionTool = class extends DotnetTool {
 		return "GITVERSION_PATH";
 	}
 	get versionRange() {
-		return ">=7.0.0-0 <8.0.0-0";
+		return "7.x";
 	}
 	get installFramework() {
 		return "net10.0";

@@ -44,7 +44,7 @@ describe('GitVersionTool', () => {
     })
 
     it('should return correct version range', () => {
-        expect(tool.versionRange).toBe('>=7.0.0-0 <8.0.0-0')
+        expect(tool.versionRange).toBe('7.x')
     })
 
     it.each([

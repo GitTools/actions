@@ -11,7 +11,6 @@ on:
   pull_request:
     branches:
       - main
-      - 'codex/actions-v5-*'
 
   workflow_dispatch:
 
@@ -32,34 +31,10 @@ jobs:
           path: gv-repo
           fetch-depth: 0
 
-      - name: Install Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: '24.x'
-
-      - name: Install .NET SDKs
-        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
-        with:
-          dotnet-version: |
-            10.0.x
-            11.0.x
-
-      - name: Build the checked-out actions
-        working-directory: gv-repo
-        run: |
-          npm ci --ignore-scripts
-          npm run build
-
-      - name: Select GitVersion test version
-        working-directory: gv-repo
-        run: |
-          $version = (Get-Content package.json -Raw | ConvertFrom-Json).config.gitversionVersion
-          "GITVERSION_TEST_VERSION=$version" >> $env:GITHUB_ENV
-
       - name: Install GitVersion
         uses: ./gv-repo/gitversion/setup
         with:
-          versionSpec: '${{ env.GITVERSION_TEST_VERSION }}'
+          versionSpec: '7.0.x'
           includePrerelease: true
           nugetConfigPath: '${{ github.workspace }}/gv-repo/nuget.config'
 

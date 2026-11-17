@@ -13,14 +13,14 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v5.0.0
     with:
       versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use upcoming version _5.x_ of the GitVersion Command action.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
+> The examples use version _5.0.0_ of the GitVersion Command action.  Use v4 with GitVersion 6.
 
 ## Inputs
 
@@ -56,10 +56,10 @@ verbosity:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/command@v5
+    uses: gittools/actions/gitversion/command@v5.0.0
     with:
       arguments: '--show-config'
 ```
@@ -73,10 +73,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
 
   - name: Output the FullSemVer variable
-    uses: gittools/actions/gitversion/command@v5
+    uses: gittools/actions/gitversion/command@v5.0.0
     with:
       arguments: '--show-variable FullSemVer'
 ```
@@ -90,10 +90,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
 
   - name: Output the formatted version
-    uses: gittools/actions/gitversion/command@v5
+    uses: gittools/actions/gitversion/command@v5.0.0
     with:
       arguments: '--format {Major}.{Minor}' # any Output Variable can be used here
 ```
@@ -107,10 +107,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
 
   - name: Display GitVersion config
-    uses: gittools/actions/gitversion/command@v5
+    uses: gittools/actions/gitversion/command@v5.0.0
     with:
       arguments: '--show-config'
       verbosity: 'minimal'

@@ -6,7 +6,6 @@ import { pathToFileURL } from 'node:url'
 import { simpleGit } from 'simple-git'
 import { BuildAgent } from '@agents/local'
 import { Runner } from '@tools/gitversion'
-import { selectTestVersion } from './test-version'
 
 describe('installed GitVersion 7 compatibility', () => {
     let root: string
@@ -37,7 +36,7 @@ describe('installed GitVersion 7 compatibility', () => {
         const agent = new BuildAgent()
         vi.spyOn(agent, 'tempDir', 'get').mockReturnValue(path.join(root, 'temp'))
         vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(path.join(root, 'cache'))
-        const version = selectTestVersion()
+        const version = '7.0.x'
         vi.stubEnv('INPUT_VERSIONSPEC', version)
         vi.stubEnv('INPUT_INCLUDEPRERELEASE', 'true')
         vi.stubEnv('INPUT_NUGETCONFIGPATH', path.resolve('nuget.config'))

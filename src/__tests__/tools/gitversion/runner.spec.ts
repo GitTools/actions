@@ -4,27 +4,28 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
-import { Runner } from '@tools/gitversion'
-import { selectTestVersion } from './test-version'
+import { GitVersionTool, Runner } from '@tools/gitversion'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
-import { getEnv, expectToolSetup, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+import { getEnv, getLatestVersion, expectToolSetup, isAzurePipelinesAgent, isGitHubActionsAgent, resetEnv, setEnv, setInputs } from '../common/utils'
+
+afterEach(() => vi.restoreAllMocks())
 
 describe('GitVersion Runner', () => {
     const baseDir = path.resolve(__dirname, '../../../../.test')
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = selectTestVersion()
+    const versionSpec = '7.0.x'
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
         let toolPath: string
         let runner: Runner
 
-        beforeAll(() => {
-            version = versionSpec
+        beforeAll(async () => {
+            version = await getLatestVersion('GitVersion.Tool', versionSpec, true)
             runner = new Runner(agent)
         })
 
@@ -38,7 +39,6 @@ describe('GitVersion Runner', () => {
 
         afterEach(() => {
             resetEnv(agent, toolPathVariable)
-            vi.restoreAllMocks()
         })
 
         afterAll(() => {
@@ -333,3 +333,20 @@ function createGitVersionFixture(params: {
 
     return { log, expected: jsonObj }
 }
+
+it('preserves successful tool diagnostics when output parsing fails', async () => {
+    const agent = { info: vi.fn(), debug: vi.fn(), error: vi.fn(), setVariable: vi.fn(), setSucceeded: vi.fn(), setFailed: vi.fn() }
+    vi.spyOn(GitVersionTool.prototype, 'executeJson').mockResolvedValue({
+        code: 0,
+        stderr: 'INFO version calculation details',
+        outputFile: 'variables.json'
+    })
+    vi.spyOn(GitVersionTool.prototype, 'readGitVersionOutput').mockRejectedValue(new Error('invalid JSON fixture'))
+    const result = await new Runner(agent as unknown as IBuildAgent).run('execute')
+    expect(result.code).toBe(-1)
+    expect(result.stderr).toContain('INFO version calculation details')
+    expect(result.stderr).toContain('Failed to read or parse GitVersion variables file: invalid JSON fixture')
+    expect(agent.error).toHaveBeenCalledWith(result.stderr)
+    expect(agent.setFailed).toHaveBeenCalledWith(result.stderr, true)
+    expect(agent.setSucceeded).not.toHaveBeenCalled()
+})

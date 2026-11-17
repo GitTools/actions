@@ -20,7 +20,7 @@ export class GitVersionTool extends DotnetTool {
     }
 
     get versionRange(): string | null {
-        return '>=7.0.0-0 <8.0.0-0'
+        return '7.x'
     }
 
     protected get installFramework(): string {
