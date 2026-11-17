@@ -140,8 +140,9 @@ repository's `nuget.config`.
 
 The release notification workflow proposes version range updates in docs,
 workflows, and integration tests. Moving to a new GitVersion minor line also
-requires updating the supported range. The v4 marketplace example pipelines
-exercise GitVersion 6.
+requires updating the supported range. The output example pipelines use
+GitVersion 7.0.x and require the Actions v5.0.0 tag on GitHub or the v5.0.0
+tasks in the installed Azure Marketplace extension.
 
 NativeAOT and complete LibGit2Sharp removal are not assumed prerequisites for
 this integration; the established upstream `src/` CLI is the compatibility target.
