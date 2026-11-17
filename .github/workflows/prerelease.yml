@@ -34,7 +34,8 @@ jobs:
       - name: Install GitVersion
         uses: ./gitversion/setup
         with:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
+          includePrerelease: true
 
       - name: Use GitVersion
         id: gitversion # step id used as a reference for output values
