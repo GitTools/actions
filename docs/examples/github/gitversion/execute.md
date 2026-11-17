@@ -13,14 +13,14 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5.0.0
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use version _5.0.0_ of the GitVersion Execute action.  Use v4 with GitVersion 6.
+> The examples use version _4.7.2_ of the GitVersion Execute action.  Use v4 with GitVersion 6.
 
 ## Inputs
 
@@ -132,11 +132,11 @@ available. See [the v5 migration guide](../../../migration-v5.md).
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
 ```
 
 </details>
@@ -150,7 +150,7 @@ steps:
 steps:
   - name: Determine Version
     id: version_step # step id used as reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
 ```
 
 Example contents of **GitVersion.yml**:
@@ -174,11 +174,11 @@ calculation:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       configFilePath: VersionConfig.yml
 ```
@@ -192,11 +192,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       disableCache: true
       disableNormalization: true
@@ -211,10 +211,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateAssemblyInfo: true
 ```
@@ -228,11 +228,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       overrideConfig: |
         calculation.semantic-version-format=Loose
@@ -248,11 +248,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateProjectFiles: true
 ```
@@ -266,11 +266,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateWixVersionFile: true
 ```
@@ -284,11 +284,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5.0.0 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5.0.0
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       verbosity: 'minimal'
 ```
@@ -319,13 +319,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v5.0.0
+        uses: gittools/actions/gitversion/setup@v4.7.2
         with:
           versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v5.0.0
+        uses: gittools/actions/gitversion/execute@v4.7.2
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
@@ -409,13 +409,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v5.0.0
+        uses: gittools/actions/gitversion/setup@v4.7.2
         with:
           versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v5.0.0
+        uses: gittools/actions/gitversion/execute@v4.7.2
 
   GitVersion_v7_cross_job_consumer_without_prefix:
     name: GitVersion v6 (cross job consumer) - without prefix
