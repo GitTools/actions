@@ -42,21 +42,26 @@ jobs:
         with:
           dotnet-version: |
             10.0.x
-            11.0.100-rc.3.26522.148
+            11.0.x
 
-      - name: Build the checked-out actions and prepare v7 packages
+      - name: Build the checked-out actions
         working-directory: gv-repo
         run: |
           npm ci --ignore-scripts
           npm run build
-          node scripts/prepare-gitversion.mjs
+
+      - name: Select GitVersion test version
+        working-directory: gv-repo
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).config.gitversionVersion
+          "GITVERSION_TEST_VERSION=$version" >> $env:GITHUB_ENV
 
       - name: Install GitVersion
         uses: ./gv-repo/gitversion/setup
         with:
           versionSpec: '${{ env.GITVERSION_TEST_VERSION }}'
           includePrerelease: true
-          nugetConfigPath: '${{ env.GITVERSION_TEST_NUGET_CONFIG }}'
+          nugetConfigPath: '${{ github.workspace }}/gv-repo/nuget.config'
 
       - name: Determine version
         id: gitversion

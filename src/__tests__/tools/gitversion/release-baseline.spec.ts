@@ -9,18 +9,19 @@ let script: string
 let manifest: string
 beforeEach(async () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-release-'))
-    script = path.join(root, 'update-gitversion-version.mjs')
-    manifest = path.join(root, 'gitversion-test.json')
+    script = path.join(root, 'scripts', 'update-gitversion-version.mjs')
+    await fs.mkdir(path.join(root, 'scripts'))
+    manifest = path.join(root, 'package.json')
     await fs.copyFile(path.resolve('scripts/update-gitversion-version.mjs'), script)
-    await fs.writeFile(manifest, JSON.stringify({ commit: 'pinned-source', version: '7.0.0-alpha.actions.1', publishedVersion: null }))
+    await fs.writeFile(manifest, JSON.stringify({ name: 'test-package', version: '5.0.0-alpha.0', config: { gitversionVersion: '7.0.0-beta.2' } }))
 })
 afterEach(async () => {
     await fs.rm(root, { recursive: true, force: true })
 })
 
-it('selects a stable v7 package without changing the pinned source rehearsal', async () => {
+it('selects a stable v7 package without changing the Actions package version', async () => {
     execFileSync(process.execPath, [script], { env: { ...process.env, GITVERSION_RELEASE_TAG: '7.0.1' }, stdio: 'pipe' })
-    expect(JSON.parse(await fs.readFile(manifest, 'utf8'))).toEqual({ commit: 'pinned-source', version: '7.0.0-alpha.actions.1', publishedVersion: '7.0.1' })
+    expect(JSON.parse(await fs.readFile(manifest, 'utf8'))).toEqual({ name: 'test-package', version: '5.0.0-alpha.0', config: { gitversionVersion: '7.0.1' } })
 })
 
 it.each([

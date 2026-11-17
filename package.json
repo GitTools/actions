@@ -32,14 +32,16 @@
     "run:local:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent local",
     "run:azure:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent azure",
     "run:github:gitreleasemanager": "node dist/tools/cli.mjs --tool gitreleasemanager --agent github",
-    "test:ci": "node scripts/prepare-gitversion.mjs && vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
-    "test:tools": "node scripts/prepare-gitversion.mjs && vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
+    "test:ci": "vitest --run src/__tests__ --config src/__tests__/vitest.config.ts",
+    "test:tools": "vitest --run src/__tests__/tools --config src/__tests__/vitest.config.ts",
     "test:agents": "vitest --run src/__tests__/agents --config src/__tests__/vitest.config.ts",
     "publish:prepare": "./dist/azure/updateTasks.mjs",
     "publish:azure:local": "tfx extension create --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs",
     "publish:azure:marketplace": "tfx extension publish --root ./dist/azure --manifest-js dist/azure/manifest.config.cjs --auth-type pat",
-    "prepare": "husky",
-    "prepare:gitversion": "node scripts/prepare-gitversion.mjs"
+    "prepare": "husky"
+  },
+  "config": {
+    "gitversionVersion": "7.0.0-beta.2"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

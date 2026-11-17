@@ -1,6 +1,5 @@
-type TestBaseline = { version: string; publishedVersion?: string | null }
+import { config } from '../../../../package.json'
 
-export function selectTestVersion(baseline: TestBaseline, env: NodeJS.ProcessEnv = process.env): string {
-    if (env.GITVERSION_TEST_MODE === 'source') return baseline.version
-    return env.GITVERSION_TEST_VERSION || baseline.publishedVersion || baseline.version
+export function selectTestVersion(env: NodeJS.ProcessEnv = process.env): string {
+    return env.GITVERSION_TEST_VERSION || config.gitversionVersion
 }
