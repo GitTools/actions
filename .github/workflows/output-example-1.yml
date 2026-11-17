@@ -13,7 +13,7 @@ defaults:
 jobs:
   GitVersion_v6_same_job:
     name: GitVersion v6 (same job)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
 
       - name: Checkout

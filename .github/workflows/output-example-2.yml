@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: read
     name: GitVersion v6 (cross job)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       branchName: ${{ steps.version_step.outputs.branchName }}
       fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
@@ -44,7 +44,7 @@ jobs:
       contents: read
     name: GitVersion v6 (cross job consumer) - without prefix
     needs: GitVersion_v6_cross_job
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: contains(needs.GitVersion_v6_cross_job.outputs['branchName'], 'main')
     env:
       myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
@@ -103,7 +103,7 @@ jobs:
       contents: read
     name: GitVersion v6 (cross job consumer) - with prefix
     needs: GitVersion_v6_cross_job
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: contains(needs.GitVersion_v6_cross_job.outputs['GitVersion_BranchName'], 'main')
     env:
       myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}

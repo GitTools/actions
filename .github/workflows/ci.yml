@@ -29,7 +29,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-2025-vs2026, ubuntu-24.04, macos-26 ]
+        os: [ windows-2025-vs2026, ubuntu-26.04, macos-26 ]
       fail-fast: false
     steps:
       - name: Checkout
@@ -114,7 +114,7 @@ jobs:
         name: Use variables and output
 
       - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
-        if: matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-26.04'
         with:
           message: 'dist update'
         name: Rebuild dist and push
