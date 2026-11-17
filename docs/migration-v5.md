@@ -1,6 +1,6 @@
 # Migrating to GitTools Actions v5
 
-GitTools Actions v5 supports GitVersion 7. Keep using v4 for GitVersion 6.
+GitTools Actions v5 supports GitVersion 7.0.x. Keep using v4 for GitVersion 6.
 
 ## Output names and meanings
 
@@ -129,15 +129,15 @@ steps:
 
 ## Integration validation
 
-CI and integration tests explicitly pin the published GitVersion package version
-in their setup steps. Run `npm run test:ci` to validate the integration. CI tests
-the built GitHub entrypoints and the Azure adapter; Azure CI also packages and
-executes the local VSIX without publishing it. Packages come from NuGet using the
-repository's `nuget.config`.
+CI and integration tests use the `7.0.x` range and allow prereleases. Run
+`npm run test:ci` to validate the built GitHub entrypoints and the Azure adapter.
+Azure CI also packages and executes the local VSIX without publishing it. Tests
+fetch packages from NuGet using the repository's `nuget.config`.
 
-The release notification workflow accepts stable GitVersion 7 updates and opens
-a PR updating the explicit CI and integration-test version references. Existing
-v4 marketplace example pipelines remain explicit v4/GitVersion 6 regression checks.
+The release notification workflow proposes version range updates in docs,
+workflows, and integration tests. Moving to a new GitVersion minor line also
+requires updating the supported range. The v4 marketplace example pipelines
+exercise GitVersion 6.
 
 NativeAOT and complete LibGit2Sharp removal are not assumed prerequisites for
 this integration; the established upstream `src/` CLI is the compatibility target.

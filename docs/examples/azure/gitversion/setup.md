@@ -45,7 +45,7 @@ steps:
 
 ### Example 1
 
-Install the latest GitVersion 7 version.
+Install the latest stable GitVersion 7.0.x release.
 
 ```yaml
 steps:
@@ -69,7 +69,7 @@ steps:
 
 ### Example 3
 
-Install the latest GitVersion 7 pre-release version.  For example **7.0.0-beta.6**.
+Install the latest matching GitVersion 7.0.x release, allowing prereleases.
 
 ```yaml
 steps:
@@ -82,7 +82,7 @@ steps:
 
 ### Example 4
 
-Install the latest GitVersion 7 version even if there is a cached version matching the versionSpec.
+Install the latest stable GitVersion 7.0.x release even when a matching version is cached.
 
 ```yaml
 steps:

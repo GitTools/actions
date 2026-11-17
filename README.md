@@ -36,7 +36,7 @@ Examples for usage of **GitReleaseManager**:
 
 ### Versioning and Compatibility
 
-Actions v5 targets GitVersion 7. Use Actions v4 for GitVersion 6.
+Actions v5 supports GitVersion 7.0.x. Use Actions v4 for GitVersion 6.
 See the [v5 migration guide](docs/migration-v5.md) for changed arguments,
 configuration, outputs and platform requirements.
 
