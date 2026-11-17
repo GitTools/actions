@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   update-gitversion-version:
-    if: github.event_name == 'repository_dispatch' && startsWith(github.event.client_payload.newTag, '7.') && !contains(github.event.client_payload.newTag, '-') && !contains(github.event.client_payload.newTag, '+')
+    if: startsWith(github.event.client_payload.newTag, '7.') && !contains(github.event.client_payload.newTag, '-') && !contains(github.event.client_payload.newTag, '+')
     runs-on: ubuntu-26.04
     steps:
       - name: Load GitHub App credentials
@@ -50,8 +50,8 @@ jobs:
           $newTag = $env:GITVERSION_RELEASE_TAG
           if ($newTag -notmatch '^7\.\d+\.\d+$') { throw 'Expected a stable GitVersion 7 release tag.' }
           $newTag = $newTag -replace '\.\d+$', '.x'
-          Get-ChildItem .github/workflows, .azure, src/__tests__/tools/gitversion -Recurse -File |
-            Where-Object { $_.Extension -in '.yml', '.yaml', '.ts' } |
+          Get-ChildItem docs, .github, .azure, src/__tests__/tools/gitversion -Recurse -File |
+            Where-Object { $_.Extension -in '.md', '.yml', '.yaml', '.ts' } |
             ForEach-Object { update-files $_.FullName -OldVersion ([regex]::Escape($oldTag)) -NewVersion $newTag }
 
       - name: Create Pull Request
@@ -67,7 +67,7 @@ jobs:
           labels: dependencies
           title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
           body: |
-            Updates explicit GitVersion version references in CI workflows and integration tests
+            Updates GitVersion version ranges in docs, workflows, and integration tests
             following publication of GitVersion `${{ github.event.client_payload.newTag }}`.
 
             Triggered by the `gitversion-release-published` repository dispatch.
