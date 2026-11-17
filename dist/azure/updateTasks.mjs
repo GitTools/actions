@@ -31,7 +31,7 @@ const updateJsonFields = async (filePath, versionStr, mode) => {
     let updates = {
         id: id,
         friendlyName: `${data.friendlyName}${friendlyNameSuffix}`,
-        minimumAgentVersion: "4.244.1",
+        minimumAgentVersion: "5.270.0",
         version: {
             Major: version[0],
             Minor: version[1],
