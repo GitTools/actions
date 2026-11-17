@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - run: |
-          npm install --ignore-scripts
+          npm ci --ignore-scripts
           npm run build:tools
           npm run build:agent:github
           npm run build:agent:azure

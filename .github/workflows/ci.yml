@@ -39,7 +39,7 @@ jobs:
           fetch-depth: 0
 
       - run: |
-          npm install --ignore-scripts
+          npm ci --ignore-scripts
         name: Install dependencies
 
       - run: |
