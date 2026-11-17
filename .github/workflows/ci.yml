@@ -119,8 +119,9 @@ jobs:
           echo "FullSemVer (steps.gitversion.outputs.GitVersion_FullSemVer) : ${{ steps.gitversion.outputs.GitVersion_FullSemVer }}"
         name: Use variables and output
 
-      - uses: gittools/cicd/git-commit-push@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
+      - uses: gittools/cicd/git-commit-push@36df046cbe7beb58bb49733fd2a879ad82f5c0dc # GitTools/cicd#14
         if: matrix.os == 'ubuntu-26.04'
         with:
           message: 'dist update'
+          force: 'false'
         name: Rebuild dist and push
