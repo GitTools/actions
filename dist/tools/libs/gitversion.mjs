@@ -126,8 +126,10 @@ var GitVersionTool = class extends DotnetTool {
 	}
 	getCommandArguments(workDir, options) {
 		const builder = new ArgumentsBuilder().addArgument(workDir);
-		if (options.verbosity) builder.addArgument("--verbosity").addArgument(options.verbosity);
-		if (options.arguments) builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments));
+		const commandArguments = ArgumentsBuilder.parseArgumentString(options.arguments || "");
+		const isConfigValidation = commandArguments[0] === "config" && commandArguments[1] === "validate";
+		if (options.verbosity && !isConfigValidation) builder.addArgument("--verbosity").addArgument(options.verbosity);
+		builder.addArguments(commandArguments);
 		return builder.build();
 	}
 	async checkShallowClone(settings, workDir) {
@@ -194,7 +196,7 @@ var Runner = class extends RunnerBase {
 			try {
 				gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile);
 			} catch (error) {
-				return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`);
+				return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`, result.stderr);
 			}
 		} else {
 			this.buildAgent.debug("Parsing GitVersion output from stdout");
@@ -211,9 +213,9 @@ var Runner = class extends RunnerBase {
 				const maxLines = 20;
 				const { truncated, wasTruncated, totalLines } = this.truncateOutput(gitVersionStdout, maxLines);
 				const truncationNote = wasTruncated ? ` (showing last ${maxLines} of ${totalLines} lines)` : "";
-				return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}\n${truncated}`);
+				return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}\n${truncated}`, result.stderr);
 			}
-			return this.handleOutputError("GitVersion output is not valid JSON, see output details");
+			return this.handleOutputError("GitVersion output is not valid JSON, see output details", result.stderr);
 		}
 		this.tool.writeGitVersionToAgent(gitVersionOutput);
 		this.tool.updateBuildNumber();
@@ -236,12 +238,12 @@ var Runner = class extends RunnerBase {
 			totalLines: lines.length
 		};
 	}
-	handleOutputError(message) {
+	handleOutputError(message, diagnostics) {
 		this.buildAgent.debug(message);
 		return {
 			code: -1,
 			error: new Error(message),
-			stderr: message
+			stderr: [diagnostics, message].filter(Boolean).join("\n")
 		};
 	}
 	/**

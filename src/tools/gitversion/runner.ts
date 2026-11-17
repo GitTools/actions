@@ -57,7 +57,7 @@ export class Runner extends RunnerBase {
             try {
                 gitVersionOutput = await this.tool.readGitVersionOutput(result.outputFile)
             } catch (error) {
-                return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`)
+                return this.handleOutputError(`Failed to read or parse GitVersion variables file: ${this.getErrorMessage(error)}`, result.stderr)
             }
         } else {
             // Fallback to parsing stdout (for backward compatibility)
@@ -76,9 +76,9 @@ export class Runner extends RunnerBase {
                 const maxLines = 20
                 const { truncated, wasTruncated, totalLines } = this.truncateOutput(gitVersionStdout, maxLines)
                 const truncationNote = wasTruncated ? ` (showing last ${maxLines} of ${totalLines} lines)` : ''
-                return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}\n${truncated}`)
+                return this.handleOutputError(`GitVersion output is not valid JSON${truncationNote}\n${truncated}`, result.stderr)
             }
-            return this.handleOutputError('GitVersion output is not valid JSON, see output details')
+            return this.handleOutputError('GitVersion output is not valid JSON, see output details', result.stderr)
         }
 
         this.tool.writeGitVersionToAgent(gitVersionOutput)
@@ -99,12 +99,12 @@ export class Runner extends RunnerBase {
         return { truncated: lines.slice(-maxLines).join('\n'), wasTruncated: true, totalLines: lines.length }
     }
 
-    private handleOutputError(message: string): ExecResult {
+    private handleOutputError(message: string, diagnostics?: string): ExecResult {
         this.buildAgent.debug(message)
         return {
             code: -1,
             error: new Error(message),
-            stderr: message
+            stderr: [diagnostics, message].filter(Boolean).join('\n')
         }
     }
 

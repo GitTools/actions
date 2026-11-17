@@ -172,13 +172,14 @@ export class GitVersionTool extends DotnetTool {
     protected getCommandArguments(workDir: string, options: CommandSettings): string[] {
         const builder = new ArgumentsBuilder().addArgument(workDir)
 
-        if (options.verbosity) {
+        const commandArguments = ArgumentsBuilder.parseArgumentString(options.arguments || '')
+        // Configuration validation rejects calculation/logging options, including the action's default verbosity.
+        const isConfigValidation = commandArguments[0] === 'config' && commandArguments[1] === 'validate'
+        if (options.verbosity && !isConfigValidation) {
             builder.addArgument('--verbosity').addArgument(options.verbosity)
         }
 
-        if (options.arguments) {
-            builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
-        }
+        builder.addArguments(commandArguments)
 
         return builder.build()
     }

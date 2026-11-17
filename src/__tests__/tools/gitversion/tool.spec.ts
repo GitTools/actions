@@ -492,6 +492,15 @@ describe('GitVersionTool', () => {
     })
 
     describe('getCommandArguments', () => {
+        it.each(['normal', 'diagnostic'])('omits wrapper verbosity for config validation with %s input', verbosity => {
+            expect(
+                tool.getCommandArguments('workdir', {
+                    arguments: 'config validate --config "Nested Config.yml"',
+                    verbosity
+                } as CommandSettings)
+            ).toEqual(['workdir', 'config', 'validate', '--config', 'Nested Config.yml'])
+        })
+
         it('places root verbosity before configuration subcommands', () => {
             expect(
                 tool.getCommandArguments('workdir', {
