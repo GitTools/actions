@@ -1,3 +1,4 @@
+# Requires the GitTools Actions v5.0.0 tag.
 name: output-example-1
 
 permissions:
@@ -11,8 +12,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  GitVersion_v6_same_job:
-    name: GitVersion v6 (same job)
+  GitVersion_v7_same_job:
+    name: GitVersion v7 (same job)
     runs-on: ubuntu-26.04
     steps:
 
@@ -23,15 +24,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.7.2
+        uses: gittools/actions/gitversion/setup@v5.0.0
         with:
-          versionSpec: '6.8.x'
+          versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v4.7.2
-        with:
-          configFilePath: scripts/fixtures/gitversion-v6.yml
+        uses: gittools/actions/gitversion/execute@v5.0.0
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
