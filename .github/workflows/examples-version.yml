@@ -14,7 +14,7 @@ defaults:
 jobs:
   update-examples-version:
     if: ${{ github.event_name == 'repository_dispatch' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: gittools/cicd/checkout@824c3d773fb5d1b00c26b474ae88b7ce9ae555ee # v5
