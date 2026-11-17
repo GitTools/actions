@@ -149,13 +149,16 @@ describe('installed GitVersion 7 compatibility', () => {
         expect(await fs.readFile(path.join(repo, 'GitVersion_WixVersion.wxi'), 'utf8')).toContain('PreReleaseLabelName="candidate"')
     })
 
-    it('migrates and validates a flat configuration through the command wrapper', async () => {
+    it('migrates a flat configuration with diagnostic verbosity', async () => {
+        vi.stubEnv('INPUT_VERBOSITY', 'diagnostic')
         const config = path.join(repo, 'Legacy Config.yml')
         const migrated = path.join(repo, 'Migrated Config.yml')
         await fs.writeFile(config, 'next-version: 2.0.0\n')
         vi.stubEnv('INPUT_ARGUMENTS', `config migrate --config "${config}" --output "${migrated}"`)
         expect((await runner.run('command')).code).toBe(0)
         expect(await fs.readFile(migrated, 'utf8')).toContain('calculation:')
+        // Validation intentionally rejects verbosity; migration accepts the root option.
+        vi.stubEnv('INPUT_VERBOSITY', '')
         vi.stubEnv('INPUT_ARGUMENTS', `config validate --config "${migrated}"`)
         expect((await runner.run('command')).code).toBe(0)
     })

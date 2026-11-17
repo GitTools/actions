@@ -1,5 +1,4 @@
 import * as path from 'node:path'
-import * as os from 'node:os'
 
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { simpleGit } from 'simple-git'
@@ -27,7 +26,6 @@ describe('GitVersion Runner', () => {
 
         beforeAll(() => {
             version = versionSpec
-            toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version, `${os.platform()}-${os.arch()}`)
             runner = new Runner(agent)
         })
 
@@ -36,6 +34,7 @@ describe('GitVersion Runner', () => {
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
+            toolPath = agent.getToolCachePath('GitVersion.Tool', version)
         })
 
         afterEach(() => {
