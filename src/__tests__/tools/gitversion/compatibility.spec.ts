@@ -163,6 +163,16 @@ describe('installed GitVersion 7 compatibility', () => {
         expect((await runner.run('command')).code).toBe(0)
     })
 
+    it('validates configuration with the GitHub command action default verbosity', async () => {
+        const config = path.join(repo, 'Nested Config.yml')
+        await fs.writeFile(config, 'calculation:\n  next-version: 2.0.0\n')
+        vi.stubEnv('INPUT_VERBOSITY', 'normal')
+        vi.stubEnv('INPUT_ARGUMENTS', `config validate --config "${config}"`)
+        const result = await runner.run('command')
+        expect(result.code).toBe(0)
+        expect(result.stderr).toContain('Configuration is valid')
+    })
+
     it('propagates migration diagnostics for flat configuration and flat overrides', async () => {
         const config = path.join(repo, 'Legacy.yml')
         await fs.writeFile(config, 'next-version: 2.0.0\n')
