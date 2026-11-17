@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: ./gv-repo/gitversion/setup
+        uses: gittools/actions/gitversion/setup@main
         with:
           versionSpec: '7.0.x'
           includePrerelease: true
@@ -40,7 +40,7 @@ jobs:
 
       - name: Determine version
         id: gitversion
-        uses: ./gv-repo/gitversion/execute
+        uses: gittools/actions/gitversion/execute@main
         with:
           targetPath: gv-repo
 
