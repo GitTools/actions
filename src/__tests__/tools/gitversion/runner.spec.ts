@@ -47,7 +47,7 @@ describe('GitVersion Runner', () => {
 
         it('should run setup GitVersion', { concurrent: false }, async () => {
             setInputs({
-                versionSpec: versionSpec,
+                versionSpec: version,
                 includePrerelease: true,
                 nugetConfigPath: path.resolve('nuget.config'),
                 ignoreFailedSources: false,
