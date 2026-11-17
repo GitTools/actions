@@ -17,6 +17,7 @@ it.skipIf(process.platform === 'win32')('keeps a relative tool symlink executabl
         await fs.rm(source, { recursive: true })
         expect(await fs.readlink(path.join(cached, 'dotnet-gitversion'))).toBe('.store/bin/tool')
         expect(await fs.readFile(path.join(cached, 'dotnet-gitversion'), 'utf8')).toBe('cached tool')
+        expect(await agent.findLocalTool('GitVersion.Tool', '7.0.0')).toBe(cached)
     } finally {
         vi.restoreAllMocks()
         await fs.rm(root, { recursive: true, force: true })
@@ -184,6 +185,24 @@ it('preserves a completed cache and ignores incomplete backups', async () => {
         expect(install).toHaveBeenCalledExactlyOnceWith(directory)
         expect(await fs.readFile(path.join(directory, 'payload'), 'utf8')).toBe('fresh')
         expect(await agent.directoryExists(backup)).toBe(true)
+    } finally {
+        vi.restoreAllMocks()
+        await fs.rm(root, { recursive: true, force: true })
+    }
+})
+
+it('keeps the completed cache discoverable when copying a replacement fails', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'gittools-copy-failure-'))
+    const agent = new BuildAgent()
+    vi.spyOn(agent, 'cacheDir', 'get').mockReturnValue(path.join(root, 'cache'))
+    try {
+        const source = path.join(root, 'source')
+        await fs.mkdir(source)
+        await fs.writeFile(path.join(source, 'payload'), 'original')
+        const cached = await agent.cacheToolDirectory(source, 'tool', '1.0.0')
+        await expect(agent.cacheToolDirectory(path.join(root, 'missing'), 'tool', '1.0.0')).rejects.toThrow()
+        expect(await agent.findLocalTool('tool', '1.0.0')).toBe(cached)
+        expect(await fs.readFile(path.join(cached, 'payload'), 'utf8')).toBe('original')
     } finally {
         vi.restoreAllMocks()
         await fs.rm(root, { recursive: true, force: true })

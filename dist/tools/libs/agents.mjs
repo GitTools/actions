@@ -3287,20 +3287,16 @@ var BuildAgentBase = class {
 			return "";
 		}
 		version = import_semver.clean(version) || version;
-		const destPath = this.getToolCachePath(tool, version);
-		if (await this.directoryExists(destPath)) {
-			this.debug(`Destination directory ${destPath} already exists, removing`);
-			await this.removeDirectory(destPath);
-		}
-		this.debug(`Copying ${sourceDir} to ${destPath}`);
-		await fs.mkdir(destPath, { recursive: true });
-		await fs.cp(sourceDir, destPath, {
-			recursive: true,
-			force: true,
-			verbatimSymlinks: true
-		});
-		this.debug(`Caching ${tool}@${version} from ${sourceDir}`);
-		return destPath;
+		return this.installToolInCache(tool, version, async (destPath) => {
+			this.debug(`Copying ${sourceDir} to ${destPath}`);
+			await fs.cp(sourceDir, destPath, {
+				recursive: true,
+				force: true,
+				verbatimSymlinks: true,
+				filter: (source) => source !== path.join(sourceDir, ".complete")
+			});
+			this.debug(`Caching ${tool}@${version} from ${sourceDir}`);
+		}, true);
 	}
 	async findLocalTool(toolName, versionSpec) {
 		if (!toolName) throw new Error("toolName is a required parameter");

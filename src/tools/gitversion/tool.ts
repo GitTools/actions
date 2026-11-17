@@ -172,12 +172,12 @@ export class GitVersionTool extends DotnetTool {
     protected getCommandArguments(workDir: string, options: CommandSettings): string[] {
         const builder = new ArgumentsBuilder().addArgument(workDir)
 
-        if (options.arguments) {
-            builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
-        }
-
         if (options.verbosity) {
             builder.addArgument('--verbosity').addArgument(options.verbosity)
+        }
+
+        if (options.arguments) {
+            builder.addArguments(ArgumentsBuilder.parseArgumentString(options.arguments))
         }
 
         return builder.build()

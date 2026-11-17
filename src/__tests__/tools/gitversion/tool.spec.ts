@@ -492,6 +492,15 @@ describe('GitVersionTool', () => {
     })
 
     describe('getCommandArguments', () => {
+        it('places root verbosity before configuration subcommands', () => {
+            expect(
+                tool.getCommandArguments('workdir', {
+                    arguments: 'config migrate --config "Legacy Config.yml"',
+                    verbosity: 'diagnostic'
+                } as CommandSettings)
+            ).toEqual(['workdir', '--verbosity', 'diagnostic', 'config', 'migrate', '--config', 'Legacy Config.yml'])
+        })
+
         it('should return correct arguments for empty settings', () => {
             const args = tool.getCommandArguments('workdir', {} as CommandSettings)
             expect(args).toEqual(['workdir'])
@@ -516,7 +525,7 @@ describe('GitVersionTool', () => {
                 arguments: '--some-arg',
                 verbosity: 'minimal'
             } as CommandSettings)
-            expect(args).toEqual(['workdir', '--some-arg', '--verbosity', 'minimal'])
+            expect(args).toEqual(['workdir', '--verbosity', 'minimal', '--some-arg'])
         })
 
         it('should not include verbosity argument when verbosity is not set', () => {

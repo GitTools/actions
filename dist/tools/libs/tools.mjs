@@ -407,6 +407,7 @@ var RunnerBase = class {
 				this.buildAgent.info("-------------------");
 			}
 			if (result.code === 0) {
+				if (result.stderr) this.buildAgent.info(result.stderr);
 				this.buildAgent.debug(`${this.tool.toolName} succeeded`);
 				this.buildAgent.setSucceeded(successMessage, true);
 				return result;
