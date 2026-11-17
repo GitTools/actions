@@ -22,7 +22,6 @@ describe('GitReleaseManager Runner', () => {
 
         beforeAll(async () => {
             version = await getLatestVersion('GitReleaseManager.Tool', versionSpec)
-            toolPath = path.resolve(baseDir, 'tools', 'GitReleaseManager.Tool', version)
             runner = new Runner(agent)
         })
 
@@ -31,6 +30,7 @@ describe('GitReleaseManager Runner', () => {
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
+            toolPath = agent.getToolCachePath('GitReleaseManager.Tool', version)
         })
 
         afterEach(() => {

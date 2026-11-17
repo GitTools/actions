@@ -5,6 +5,8 @@ import { simpleGit } from 'simple-git'
 
 import { type IBuildAgent } from '@agents/common'
 import { Runner } from '@tools/gitversion'
+import baseline from '../../../../scripts/gitversion-test.json'
+import { selectTestVersion } from './test-version'
 import { BuildAgent as AzurePipelinesAgent } from '@agents/azure'
 import { BuildAgent as LocalBuildAgent } from '@agents/local'
 import { BuildAgent as GitHubActionsAgent } from '@agents/github'
@@ -15,7 +17,7 @@ describe('GitVersion Runner', () => {
 
     const toolPathVariable = 'GITVERSION_PATH'
     const toolName = 'dotnet-gitversion'
-    const versionSpec = process.env.GITVERSION_TEST_VERSION || '7.0.0-alpha.actions.1'
+    const versionSpec = selectTestVersion(baseline)
 
     function testOnAgent(agent: IBuildAgent): void {
         let version: string
@@ -24,7 +26,6 @@ describe('GitVersion Runner', () => {
 
         beforeAll(() => {
             version = versionSpec
-            toolPath = path.resolve(baseDir, 'tools', 'GitVersion.Tool', version)
             runner = new Runner(agent)
         })
 
@@ -33,6 +34,7 @@ describe('GitVersion Runner', () => {
             setEnv(agent.sourceDirVariable, path.resolve(baseDir))
             setEnv(agent.tempDirVariable, path.resolve(baseDir, 'temp'))
             setEnv(agent.cacheDirVariable, path.resolve(baseDir, 'tools'))
+            toolPath = agent.getToolCachePath('GitVersion.Tool', version)
         })
 
         afterEach(() => {

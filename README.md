@@ -36,6 +36,10 @@ Examples for usage of **GitReleaseManager**:
 
 ### Versioning and Compatibility
 
+The upcoming Actions v5 targets GitVersion 7. Use Actions v4 for GitVersion 6.
+See the [v5 migration guide](docs/migration-v5.md) for changed arguments,
+configuration, outputs and platform requirements.
+
 You can find the compatibility matrix in the [versions.md](docs/versions.md) file.
 
 ## Contributing
@@ -44,7 +48,7 @@ You can find the compatibility matrix in the [versions.md](docs/versions.md) fil
 
 1. **Linux** - Recommended to build and run
 2. **Node.js** - Latest LTS version recommended
-3. **.NET SDK** - Version 8.0 or later required for GitVersion and GitReleaseManager tools
+3. **.NET SDK** - Version 10.0 or later required for GitVersion 7 with Actions v5; see the tool-specific requirements for GitReleaseManager
 4. **Git** - Latest version recommended
 
 ### Development Environment Setup
