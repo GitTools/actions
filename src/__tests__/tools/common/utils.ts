@@ -45,10 +45,10 @@ export const expectValidSettings = <T extends object>(expectedSettings: T, actua
     }
 }
 
-export async function getLatestVersion(toolName: string, versionSpec: string): Promise<string> {
+export async function getLatestVersion(toolName: string, versionSpec: string, includePrerelease = false): Promise<string> {
     const response = await fetch(`https://api.nuget.org/v3-flatcontainer/${toolName.toLowerCase()}/index.json`)
     const json = (await response.json()) as { versions: string[] }
-    const filteredVersions = json.versions.filter(v => semver.satisfies(v, versionSpec))
+    const filteredVersions = json.versions.filter(v => semver.satisfies(v, versionSpec, { includePrerelease }))
     return filteredVersions.reverse()[0]
 }
 

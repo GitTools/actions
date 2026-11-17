@@ -13,14 +13,14 @@ steps:
       fetch-depth: 0
 
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
 ```
 
 These steps are omitted from the examples for brevity.
 
-> The examples use upcoming version _5.x_ of the GitVersion Execute action.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
+> These examples require GitTools Actions v5 with GitVersion 7.0.x. Use Actions v4 with GitVersion 6.
 
 ## Inputs
 
@@ -132,11 +132,11 @@ available. See [the v5 migration guide](../../../migration-v5.md).
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
 ```
 
 </details>
@@ -150,7 +150,7 @@ steps:
 steps:
   - name: Determine Version
     id: version_step # step id used as reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
 ```
 
 Example contents of **GitVersion.yml**:
@@ -174,11 +174,11 @@ calculation:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       configFilePath: VersionConfig.yml
 ```
@@ -192,11 +192,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       disableCache: true
       disableNormalization: true
@@ -211,10 +211,10 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateAssemblyInfo: true
 ```
@@ -228,11 +228,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       overrideConfig: |
         calculation.semantic-version-format=Loose
@@ -248,11 +248,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateProjectFiles: true
 ```
@@ -266,11 +266,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       updateWixVersionFile: true
 ```
@@ -284,11 +284,11 @@ steps:
 
 ```yaml
 steps:
-  # gittools/actions/gitversion/setup@v5 action omitted for brevity.
+  # gittools/actions/gitversion/setup@v4.7.2 action omitted for brevity.
 
   - name: Determine Version
     id: version_step # step id used as a reference for output values
-    uses: gittools/actions/gitversion/execute@v5
+    uses: gittools/actions/gitversion/execute@v4.7.2
     with:
       verbosity: 'minimal'
 ```
@@ -309,7 +309,7 @@ The action also creates environment variables of the form `${{ env.<outputName> 
 
 ```yaml
 jobs:
-  GitVersion_v6_same_job:
+  GitVersion_v7_same_job:
     name: GitVersion v6 (same job)
     runs-on: ubuntu-24.04
     steps:
@@ -319,13 +319,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v5
+        uses: gittools/actions/gitversion/setup@v4.7.2
         with:
           versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v5
+        uses: gittools/actions/gitversion/execute@v4.7.2
 
       - run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
@@ -393,7 +393,7 @@ jobs:
 
 ```yaml
 jobs:
-  GitVersion_v6_cross_job:
+  GitVersion_v7_cross_job:
     name: GitVersion v6 (cross job)
     runs-on: ubuntu-24.04
     outputs:
@@ -409,21 +409,21 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v5
+        uses: gittools/actions/gitversion/setup@v4.7.2
         with:
           versionSpec: '7.0.x'
 
       - name: Determine Version
         id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v5
+        uses: gittools/actions/gitversion/execute@v4.7.2
 
-  GitVersion_v6_cross_job_consumer_without_prefix:
+  GitVersion_v7_cross_job_consumer_without_prefix:
     name: GitVersion v6 (cross job consumer) - without prefix
-    needs: GitVersion_v6_cross_job
+    needs: GitVersion_v7_cross_job
     runs-on: ubuntu-24.04
-    if: contains(needs.GitVersion_v6_cross_job.outputs['branchName'], 'main')
+    if: contains(needs.GitVersion_v7_cross_job.outputs['branchName'], 'main')
     env:
-      myvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
+      myvar_fullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.fullSemVer }}
     steps:
       - run: |
           echo "FullSemVer (env:myvar_fullSemVer)   : $env:myvar_fullSemVer"
@@ -435,7 +435,7 @@ jobs:
         name: Use local env mapped from output (pwsh - outputs without prefix)
         shell: pwsh
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.fullSemVer }}
 
       - run: |
           echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
@@ -445,7 +445,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_fullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v7_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v7_cross_job.outputs.fullSemVer }}"
         name: Use direct output from previous job (pwsh - outputs without prefix)
         shell: pwsh
 
@@ -459,7 +459,7 @@ jobs:
         name: Use local env mapped from output (bash - outputs without prefix)
         shell: bash
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.fullSemVer }}
 
       - run: |
           echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
@@ -469,17 +469,17 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_fullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.fullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v7_cross_job.outputs.fullSemVer) : ${{ needs.GitVersion_v7_cross_job.outputs.fullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 
-  GitVersion_v6_cross_job_consumer_with_prefix:
+  GitVersion_v7_cross_job_consumer_with_prefix:
     name: GitVersion v6 (cross job consumer) - with prefix
-    needs: GitVersion_v6_cross_job
+    needs: GitVersion_v7_cross_job
     runs-on: ubuntu-24.04
-    if: contains(needs.GitVersion_v6_cross_job.outputs['GitVersion_BranchName'], 'main')
+    if: contains(needs.GitVersion_v7_cross_job.outputs['GitVersion_BranchName'], 'main')
     env:
-      myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
+      myvar_GitVersion_FullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer }}
     steps:
       - run: |
           echo "FullSemVer (env:myvar_GitVersion_FullSemVer)   : $env:myvar_GitVersion_FullSemVer"
@@ -491,7 +491,7 @@ jobs:
         name: Use local env mapped from output (pwsh - outputs without prefix)
         shell: pwsh
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer }}
 
       - run: |
           echo "FullSemVer (env:localvar_fullSemVer)   : $env:localvar_fullSemVer"
@@ -501,7 +501,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_GitVersion_FullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (pwsh - outputs without prefix)
         shell: pwsh
 
@@ -516,7 +516,7 @@ jobs:
         name: Use local env mapped from output (bash - outputs without prefix)
         shell: bash
         env:
-          localvar_fullSemVer: ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}
+          localvar_fullSemVer: ${{ needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer }}
 
       - run: |
           echo "FullSemVer (localvar_fullSemVer)   : $localvar_fullSemVer"
@@ -526,7 +526,7 @@ jobs:
           localvar_fullSemVer: ${{ env.myvar_GitVersion_FullSemVer }}
 
       - run: |
-          echo "FullSemVer (needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v6_cross_job.outputs.GitVersion_FullSemVer }}"
+          echo "FullSemVer (needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer) : ${{ needs.GitVersion_v7_cross_job.outputs.GitVersion_FullSemVer }}"
         name: Use direct output from previous job (bash - outputs without prefix)
         shell: bash
 ```

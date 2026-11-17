@@ -36,6 +36,10 @@ export abstract class DotnetTool implements IDotnetTool {
         return undefined
     }
 
+    protected satisfiesVersionRange(version: string, includePrerelease: boolean): boolean {
+        return !this.versionRange || semver.satisfies(version, this.versionRange, { includePrerelease })
+    }
+
     disableTelemetry(): void {
         this.buildAgent.info('Disable Telemetry')
         this.buildAgent.setVariable('DOTNET_CLI_TELEMETRY_OPTOUT', 'true')
@@ -65,7 +69,7 @@ export abstract class DotnetTool implements IDotnetTool {
             throw new Error('Prerelease tool versions require includePrerelease: true.')
         }
 
-        if (this.versionRange && !semver.satisfies(version, this.versionRange, { includePrerelease: setupSettings.includePrerelease })) {
+        if (!this.satisfiesVersionRange(version, setupSettings.includePrerelease)) {
             throw new Error(
                 `Version spec '${setupSettings.versionSpec}' resolved as '${version}' does not satisfy the range '${this.versionRange}'.` +
                     'See https://github.com/GitTools/actions/blob/main/docs/versions.md for more information.'

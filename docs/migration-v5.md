@@ -1,8 +1,6 @@
 # Migrating to GitTools Actions v5
 
-GitTools Actions v5 supports GitVersion 7. Keep using v4 for GitVersion 6.
-The v5 examples describe the upcoming release; the v5 tag and GitVersion 7 stable
-package must be published before they can be used as stable dependencies.
+GitTools Actions v5 supports GitVersion 7.0.x. Keep using v4 for GitVersion 6.
 
 ## Output names and meanings
 
@@ -84,9 +82,10 @@ No collection campaign or caller-identification marker is enabled by this
 integration. These pipeline variables also affect later steps that inherit them.
 Console diagnostics on stderr are not, by themselves, execution failures.
 
-## GitHub Actions example
+The following examples require Actions v5. The release workflow updates the
+example references to the published Actions version.
 
-After both stable releases are published:
+## GitHub Actions example
 
 ```yaml
 steps:
@@ -96,10 +95,10 @@ steps:
   - uses: actions/setup-dotnet@v6
     with:
       dotnet-version: '10.0.x'
-  - uses: gittools/actions/gitversion/setup@v5
+  - uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
-  - uses: gittools/actions/gitversion/execute@v5
+  - uses: gittools/actions/gitversion/execute@v4.7.2
     id: version
     with:
       overrideConfig: |
@@ -109,7 +108,7 @@ steps:
 
 ## Azure Pipelines example
 
-After the v5 tasks are available in the installed extension:
+Install or update the GitTools extension to use the v5 tasks.
 
 ```yaml
 steps:
@@ -120,10 +119,10 @@ steps:
     inputs:
       packageType: sdk
       version: '10.0.x'
-  - task: gitversion-setup@5
+  - task: gitversion-setup@4.7.2
     inputs:
       versionSpec: '7.0.x'
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     name: version
     inputs:
       overrideConfig: |
@@ -131,31 +130,18 @@ steps:
   - pwsh: Write-Host '$(GitVersion_PreReleaseLabelName)'
 ```
 
-## Validation and release order
+## Integration validation
 
-The default test baseline installs the exact published GitVersion 7 beta selected
-by `config.gitversionVersion` in `package.json`. Run `npm run test:ci` to
-validate it. CI tests the built GitHub entrypoints and the Azure adapter; Azure CI
-also packages and executes the local VSIX without publishing it.
+CI and integration tests use the `7.0.x` range and allow prereleases. Run
+`npm run build` before `npm run test:ci` to test the source modules and the built
+local agent. GitHub CI exercises the built actions. Azure CI packages and runs
+the local VSIX without publishing it. Tests fetch packages from NuGet using the
+repository's `nuget.config`.
 
-Use the CI workflow's `gitversion-version` input to validate an exact published
-v7 prerelease or stable version. Locally set `GITVERSION_TEST_VERSION` before
-`npm run test:ci` to override the package baseline. Published-package validation
-uses NuGet. Passing the beta validates that exact beta; repeat against the final
-RC and exact stable package before
-declaring stable-release compatibility.
-
-The release notification workflow accepts stable GitVersion 7 updates only. It
-opens a PR updating the published test baseline; it does not implement
-compatibility, merge a PR or publish an Actions release. Existing v4 marketplace
-example pipelines remain explicit v4/GitVersion 6 regression checks.
-
-Before releasing v5:
-
-1. Review the full stack and establish the v4 maintenance/release boundary.
-2. Validate against the final GitVersion 7 RC, then its exact stable package.
-3. Complete Windows ARM64/musl checks and any outstanding reviewer findings.
-4. Publish v5 only after explicit maintainer approval. Keep the v4 tags available.
+The release notification workflow proposes version range updates in docs,
+workflows, and integration tests. Moving to a new GitVersion minor line also
+requires updating the supported range. The v4 marketplace example pipelines
+exercise GitVersion 6.
 
 NativeAOT and complete LibGit2Sharp removal are not assumed prerequisites for
 this integration; the established upstream `src/` CLI is the compatibility target.

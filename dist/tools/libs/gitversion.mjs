@@ -42,7 +42,11 @@ var GitVersionTool = class extends DotnetTool {
 		return "GITVERSION_PATH";
 	}
 	get versionRange() {
-		return ">=7.0.0-0 <8.0.0-0";
+		return ">=7.0.0 <7.1.0";
+	}
+	satisfiesVersionRange(version, includePrerelease) {
+		const releaseVersion = includePrerelease ? version.split("-", 1)[0] : version;
+		return super.satisfiesVersionRange(releaseVersion, includePrerelease);
 	}
 	get installFramework() {
 		return "net10.0";

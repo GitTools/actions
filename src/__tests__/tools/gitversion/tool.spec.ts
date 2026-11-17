@@ -44,18 +44,20 @@ describe('GitVersionTool', () => {
     })
 
     it('should return correct version range', () => {
-        expect(tool.versionRange).toBe('>=7.0.0-0 <8.0.0-0')
+        expect(tool.versionRange).toBe('>=7.0.0 <7.1.0')
     })
 
     it.each([
         { Name: 'v6 stable', version: '6.8.2', prerelease: false, accepted: false },
         { Name: 'v7 stable', version: '7.0.0', prerelease: false, accepted: true },
-        { Name: 'v7 minor', version: '7.1.0', prerelease: false, accepted: true },
-        { Name: 'v7 preview opt out', version: '7.0.0-rc.1', prerelease: false, accepted: false },
-        { Name: 'v7 preview opt in', version: '7.0.0-rc.1', prerelease: true, accepted: true },
+        { Name: '7.0 patch', version: '7.0.1', prerelease: false, accepted: true },
+        { Name: 'v7 preview opt out', version: '7.0.0-beta.2', prerelease: false, accepted: false },
+        { Name: 'v7 preview opt in', version: '7.0.0-beta.2', prerelease: true, accepted: true },
+        { Name: '7.1 preview', version: '7.1.0-beta.1', prerelease: true, accepted: false },
+        { Name: '7.1 stable', version: '7.1.0', prerelease: false, accepted: false },
         { Name: 'v8 preview', version: '8.0.0-alpha.1', prerelease: true, accepted: false },
         { Name: 'v8 stable', version: '8.0.0', prerelease: false, accepted: false }
-    ])('supports only the v7 release line: $Name', async ({ version, prerelease, accepted }) => {
+    ])('supports only the 7.0 release line: $Name', async ({ version, prerelease, accepted }) => {
         const addPath = vi.fn()
         const exec = vi.fn()
         const agent = {
@@ -79,7 +81,7 @@ describe('GitVersionTool', () => {
         )
         expect(result.installedPath).toBe(accepted ? '/cached' : null)
         const errorMatcher: unknown = expect.stringContaining(
-            prerelease || version !== '7.0.0-rc.1' ? 'does not satisfy the range' : 'Prerelease tool versions require includePrerelease: true.'
+            prerelease || version !== '7.0.0-beta.2' ? 'does not satisfy the range' : 'Prerelease tool versions require includePrerelease: true.'
         )
         expect(result.error).toEqual(accepted ? null : errorMatcher)
         expect(addPath).toHaveBeenCalledTimes(accepted ? 1 : 0)

@@ -10,7 +10,7 @@ steps:
   - checkout: self
     fetchDepth: 0
 
-  - task: gitversion-setup@5
+  - task: gitversion-setup@4.7.2
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
@@ -18,7 +18,7 @@ steps:
 
 These steps are omitted from the examples for brevity.
 
-> The examples use upcoming version _5.x_ of the GitVersion Execute task.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
+> These examples require GitTools Actions v5 with GitVersion 7.0.x. Use Actions v4 with GitVersion 6.
 
 ## Inputs
 
@@ -136,9 +136,9 @@ available. See [the v5 migration guide](../../../migration-v5.md).
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     name: version_step # step id used as a reference for output values
     displayName: Determine Version
 ```
@@ -152,9 +152,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as reference for output values
 
@@ -181,9 +181,9 @@ calculation:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -199,9 +199,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -218,9 +218,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -236,9 +236,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -256,9 +256,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -274,9 +274,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -292,9 +292,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -310,9 +310,9 @@ steps:
 
 ```yaml
 steps:
-  # gitversion-setup@5 task omitted for brevity.
+  # gitversion-setup@4.7.2 task omitted for brevity.
 
-  - task: gitversion-execute@5
+  - task: gitversion-execute@4.7.2
     displayName: Determine Version
     name: version_step # step id used as a reference for output values
     inputs:
@@ -337,7 +337,7 @@ The multi-job output variables can be accessed across jobs and stages, in both c
 
 ```yaml
 jobs:
-  - job: GitVersion_v6_same_job
+  - job: GitVersion_v7_same_job
     displayName: GitVersion v6 (same job)
     pool:
       vmImage: ubuntu-24.04
@@ -345,12 +345,12 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@5
+      - task: gitversion-setup@4.7.2
         displayName: Install GitVersion
         inputs:
           versionSpec: '7.0.x'
 
-      - task: gitversion-execute@5
+      - task: gitversion-execute@4.7.2
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
@@ -407,7 +407,7 @@ jobs:
 
 ```yaml
 jobs:
-  - job: GitVersion_v6_cross_job
+  - job: GitVersion_v7_cross_job
     displayName: GitVersion v6 (cross job)
     pool:
       vmImage: ubuntu-24.04
@@ -415,24 +415,24 @@ jobs:
       - checkout: self
         fetchDepth: 0
 
-      - task: gitversion-setup@5
+      - task: gitversion-setup@4.7.2
         displayName: Install GitVersion
         inputs:
           versionSpec: '7.0.x'
 
-      - task: gitversion-execute@5
+      - task: gitversion-execute@4.7.2
         displayName: Determine Version
         name: version_step # step id used as a reference for output values
         inputs:
           overrideConfig: |
             calculation.semantic-version-format=Loose
 
-  - job: GitVersion_v6_cross_job_consumer_without_prefix
+  - job: GitVersion_v7_cross_job_consumer_without_prefix
     displayName: GitVersion v6 (cross job consumer) - without prefix
-    dependsOn: GitVersion_v6_cross_job
-    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
+    dependsOn: GitVersion_v7_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v7_cross_job.outputs['version_step.branchName'], 'main')) # use in condition
     variables:
-      myvar_fullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.fullSemVer'] ]
+      myvar_fullSemVer: $[ dependencies.GitVersion_v7_cross_job.outputs['version_step.fullSemVer'] ]
     pool:
       vmImage: ubuntu-24.04
     steps:
@@ -456,12 +456,12 @@ jobs:
         env:
           localvar_fullSemVer: $(myvar_fullSemVer)
 
-  - job: GitVersion_v6_cross_job_consumer_with_prefix
+  - job: GitVersion_v7_cross_job_consumer_with_prefix
     displayName: GitVersion v6 (cross job consumer) - with prefix
-    dependsOn: GitVersion_v6_cross_job
-    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
+    dependsOn: GitVersion_v7_cross_job
+    condition: and(succeeded(), eq(dependencies.GitVersion_v7_cross_job.outputs['version_step.GitVersion_BranchName'], 'main')) # use in condition
     variables:
-      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v6_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
+      myvar_GitVersion_FullSemVer: $[ dependencies.GitVersion_v7_cross_job.outputs['version_step.GitVersion_FullSemVer'] ]
     pool:
       vmImage: ubuntu-24.04
     steps:
@@ -495,10 +495,10 @@ jobs:
 
 ```yaml
 stages:
-  - stage: GitVersion_v6_cross_stage
+  - stage: GitVersion_v7_cross_stage
     displayName: GitVersion v6 (cross stage)
     jobs:
-      - job: GitVersion_v6_cross_stage_producer
+      - job: GitVersion_v7_cross_stage_producer
         displayName: GitVersion v6 (cross stage producer)
         pool:
           vmImage: ubuntu-24.04
@@ -506,26 +506,26 @@ stages:
           - checkout: self
             fetchDepth: 0
 
-          - task: gitversion-setup@5
+          - task: gitversion-setup@4.7.2
             displayName: Install GitVersion
             inputs:
               versionSpec: '7.0.x'
 
-          - task: gitversion-execute@5
+          - task: gitversion-execute@4.7.2
             displayName: Determine Version
             name: version_step # step id used as a reference for output values
             inputs:
               overrideConfig: |
                 calculation.semantic-version-format=Loose
-  - stage: GitVersion_v6_cross_stage_consumer_without_prefix
+  - stage: GitVersion_v7_cross_stage_consumer_without_prefix
     displayName: GitVersion v6 (cross stage consumer) - without prefix
-    dependsOn: GitVersion_v6_cross_stage
-    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_stage.outputs['GitVersion_v6_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
+    dependsOn: GitVersion_v7_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v7_cross_stage.outputs['GitVersion_v7_cross_stage_producer.version_step.branchName'], 'main')) # use in condition
     jobs:
-      - job: GitVersion_v6_cross_stage_consumer_without_prefix
+      - job: GitVersion_v7_cross_stage_consumer_without_prefix
         displayName: GitVersion v6 (cross stage consumer) - without prefix
         variables:
-          myvar_fullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.fullSemVer'] ]
+          myvar_fullSemVer: $[ stageDependencies.GitVersion_v7_cross_stage.GitVersion_v7_cross_stage_producer.outputs['version_step.fullSemVer'] ]
         pool:
           vmImage: ubuntu-24.04
         steps:
@@ -548,15 +548,15 @@ stages:
             displayName: Use mapped local env from job variables (bash - outputs without prefix)
             env:
               localvar_fullSemVer: $(myvar_fullSemVer)
-  - stage: GitVersion_v6_cross_stage_consumer_with_prefix
+  - stage: GitVersion_v7_cross_stage_consumer_with_prefix
     displayName: GitVersion v6 (cross stage consumer) - with prefix
-    dependsOn: GitVersion_v6_cross_stage
-    condition: and(succeeded(), eq(dependencies.GitVersion_v6_cross_stage.outputs['GitVersion_v6_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
+    dependsOn: GitVersion_v7_cross_stage
+    condition: and(succeeded(), eq(dependencies.GitVersion_v7_cross_stage.outputs['GitVersion_v7_cross_stage_producer.version_step.GitVersion_BranchName'], 'main')) # use in condition
     jobs:
-      - job: GitVersion_v6_cross_stage_consumer_with_prefix
+      - job: GitVersion_v7_cross_stage_consumer_with_prefix
         displayName: GitVersion v6 (cross stage consumer) - with prefix
         variables:
-          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v6_cross_stage.GitVersion_v6_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
+          myvar_GitVersion_FullSemVer: $[ stageDependencies.GitVersion_v7_cross_stage.GitVersion_v7_cross_stage_producer.outputs['version_step.GitVersion_FullSemVer'] ]
         pool:
           vmImage: ubuntu-24.04
         steps:

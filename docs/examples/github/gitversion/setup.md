@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion/setup** action using the examples below.
 
-> The examples use upcoming version _5.x_ of the GitVersion Setup action.  Use v4 with GitVersion 6 until both v5 and GitVersion 7 are released.
+> These examples require GitTools Actions v5 with GitVersion 7.0.x. Use Actions v4 with GitVersion 6.
 
 ## Inputs
 
@@ -44,12 +44,12 @@ steps:
 
 ### Example 1
 
-Install the latest GitVersion 7 version.
+Install the latest stable GitVersion 7.0.x release.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
 ```
@@ -61,19 +61,19 @@ Install GitVersion 7.0.0.
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.0'
 ```
 
 ### Example 3
 
-Install the latest GitVersion 7 pre-release version.  For example **7.0.0-beta.6**.
+Install the latest matching GitVersion 7.0.x release, allowing prereleases.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
       includePrerelease: true
@@ -81,12 +81,12 @@ steps:
 
 ### Example 4
 
-Install the latest GitVersion 7 version even if there is a cached version matching the versionSpec.
+Install the latest stable GitVersion 7.0.x release even when a matching version is cached.
 
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
       preferLatestVersion: true
@@ -99,7 +99,7 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 ```yaml
 steps:
   - name: Install GitVersion
-    uses: gittools/actions/gitversion/setup@v5
+    uses: gittools/actions/gitversion/setup@v4.7.2
     with:
       versionSpec: '7.0.x'
       nugetConfigPath: '${{ github.workspace }}/nuget.config'

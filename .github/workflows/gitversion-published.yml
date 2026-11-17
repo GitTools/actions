@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   update-gitversion-version:
-    if: github.event_name == 'repository_dispatch' && startsWith(github.event.client_payload.newTag, '7.') && !contains(github.event.client_payload.newTag, '-') && !contains(github.event.client_payload.newTag, '+')
+    if: ${{ github.event_name == 'repository_dispatch' }}
     runs-on: ubuntu-26.04
     steps:
       - name: Load GitHub App credentials
@@ -28,7 +28,7 @@ jobs:
         with:
           owner: gittools
           repositories: actions
-          app-id: ${{ steps.github-app-creds.outputs.gh_app_id }}
+          client-id: ${{ steps.github-app-creds.outputs.gh_app_client_id }}
           private-key: ${{ steps.github-app-creds.outputs.gh_app_private_key }}
           permission-contents: write
           permission-pull-requests: write
@@ -41,25 +41,56 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Select the published GitVersion 7 test baseline
+      - id: update-version
         env:
-          GITVERSION_RELEASE_TAG: ${{ github.event.client_payload.newTag }}
-        run: node scripts/update-gitversion-version.mjs
+          RELEASE_TAG: ${{ github.event.client_payload.newTag }}
+        run: |
+          . ./utilities.ps1 # Import the functions
+
+          $version = $env:RELEASE_TAG
+          if ($version -notmatch '\A7\.0\.(0|[1-9][0-9]*)\z') {
+            Write-Output 'Skipping release outside the supported stable GitVersion 7.0 line.'
+            return
+          }
+
+          $oldTag = extract-version
+          $newTag = ($version -split '\.')[0,1] -join '.' | % { "$_.x" }
+
+          if ($oldTag -eq $newTag) {
+            Write-Output "The current range $oldTag already includes $version."
+            return
+          }
+
+          echo "Updating GitVersion version to $newTag"
+          echo "Old version: $oldTag"
+          echo "New version: $newTag"
+
+          $oldTag = [regex]::Escape($oldTag)
+          dir -r .\docs\**\*.md   | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .github\**\*.yml | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          dir -r .azure\**\*.yml  | % { update-files $_ -OldVersion $oldTag -NewVersion $newTag }
+          update-files src/__tests__/tools/gitversion/compatibility.spec.ts -OldVersion $oldTag -NewVersion $newTag
+          update-files src/__tests__/tools/gitversion/runner.spec.ts -OldVersion $oldTag -NewVersion $newTag
+
+          "release-tag=$version" >> $env:GITHUB_OUTPUT
+
+        name: Update GitVersion version
 
       - name: Create Pull Request
+        if: steps.update-version.outputs.release-tag != ''
         uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: "update GitVersion version to ${{ github.event.client_payload.newTag }}"
+          commit-message: "update GitVersion version to ${{ steps.update-version.outputs.release-tag }}"
           author: 'gittools-bot <gittoolsbot@outlook.com>'
           committer: 'gittools-bot <gittoolsbot@outlook.com>'
-          branch: "update/gitversion-${{ github.event.client_payload.newTag }}"
+          branch: "update/gitversion-${{ steps.update-version.outputs.release-tag }}"
           base: main
           delete-branch: true
           labels: dependencies
-          title: "Update GitVersion version to ${{ github.event.client_payload.newTag }}"
+          title: "Update GitVersion version to ${{ steps.update-version.outputs.release-tag }}"
           body: |
-            Updates the published-package validation baseline in `package.json` (`config.gitversionVersion`)
-            following publication of GitVersion `${{ github.event.client_payload.newTag }}`.
+            Updates the GitVersion version references in `docs`, `.github`, and `.azure`
+            following the publication of GitVersion `${{ steps.update-version.outputs.release-tag }}`.
 
             Triggered by the `gitversion-release-published` repository dispatch.
