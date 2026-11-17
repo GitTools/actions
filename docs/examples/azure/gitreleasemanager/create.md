@@ -2,7 +2,7 @@
 
 ```yaml
   steps:
-  - task: gitreleasemanager-create@4.7.1
+  - task: gitreleasemanager-create@4.7.2
     displayName: Create release with GitReleaseManager
     inputs:
       token: $(GITHUB_TOKEN)
