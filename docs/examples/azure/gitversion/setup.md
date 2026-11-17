@@ -2,7 +2,7 @@
 
 Find out how to use the **gitversion-setup** task using the examples below.
 
-> The examples use version _4.7.2_ of the GitVersion Setup task.  Use v4 with GitVersion 6.
+> These examples require GitTools Actions v5 with GitVersion 7.0.x. Use Actions v4 with GitVersion 6.
 
 ## Inputs
 

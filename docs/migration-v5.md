@@ -82,6 +82,9 @@ No collection campaign or caller-identification marker is enabled by this
 integration. These pipeline variables also affect later steps that inherit them.
 Console diagnostics on stderr are not, by themselves, execution failures.
 
+The following examples require Actions v5. The release workflow updates the
+example references to the published Actions version.
+
 ## GitHub Actions example
 
 ```yaml
