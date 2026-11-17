@@ -130,9 +130,10 @@ steps:
 ## Integration validation
 
 CI and integration tests use the `7.0.x` range and allow prereleases. Run
-`npm run test:ci` to validate the built GitHub entrypoints and the Azure adapter.
-Azure CI also packages and executes the local VSIX without publishing it. Tests
-fetch packages from NuGet using the repository's `nuget.config`.
+`npm run build` before `npm run test:ci` to test the source modules and the built
+local agent. GitHub CI exercises the built actions. Azure CI packages and runs
+the local VSIX without publishing it. Tests fetch packages from NuGet using the
+repository's `nuget.config`.
 
 The release notification workflow proposes version range updates in docs,
 workflows, and integration tests. Moving to a new GitVersion minor line also
