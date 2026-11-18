@@ -95,10 +95,10 @@ steps:
   - uses: actions/setup-dotnet@v6
     with:
       dotnet-version: '10.0.x'
-  - uses: gittools/actions/gitversion/setup@v4.7.2
+  - uses: gittools/actions/gitversion/setup@v5.0.0
     with:
       versionSpec: '7.0.x'
-  - uses: gittools/actions/gitversion/execute@v4.7.2
+  - uses: gittools/actions/gitversion/execute@v5.0.0
     id: version
     with:
       overrideConfig: |
@@ -119,10 +119,10 @@ steps:
     inputs:
       packageType: sdk
       version: '10.0.x'
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     inputs:
       versionSpec: '7.0.x'
-  - task: gitversion-execute@4.7.2
+  - task: gitversion-execute@5.0.0
     name: version
     inputs:
       overrideConfig: |

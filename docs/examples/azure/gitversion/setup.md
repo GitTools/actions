@@ -49,7 +49,7 @@ Install the latest stable GitVersion 7.0.x release.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
@@ -61,7 +61,7 @@ Install GitVersion 7.0.0.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.0'
@@ -73,7 +73,7 @@ Install the latest matching GitVersion 7.0.x release, allowing prereleases.
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
@@ -86,7 +86,7 @@ Install the latest stable GitVersion 7.0.x release even when a matching version 
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
@@ -99,7 +99,7 @@ Install GitVersion using a custom NuGet configuration file. This is useful in en
 
 ```yaml
 steps:
-  - task: gitversion-setup@4.7.2
+  - task: gitversion-setup@5.0.0
     displayName: Install GitVersion
     inputs:
       versionSpec: '7.0.x'
