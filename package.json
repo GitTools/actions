@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@stylistic/eslint-plugin": "6.0.0",
+    "@stylistic/eslint-plugin": "6.0.1",
     "@types/node": "26.6.6",
     "@types/proper-lockfile": "4.1.4",
     "@types/semver": "7.8.0",
