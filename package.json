@@ -58,7 +58,7 @@
     "markdownlint-cli": "0.50.0",
     "npm-run-all2": "9.0.4",
     "prettier": "3.10.1",
-    "simple-git": "4.0.2",
+    "simple-git": "4.1.0",
     "tfx-cli": "0.24.2",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.2",
