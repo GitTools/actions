@@ -56,7 +56,7 @@
     "husky": "9.1.7",
     "lint-staged": "17.6.1",
     "markdownlint-cli": "0.50.0",
-    "npm-run-all2": "9.0.4",
+    "npm-run-all2": "9.1.0",
     "prettier": "3.10.1",
     "simple-git": "4.1.0",
     "tfx-cli": "0.24.2",
